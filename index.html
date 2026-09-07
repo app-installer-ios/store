@@ -103,6 +103,8 @@
             letter-spacing: 0.5px;
             transition: all 0.2s ease;
             cursor: pointer;
+            text-decoration: none;
+            box-sizing: border-box;
         }
         .btn:active { transform: scale(0.97); opacity: 0.9; }
 
@@ -380,6 +382,11 @@
                 submitPassword();
             }
         });
+
+        if (window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.ready();
+            window.Telegram.WebApp.expand();
+        }
     });
 
     function submitPassword() {
@@ -433,16 +440,20 @@
             toast.classList.remove('show');
         }, 5000);
 
-        // Симуляция прямого клика по ссылке <a> для активации установки в iOS WebView / Safari / Telegram
-        let hiddenLink = document.getElementById('hiddenInstallLink');
-        if (!hiddenLink) {
-            hiddenLink = document.createElement('a');
-            hiddenLink.id = 'hiddenInstallLink';
-            hiddenLink.style.display = 'none';
-            document.body.appendChild(hiddenLink);
+        // Проверяем наличие среды Telegram WebApp
+        const isTgWebApp = window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData !== "";
+
+        if (isTgWebApp) {
+            // В Telegram Mini App вызываем открытие во внешнем браузере Safari
+            if (window.Telegram.WebApp.openLink) {
+                window.Telegram.WebApp.openLink(selectedAppUrl, { try_instant_view: false });
+            } else {
+                window.location.href = selectedAppUrl;
+            }
+        } else {
+            // В обычном браузер Safari/Chrome
+            window.location.href = selectedAppUrl;
         }
-        hiddenLink.href = selectedAppUrl;
-        hiddenLink.click();
     }
 
     async function checkServerStatus() {
