@@ -201,68 +201,96 @@
             box-shadow: 0 0 8px #ff3b30;
         }
 
-        /* Блок отказа в доступе */
-        .access-denied-box {
+        /* Стиль встроенного окна авторизации */
+        .auth-box {
             background: #161b26;
             border-radius: 16px;
             padding: 30px 20px;
             text-align: center;
-            position: relative;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
             border: 2px solid transparent;
-            background-image: linear-gradient(#161b26, #161b26), linear-gradient(135deg, #a855f7, #6366f1, #ef4444);
+            background-image: linear-gradient(#161b26, #161b26), linear-gradient(135deg, #a855f7, #6366f1);
             background-origin: border-box;
             background-clip: padding-box, border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
 
-        .access-denied-title {
+        .auth-title {
             font-size: 20px;
             font-weight: 800;
-            margin-bottom: 8px;
-            background: linear-gradient(135deg, #f87171, #ef4444);
+            background: linear-gradient(135deg, #a855f7, #6366f1);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .access-denied-text {
-            font-size: 14px;
-            color: #cbd5e1;
-            line-height: 1.5;
+        .auth-input {
+            background: #0b0e14;
+            color: #ffffff;
+            border: 2px solid #6366f1;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 15px;
+            text-align: center;
+            outline: none;
+            font-weight: 600;
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.2);
+        }
+
+        .auth-input:focus {
+            border-color: #a855f7;
+            box-shadow: 0 0 14px rgba(168, 85, 247, 0.4);
+        }
+
+        .auth-error {
+            color: #f87171;
+            font-size: 13px;
+            font-weight: 600;
+            display: none;
         }
     </style>
 </head>
 <body>
 
 <script>
+    const SECRET_PASSWORD = "deputat221754321";
+
     document.addEventListener("DOMContentLoaded", function() {
-        const SECRET_PASSWORD = "deputat221547847"; 
         const appContainer = document.getElementById("mainApp");
+        const authContainer = document.getElementById("authApp");
 
         if (sessionStorage.getItem("site_access") === "true") {
             appContainer.style.display = "block";
             checkServerStatus();
-            return;
+        } else {
+            authContainer.style.display = "block";
         }
 
-        setTimeout(() => {
-            let pass = prompt("Введите пароль для доступа к каталогу:");
-            
-            if (pass === SECRET_PASSWORD) {
-                sessionStorage.setItem("site_access", "true");
-                appContainer.style.display = "block";
-                checkServerStatus();
-            } else {
-                document.body.innerHTML = `
-                    <div class="container" style="margin-top: 50px;">
-                        <div class="access-denied-box">
-                            <div class="access-denied-title">⛔ Доступ запрещен</div>
-                            <div class="access-denied-text">Введён неверный пароль.<br>Обновите страницу, чтобы попробовать снова.</div>
-                        </div>
-                    </div>
-                `;
+        document.getElementById("passInput").addEventListener("keypress", function(e) {
+            if (e.key === "Enter") {
+                submitPassword();
             }
-        }, 100);
+        });
     });
+
+    function submitPassword() {
+        const input = document.getElementById("passInput");
+        const errorMsg = document.getElementById("authError");
+        const appContainer = document.getElementById("mainApp");
+        const authContainer = document.getElementById("authApp");
+
+        if (input.value.trim() === SECRET_PASSWORD) {
+            sessionStorage.setItem("site_access", "true");
+            authContainer.style.display = "none";
+            appContainer.style.display = "block";
+            checkServerStatus();
+        } else {
+            errorMsg.style.display = "block";
+            input.value = "";
+            input.focus();
+        }
+    }
 
     let toastTimer;
 
@@ -303,6 +331,16 @@
         }
     }
 </script>
+
+<div class="container" id="authApp" style="display: none; margin-top: 40px;">
+    <div class="auth-box">
+        <div class="auth-title">🔒 Доступ к каталогу</div>
+        <div style="font-size: 13px; color: #cbd5e1;">Введите пароль для продолжения:</div>
+        <input type="password" id="passInput" class="auth-input" placeholder="Пароль..." autocomplete="off">
+        <div id="authError" class="auth-error">Неверный пароль! Попробуйте снова.</div>
+        <button type="button" class="btn" onclick="submitPassword()">Войти</button>
+    </div>
+</div>
 
 <div class="container" id="mainApp" style="display: none;">
     <h1>Установка удалённых приложений</h1>
@@ -372,7 +410,6 @@
         <div id="toast" class="toast">🚀 Загрузка началась! Проверьте главный экран устройства.</div>
     </div>
 
-    <!-- Блок поддержки -->
     <div class="support-box">
         <div class="support-title">Нужна помощь? Напишите мне:</div>
         <div class="support-buttons">
