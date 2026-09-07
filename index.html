@@ -199,34 +199,35 @@
         .status-badge.offline .status-dot {
             background-color: #ff3b30;
             box-shadow: 0 0 8px #ff3b30;
-            .access-denied-box {
-    background: #161b26;
-    border-radius: 16px;
-    padding: 30px 20px;
-    text-align: center;
-    position: relative;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-    /* Анимированная градиентная рамка */
-    border: 2px solid transparent;
-    background-image: linear-gradient(#161b26, #161b26), linear-gradient(135deg, #a855f7, #6366f1, #ef4444);
-    background-origin: border-box;
-    background-clip: padding-box, border-box;
-}
+        }
 
-.access-denied-title {
-    font-size: 20px;
-    font-weight: 800;
-    margin-bottom: 8px;
-    background: linear-gradient(135deg, #f87171, #ef4444);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
+        /* Стиль для плашки неверного пароля */
+        .access-denied-box {
+            background: #161b26;
+            border-radius: 16px;
+            padding: 30px 20px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            border: 2px solid transparent;
+            background-image: linear-gradient(#161b26, #161b26), linear-gradient(135deg, #a855f7, #6366f1, #ef4444);
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+        }
 
-.access-denied-text {
-    font-size: 14px;
-    color: #cbd5e1;
-    line-height: 1.5;
-}
+        .access-denied-title {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #f87171, #ef4444);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .access-denied-text {
+            font-size: 14px;
+            color: #cbd5e1;
+            line-height: 1.5;
         }
     </style>
 </head>
@@ -234,21 +235,27 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        const SECRET_PASSWORD = "deputat221754321"; 
+        const SECRET_PASSWORD = "deputat221547847"; 
         const appContainer = document.getElementById("mainApp");
 
         if (sessionStorage.getItem("site_access") === "true") {
             appContainer.style.display = "block";
-            checkServerStatus(); // Запуск проверки после успешной авторизации
+            checkServerStatus();
         } else {
             let pass = prompt("Введите пароль для доступа к каталогу:");
             if (pass === SECRET_PASSWORD) {
                 sessionStorage.setItem("site_access", "true");
                 appContainer.style.display = "block";
-                checkServerStatus(); // Запуск проверки после ввода пароля
+                checkServerStatus();
             } else {
-                alert("Неверный пароль!");
-                document.body.innerHTML = "<div style='color:white;text-align:center;margin-top:100px;font-family:sans-serif;'><h2>⛔ Доступ запрещен</h2><p>Неверный пароль</p></div>";
+                document.body.innerHTML = `
+                    <div class="container" style="margin-top: 50px;">
+                        <div class="access-denied-box">
+                            <div class="access-denied-title">⛔ Доступ запрещен</div>
+                            <div class="access-denied-text">Введён неверный пароль.<br>Обновите страницу, чтобы попробовать снова.</div>
+                        </div>
+                    </div>
+                `;
             }
         }
     });
@@ -309,50 +316,50 @@
         </div>
         <select id="appSelect">
             <option value="" disabled selected>Нажмите для выбора приложения</option>
-            
+
             <option value="itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vk.plist">ВКонтакте</option>
             <hr>
-            
+
             <option value="itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/max.plist">MAX</option>
             <hr>
-            
+
             <option value="itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vk-video.plist">VK Видео</option>
             <hr>
-            
+
             <option value="itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/sber.plist">СБЕР(Учёт Онлайн)</option>
-            <hr>   
-            
+            <hr>
+
+            <option value="itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/sovkombank-vsekarty.plist">Совкомбанк (Все карты MDS)</option>
+            <hr>
+
             <option value="itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/mail.plist">Почта Mail.ru</option>
             <hr>
-            
+
             <option value="itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vtb.plist">ВТБ (Сириус)</option>
             <hr>
-            
+
             <option value="itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/avito.plist">Авито</option>
             <hr>
-            
+
             <option value="itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/tbank.plist">Т-Банк(8PRO)</option>
             <hr>
-            
+
             <option value="itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/lenta.plist">Лента</option>
             <hr>
-            
+
             <option value="itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/yandex-pay.plist">Яндекс Пэй</option>
             <hr>
-            
+
             <option value="itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vkmusic.plist">ВК Музыка</option>
             <hr>
-            
+
             <option value="itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vk2.plist">VK(Version 2)</option>
             <hr>
-            
+
             <option value="itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/2gis.plist">2ГИС</option>
             <hr>
-            
+
             <option value="itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/psb.plist">ПСБ (Чайная Церемония)</option>
-            <hr>
-            
-            <option value="itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/sovkombank-vsekarty.plist">Совкомбанк (Все карты MDS)</option>
             <hr>
         </select>
 
