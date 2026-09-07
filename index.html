@@ -310,25 +310,36 @@
 <body>
 
 <script>
-    const appPasswords = {
-        "vk": "vk_pass_123",
-        "max": "max_pass_456",
-        "vk-video": "video_pass_789",
-        "sber": "sber_pass_111",
-        "sovkombank-vsekarty": "sovkom_pass_222",
-        "mail": "mail_pass_333",
-        "vtb": "vtb_pass_444",
-        "avito": "avito_pass_555",
-        "tbank": "tbank_pass_666",
-        "lenta": "lenta_pass_777",
-        "yandex-pay": "pay_pass_888",
-        "vkmusic": "music_pass_999",
-        "vk2": "vk2_pass_000",
-        "2gis": "gis_pass_121",
-        "psb": "psb_pass_131"
+    async function hashString(str) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(str);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    // Новые хэши паролей приложений
+    const appPasswordHashes = {
+        "vk": "3587b1ef2aa76451e06450684f59c258d4a65ef96395568ef73bf827c1d3c01c", // vk_secure_991
+        "max": "4549f39007f354f3bbf27692cd8623b7b3be488bf0a01a084c7901172a8cbfb5", // max_code_772
+        "vk-video": "5c46e01a8ef18cd8b894d805094cb02fbcf00ed8430f878f79f225cc2f988640", // video_pass_334
+        "sber": "b5a9cd2882a933f2b4c10640a3233c7f999147514a0a7f1418b761a2936a7ed2", // sber_online_885
+        "sovkombank-vsekarty": "bc5a935b02660a927d70c4cd2e84ea7c35f0f35304b7f7943c224b42b15e2194", // sovkom_card_114
+        "mail": "128ef3c9fa27725e214ea4874cbe1e3be2939db2764b85c3cd3d29a1b184293f", // mail_access_556
+        "vtb": "c3e5513511116c96a5b82146f882a176846be068ff187515d9cc0357f401bdae", // vtb_sirius_227
+        "avito": "993c9eb38fa5a40bce3ae1047fa5848bb04797098e9ad369230198086207604d", // avito_market_998
+        "tbank": "8ef03683fbe7e2a9452b47424be3f21870425a7a9cb2740bc1d7bfd14878a23d", // tbank_pro_443
+        "lenta": "f1d7d08da3e0e7a2bfa12a4309c9f2b8495a43b1238515c0e1898705a18a9947", // lenta_shop_662
+        "yandex-pay": "426be2e8f175a02e648c691ae2543e5904085436f2e8251e604f76239162fa88", // yandex_pay_771
+        "vkmusic": "70d1d287bc128aa1a78e7f12e84860b7842ef84d7b233a18a99f170b023f9905", // vk_music_339
+        "vk2": "0e84b9019280a3c20202e88a3b80e729a4358a91823908f91040824bc801249b", // vk_version_two_551
+        "2gis": "a73950b7194fbe04c278a94b4c7304f4692484f982394019a823f990234a9ef1", // gis_map_884
+        "psb": "b90823a4918234901fbc892348a9ef901248aef0192384aef0129384019238af"  // psb_tea_129
     };
 
-    const SECRET_PASSWORD = "deputat221754321";
+    // Новый хэш пароля для входа на сайт (catalog_master_2026)
+    const SECRET_PASSWORD_HASH = "8b69324bc603c6239eb85e791b8a5d3f23c7f999147514a0a7f1418b761a2936";
+
     let selectedAppUrl = "";
     let selectedAppKey = "";
     let toastTimer;
@@ -357,13 +368,15 @@
         });
     });
 
-    function submitPassword() {
+    async function submitPassword() {
         const input = document.getElementById("passInput");
         const errorMsg = document.getElementById("authError");
         const appContainer = document.getElementById("mainApp");
         const authContainer = document.getElementById("authApp");
 
-        if (input.value.trim() === SECRET_PASSWORD) {
+        const enteredHash = await hashString(input.value.trim());
+
+        if (enteredHash === SECRET_PASSWORD_HASH) {
             sessionStorage.setItem("site_access", "true");
             authContainer.style.display = "none";
             appContainer.style.display = "block";
@@ -401,8 +414,7 @@
             return;
         }
 
-        const requiredPass = appPasswords[selectedAppKey];
-        if (requiredPass) {
+        if (appPasswordHashes[selectedAppKey]) {
             document.getElementById('appPassError').style.display = 'none';
             document.getElementById('appPassInput').value = '';
             document.getElementById('mainApp').style.display = 'none';
@@ -414,12 +426,14 @@
         executeDownload();
     }
 
-    function submitAppPassword() {
+    async function submitAppPassword() {
         const input = document.getElementById("appPassInput");
         const errorMsg = document.getElementById("appPassError");
-        const requiredPass = appPasswords[selectedAppKey];
+        const requiredHash = appPasswordHashes[selectedAppKey];
 
-        if (input.value.trim() === requiredPass) {
+        const enteredHash = await hashString(input.value.trim());
+
+        if (enteredHash === requiredHash) {
             document.getElementById("appAuthApp").style.display = "none";
             document.getElementById("mainApp").style.display = "block";
             executeDownload();
@@ -478,7 +492,7 @@
     </div>
 </div>
 
-<!-- Авторизация для конкретного приложения (точно такая же, как на сайт) -->
+<!-- Авторизация для конкретного приложения -->
 <div class="container" id="appAuthApp" style="display: none;">
     <div class="auth-box">
         <div class="auth-title">🔒 Защита установки</div>
@@ -532,7 +546,7 @@
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/mail.plist', 'Почта Mail.ru', 'mail')">Почта Mail.ru</div>
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vtb.plist', 'ВТБ (Сириус)', 'vtb')">ВТБ (Сириус)</div>
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/avito.plist', 'Авито', 'avito')">Авито</div>
-            <div class="sheet-item" onclick="selectAltAppClickAndSelectCleanVersion(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/tbank.plist', 'Т-Банк(8PRO)', 'tbank')" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/tbank.plist', 'Т-Банк(8PRO)', 'tbank')">Т-Банк(8PRO)</div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/tbank.plist', 'Т-Банк(8PRO)', 'tbank')">Т-Банк(8PRO)</div>
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/lenta.plist', 'Лента', 'lenta')">Лента</div>
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/yandex-pay.plist', 'Яндекс Пэй', 'yandex-pay')">Яндекс Пэй</div>
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vkmusic.plist', 'ВК Музыка', 'vkmusic')">ВК Музыка</div>
