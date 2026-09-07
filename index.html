@@ -310,35 +310,27 @@
 <body>
 
 <script>
-    async function hashString(str) {
-        const encoder = new TextEncoder();
-        const data = encoder.encode(str);
-        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-
-    // Уникальные хэши паролей для каждого приложения
-    const appPasswordHashes = {
-        "vk": "0b154cb4383c3e6022e37e96a4b5687729f27c30089e602d334e32152a4ef6e6",                  // vk_pass_2026!
-        "max": "45d5a9d821262d1ea34b8c9d0ee714ee6b69f98aa7d9283f3e1a8b274eef71b0",                 // max_secure_key!
-        "vk-video": "7f7bc8d91b49f8263e8a011029c9ef771283d09a2b8e39f82163fae981bc2488",            // video_vk_2026
-        "sber": "b4219f8812c984ee7a892b31120a84f3e8271038af82c1b93f77329188e1bc2a",                 // sber_online_99
-        "sovkombank-vsekarty": "81f182c9a3b782c91823fa19b8237190382348efc1923fae9102834b91823fcc", // sovcom_cards_1
-        "mail": "31b81729b8a192384f891a2b91823f01928340918234aef90123849102834f1a",                 // mail_ru_access
-        "vtb": "c19283409f81a29384f19203849f1028349faef90123849102834f19a0283f4b",                  // vtb_sirius_2026
-        "avito": "51928340f19a2834f0918234af09128349fae0912834f9102834f91028349fa1",                // avito_market_55
-        "tbank": "81920384f901a2834f0912834f0192834f0912834f0912834f9012834f901a2b",                // tbank_8pro_key
-        "lenta": "d1928340f9102834f0912834f9012834f0912834f9012834f9012834f901283c",                // lenta_shop_2026
-        "yandex-pay": "31920384f9012834f0912834f9012834f0912834f9012834f9012834f901283d",           // yandex_pay_secure
-        "vkmusic": "61920384f9012834f0912834f9012834f0912834f9012834f9012834f901283e",               // vk_music_player
-        "vk2": "91920384f9012834f0912834f9012834f0912834f9012834f9012834f901283f",                   // vk_version_two
-        "2gis": "21920384f9012834f0912834f9012834f0912834f9012834f9012834f9012831",                  // twogis_map_2026
-        "psb": "41920384f9012834f0912834f9012834f0912834f9012834f9012834f9012832"                   // psb_tea_ceremony
+    // Уникальные пароли для каждого приложения в чистом виде
+    const appPasswords = {
+        "vk": "vk_pass_2026!",
+        "max": "max_secure_key!",
+        "vk-video": "video_vk_2026",
+        "sber": "sber_online_99",
+        "sovkombank-vsekarty": "sovcom_cards_1",
+        "mail": "mail_ru_access",
+        "vtb": "vtb_sirius_2026",
+        "avito": "avito_market_55",
+        "tbank": "tbank_8pro_key",
+        "lenta": "lenta_shop_2026",
+        "yandex-pay": "yandex_pay_secure",
+        "vkmusic": "vk_music_player",
+        "vk2": "vk_version_two",
+        "2gis": "twogis_map_2026",
+        "psb": "psb_tea_ceremony"
     };
 
-    // Хэш пароля для доступа к сайту: mySecureCatalog2026!
-    const SECRET_PASSWORD_HASH = "8524d7729227c1a84f3df9119a00a12e87383a1520603f9b23bc9ef35657ef7e";
+    // Пароль для доступа к сайту
+    const SITE_PASSWORD = "mySecureCatalog2026!";
 
     let selectedAppUrl = "";
     let selectedAppKey = "";
@@ -368,15 +360,13 @@
         });
     });
 
-    async function submitPassword() {
+    function submitPassword() {
         const input = document.getElementById("passInput");
         const errorMsg = document.getElementById("authError");
         const appContainer = document.getElementById("mainApp");
         const authContainer = document.getElementById("authApp");
 
-        const enteredHash = await hashString(input.value.trim());
-
-        if (enteredHash === SECRET_PASSWORD_HASH) {
+        if (input.value.trim() === SITE_PASSWORD) {
             sessionStorage.setItem("site_access", "true");
             authContainer.style.display = "none";
             appContainer.style.display = "block";
@@ -414,7 +404,7 @@
             return;
         }
 
-        if (appPasswordHashes[selectedAppKey]) {
+        if (appPasswords[selectedAppKey]) {
             document.getElementById('appPassError').style.display = 'none';
             document.getElementById('appPassInput').value = '';
             document.getElementById('mainApp').style.display = 'none';
@@ -426,14 +416,12 @@
         executeDownload();
     }
 
-    async function submitAppPassword() {
+    function submitAppPassword() {
         const input = document.getElementById("appPassInput");
         const errorMsg = document.getElementById("appPassError");
-        const requiredHash = appPasswordHashes[selectedAppKey];
+        const requiredPassword = appPasswords[selectedAppKey];
 
-        const enteredHash = await hashString(input.value.trim());
-
-        if (enteredHash === requiredHash) {
+        if (input.value.trim() === requiredPassword) {
             document.getElementById("appAuthApp").style.display = "none";
             document.getElementById("mainApp").style.display = "block";
             executeDownload();
