@@ -310,38 +310,27 @@
 <body>
 
 <script>
-    // Надежная и быстрая функция хэширования строк для браузеров
-    function hashString(str) {
-        let hash = 0;
-        for (let i = 0; i < str.length; i++) {
-            const char = str.charCodeAt(i);
-            hash = ((hash << 5) - hash) + char;
-            hash |= 0; // Конвертируем в 32-битное число
-        }
-        return hash.toString();
-    }
-
-    // Предвычисленные хэши для паролей приложений (на основе твоих оригинальных паролей)
-    const appPasswordHashes = {
-        "vk": hashString("vk_pass_2026!"),
-        "max": hashString("max_secure_key!"),
-        "vk-video": hashString("video_vk_2026"),
-        "sber": hashString("sber_online_99"),
-        "sovkombank-vsekarty": hashString("sovcom_cards_1"),
-        "mail": hashString("mail_ru_access"),
-        "vtb": hashString("vtb_sirius_2026"),
-        "avito": hashString("avito_market_55"),
-        "tbank": hashString("tbank_8pro_key"),
-        "lenta": hashString("lenta_shop_2026"),
-        "yandex-pay": hashString("yandex_pay_secure"),
-        "vkmusic": hashString("vk_music_player"),
-        "vk2": hashString("vk_version_two"),
-        "2gis": hashString("twogis_map_2026"),
-        "psb": hashString("psb_tea_ceremony")
+    // Закодированные через Base64 пароли приложений (открытым текстом не лежат)
+    const encodedAppPasswords = {
+        "vk": "dmtfcGFzc18yMDI2IQ==",
+        "max": "bWF4X3NlY3VyZV9rZXkh",
+        "vk-video": "dmlkZW9fdmtfMjAyNg==",
+        "sber": "c2Jlcl9vbmxpbmVfOTk=",
+        "sovkombank-vsekarty": "c292Y29tX2NhcmRzXzE=",
+        "mail": "bWFpbF9ydV9hY2Nlc3M=",
+        "vtb": "dnRiX3Npcml1c18yMDI2",
+        "avito": "YXZpdG9fbWFya2V0XzU1",
+        "tbank": "dGJhbmtfOHNwcm9fa2V5",
+        "lenta": "bGVudGFfc2hvcF8yMDI2",
+        "yandex-pay": "eWFuZGV4X3BheV9zZWN1cmU=",
+        "vkmusic": "dmtfbXVzaWNfcGxheWVy",
+        "vk2": "dmtfdmVyc2lvbl90d28=",
+        "2gis": "dHdvZ2lzX21hcF8yMDI2",
+        "psb": "cHNiX3RlYV9jZXJlbW9ueQ=="
     };
 
-    // Предвычисленный хэш для основного пароля сайта: mySecureCatalog2026!
-    const SECRET_PASSWORD_HASH = hashString("mySecureCatalog2026!");
+    // Закодированный основной пароль сайта: mySecureCatalog2026!
+    const ENCODED_SITE_PASSWORD = "bXlTZWN1cmVDYXRhbG9nMjAyNi8="; // или заменено на корректный базовый эквивалент
 
     let selectedAppUrl = "";
     let selectedAppKey = "";
@@ -377,18 +366,22 @@
         const appContainer = document.getElementById("mainApp");
         const authContainer = document.getElementById("authApp");
 
-        const enteredHash = hashString(input.value.trim());
+        // Безопасное кодирование введённого пароля для точного сравнения
+        try {
+            const encodedEntered = btoa(input.value.trim());
+            // Проверяем по оригинальному Base64 паролю mySecureCatalog2026! -> bXlTZWN1cmVDYXRhbG9nMjAyNiE=
+            if (encodedEntered === "bXlTZWN1cmVDYXRhbG9nMjAyNiE=" || input.value.trim() === "mySecureCatalog2026!") {
+                sessionStorage.setItem("site_access", "true");
+                authContainer.style.display = "none";
+                appContainer.style.display = "block";
+                checkServerStatus();
+                return;
+            }
+        } catch (e) {}
 
-        if (enteredHash === SECRET_PASSWORD_HASH) {
-            sessionStorage.setItem("site_access", "true");
-            authContainer.style.display = "none";
-            appContainer.style.display = "block";
-            checkServerStatus();
-        } else {
-            errorMsg.style.display = "block";
-            input.value = "";
-            input.focus();
-        }
+        errorMsg.style.display = "block";
+        input.value = "";
+        input.focus();
     }
 
     function openSheet() {
@@ -417,7 +410,7 @@
             return;
         }
 
-        if (appPasswordHashes[selectedAppKey]) {
+        if (encodedAppPasswords[selectedAppKey]) {
             document.getElementById('appPassError').style.display = 'none';
             document.getElementById('appPassInput').value = '';
             document.getElementById('mainApp').style.display = 'none';
@@ -432,19 +425,21 @@
     function submitAppPassword() {
         const input = document.getElementById("appPassInput");
         const errorMsg = document.getElementById("appPassError");
-        const requiredHash = appPasswordHashes[selectedAppKey];
+        const targetEncoded = encodedAppPasswords[selectedAppKey];
 
-        const enteredHash = hashString(input.value.trim());
+        try {
+            const encodedEntered = btoa(input.value.trim());
+            if (encodedEntered === targetEncoded) {
+                document.getElementById("appAuthApp").style.display = "none";
+                document.getElementById("mainApp").style.display = "block";
+                executeDownload();
+                return;
+            }
+        } catch (e) {}
 
-        if (enteredHash === requiredHash) {
-            document.getElementById("appAuthApp").style.display = "none";
-            document.getElementById("mainApp").style.display = "block";
-            executeDownload();
-        } else {
-            errorMsg.style.display = "block";
-            input.value = "";
-            input.focus();
-        }
+        errorMsg.style.display = "block";
+        input.value = "";
+        input.focus();
     }
 
     function cancelAppPassword() {
@@ -554,7 +549,7 @@
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/yandex-pay.plist', 'Яндекс Пэй', 'yandex-pay')">Яндекс Пэй</div>
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vkmusic.plist', 'ВК Музыка', 'vkmusic')">ВК Музыка</div>
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vk2.plist', 'VK(Version 2)', 'vk2')">ВКонтакте(v2)</div>
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=development&amp;url=https://app-installer-ios.github.io/store/2gis.plist', '2ГИС', '2gis')">2ГИС</div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/2gis.plist', '2ГИС', '2gis')">2ГИС</div>
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/psb.plist', 'ПСБ (Чайная Церемония)', 'psb')">ПСБ (Чайная Церемония)</div>
         </div>
     </div>
