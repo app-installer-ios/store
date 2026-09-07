@@ -13,8 +13,8 @@
             padding: 20px 16px; 
             display: flex; 
             justify-content: center; 
-            align-items: center; /* Центрирование по вертикали */
-            min-height: 100vh;   /* На всю высоту экрана */
+            align-items: center; 
+            min-height: 100vh;   
             box-sizing: border-box;
         }
         .container { width: 100%; max-width: 400px; }
@@ -58,22 +58,33 @@
         }
         
         label { font-size: 14px; font-weight: 600; color: #f1f5f9; }
-        
-        select { 
+
+        /* Кнопка открытия кастомного списка */
+        .custom-select-btn {
             background: #0b0e14; 
             color: #38bdf8; 
             border: 2px solid #6366f1; 
-            padding: 12px; 
+            padding: 14px 12px; 
             border-radius: 10px; 
             font-size: 15px; 
             width: 100%; 
             outline: none; 
             font-weight: 600;
             box-shadow: 0 0 10px rgba(99, 102, 241, 0.2);
-            -webkit-appearance: none;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            box-sizing: border-box;
         }
-        select:focus { border-color: #a855f7; box-shadow: 0 0 14px rgba(168, 85, 247, 0.4); }
-        
+
+        .custom-select-btn::after {
+            content: "▼";
+            font-size: 11px;
+            color: #6366f1;
+        }
+
         .btn { 
             background: linear-gradient(135deg, #a855f7, #6366f1); 
             color: #ffffff; 
@@ -204,7 +215,7 @@
             box-shadow: 0 0 8px #ff3b30;
         }
 
-        /* Стиль окна авторизации */
+        /* Окно авторизации */
         .auth-box {
             background: #161b26;
             border-radius: 16px;
@@ -253,33 +264,95 @@
             display: none;
         }
 
-        /* Блок отказа в доступе */
-        .access-denied-box {
+        /* --- КАСТОМНАЯ ШТОРКА ВЫБОРА (Action Sheet) --- */
+        .sheet-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .sheet-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .sheet-modal {
+            position: fixed;
+            bottom: -100%;
+            left: 0;
+            right: 0;
             background: #161b26;
-            border-radius: 16px;
-            padding: 30px 20px;
-            text-align: center;
-            position: relative;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-            border: 2px solid transparent;
-            background-image: linear-gradient(#161b26, #161b26), linear-gradient(135deg, #a855f7, #6366f1, #ef4444);
-            background-origin: border-box;
-            background-clip: padding-box, border-box;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            padding: 16px 16px 30px 16px;
+            z-index: 1000;
+            max-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 -8px 24px rgba(0,0,0,0.5);
+            border-top: 1px solid rgba(168, 85, 247, 0.3);
+            transition: bottom 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
         }
 
-        .access-denied-title {
+        .sheet-overlay.active .sheet-modal {
+            bottom: 0;
+        }
+
+        .sheet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 10px;
+        }
+
+        .sheet-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #f1f5f9;
+        }
+
+        .sheet-close {
+            background: none;
+            border: none;
+            color: #94a3b8;
             font-size: 20px;
-            font-weight: 800;
-            margin-bottom: 8px;
-            background: linear-gradient(135deg, #f87171, #ef4444);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-weight: bold;
+            cursor: pointer;
         }
 
-        .access-denied-text {
-            font-size: 14px;
-            color: #cbd5e1;
-            line-height: 1.5;
+        .sheet-list {
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .sheet-item {
+            padding: 14px 12px;
+            border-radius: 10px;
+            color: #38bdf8;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sheet-item:active, .sheet-item.selected {
+            background: rgba(99, 102, 241, 0.2);
+            color: #a855f7;
         }
     </style>
 </head>
@@ -287,6 +360,7 @@
 
 <script>
     const SECRET_PASSWORD = "deputat221754321";
+    let selectedAppUrl = "";
 
     document.addEventListener("DOMContentLoaded", function() {
         const appContainer = document.getElementById("mainApp");
@@ -324,12 +398,29 @@
         }
     }
 
+    function openSheet() {
+        document.getElementById('sheetOverlay').classList.add('active');
+    }
+
+    function closeSheet() {
+        document.getElementById('sheetOverlay').classList.remove('active');
+    }
+
+    function selectApp(element, url, name) {
+        selectedAppUrl = url;
+        document.getElementById('selectedAppText').textContent = name;
+        document.getElementById('selectedAppText').style.color = "#ffffff";
+        
+        document.querySelectorAll('.sheet-item').forEach(item => item.classList.remove('selected'));
+        element.classList.add('selected');
+        
+        closeSheet();
+    }
+
     let toastTimer;
 
     function startInstallation() {
-        const select = document.getElementById('appSelect');
-        const url = select.value;
-        if (url) {
+        if (selectedAppUrl) {
             const toast = document.getElementById('toast');
             clearTimeout(toastTimer);
             toast.classList.add('show');
@@ -338,7 +429,7 @@
                 toast.classList.remove('show');
             }, 5000);
 
-            window.location.assign(url);
+            window.location.assign(selectedAppUrl);
         } else {
             alert('Пожалуйста, выберите приложение из списка!');
         }
@@ -364,7 +455,7 @@
     }
 </script>
 
-<!-- Карточка авторизации -->
+<!-- Авторизация -->
 <div class="container" id="authApp" style="display: none;">
     <div class="auth-box">
         <div class="auth-title">🔒 Доступ к каталогу</div>
@@ -375,7 +466,7 @@
     </div>
 </div>
 
-<!-- Основной каталог -->
+<!-- Каталог -->
 <div class="container" id="mainApp" style="display: none;">
     <h1>Установка удалённых приложений</h1>
     <div class="subtitle">Установка нужных приложений без лишних хлопот</div>
@@ -385,59 +476,15 @@
     </div>
 
     <div class="card">
-        <label for="appSelect">Выберите приложение:</label>
+        <label>Выберите приложение:</label>
         <div class="status-badge" id="statusBadge">
             <span class="status-dot"></span>
             <span id="statusText">Проверка статуса...</span>
         </div>
-        <select id="appSelect">
-            <option value="" disabled selected>Нажмите для выбора приложения</option>
 
-            <option value="itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vk.plist">ВКонтакте</option>
-            <hr>
-
-            <option value="itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/max.plist">MAX</option>
-            <hr>
-
-            <option value="itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vk-video.plist">VK Видео</option>
-            <hr>
-
-            <option value="itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/sber.plist">СБЕР(Учёт Онлайн)</option>
-            <hr>
-
-            <option value="itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/sovkombank-vsekarty.plist">Совкомбанк (Все карты MDS)</option>
-            <hr>
-
-            <option value="itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/mail.plist">Почта Mail.ru</option>
-            <hr>
-
-            <option value="itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vtb.plist">ВТБ (Сириус)</option>
-            <hr>
-
-            <option value="itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/avito.plist">Авито</option>
-            <hr>
-
-            <option value="itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/tbank.plist">Т-Банк(8PRO)</option>
-            <hr>
-
-            <option value="itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/lenta.plist">Лента</option>
-            <hr>
-
-            <option value="itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/yandex-pay.plist">Яндекс Пэй</option>
-            <hr>
-
-            <option value="itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vkmusic.plist">ВК Музыка</option>
-            <hr>
-
-            <option value="itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vk2.plist">VK(Version 2)</option>
-            <hr>
-
-            <option value="itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/2gis.plist">2ГИС</option>
-            <hr>
-
-            <option value="itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/psb.plist">ПСБ (Чайная Церемония)</option>
-            <hr>
-        </select>
+        <button type="button" class="custom-select-btn" onclick="openSheet()">
+            <span id="selectedAppText" style="color: #64748b;">Нажмите для выбора приложения</span>
+        </button>
 
         <button type="button" class="btn" onclick="startInstallation()">Установить</button>
 
@@ -457,6 +504,33 @@
             <a href="https://vk.com/tema_deputat" target="_blank" class="btn-support btn-vk">
                 💬 ВКонтакте
             </a>
+        </div>
+    </div>
+</div>
+
+<!-- Кастомная шторка меню снизу -->
+<div class="sheet-overlay" id="sheetOverlay" onclick="closeSheet()">
+    <div class="sheet-modal" onclick="event.stopPropagation()">
+        <div class="sheet-header">
+            <div class="sheet-title">Выберите приложение</div>
+            <button class="sheet-close" onclick="closeSheet()">✕</button>
+        </div>
+        <div class="sheet-list">
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vk.plist', 'ВКонтакте')">ВКонтакте</div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/max.plist', 'MAX')">MAX</div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vk-video.plist', 'VK Видео')">VK Видео</div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/sber.plist', 'СБЕР(Учёт Онлайн)')">СБЕР(Учёт Онлайн)</div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/sovkombank-vsekarty.plist', 'Совкомбанк (Все карты MDS)')">Совкомбанк (Все карты MDS)</div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/mail.plist', 'Почта Mail.ru')">Почта Mail.ru</div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vtb.plist', 'ВТБ (Сириус)')">ВТБ (Сириус)</div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/avito.plist', 'Авито')">Авито</div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/tbank.plist', 'Т-Банк(8PRO)')">Т-Банк(8PRO)</div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/lenta.plist', 'Лента')">Лента</div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/yandex-pay.plist', 'Яндекс Пэй')">Яндекс Пэй</div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vkmusic.plist', 'ВК Музыка')">ВК Музыка</div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vk2.plist', 'VK(Version 2)')">VK(Version 2)</div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/2gis.plist', '2ГИС')">2ГИС</div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/psb.plist', 'ПСБ (Чайная Церемония)')">ПСБ (Чайная Церемония)</div>
         </div>
     </div>
 </div>
