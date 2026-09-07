@@ -126,7 +126,7 @@
         .toast {
             display: none;
             opacity: 0;
-[07.09.2026 21:36] Tema Deputat: background: rgba(16, 185, 129, 0.15);
+            rgba(16, 185, 129, 0.15);
             border: 1px solid #34d399;
             color: #6ee7b7;
             padding: 12px 14px;
@@ -268,7 +268,7 @@
         }
 
         .sheet-header {
-[07.09.2026 21:36] Tema Deputat: display: flex;
+            display: flex;
             justify-content: space-between;
             align-items: center;
             padding-bottom: 12px;
@@ -401,7 +401,7 @@
     }
 
     function selectApp(element, url, name, appKey) {
-[07.09.2026 21:36] Tema Deputat: selectedAppUrl = url;
+        selectedAppUrl = url;
         selectedAppKey = appKey;
         document.getElementById('selectedAppText').textContent = name;
         document.getElementById('selectedAppText').style.color = "#ffffff";
@@ -505,7 +505,7 @@
         <input type="password" id="appPassInput" class="auth-input" placeholder="Пароль..." autocomplete="off">
         <div id="appPassError" class="auth-error">Неверный пароль! Попробуйте снова.</div>
         <button type="button" class="btn" onclick="submitAppPassword()">Подтвердить</button>
-[07.09.2026 21:36] Tema Deputat: <button type="button" class="btn btn-secondary" onclick="cancelAppPassword()">Назад</button>
+        <button type="button" class="btn btn-secondary" onclick="cancelAppPassword()">Назад</button>
     </div>
 </div>
 
