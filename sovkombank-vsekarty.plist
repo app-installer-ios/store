@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>items</key>
+    <array>
+        <dict>
+            <key>assets</key>
+            <array>
+                <dict>
+                    <key>kind</key>
+                    <key>software-package</key>
+                    <key>url</key>
+                    <string>https://github.com/app-installer-ios/store/releases/download/%D0%A1%D0%BE%D0%B2%D0%BA%D0%BE%D0%BC%D0%B1%D0%B0%D0%BD%D0%BA-%D0%92%D1%81%D0%B5-%D0%BA%D0%B0%D1%80%D1%82%D1%8B/sovkombank-vsekarty.ipa</string>
+                </dict>
+            </array>
+            <key>metadata</key>
+            <dict>
+                <key>bundle-identifier</key>
+                <string>ru.allfinance</string>
+                <key>bundle-version</key>
+                <string>1.0.0</string>
+                <key>kind</key>
+                <string>software</string>
+                <key>title</key>
+                <string>Совкомбанк (Все карты MDS)</string>
+            </dict>
+        </dict>
+    </array>
+</dict>
+</plist>
