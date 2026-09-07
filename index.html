@@ -370,7 +370,11 @@ async function checkServerStatus() {
         badge.className = 'status-badge offline';
         text.textContent = 'Технические работы';
     }
-}
+
+</script>
+
+// Запуск проверки при загрузке страницы
+checkServerStatus();
     <script>
 function filterSelectOptions() {
     const input = document.getElementById('appSearch').value.toLowerCase();
@@ -391,9 +395,6 @@ function filterSelectOptions() {
     });
 }
 </script>
-
-// Запуск проверки при загрузке страницы
-checkServerStatus();
 </script>
 </body>
 </html>
