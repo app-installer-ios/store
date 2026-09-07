@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+[07.09.2026 21:36] Tema Deputat: <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -126,7 +126,7 @@
         .toast {
             display: none;
             opacity: 0;
-            background: rgba(16, 185, 129, 0.15);
+[07.09.2026 21:36] Tema Deputat: background: rgba(16, 185, 129, 0.15);
             border: 1px solid #34d399;
             color: #6ee7b7;
             padding: 12px 14px;
@@ -268,7 +268,7 @@
         }
 
         .sheet-header {
-            display: flex;
+[07.09.2026 21:36] Tema Deputat: display: flex;
             justify-content: space-between;
             align-items: center;
             padding-bottom: 12px;
@@ -320,7 +320,7 @@
 <body>
 
 <script>
-    // Закодированные пароли приложений
+    // Закодированные через Base64 пароли приложений
     const encodedAppPasswords = {
         "vk": "dmtfcGFzc18yMDI2IQ==",
         "max": "bWF4X3NlY3VyZV9rZXkh",
@@ -339,7 +339,7 @@
         "psb": "cHNiX3RlYV9jZXJlbW9ueQ=="
     };
 
-    // Закодированный основной пароль сайта
+    // Закодированный основной пароль сайта (mySecureCatalog2026!)
     const ENCODED_SITE_PASSWORD = "bXlTZWN1cmVDYXRhbG9nMjAyNiE=";
 
     let selectedAppUrl = "";
@@ -377,7 +377,7 @@
         const authContainer = document.getElementById("authApp");
 
         try {
-            // Строгая проверка пароля в открытом виде
+            // Строгая проверка через Base64 без упоминания пароля в открытом виде
             if (btoa(input.value.trim()) === ENCODED_SITE_PASSWORD) {
                 sessionStorage.setItem("site_access", "true");
                 authContainer.style.display = "none";
@@ -401,7 +401,7 @@
     }
 
     function selectApp(element, url, name, appKey) {
-        selectedAppUrl = url;
+[07.09.2026 21:36] Tema Deputat: selectedAppUrl = url;
         selectedAppKey = appKey;
         document.getElementById('selectedAppText').textContent = name;
         document.getElementById('selectedAppText').style.color = "#ffffff";
@@ -505,7 +505,7 @@
         <input type="password" id="appPassInput" class="auth-input" placeholder="Пароль..." autocomplete="off">
         <div id="appPassError" class="auth-error">Неверный пароль! Попробуйте снова.</div>
         <button type="button" class="btn" onclick="submitAppPassword()">Подтвердить</button>
-        <button type="button" class="btn btn-secondary" onclick="cancelAppPassword()">Назад</button>
+[07.09.2026 21:36] Tema Deputat: <button type="button" class="btn btn-secondary" onclick="cancelAppPassword()">Назад</button>
     </div>
 </div>
 
@@ -550,14 +550,15 @@
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/sovkombank-vsekarty.plist', 'Совкомбанк (Все карты MDS)', 'sovkombank-vsekarty')">Совкомбанк (Все карты MDS)</div>
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/mail.plist', 'Почта Mail.ru', 'mail')">Почта Mail.ru</div>
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vtb.plist', 'ВТБ (Сириус)', 'vtb')">ВТБ (Сириус)</div>
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vtb.plist', 'Авито', 'avito')">Авито</div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/avito.plist', 'Авито', 'avito')">Авито</div>
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/tbank.plist', 'Т-Банк(8PRO)', 'tbank')">Т-Банк(8PRO)</div>
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/lenta.plist', 'Лента', 'lenta')">Лента</div>
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/yandex-pay.plist', 'Яндекс Пэй', 'yandex-pay')">Яндекс Пэй</div>
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vkmusic.plist', 'ВК Музыка', 'vkmusic')">ВК Музыка</div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/yandex-pay.
+[07.09.2026 21:36] Tema Deputat: plist', 'Яндекс Пэй', 'yandex-pay')">Яндекс Пэй</div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vkmusic.plist', 'ВК Музыка', 'vkmusic')`">ВК Музыка</div>
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vk2.plist', 'VK(Version 2)', 'vk2')">ВКонтакте(v2)</div>
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/2gis.plist', '2ГИС', '2gis')">2ГИС</div>
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/psb.plist', 'ПСБ (Чайная Церемония)', 'psb')">ПСБ (Чайная Церемония)</div>
+            <div class="sheet-item" onclick="select`app(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/psb.plist', 'ПСБ (Чайная Церемония)', 'psb')">ПСБ (Чайная Церемония)</div>
         </div>
     </div>
 </div>
