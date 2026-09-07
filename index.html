@@ -371,6 +371,26 @@ async function checkServerStatus() {
         text.textContent = 'Технические работы';
     }
 }
+    <script>
+function filterSelectOptions() {
+    const input = document.getElementById('appSearch').value.toLowerCase();
+    const select = document.getElementById('appSelect');
+    const options = select.querySelectorAll('option, hr');
+
+    options.forEach(el => {
+        // Пропускаем самый первый disabled option ("Нажмите для выбора")
+        if (el.tagName === 'OPTION' && el.disabled) return;
+
+        const text = el.textContent.toLowerCase();
+        
+        if (text.includes(input)) {
+            el.style.display = ""; // Показываем пункт
+        } else {
+            el.style.display = "none"; // Скрываем пункт
+        }
+    });
+}
+</script>
 
 // Запуск проверки при загрузке страницы
 checkServerStatus();
