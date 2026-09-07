@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Установка удалённых приложений</title>
-    
-    <!-- Подключение Telegram WebApp SDK -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
     <style>
         body { 
@@ -18,7 +15,7 @@
             display: flex; 
             justify-content: center; 
             align-items: center; 
-            min-height: 100vh;   
+            min-height: 100vh;    
             box-sizing: border-box;
         }
         .container { width: 100%; max-width: 400px; }
@@ -126,65 +123,6 @@
         .toast.show {
             display: block;
             opacity: 1;
-        }
-
-        .support-box {
-            margin-top: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            text-align: center;
-        }
-
-        .support-title {
-            font-size: 13px;
-            color: #cbd5e1;
-            font-weight: 700;
-        }
-
-        .support-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn-support {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 12px 14px;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 700;
-            text-decoration: none;
-            color: #ffffff;
-            transition: all 0.2s ease;
-            border: none;
-        }
-
-        .btn-tg {
-            background: linear-gradient(135deg, #27a7e7, #0088cc);
-            box-shadow: 0 4px 15px rgba(0, 136, 204, 0.4);
-        }
-        .btn-tg:active {
-            transform: scale(0.96);
-            box-shadow: 0 2px 8px rgba(0, 136, 204, 0.3);
-        }
-
-        .btn-vk {
-            background: linear-gradient(135deg, #0077ff, #0052cc);
-            box-shadow: 0 4px 15px rgba(0, 119, 255, 0.4);
-        }
-        .btn-vk:active {
-            transform: scale(0.96);
-            box-shadow: 0 2px 8px rgba(0, 119, 255, 0.3);
-        }
-
-        .icon-tg {
-            width: 18px;
-            height: 18px;
-            fill: #ffffff;
         }
 
         .status-badge {
@@ -362,8 +300,27 @@
 <body>
 
 <script>
+    const appPasswords = {
+        "vk": "vk_pass_123",
+        "max": "max_pass_456",
+        "vk-video": "video_pass_789",
+        "sber": "sber_pass_111",
+        "sovkombank-vsekarty": "sovkom_pass_222",
+        "mail": "mail_pass_333",
+        "vtb": "vtb_pass_444",
+        "avito": "avito_pass_555",
+        "tbank": "tbank_pass_666",
+        "lenta": "lenta_pass_777",
+        "yandex-pay": "pay_pass_888",
+        "vkmusic": "music_pass_999",
+        "vk2": "vk2_pass_000",
+        "2gis": "gis_pass_121",
+        "psb": "psb_pass_131"
+    };
+
     const SECRET_PASSWORD = "deputat221754321";
     let selectedAppUrl = "";
+    let selectedAppKey = "";
     let toastTimer;
 
     document.addEventListener("DOMContentLoaded", function() {
@@ -382,11 +339,6 @@
                 submitPassword();
             }
         });
-
-        if (window.Telegram && window.Telegram.WebApp) {
-            window.Telegram.WebApp.ready();
-            window.Telegram.WebApp.expand();
-        }
     });
 
     function submitPassword() {
@@ -415,8 +367,9 @@
         document.getElementById('sheetOverlay').classList.remove('active');
     }
 
-    function selectApp(element, url, name) {
+    function selectApp(element, url, name, appKey) {
         selectedAppUrl = url;
+        selectedAppKey = appKey;
         document.getElementById('selectedAppText').textContent = name;
         document.getElementById('selectedAppText').style.color = "#ffffff";
         
@@ -432,6 +385,16 @@
             return;
         }
 
+        const requiredPass = appPasswords[selectedAppKey];
+        if (requiredPass) {
+            const userPass = prompt("🔒 Введите пароль для установки этого приложения:");
+            if (userPass === null) return;
+            if (userPass !== requiredPass) {
+                alert("❌ Неверный пароль для этого приложения!");
+                return;
+            }
+        }
+
         const toast = document.getElementById('toast');
         clearTimeout(toastTimer);
         toast.classList.add('show');
@@ -440,20 +403,7 @@
             toast.classList.remove('show');
         }, 5000);
 
-        // Проверяем наличие среды Telegram WebApp
-        const isTgWebApp = window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData !== "";
-
-        if (isTgWebApp) {
-            // В Telegram Mini App вызываем открытие во внешнем браузере Safari
-            if (window.Telegram.WebApp.openLink) {
-                window.Telegram.WebApp.openLink(selectedAppUrl, { try_instant_view: false });
-            } else {
-                window.location.href = selectedAppUrl;
-            }
-        } else {
-            // В обычном браузер Safari/Chrome
-            window.location.href = selectedAppUrl;
-        }
+        window.location.href = selectedAppUrl;
     }
 
     async function checkServerStatus() {
@@ -493,7 +443,7 @@
     <div class="subtitle">Установка нужных приложений без лишних хлопот</div>
 
     <div class="warning-box">
-        ⚠️ <span class="text-warning">ВАЖНО:</span> Если ранее на вашем аккаунте было установлено нужное приложение — <span class="text-highlight">продолжите скачивание</span>. Если ранее приложения не было — <span class="text-danger">обратитесь к продавцу!</span>
+        ⚠️ <span class="text-warning">ВАЖНО:</span> Если ранее на вашем аккаунте было установлено нужное приложение — <span class="text-highlight">продолжите скачивание</span>. Если ранее приложения не было — <span class="text-danger">обратитесь к администратору!</span>
     </div>
 
     <div class="card">
@@ -511,22 +461,6 @@
 
         <div id="toast" class="toast">🚀 Загрузка началась! Проверьте главный экран устройства.</div>
     </div>
-
-    <!-- Блок поддержки -->
-    <div class="support-box">
-        <div class="support-title">Нужна помощь? Напишите мне:</div>
-        <div class="support-buttons">
-            <a href="https://t.me/dizabled" target="_blank" class="btn-support btn-tg">
-                <svg class="icon-tg" viewBox="0 0 24 24">
-                    <path d="M1.101 12.007L22.6 3.013c.414-.158.828.183.71.611l-3.834 16.273c-.11.467-.655.656-1.025.352l-5.835-4.793-2.82 2.72c-.328.318-.876.138-.952-.308l-1.01-5.908-5.733-1.854c-.45-.146-.448-.791 0-.934zM9.82 13.91l1.43 4.22 1.83-3.66 6.84-8.88-10.1 8.32z"/>
-                </svg>
-                Telegram
-            </a>
-            <a href="https://vk.com/tema_deputat" target="_blank" class="btn-support btn-vk">
-                💬 ВКонтакте
-            </a>
-        </div>
-    </div>
 </div>
 
 <!-- Шторка выбора -->
@@ -537,21 +471,21 @@
             <button class="sheet-close" onclick="closeSheet()">✕</button>
         </div>
         <div class="sheet-list">
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vk.plist', 'ВКонтакте')">ВКонтакте</div>
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/max.plist', 'MAX')">MAX</div>
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vk-video.plist', 'VK Видео')">VK Видео</div>
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/sber.plist', 'СБЕР(Учёт Онлайн)')">СБЕР(Учёт Онлайн)</div>
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/sovkombank-vsekarty.plist', 'Совкомбанк (Все карты MDS)')">Совкомбанк (Все карты MDS)</div>
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/mail.plist', 'Почта Mail.ru')">Почта Mail.ru</div>
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vtb.plist', 'ВТБ (Сириус)')">ВТБ (Сириус)</div>
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/avito.plist', 'Авито')">Авито</div>
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/tbank.plist', 'Т-Банк(8PRO)')">Т-Банк(8PRO)</div>
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/lenta.plist', 'Лента')">Лента</div>
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/yandex-pay.plist', 'Яндекс Пэй')">Яндекс Пэй</div>
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vkmusic.plist', 'ВК Музыка')">ВК Музыка</div>
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vk2.plist', 'VK(Version 2)')">ВКонтакте(v2)</div>
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/2gis.plist', '2ГИС')">2ГИС</div>
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/psb.plist', 'ПСБ (Чайная Церемония)')">ПСБ (Чайная Церемония)</div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vk.plist', 'ВКонтакте', 'vk')">ВКонтакте</div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/max.plist', 'MAX', 'max')">MAX</div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vk-video.plist', 'VK Видео', 'vk-video')">VK Видео</div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/sber.plist', 'СБЕР(Учёт Онлайн)', 'sber')">СБЕР(Учёт Онлайн)</div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/sovkombank-vsekarty.plist', 'Совкомбанк (Все карты MDS)', 'sovkombank-vsekarty')">Совкомбанк (Все карты MDS)</div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/mail.plist', 'Почта Mail.ru', 'mail')">Почта Mail.ru</div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vtb.plist', 'ВТБ (Сириус)', 'vtb')">ВТБ (Сириус)</div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/avito.plist', 'Авито', 'avito')">Авито</div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/tbank.plist', 'Т-Банк(8PRO)', 'tbank')">Т-Банк(8PRO)</div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/lenta.plist', 'Лента', 'lenta')">Лента</div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/yandex-pay.plist', 'Яндекс Пэй', 'yandex-pay')">Яндекс Пэй</div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vkmusic.plist', 'ВК Музыка', 'vkmusic')">ВК Музыка</div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vk2.plist', 'VK(Version 2)', 'vk2')">ВКонтакте(v2)</div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/2gis.plist', '2ГИС', '2gis')">2ГИС</div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/psb.plist', 'ПСБ (Чайная Церемония)', 'psb')">ПСБ (Чайная Церемония)</div>
         </div>
     </div>
 </div>
