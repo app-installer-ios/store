@@ -105,6 +105,14 @@
         }
         .btn:active { transform: scale(0.97); opacity: 0.9; }
 
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #94a3b8;
+            box-shadow: none;
+            margin-top: 6px;
+        }
+
         .toast {
             display: none;
             opacity: 0;
@@ -192,6 +200,8 @@
             outline: none;
             font-weight: 600;
             box-shadow: 0 0 10px rgba(99, 102, 241, 0.2);
+            box-sizing: border-box;
+            width: 100%;
         }
 
         .auth-input:focus {
@@ -339,6 +349,12 @@
                 submitPassword();
             }
         });
+
+        document.getElementById("appPassInput").addEventListener("keypress", function(e) {
+            if (e.key === "Enter") {
+                submitAppPassword();
+            }
+        });
     });
 
     function submitPassword() {
@@ -387,14 +403,39 @@
 
         const requiredPass = appPasswords[selectedAppKey];
         if (requiredPass) {
-            const userPass = prompt("🔒 Введите пароль для установки этого приложения:");
-            if (userPass === null) return;
-            if (userPass !== requiredPass) {
-                alert("❌ Неверный пароль для этого приложения!");
-                return;
-            }
+            document.getElementById('appPassError').style.display = 'none';
+            document.getElementById('appPassInput').value = '';
+            document.getElementById('mainApp').style.display = 'none';
+            document.getElementById('appAuthApp').style.display = 'block';
+            document.getElementById('appPassInput').focus();
+            return;
         }
 
+        executeDownload();
+    }
+
+    function submitAppPassword() {
+        const input = document.getElementById("appPassInput");
+        const errorMsg = document.getElementById("appPassError");
+        const requiredPass = appPasswords[selectedAppKey];
+
+        if (input.value.trim() === requiredPass) {
+            document.getElementById("appAuthApp").style.display = "none";
+            document.getElementById("mainApp").style.display = "block";
+            executeDownload();
+        } else {
+            errorMsg.style.display = "block";
+            input.value = "";
+            input.focus();
+        }
+    }
+
+    function cancelAppPassword() {
+        document.getElementById("appAuthApp").style.display = "none";
+        document.getElementById("mainApp").style.display = "block";
+    }
+
+    function executeDownload() {
         const toast = document.getElementById('toast');
         clearTimeout(toastTimer);
         toast.classList.add('show');
@@ -426,7 +467,7 @@
     }
 </script>
 
-<!-- Авторизация -->
+<!-- Главная авторизация на сайт -->
 <div class="container" id="authApp" style="display: none;">
     <div class="auth-box">
         <div class="auth-title">🔒 Доступ к каталогу</div>
@@ -434,6 +475,18 @@
         <input type="password" id="passInput" class="auth-input" placeholder="Пароль..." autocomplete="off">
         <div id="authError" class="auth-error">Неверный пароль! Попробуйте снова.</div>
         <button type="button" class="btn" onclick="submitPassword()">Войти</button>
+    </div>
+</div>
+
+<!-- Авторизация для конкретного приложения (точно такая же, как на сайт) -->
+<div class="container" id="appAuthApp" style="display: none;">
+    <div class="auth-box">
+        <div class="auth-title">🔒 Защита установки</div>
+        <div style="font-size: 13px; color: #cbd5e1;">Введите пароль для этого приложения:</div>
+        <input type="password" id="appPassInput" class="auth-input" placeholder="Пароль..." autocomplete="off">
+        <div id="appPassError" class="auth-error">Неверный пароль! Попробуйте снова.</div>
+        <button type="button" class="btn" onclick="submitAppPassword()">Подтвердить</button>
+        <button type="button" class="btn btn-secondary" onclick="cancelAppPassword()">Назад</button>
     </div>
 </div>
 
@@ -479,7 +532,7 @@
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/mail.plist', 'Почта Mail.ru', 'mail')">Почта Mail.ru</div>
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vtb.plist', 'ВТБ (Сириус)', 'vtb')">ВТБ (Сириус)</div>
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/avito.plist', 'Авито', 'avito')">Авито</div>
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/tbank.plist', 'Т-Банк(8PRO)', 'tbank')">Т-Банк(8PRO)</div>
+            <div class="sheet-item" onclick="selectAltAppClickAndSelectCleanVersion(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/tbank.plist', 'Т-Банк(8PRO)', 'tbank')" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/tbank.plist', 'Т-Банк(8PRO)', 'tbank')">Т-Банк(8PRO)</div>
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/lenta.plist', 'Лента', 'lenta')">Лента</div>
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/yandex-pay.plist', 'Яндекс Пэй', 'yandex-pay')">Яндекс Пэй</div>
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vkmusic.plist', 'ВК Музыка', 'vkmusic')">ВК Музыка</div>
