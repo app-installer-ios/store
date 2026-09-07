@@ -320,7 +320,7 @@
 <body>
 
 <script>
-    // Закодированные через Base64 пароли приложений
+    // Закодированные пароли приложений
     const encodedAppPasswords = {
         "vk": "dmtfcGFzc18yMDI2IQ==",
         "max": "bWF4X3NlY3VyZV9rZXkh",
@@ -339,7 +339,7 @@
         "psb": "cHNiX3RlYV9jZXJlbW9ueQ=="
     };
 
-    // Закодированный основной пароль сайта (mySecureCatalog2026!)
+    // Закодированный основной пароль сайта
     const ENCODED_SITE_PASSWORD = "bXlTZWN1cmVDYXRhbG9nMjAyNiE=";
 
     let selectedAppUrl = "";
@@ -377,7 +377,7 @@
         const authContainer = document.getElementById("authApp");
 
         try {
-            // Строгая проверка через Base64 без упоминания пароля в открытом виде
+            // Строгая проверка пароля в открытом виде
             if (btoa(input.value.trim()) === ENCODED_SITE_PASSWORD) {
                 sessionStorage.setItem("site_access", "true");
                 authContainer.style.display = "none";
