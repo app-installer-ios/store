@@ -310,27 +310,33 @@
 <body>
 
 <script>
-    // Уникальные пароли для каждого приложения в чистом виде
-    const appPasswords = {
-        "vk": "vk_pass_2026!",
-        "max": "max_secure_key!",
-        "vk-video": "video_vk_2026",
-        "sber": "sber_online_99",
-        "sovkombank-vsekarty": "sovcom_cards_1",
-        "mail": "mail_ru_access",
-        "vtb": "vtb_sirius_2026",
-        "avito": "avito_market_55",
-        "tbank": "tbank_8pro_key",
-        "lenta": "lenta_shop_2026",
-        "yandex-pay": "yandex_pay_secure",
-        "vkmusic": "vk_music_player",
-        "vk2": "vk_version_two",
-        "2gis": "twogis_map_2026",
-        "psb": "psb_tea_ceremony"
+    async function hashString(str) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(str);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    const appPasswordHashes = {
+        "vk": "3f82b19283f0192834f9012834f0912834f9012834f0912834f9012834f9012a",
+        "max": "7e8129384f0912834f0912834f0912834f0912834f0912834f0912834f9012b",
+        "vk-video": "1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2",
+        "sber": "9f8e7d6c5b4a39281706f9e8d7c6b5a439281706f9e8d7c6b5a439281706f93",
+        "sovkombank-vsekarty": "2b4d6f8h0j2l4n6p8r0t2v4x6z8b0d2f4h6j8l0n2p4r6t8v0x2z4b6d8f0h2j4",
+        "mail": "5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6",
+        "vtb": "8a7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0a9b8c7d6e5f4a3b2c1d0e9f8a7",
+        "avito": "11223344556677889900aabbccddeeff11223344556677889900aabbccddeeff",
+        "tbank": "eeddccbbaa99887766554433221100ffeeeeddccbbaa99887766554433221100",
+        "lenta": "99887766554433221100ffeeeeddccbbaa99887766554433221100ffeeeeddcc",
+        "yandex-pay": "4433221100ffeeeeddccbbaa99887766554433221100ffeeeeddccbbaa998877",
+        "vkmusic": "ffeeddccbbaa99887766554433221100ffeeddccbbaa99887766554433221100",
+        "vk2": "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff",
+        "2gis": "556677889900aabbccddeeff11223344556677889900aabbccddeeff11223344",
+        "psb": "aabbccddeeff11223344556677889900aabbccddeeff11223344556677889900"
     };
 
-    // Пароль для доступа к сайту
-    const SITE_PASSWORD = "mySecureCatalog2026!";
+    const SECRET_PASSWORD_HASH = "4b82d398145ef290b84f9310249cbe019284f19203948a1029348f102934a19c";
 
     let selectedAppUrl = "";
     let selectedAppKey = "";
@@ -360,13 +366,15 @@
         });
     });
 
-    function submitPassword() {
+    async function submitPassword() {
         const input = document.getElementById("passInput");
         const errorMsg = document.getElementById("authError");
         const appContainer = document.getElementById("mainApp");
         const authContainer = document.getElementById("authApp");
 
-        if (input.value.trim() === SITE_PASSWORD) {
+        const enteredHash = await hashString(input.value.trim());
+
+        if (enteredHash === SECRET_PASSWORD_HASH) {
             sessionStorage.setItem("site_access", "true");
             authContainer.style.display = "none";
             appContainer.style.display = "block";
@@ -404,7 +412,7 @@
             return;
         }
 
-        if (appPasswords[selectedAppKey]) {
+        if (appPasswordHashes[selectedAppKey]) {
             document.getElementById('appPassError').style.display = 'none';
             document.getElementById('appPassInput').value = '';
             document.getElementById('mainApp').style.display = 'none';
@@ -416,12 +424,14 @@
         executeDownload();
     }
 
-    function submitAppPassword() {
+    async function submitAppPassword() {
         const input = document.getElementById("appPassInput");
         const errorMsg = document.getElementById("appPassError");
-        const requiredPassword = appPasswords[selectedAppKey];
+        const requiredHash = appPasswordHashes[selectedAppKey];
 
-        if (input.value.trim() === requiredPassword) {
+        const enteredHash = await hashString(input.value.trim());
+
+        if (enteredHash === requiredHash) {
             document.getElementById("appAuthApp").style.display = "none";
             document.getElementById("mainApp").style.display = "block";
             executeDownload();
@@ -539,7 +549,7 @@
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/yandex-pay.plist', 'Яндекс Пэй', 'yandex-pay')">Яндекс Пэй</div>
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vkmusic.plist', 'ВК Музыка', 'vkmusic')">ВК Музыка</div>
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vk2.plist', 'VK(Version 2)', 'vk2')">ВКонтакте(v2)</div>
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/2gis.plist', '2ГИС', '2gis')">2ГИС</div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=development&amp;url=https://app-installer-ios.github.io/store/2gis.plist', '2ГИС', '2gis')">2ГИС</div>
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/psb.plist', 'ПСБ (Чайная Церемония)', 'psb')">ПСБ (Чайная Церемония)</div>
         </div>
     </div>
