@@ -23,7 +23,7 @@
         h1 { 
             font-size: 22px; 
             margin-bottom: 8px; 
-            text-align: left; 
+            text-align: center; 
             background: linear-gradient(135deg, #a855f7, #6366f1);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -31,14 +31,12 @@
         }
         .subtitle { 
             font-size: 13px; 
-            text-align: left; 
+            text-align: center; 
             margin-bottom: 20px; 
             font-weight: 600; 
-            background: linear-gradient(135deg, #a855f7, #6366f1);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.25));
+            color: #94a3b8;
             letter-spacing: 0.2px;
+            line-height: 1.4;
         }
         
         .warning-box { 
@@ -514,7 +512,7 @@
 <!-- Каталог -->
 <div class="container" id="mainApp" style="display: none;">
     <h1>Установка удалённых приложений</h1>
-    <div class="subtitle">Установка недоступных приложений на iPhone — без компьютера, проводов и выхода из App Store</div>
+    <div class="subtitle">Установка недоступных приложений на iPhone — <span style="color: #38bdf8; font-weight: 700;">без компьютера, проводов и выхода из App Store</span></div>
 
     <div class="warning-box">
         ⚠️ <span class="text-warning">ВНИМАНИЕ:</span> Если ранее на вашем аккаунте было установлено нужное приложение — <span class="text-highlight">продолжите скачивание</span>. Если ранее приложения не было — <span class="text-highlight">обратитесь к администратору!</span> ⚠️
@@ -558,7 +556,7 @@
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/yandex-pay.plist', 'Яндекс Пэй', 'yandex-pay')">Яндекс Пэй</div>
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vkmusic.plist', 'ВК Музыка', 'vkmusic')">ВК Музыка</div>
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vk2.plist', 'VK(Version 2)', 'vk2')">ВКонтакте(v2)</div>
-            <div class="sheet-item" onclick="select`app(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/2gis.plist', '2ГИС', '2gis')">2ГИС</div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/2gis.plist', '2ГИС', '2gis')">2ГИС</div>
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/psb.plist', 'ПСБ (Чайная Церемония)', 'psb')">ПСБ (Чайная Церемония)</div>
         </div>
     </div>
