@@ -172,6 +172,40 @@
             height: 18px;
             fill: #ffffff;
         }
+        .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #e1e1e1;
+    margin-bottom: 15px;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #ffcc00; /* Желтый во время проверки */
+    box-shadow: 0 0 8px #ffcc00;
+    transition: all 0.3s ease;
+}
+
+/* Состояние: Работает */
+.status-badge.online .status-dot {
+    background-color: #34c759;
+    box-shadow: 0 0 8px #34c759;
+}
+
+/* Состояние: Ошибка / Офлайн */
+.status-badge.offline .status-dot {
+    background-color: #ff3b30;
+    box-shadow: 0 0 8px #ff3b30;
+}
     </style>
 </head>
 <body>
@@ -232,7 +266,10 @@
 
     <div class="card">
         <label for="appSelect">Выберите приложение:</label>
-        
+        <div class="status-badge" id="statusBadge">
+    <span class="status-dot"></span>
+    <span id="statusText">Проверка статуса...</span>
+</div>
       <select id="appSelect">
     <option value="" disabled selected>Нажмите для выбора приложения</option>
 
@@ -293,6 +330,29 @@
         </div>
     </div>
 </div>
+<script>
+async function checkServerStatus() {
+    const badge = document.getElementById('statusBadge');
+    const text = document.getElementById('statusText');
+    
+    try {
+        // Проверяем доступность вашего репозитория GitHub Pages
+        const response = await fetch('https://app-installer-ios.github.io/store/vk.plist', { method: 'HEAD' });
+        
+        if (response.ok) {
+            badge.className = 'status-badge online';
+            text.textContent = 'Все приложения доступны';
+        } else {
+            throw new Error();
+        }
+    } catch (e) {
+        badge.className = 'status-badge offline';
+        text.textContent = 'Технические работы';
+    }
+}
 
+// Запуск проверки при загрузке страницы
+checkServerStatus();
+</script>
 </body>
 </html>
