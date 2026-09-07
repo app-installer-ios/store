@@ -433,21 +433,16 @@
             toast.classList.remove('show');
         }, 5000);
 
-        // Проверка: запущен ли сайт внутри Telegram Mini App
-        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData !== "") {
-            window.Telegram.WebApp.openLink(selectedAppUrl);
-        } else {
-            // Для Safari / внешних браузеров: симуляция прямого клика по ссылке
-            let hiddenLink = document.getElementById('hiddenInstallLink');
-            if (!hiddenLink) {
-                hiddenLink = document.createElement('a');
-                hiddenLink.id = 'hiddenInstallLink';
-                hiddenLink.style.display = 'none';
-                document.body.appendChild(hiddenLink);
-            }
-            hiddenLink.href = selectedAppUrl;
-            hiddenLink.click();
+        // Симуляция прямого клика по ссылке <a> для активации установки в iOS WebView / Safari / Telegram
+        let hiddenLink = document.getElementById('hiddenInstallLink');
+        if (!hiddenLink) {
+            hiddenLink = document.createElement('a');
+            hiddenLink.id = 'hiddenInstallLink';
+            hiddenLink.style.display = 'none';
+            document.body.appendChild(hiddenLink);
         }
+        hiddenLink.href = selectedAppUrl;
+        hiddenLink.click();
     }
 
     async function checkServerStatus() {
