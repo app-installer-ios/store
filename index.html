@@ -13,6 +13,9 @@
             padding: 20px 16px; 
             display: flex; 
             justify-content: center; 
+            align-items: center; /* Центрирование по вертикали */
+            min-height: 100vh;   /* На всю высоту экрана */
+            box-sizing: border-box;
         }
         .container { width: 100%; max-width: 400px; }
         
@@ -201,7 +204,7 @@
             box-shadow: 0 0 8px #ff3b30;
         }
 
-        /* Стиль встроенного окна авторизации */
+        /* Стиль окна авторизации */
         .auth-box {
             background: #161b26;
             border-radius: 16px;
@@ -248,6 +251,35 @@
             font-size: 13px;
             font-weight: 600;
             display: none;
+        }
+
+        /* Блок отказа в доступе */
+        .access-denied-box {
+            background: #161b26;
+            border-radius: 16px;
+            padding: 30px 20px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            border: 2px solid transparent;
+            background-image: linear-gradient(#161b26, #161b26), linear-gradient(135deg, #a855f7, #6366f1, #ef4444);
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+        }
+
+        .access-denied-title {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #f87171, #ef4444);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .access-denied-text {
+            font-size: 14px;
+            color: #cbd5e1;
+            line-height: 1.5;
         }
     </style>
 </head>
@@ -332,7 +364,8 @@
     }
 </script>
 
-<div class="container" id="authApp" style="display: none; margin-top: 40px;">
+<!-- Карточка авторизации -->
+<div class="container" id="authApp" style="display: none;">
     <div class="auth-box">
         <div class="auth-title">🔒 Доступ к каталогу</div>
         <div style="font-size: 13px; color: #cbd5e1;">Введите пароль для продолжения:</div>
@@ -342,6 +375,7 @@
     </div>
 </div>
 
+<!-- Основной каталог -->
 <div class="container" id="mainApp" style="display: none;">
     <h1>Установка удалённых приложений</h1>
     <div class="subtitle">Установка нужных приложений без лишних хлопот</div>
@@ -410,6 +444,7 @@
         <div id="toast" class="toast">🚀 Загрузка началась! Проверьте главный экран устройства.</div>
     </div>
 
+    <!-- Блок поддержки -->
     <div class="support-box">
         <div class="support-title">Нужна помощь? Напишите мне:</div>
         <div class="support-buttons">
