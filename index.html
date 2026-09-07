@@ -201,7 +201,7 @@
             box-shadow: 0 0 8px #ff3b30;
         }
 
-        /* Стиль для плашки неверного пароля */
+        /* Блок отказа в доступе */
         .access-denied-box {
             background: #161b26;
             border-radius: 16px;
@@ -241,8 +241,12 @@
         if (sessionStorage.getItem("site_access") === "true") {
             appContainer.style.display = "block";
             checkServerStatus();
-        } else {
+            return;
+        }
+
+        setTimeout(() => {
             let pass = prompt("Введите пароль для доступа к каталогу:");
+            
             if (pass === SECRET_PASSWORD) {
                 sessionStorage.setItem("site_access", "true");
                 appContainer.style.display = "block";
@@ -257,7 +261,7 @@
                     </div>
                 `;
             }
-        }
+        }, 100);
     });
 
     let toastTimer;
@@ -361,10 +365,6 @@
 
             <option value="itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/psb.plist">ПСБ (Чайная Церемония)</option>
             <hr>
-            
-            <option value="itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/sovkombank-vsekarty.plist">Совкомбанк (Все карты MDS)</option>
-            <hr>
-
         </select>
 
         <button type="button" class="btn" onclick="startInstallation()">Установить</button>
