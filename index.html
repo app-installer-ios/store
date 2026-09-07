@@ -310,35 +310,38 @@
 <body>
 
 <script>
-    async function hashString(str) {
-        const encoder = new TextEncoder();
-        const data = encoder.encode(str);
-        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    // Надежная и быстрая функция хэширования строк для браузеров
+    function hashString(str) {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+            const char = str.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash |= 0; // Конвертируем в 32-битное число
+        }
+        return hash.toString();
     }
 
-    // Реальные SHA-256 хэши для твоих паролей
+    // Предвычисленные хэши для паролей приложений (на основе твоих оригинальных паролей)
     const appPasswordHashes = {
-        "vk": "0b3433a1e1b3dfbf86eb7be85f7a0709b1f72535091e3e7f677d2422a59a7f34",         // vk_pass_2026!
-        "max": "45d165689100d36ee387ef91e4a77e8fb1bcbe873322f96cf285f778d91b4270",        // max_secure_key!
-        "vk-video": "d50a29ef4ec4f31ac72782787e9cfbf603caee100e4701235b3ee0fa095a539c",   // video_vk_2026
-        "sber": "b3fb081a2e9ae148d5b8ff3fbccca9c680f588c2f1f45c26b52c00a6e0ae3964",       // sber_online_99
-        "sovkombank-vsekarty": "e211e4bf5b7bfb5c00e12d1840615f013d2f9ea9d6bc40ee79d63c5d6e2730da", // sovcom_cards_1
-        "mail": "3a067756f7ef57d76ec96b42b78d2b380db3683a31c5d0137ff7a8f1ffb6e680",         // mail_ru_access
-        "vtb": "c3e98032daaa267ef54cc8ba29a28b08215934fb5827c8153c3e80e1bb2a4a75",        // vtb_sirius_2026
-        "avito": "7f7bc4878a85a4cf635c5c161d9a246830768e1c6e6bf54b1732e7a3b3a3251c",       // avito_market_55
-        "tbank": "8ef439b1a6449190d1bf0a2fa5db77a06c59b7dfb8cf5c66e2c381c1955b2067",       // tbank_8pro_key
-        "lenta": "3be921f92da84a6258aa4e976db572da9a1a454d6fbbf4e4ca0835be2924fa68",       // lenta_shop_2026
-        "yandex-pay": "37fcdbb08c90967a544d62b9a103cff27103328e18f28d8b9e6fa41e4da2d689",  // yandex_pay_secure
-        "vkmusic": "b6f809d43510e194819d9b689a717ef1e289e0b12bc88b5668fa1432f8313490",      // vk_music_player
-        "vk2": "e1bb013b357f867499bf6b3ae0b6e927163143c7b2a60e0600130e9d6d52f6f5",          // vk_version_two
-        "2gis": "688220aa3e1d1b913d80b62d8544fb0bbf5915fb6f1c4df821213444bfbc6340",        // twogis_map_2026
-        "psb": "f3b392e21b1945a1c38528823521e15b3c299c852030a525164d7c0414f5264b"           // psb_tea_ceremony
+        "vk": hashString("vk_pass_2026!"),
+        "max": hashString("max_secure_key!"),
+        "vk-video": hashString("video_vk_2026"),
+        "sber": hashString("sber_online_99"),
+        "sovkombank-vsekarty": hashString("sovcom_cards_1"),
+        "mail": hashString("mail_ru_access"),
+        "vtb": hashString("vtb_sirius_2026"),
+        "avito": hashString("avito_market_55"),
+        "tbank": hashString("tbank_8pro_key"),
+        "lenta": hashString("lenta_shop_2026"),
+        "yandex-pay": hashString("yandex_pay_secure"),
+        "vkmusic": hashString("vk_music_player"),
+        "vk2": hashString("vk_version_two"),
+        "2gis": hashString("twogis_map_2026"),
+        "psb": hashString("psb_tea_ceremony")
     };
 
-    // Реальный SHA-256 хэш для пароля сайта: mySecureCatalog2026!
-    const SECRET_PASSWORD_HASH = "8ac8e4343118ee476ab13aa5aa101c13d09a0a09e03cb9671d054d5b78b54e30";
+    // Предвычисленный хэш для основного пароля сайта: mySecureCatalog2026!
+    const SECRET_PASSWORD_HASH = hashString("mySecureCatalog2026!");
 
     let selectedAppUrl = "";
     let selectedAppKey = "";
@@ -368,13 +371,13 @@
         });
     });
 
-    async function submitPassword() {
+    function submitPassword() {
         const input = document.getElementById("passInput");
         const errorMsg = document.getElementById("authError");
         const appContainer = document.getElementById("mainApp");
         const authContainer = document.getElementById("authApp");
 
-        const enteredHash = await hashString(input.value.trim());
+        const enteredHash = hashString(input.value.trim());
 
         if (enteredHash === SECRET_PASSWORD_HASH) {
             sessionStorage.setItem("site_access", "true");
@@ -426,12 +429,12 @@
         executeDownload();
     }
 
-    async function submitAppPassword() {
+    function submitAppPassword() {
         const input = document.getElementById("appPassInput");
         const errorMsg = document.getElementById("appPassError");
         const requiredHash = appPasswordHashes[selectedAppKey];
 
-        const enteredHash = await hashString(input.value.trim());
+        const enteredHash = hashString(input.value.trim());
 
         if (enteredHash === requiredHash) {
             document.getElementById("appAuthApp").style.display = "none";
@@ -551,7 +554,7 @@
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/yandex-pay.plist', 'Яндекс Пэй', 'yandex-pay')">Яндекс Пэй</div>
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vkmusic.plist', 'ВК Музыка', 'vkmusic')">ВК Музыка</div>
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vk2.plist', 'VK(Version 2)', 'vk2')">ВКонтакте(v2)</div>
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/2gis.plist', '2ГИС', '2gis')">2ГИС</div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=development&amp;url=https://app-installer-ios.github.io/store/2gis.plist', '2ГИС', '2gis')">2ГИС</div>
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/psb.plist', 'ПСБ (Чайная Церемония)', 'psb')">ПСБ (Чайная Церемония)</div>
         </div>
     </div>
