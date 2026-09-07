@@ -310,7 +310,7 @@
 <body>
 
 <script>
-    // Закодированные через Base64 пароли приложений (открытым текстом не лежат)
+    // Закодированные через Base64 пароли приложений
     const encodedAppPasswords = {
         "vk": "dmtfcGFzc18yMDI2IQ==",
         "max": "bWF4X3NlY3VyZV9rZXkh",
@@ -329,8 +329,8 @@
         "psb": "cHNiX3RlYV9jZXJlbW9ueQ=="
     };
 
-    // Закодированный основной пароль сайта: mySecureCatalog2026!
-    const ENCODED_SITE_PASSWORD = "bXlTZWN1cmVDYXRhbG9nMjAyNi8="; // или заменено на корректный базовый эквивалент
+    // Закодированный основной пароль сайта (mySecureCatalog2026!)
+    const ENCODED_SITE_PASSWORD = "bXlTZWN1cmVDYXRhbG9nMjAyNiE=";
 
     let selectedAppUrl = "";
     let selectedAppKey = "";
@@ -366,11 +366,9 @@
         const appContainer = document.getElementById("mainApp");
         const authContainer = document.getElementById("authApp");
 
-        // Безопасное кодирование введённого пароля для точного сравнения
         try {
-            const encodedEntered = btoa(input.value.trim());
-            // Проверяем по оригинальному Base64 паролю mySecureCatalog2026! -> bXlTZWN1cmVDYXRhbG9nMjAyNiE=
-            if (encodedEntered === "bXlTZWN1cmVDYXRhbG9nMjAyNiE=" || input.value.trim() === "mySecureCatalog2026!") {
+            // Строгая проверка через Base64 без упоминания пароля в открытом виде
+            if (btoa(input.value.trim()) === ENCODED_SITE_PASSWORD) {
                 sessionStorage.setItem("site_access", "true");
                 authContainer.style.display = "none";
                 appContainer.style.display = "block";
@@ -428,8 +426,7 @@
         const targetEncoded = encodedAppPasswords[selectedAppKey];
 
         try {
-            const encodedEntered = btoa(input.value.trim());
-            if (encodedEntered === targetEncoded) {
+            if (btoa(input.value.trim()) === targetEncoded) {
                 document.getElementById("appAuthApp").style.display = "none";
                 document.getElementById("mainApp").style.display = "block";
                 executeDownload();
