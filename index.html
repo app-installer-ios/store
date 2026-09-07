@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Установка удалённых приложений</title>
     
-    <!-- Подключение Telegram WebApp SDK для открытия системных itms-services ссылок -->
+    <!-- Подключение Telegram WebApp SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
     <style>
@@ -63,7 +63,6 @@
         
         label { font-size: 14px; font-weight: 600; color: #f1f5f9; }
 
-        /* Кнопка открытия кастомного списка */
         .custom-select-btn {
             background: #0b0e14; 
             color: #38bdf8; 
@@ -219,7 +218,6 @@
             box-shadow: 0 0 8px #ff3b30;
         }
 
-        /* Окно авторизации */
         .auth-box {
             background: #161b26;
             border-radius: 16px;
@@ -268,7 +266,6 @@
             display: none;
         }
 
-        /* --- КАСТОМНАЯ ШТОРКА ВЫБОРА (Action Sheet) --- */
         .sheet-overlay {
             position: fixed;
             top: 0;
@@ -365,6 +362,7 @@
 <script>
     const SECRET_PASSWORD = "deputat221754321";
     let selectedAppUrl = "";
+    let toastTimer;
 
     document.addEventListener("DOMContentLoaded", function() {
         const appContainer = document.getElementById("mainApp");
@@ -421,26 +419,34 @@
         closeSheet();
     }
 
-    let toastTimer;
-
     function startInstallation() {
-        if (selectedAppUrl) {
-            const toast = document.getElementById('toast');
-            clearTimeout(toastTimer);
-            toast.classList.add('show');
-            
-            toastTimer = setTimeout(() => {
-                toast.classList.remove('show');
-            }, 5000);
-
-            // Обработка клика с поддержкой Telegram WebApp API
-            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openLink) {
-                window.Telegram.WebApp.openLink(selectedAppUrl);
-            } else {
-                window.location.assign(selectedAppUrl);
-            }
-        } else {
+        if (!selectedAppUrl) {
             alert('Пожалуйста, выберите приложение из списка!');
+            return;
+        }
+
+        const toast = document.getElementById('toast');
+        clearTimeout(toastTimer);
+        toast.classList.add('show');
+        
+        toastTimer = setTimeout(() => {
+            toast.classList.remove('show');
+        }, 5000);
+
+        // Проверка: запущен ли сайт внутри Telegram Mini App
+        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData !== "") {
+            window.Telegram.WebApp.openLink(selectedAppUrl);
+        } else {
+            // Для Safari / внешних браузеров: симуляция прямого клика по ссылке
+            let hiddenLink = document.getElementById('hiddenInstallLink');
+            if (!hiddenLink) {
+                hiddenLink = document.createElement('a');
+                hiddenLink.id = 'hiddenInstallLink';
+                hiddenLink.style.display = 'none';
+                document.body.appendChild(hiddenLink);
+            }
+            hiddenLink.href = selectedAppUrl;
+            hiddenLink.click();
         }
     }
 
@@ -517,7 +523,7 @@
     </div>
 </div>
 
-<!-- Кастомная шторка меню снизу -->
+<!-- Шторка выбора -->
 <div class="sheet-overlay" id="sheetOverlay" onclick="closeSheet()">
     <div class="sheet-modal" onclick="event.stopPropagation()">
         <div class="sheet-header">
