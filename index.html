@@ -310,7 +310,7 @@
 <body>
 
 <script>
-    // Закодированные через Base64 пароли приложений
+    // Закодированные пароли приложений
     const encodedAppPasswords = {
         "vk": "dmtfcGFzc18yMDI2IQ==",
         "max": "bWF4X3NlY3VyZV9rZXkh",
@@ -329,7 +329,7 @@
         "psb": "cHNiX3RlYV9jZXJlbW9ueQ=="
     };
 
-    // Закодированный основной пароль сайта (mySecureCatalog2026!)
+    // Закодированный основной пароль сайта
     const ENCODED_SITE_PASSWORD = "bXlTZWN1cmVDYXRhbG9nMjAyNiE=";
 
     let selectedAppUrl = "";
@@ -367,7 +367,7 @@
         const authContainer = document.getElementById("authApp");
 
         try {
-            // Строгая проверка через Base64 без упоминания пароля в открытом виде
+            // Строгая проверка пароля без упоминания его в открытом виде
             if (btoa(input.value.trim()) === ENCODED_SITE_PASSWORD) {
                 sessionStorage.setItem("site_access", "true");
                 authContainer.style.display = "none";
@@ -502,7 +502,7 @@
 <!-- Каталог -->
 <div class="container" id="mainApp" style="display: none;">
     <h1>Установка удалённых приложений</h1>
-    <div class="subtitle">Установка нужных приложений без лишних хлопот</div>
+    <div class="subtitle">Установка недоступных приложений на iPhone. Без компьютера, проводов и ограничений.</div>
 
     <div class="warning-box">
         ⚠️ <span class="text-warning">ВАЖНО:</span> Если ранее на вашем аккаунте было установлено нужное приложение — <span class="text-highlight">продолжите скачивание</span>. Если ранее приложения не было — <span class="text-danger">обратитесь к администратору!</span>
