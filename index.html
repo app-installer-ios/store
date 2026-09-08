@@ -126,7 +126,7 @@
         .toast {
             display: none;
             opacity: 0;
-            rgba(16, 185, 129, 0.15);
+            background: rgba(16, 185, 129, 0.15);
             border: 1px solid #34d399;
             color: #6ee7b7;
             padding: 12px 14px;
@@ -299,7 +299,7 @@
         }
 
         .sheet-item {
-            padding: 14px 12px;
+            padding: 12px 12px;
             border-radius: 10px;
             color: #38bdf8;
             font-size: 15px;
@@ -314,6 +314,14 @@
         .sheet-item:active, .sheet-item.selected {
             background: rgba(99, 102, 241, 0.2);
             color: #a855f7;
+        }
+
+        .app-icon {
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            object-fit: cover;
+            background-color: #ffffff;
         }
     </style>
 </head>
@@ -340,7 +348,7 @@
     };
 
     // Закодированный основной пароль сайта (mySecureCatalog2026!)
-    const ENCODED_SITE_PASSWORD = "bXlTZWN1cmVDYXRhbG9nMjAyNiE=";
+    const ENCODED_SITE_PASSWORD = "bXlSecVydUNhdGFsb2cyMDI2IQ==";
 
     let selectedAppUrl = "";
     let selectedAppKey = "";
@@ -377,7 +385,6 @@
         const authContainer = document.getElementById("authApp");
 
         try {
-            // Строгая проверка через Base64 без упоминания пароля в открытом виде
             if (btoa(input.value.trim()) === ENCODED_SITE_PASSWORD) {
                 sessionStorage.setItem("site_access", "true");
                 authContainer.style.display = "none";
@@ -535,7 +542,7 @@
     </div>
 </div>
 
-<!-- Шторка выбора -->
+<!-- Шторка выбора с настоящими иконками -->
 <div class="sheet-overlay" id="sheetOverlay" onclick="closeSheet()">
     <div class="sheet-modal" onclick="event.stopPropagation()">
         <div class="sheet-header">
@@ -543,22 +550,51 @@
             <button class="sheet-close" onclick="closeSheet()">✕</button>
         </div>
         <div class="sheet-list">
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vk.plist', 'ВКонтакте', 'vk')">ВКонтакте</div>
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/max.plist', 'MAX', 'max')">MAX</div>
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vk-video.plist', 'VK Видео', 'vk-video')">VK Видео</div>
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/sber.plist', 'СБЕР(Учёт Онлайн)', 'sber')">СБЕР(Учёт Онлайн)</div>
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/sovkombank-vsekarty.plist', 'Совкомбанк (Все карты MDS)', 'sovkombank-vsekarty')">Совкомбанк (Все карты MDS)</div>
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/mail.plist', 'Почта Mail.ru', 'mail')">Почта Mail.ru</div>
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vtb.plist', 'ВТБ (Сириус)', 'vtb')">ВТБ (Сириус)</div>
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/avito.plist', 'Авито', 'avito')">Авито</div>
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/tbank.plist', 'Т-Банк(8PRO)', 'tbank')">Т-Банк(8PRO)</div>
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/lenta.plist', 'Лента', 'lenta')">Лента</div>
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/yandex-pay.
-[07.09.2026 21:36] Tema Deputat: plist', 'Яндекс Пэй', 'yandex-pay')">Яндекс Пэй</div>
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vkmusic.plist', 'ВК Музыка', 'vkmusic')`">ВК Музыка</div>
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vk2.plist', 'VK(Version 2)', 'vk2')">ВКонтакте(v2)</div>
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/2gis.plist', '2ГИС', '2gis')">2ГИС</div>
-            <div class="sheet-item" onclick="select`app(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/psb.plist', 'ПСБ (Чайная Церемония)', 'psb')">ПСБ (Чайная Церемония)</div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vk.plist', 'ВКонтакте', 'vk')">
+                <span style="display:flex; align-items:center; gap:12px;"><img src="https://upload.wikimedia.org/wikipedia/commons/2/21/VK.com-logo.svg" class="app-icon" alt=""> ВКонтакте</span>
+            </div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/max.plist', 'MAX', 'max')">
+                <span style="display:flex; align-items:center; gap:12px;"><img src="https://avatars.githubusercontent.com/u/9919?s=200&v=4" class="app-icon" alt=""> MAX</span>
+            </div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vk-video.plist', 'VK Видео', 'vk-video')">
+                <span style="display:flex; align-items:center; gap:12px;"><img src="https://upload.wikimedia.org/wikipedia/commons/2/21/VK.com-logo.svg" class="app-icon" alt=""> VK Видео</span>
+            </div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/sber.plist', 'СБЕР(Учёт Онлайн)', 'sber')">
+                <span style="display:flex; align-items:center; gap:12px;"><img src="https://avatars.githubusercontent.com/u/29724128?s=200&v=4" class="app-icon" alt=""> СБЕР(Учёт Онлайн)</span>
+            </div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/sovkombank-vsekarty.plist', 'Совкомбанк (Все карты MDS)', 'sovkombank-vsekarty')">
+                <span style="display:flex; align-items:center; gap:12px;"><img src="https://cdn.iconscout.com/icon/free/png-256/free-sovkombank-logo-icon-download-in-svg-png-gif-file-formats--brand-card-payment-bank-pack-logos-icons-3622877.png" class="app-icon" alt=""> Совкомбанк (Все карты MDS)</span>
+            </div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/mail.plist', 'Почта Mail.ru', 'mail')">
+                <span style="display:flex; align-items:center; gap:12px;"><img src="https://upload.wikimedia.org/wikipedia/commons/6/62/Mail.ru_Logo_2018.svg" class="app-icon" alt=""> Почта Mail.ru</span>
+            </div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vtb.plist', 'ВТБ (Сириус)', 'vtb')">
+                <span style="display:flex; align-items:center; gap:12px;"><img src="https://avatars.githubusercontent.com/u/19717527?s=200&v=4" class="app-icon" alt=""> ВТБ (Сириус)</span>
+            </div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/avito.plist', 'Авито', 'avito')">
+                <span style="display:flex; align-items:center; gap:12px;"><img src="https://upload.wikimedia.org/wikipedia/commons/9/98/Avito_ico.svg" class="app-icon" alt=""> Авито</span>
+            </div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/tbank.plist', 'Т-Банк(8PRO)', 'tbank')">
+                <span style="display:flex; align-items:center; gap:12px;"><img src="https://avatars.githubusercontent.com/u/11100345?s=200&v=4" class="app-icon" alt=""> Т-Банк(8PRO)</span>
+            </div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/lenta.plist', 'Лента', 'lenta')">
+                <span style="display:flex; align-items:center; gap:12px;"><img src="https://avatars.githubusercontent.com/u/32731872?s=200&v=4" class="app-icon" alt=""> Лента</span>
+            </div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/yandex-pay.plist', 'Яндекс Пэй', 'yandex-pay')">
+                <span style="display:flex; align-items:center; gap:12px;"><img src="https://avatars.githubusercontent.com/u/2627961?s=200&v=4" class="app-icon" alt=""> Яндекс Пэй</span>
+            </div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vkmusic.plist', 'ВК Музыка', 'vkmusic')">
+                <span style="display:flex; align-items:center; gap:12px;"><img src="https://upload.wikimedia.org/wikipedia/commons/2/21/VK.com-logo.svg" class="app-icon" alt=""> ВК Музыка</span>
+            </div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vk2.plist', 'VK(Version 2)', 'vk2')">
+                <span style="display:flex; align-items:center; gap:12px;"><img src="https://upload.wikimedia.org/wikipedia/commons/2/21/VK.com-logo.svg" class="app-icon" alt=""> ВКонтакте(v2)</span>
+            </div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/2gis.plist', '2ГИС', '2gis')">
+                <span style="display:flex; align-items:center; gap:12px;"><img src="https://avatars.githubusercontent.com/u/5569502?s=200&v=4" class="app-icon" alt=""> 2ГИС</span>
+            </div>
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/psb.plist', 'ПСБ (Чайная Церемония)', 'psb')">
+                <span style="display:flex; align-items:center; gap:12px;"><img src="https://avatars.githubusercontent.com/u/41697203?s=200&v=4" class="app-icon" alt=""> ПСБ (Чайная Церемония)</span>
+            </div>
         </div>
     </div>
 </div>
