@@ -232,12 +232,21 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(4px);
             z-index: 999;
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        @media (min-width: 480px) {
+            .sheet-overlay {
+                align-items: center;
+            }
         }
 
         .sheet-overlay.active {
@@ -246,25 +255,40 @@
         }
 
         .sheet-modal {
-            position: fixed;
-            bottom: -100%;
-            left: 0;
-            right: 0;
+            position: relative;
+            width: 100%;
+            max-width: 400px;
             background: #161b26;
             border-top-left-radius: 20px;
             border-top-right-radius: 20px;
-            padding: 16px 16px 30px 16px;
+            padding: 16px 16px 24px 16px;
             z-index: 1000;
-            max-height: 60vh;
+            max-height: 75vh;
             display: flex;
             flex-direction: column;
             box-shadow: 0 -8px 24px rgba(0,0,0,0.5);
-            border-top: 1px solid rgba(168, 85, 247, 0.3);
-            transition: bottom 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            box-sizing: border-box;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
+        }
+
+        @media (min-width: 480px) {
+            .sheet-modal {
+                border-radius: 20px;
+                transform: scale(0.95);
+                transition: all 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
+            }
         }
 
         .sheet-overlay.active .sheet-modal {
-            bottom: 0;
+            transform: translateY(0);
+        }
+
+        @media (min-width: 480px) {
+            .sheet-overlay.active .sheet-modal {
+                transform: scale(1);
+            }
         }
 
         .sheet-header {
@@ -299,7 +323,7 @@
         }
 
         .sheet-item {
-            padding: 12px 12px;
+            padding: 10px 12px;
             border-radius: 10px;
             color: #38bdf8;
             font-size: 15px;
@@ -545,7 +569,7 @@
     </div>
 </div>
 
-<!-- Шторка выбора с картинками из папки icons -->
+<!-- Шторка выбора с правильными путями для GitHub Pages -->
 <div class="sheet-overlay" id="sheetOverlay" onclick="closeSheet()">
     <div class="sheet-modal" onclick="event.stopPropagation()">
         <div class="sheet-header">
@@ -556,105 +580,105 @@
             
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vk.plist', 'ВКонтакте', 'vk')">
                 <span style="display:flex; align-items:center; gap:12px;">
-                    <img src="icons/vk.png" class="app-icon" alt="VK">
+                    <img src="/store/icons/vk.png" class="app-icon" alt="VK">
                     ВКонтакте
                 </span>
             </div>
 
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/max.plist', 'MAX', 'max')">
                 <span style="display:flex; align-items:center; gap:12px;">
-                    <img src="icons/max.png" class="app-icon" alt="MAX">
+                    <img src="/store/icons/max.png" class="app-icon" alt="MAX">
                     MAX
                 </span>
             </div>
 
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vk-video.plist', 'VK Видео', 'vk-video')">
                 <span style="display:flex; align-items:center; gap:12px;">
-                    <img src="icons/vk-video.png" class="app-icon" alt="VK Video">
+                    <img src="/store/icons/vk-video.png" class="app-icon" alt="VK Video">
                     VK Видео
                 </span>
             </div>
 
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/sber.plist', 'СБЕР(Учёт Онлайн)', 'sber')">
                 <span style="display:flex; align-items:center; gap:12px;">
-                    <img src="icons/sber.png" class="app-icon" alt="Sber">
+                    <img src="/store/icons/sber.png" class="app-icon" alt="Sber">
                     СБЕР(Учёт Онлайн)
                 </span>
             </div>
 
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/sovkombank-vsekarty.plist', 'Совкомбанк (Все карты MDS)', 'sovkombank-vsekarty')">
                 <span style="display:flex; align-items:center; gap:12px;">
-                    <img src="icons/sovkombank-vsekarty.png" class="app-icon" alt="Sovkombank">
+                    <img src="/store/icons/sovkombank-vsekarty.png" class="app-icon" alt="Sovkombank">
                     Совкомбанк (Все карты MDS)
                 </span>
             </div>
 
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/mail.plist', 'Почта Mail.ru', 'mail')">
                 <span style="display:flex; align-items:center; gap:12px;">
-                    <img src="icons/mail.png" class="app-icon" alt="Mail">
+                    <img src="/store/icons/mail.png" class="app-icon" alt="Mail">
                     Почта Mail.ru
                 </span>
             </div>
 
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vtb.plist', 'ВТБ (Сириус)', 'vtb')">
                 <span style="display:flex; align-items:center; gap:12px;">
-                    <img src="icons/vtb.png" class="app-icon" alt="VTB">
+                    <img src="/store/icons/vtb.png" class="app-icon" alt="VTB">
                     ВТБ (Сириус)
                 </span>
             </div>
 
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/avito.plist', 'Авито', 'avito')">
                 <span style="display:flex; align-items:center; gap:12px;">
-                    <img src="icons/avito.png" class="app-icon" alt="Avito">
+                    <img src="/store/icons/avito.png" class="app-icon" alt="Avito">
                     Авито
                 </span>
             </div>
 
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/tbank.plist', 'Т-Банк(8PRO)', 'tbank')">
                 <span style="display:flex; align-items:center; gap:12px;">
-                    <img src="icons/tbank.png" class="app-icon" alt="T-Bank">
+                    <img src="/store/icons/tbank.png" class="app-icon" alt="T-Bank">
                     Т-Банк(8PRO)
                 </span>
             </div>
 
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/lenta.plist', 'Лента', 'lenta')">
                 <span style="display:flex; align-items:center; gap:12px;">
-                    <img src="icons/lenta.png" class="app-icon" alt="Lenta">
+                    <img src="/store/icons/lenta.png" class="app-icon" alt="Lenta">
                     Лента
                 </span>
             </div>
 
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/yandex-pay.plist', 'Яндекс Пэй', 'yandex-pay')">
                 <span style="display:flex; align-items:center; gap:12px;">
-                    <img src="icons/yandex-pay.png" class="app-icon" alt="Yandex Pay">
+                    <img src="/store/icons/yandex-pay.png" class="app-icon" alt="Yandex Pay">
                     Яндекс Пэй
                 </span>
             </div>
 
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vkmusic.plist', 'ВК Музыка', 'vkmusic')">
                 <span style="display:flex; align-items:center; gap:12px;">
-                    <img src="icons/vkmusic.png" class="app-icon" alt="VK Music">
+                    <img src="/store/icons/vkmusic.png" class="app-icon" alt="VK Music">
                     ВК Музыка
                 </span>
             </div>
 
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vk2.plist', 'VK(Version 2)', 'vk2')">
                 <span style="display:flex; align-items:center; gap:12px;">
-                    <img src="icons/vk2.png" class="app-icon" alt="VK 2">
+                    <img src="/store/icons/vk2.png" class="app-icon" alt="VK 2">
                     ВКонтакте(v2)
                 </span>
             </div>
 
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/2gis.plist', '2ГИС', '2gis')">
                 <span style="display:flex; align-items:center; gap:12px;">
-                    <img src="icons/2gis.png" class="app-icon" alt="2GIS">
+                    <img src="/store/icons/2gis.png" class="app-icon" alt="2GIS">
                     2ГИС
                 </span>
             </div>
 
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/psb.plist', 'ПСБ (Чайная Церемония)', 'psb')">
                 <span style="display:flex; align-items:center; gap:12px;">
-                    <img src="icons/psb.png" class="app-icon" alt="PSB">
+                    <img src="/store/icons/psb.png" class="app-icon" alt="PSB">
                     ПСБ (Чайная Церемония)
                 </span>
             </div>
