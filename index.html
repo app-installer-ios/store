@@ -319,17 +319,23 @@
         .app-icon {
             width: 28px;
             height: 28px;
-            border-radius: 50%;
-            object-fit: cover;
-            background-color: #ffffff;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             flex-shrink: 0;
+            overflow: hidden;
+            background: #ffffff;
+        }
+        .app-icon svg {
+            width: 100%;
+            height: 100%;
         }
     </style>
 </head>
 <body>
 
 <script>
-    // Новые зашифрованные пароли приложений
     const encodedAppPasswords = {
         "vk": "dnZfcGFzc19uZXdfMjAyNg==",
         "max": "bWF4X3NlY3VyZV9uZXdfa2V5",
@@ -348,7 +354,6 @@
         "psb": "cHNiX3RlYV9jZXJlbW9ueV9uZXc="
     };
 
-    // Новый зашифрованный пароль для сайта
     const ENCODED_SITE_PASSWORD = "U3VwZXJTYWZlQ2F0YWxvZzIwMjYh";
 
     let selectedAppUrl = "";
@@ -543,7 +548,7 @@
     </div>
 </div>
 
-<!-- Шторка выбора со свежими прямыми иконками брендов -->
+<!-- Шторка выбора со встроенными гарантированными иконками -->
 <div class="sheet-overlay" id="sheetOverlay" onclick="closeSheet()">
     <div class="sheet-modal" onclick="event.stopPropagation()">
         <div class="sheet-header">
@@ -551,51 +556,112 @@
             <button class="sheet-close" onclick="closeSheet()">✕</button>
         </div>
         <div class="sheet-list">
+            
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vk.plist', 'ВКонтакте', 'vk')">
-                <span style="display:flex; align-items:center; gap:12px;"><img src="https://upload.wikimedia.org/wikipedia/commons/2/21/VK.com-logo.svg" class="app-icon" alt=""> ВКонтакте</span>
+                <span style="display:flex; align-items:center; gap:12px;">
+                    <span class="app-icon" style="background:#0077FF;"><svg viewBox="0 0 24 24" fill="#fff"><path d="M13.162 18.994c.609 0 .938-.27 1.056-.777.019-.077.029-.221.029-.432 0-1.579.74-2.33 2.22-2.25 1.503.08 2.659 1.34 2.898 2.628.028.152.057.28.087.382.114.39.431.549.947.549h2.302c.493 0 .759-.224.795-.672.039-.485-.145-1.127-.552-1.921-.407-.794-1.28-1.848-2.619-3.162-1.339-1.314-1.116-1.107.452-3.195.968-1.29 1.637-2.183 2.008-2.679.371-.496.536-.915.495-1.258-.046-.385-.353-.585-.921-.601h-2.47c-.508 0-.91.215-1.206.645-.297.43-.615.967-.953 1.611-.676 1.288-1.185 2.15-1.528 2.585-.343.435-.618.667-.825.696-.208.029-.364-.047-.468-.228-.104-.181-.156-.519-.156-1.014V8.582c0-.525-.138-.934-.413-1.228-.275-.294-.657-.441-1.147-.441H7.81c-.551 0-.962.146-1.233.438-.271.292-.234.618-.119.979.115.361.353.799.714 1.314.361.515.542.923.542 1.224 0 .301-.06.611-.18 $.93-.12.319-.34.786-.66 1.401-.32.615-.658 1.235-1.014 1.861-.356.626-.642 1.139-.858 1.539-.216.4-.337.74-.363 1.02-.026.28.093.456.357.528h2.646c.551 0 .977-.14 1.278-.42.301-.28.601-.762.9-1.446.299-.684.582-1.259.849-1.725.267-.466.529-.838.786-1.116.257-.278.474-.439.651-.483.177-.044.331.002.463.138.132.136.216.326.252.57.036.244.054.549.054.915 0 .366-.022.696-.066.99-.044.294-.176.516-.396.666-.22.15-.522.251-.906.303-.384.052-.647.169-.789.351-.142.182-.14.444.006.786.146.342.365.733.657 1.173.292.44.59.878.894 1.314.304.436.562.775.774 1.017.212.242.42.384.624.426.204.042.417.033.639-.027h2.292c.381 0 .61-.132.687-.396.077-.264-.01-.634-.261-1.11z"/></svg></span>
+                    ВКонтакте
+                </span>
             </div>
+
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/max.plist', 'MAX', 'max')">
-                <span style="display:flex; align-items:center; gap:12px;"><img src="https://www.svgrepo.com/show/354031/apple-app-store.svg" class="app-icon" alt=""> MAX</span>
+                <span style="display:flex; align-items:center; gap:12px;">
+                    <span class="app-icon" style="background:#1c1c1e;"><svg viewBox="0 0 24 24" fill="#38bdf8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg></span>
+                    MAX
+                </span>
             </div>
+
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vk-video.plist', 'VK Видео', 'vk-video')">
-                <span style="display:flex; align-items:center; gap:12px;"><img src="https://upload.wikimedia.org/wikipedia/commons/c/c9/VK_Video_logo_2023.svg" class="app-icon" alt=""> VK Видео</span>
+                <span style="display:flex; align-items:center; gap:12px;">
+                    <span class="app-icon" style="background:#0077ff;"><svg viewBox="0 0 24 24" fill="#fff"><path d="M18 4H6C3.79 4 2 5.79 2 8v8c0 2.21 1.79 4 4 4h12c2.21 0 4-1.79 4-4V8c0-2.21-1.79-4-4-4zM9.5 15.5v-7l6 3.5-6 3.5z"/></svg></span>
+                    VK Видео
+                </span>
             </div>
+
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/sber.plist', 'СБЕР(Учёт Онлайн)', 'sber')">
-                <span style="display:flex; align-items:center; gap:12px;"><img src="https://www.svgrepo.com/show/373859/sberbank.svg" class="app-icon" alt=""> СБЕР(Учёт Онлайн)</span>
+                <span style="display:flex; align-items:center; gap:12px;">
+                    <span class="app-icon" style="background:#21a038;"><svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm3.42 14.29c-.73.49-1.63.78-2.62.78-2.76 0-5-2.24-5-5s2.24-5 5-5c.99 0 1.89.29 2.62.78l-.9 1.56c-.51-.31-1.11-.5-1.72-.5-1.93 0-3.5 1.57-3.5 3.5s1.57 3.5 3.5 3.5c.61 0 1.21-.19 1.72-.5l.9 1.56z"/></svg></span>
+                    СБЕР(Учёт Онлайн)
+                </span>
             </div>
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/sovkombank-vsekarty.plist', 'Совкомбанк (Все карты MDS)', 'sovkombank-vsekarty')">
-                <span style="display:flex; align-items:center; gap:12px;"><img src="https://www.svgrepo.com/show/374021/sovcombank.svg" class="app-icon" alt=""> Совкомбанк (Все карты MDS)</span>
+
+            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/sovkombank-vsekarty.plist', 'Совкомбанк (Все карты MDS)', 'sovkombank-vsekarty')        ">
+                <span style="display:flex; align-items:center; gap:12px;">
+                    <span class="app-icon" style="background:#e30613;"><svg viewBox="0 0 24 24" fill="#fff"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg></span>
+                    Совкомбанк (Все карты MDS)
+                </span>
             </div>
+
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/mail.plist', 'Почта Mail.ru', 'mail')">
-                <span style="display:flex; align-items:center; gap:12px;"><img src="https://upload.wikimedia.org/wikipedia/commons/6/62/Mail.ru_Logo_2018.svg" class="app-icon" alt=""> Почта Mail.ru</span>
+                <span style="display:flex; align-items:center; gap:12px;">
+                    <span class="app-icon" style="background:#1680eb;"><svg viewBox="0 0 24 24" fill="#fff"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></span>
+                    Почта Mail.ru
+                </span>
             </div>
+
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vtb.plist', 'ВТБ (Сириус)', 'vtb')">
-                <span style="display:flex; align-items:center; gap:12px;"><img src="https://www.svgrepo.com/show/473789/vtb.svg" class="app-icon" alt=""> ВТБ (Сириус)</span>
+                <span style="display:flex; align-items:center; gap:12px;">
+                    <span class="app-icon" style="background:#0a2a66;"><svg viewBox="0 0 24 24" fill="#00bfff"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></span>
+                    ВТБ (Сириус)
+                </span>
             </div>
+
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/avito.plist', 'Авито', 'avito')">
-                <span style="display:flex; align-items:center; gap:12px;"><img src="https://upload.wikimedia.org/wikipedia/commons/9/98/Avito_ico.svg" class="app-icon" alt=""> Авито</span>
+                <span style="display:flex; align-items:center; gap:12px;">
+                    <span class="app-icon" style="background:#7030a0;"><svg viewBox="0 0 24 24" fill="#00ffcc"><circle cx="12" cy="12" r="10"/></svg></span>
+                    Авито
+                </span>
             </div>
+
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/tbank.plist', 'Т-Банк(8PRO)', 'tbank')">
-                <span style="display:flex; align-items:center; gap:12px;"><img src="https://www.svgrepo.com/show/473857/tinkoff.svg" class="app-icon" alt=""> Т-Банк(8PRO)</span>
+                <span style="display:flex; align-items:center; gap:12px;">
+                    <span class="app-icon" style="background:#ffdd00;"><svg viewBox="0 0 24 24" fill="#000"><rect x="3" y="3" width="18" height="18" rx="3"/></svg></span>
+                    Т-Банк(8PRO)
+                </span>
             </div>
+
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/lenta.plist', 'Лента', 'lenta')">
-                <span style="display:flex; align-items:center; gap:12px;"><img src="https://www.svgrepo.com/show/473797/lenta.svg" class="app-icon" alt=""> Лента</span>
+                <span style="display:flex; align-items:center; gap:12px;">
+                    <span class="app-icon" style="background:#0055a5;"><svg viewBox="0 0 24 24" fill="#ffcc00"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span>
+                    Лента
+                </span>
             </div>
+
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/yandex-pay.plist', 'Яндекс Пэй', 'yandex-pay')">
-                <span style="display:flex; align-items:center; gap:12px;"><img src="https://www.svgrepo.com/show/473784/yandex.svg" class="app-icon" alt=""> Яндекс Пэй</span>
+                <span style="display:flex; align-items:center; gap:12px;">
+                    <span class="app-icon" style="background:#ffcc00;"><svg viewBox="0 0 24 24" fill="#000"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/></svg></span>
+                    Яндекс Пэй
+                </span>
             </div>
+
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vkmusic.plist', 'ВК Музыка', 'vkmusic')">
-                <span style="display:flex; align-items:center; gap:12px;"><img src="https://upload.wikimedia.org/wikipedia/commons/2/21/VK.com-logo.svg" class="app-icon" alt=""> ВК Музыка</span>
+                <span style="display:flex; align-items:center; gap:12px;">
+                    <span class="app-icon" style="background:#0077ff;"><svg viewBox="0 0 24 24" fill="#fff"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg></span>
+                    ВК Музыка
+                </span>
             </div>
+
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vk2.plist', 'VK(Version 2)', 'vk2')">
-                <span style="display:flex; align-items:center; gap:12px;"><img src="https://upload.wikimedia.org/wikipedia/commons/2/21/VK.com-logo.svg" class="app-icon" alt=""> ВКонтакте(v2)</span>
+                <span style="display:flex; align-items:center; gap:12px;">
+                    <span class="app-icon" style="background:#0077FF;"><svg viewBox="0 0 24 24" fill="#fff"><path d="M13.162 18.994c.609 0 .938-.27 1.056-.777.019-.077.029-.221.029-.432 0-1.579.74-2.33 2.22-2.25 1.503.08 2.659 1.34 2.898 2.628.028.152.057.28.087.382.114.39.431.549.947.549h2.302c.493 0 .759-.224.795-.672.039-.485-.145-1.127-.552-1.921-.407-.794-1.28-1.848-2.619-3.162-1.339-1.314-1.116-1.107.452-3.195.968-1.29 1.637-2.183 2.008-2.679.371-.496.536-.915.495-1.258-.046-.385-.353-.585-.921-.601h-2.47c-.508 0-.91.215-1.206.645-.297.43-.615.967-.953 1.611-.676 1.288-1.185 2.15-1.528 2.585-.343.435-.618.667-.825.696-.208.029-.364-.047-.468-.228-.104-.181-.156-.519-.156-1.014V8.582c0-.525-.138-.934-.413-1.228-.275-.294-.657-.441-1.147-.441H7.81c-.551 0-.962.146-1.233.438-.271.292-.234.618-.119.979.115.361.353.799.714 1.314.361.515.542.923.542 1.224 0 .301-.06.611-.18.93-.12.319-.34.786-.66 1.401-.32.615-.658 1.235-1.014 1.861-.356.626-.642 1.139-.858 1.539-.216.4-.337.74-.363 1.02-.026.28.093.456.357.528h2.646c.551 0 .977-.14 1.278-.42.301-.28.601-.762.9-1.446.299-.684.582-1.259.849-1.725.267-.466.529-.838.786-1.116.257-.278.474-.439.651-.483.177-.044.331.002.463.138.132.136.216.326.252.57.036.244.054.549.054.915 0 .366-.022.696-.066.99-.044.294-.176.516-.396.666-.22.15-.522.251-.906.303-.384.052-.647.169-.789.351-.142.182-.14.444.006.786.146.342.365.733.657 1.173.292.44.59.878.894 1.314.304.436.562.775.774 1.017.212.242.42.384.624.426.204.042.417.033.639-.027h2.292c.381 0 .61-.132.687-.396.077-.264-.01-.634-.261-1.11z"/></svg></span>
+                    ВКонтакте(v2)
+                </span>
             </div>
+
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/2gis.plist', '2ГИС', '2gis')">
-                <span style="display:flex; align-items:center; gap:12px;"><img src="https://www.svgrepo.com/show/373307/2gis.svg" class="app-icon" alt=""> 2ГИС</span>
+                <span style="display:flex; align-items:center; gap:12px;">
+                    <span class="app-icon" style="background:#00b045;"><svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></span>
+                    2ГИС
+                </span>
             </div>
+
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/psb.plist', 'ПСБ (Чайная Церемония)', 'psb')">
-                <span style="display:flex; align-items:center; gap:12px;"><img src="https://www.svgrepo.com/show/373977/psb.svg" class="app-icon" alt=""> ПСБ (Чайная Церемония)</span>
+                <span style="display:flex; align-items:center; gap:12px;">
+                    <span class="app-icon" style="background:#ff6600;"><svg viewBox="0 0 24 24" fill="#fff"><path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.85-.5-.85C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 6H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2v-4c0-1.11-.89-2-2-2z"/></svg></span>
+                    ПСБ (Чайная Церемония)
+                </span>
             </div>
+
         </div>
     </div>
 </div>
