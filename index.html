@@ -375,6 +375,23 @@
             border-top: 1px solid rgba(255, 255, 255, 0.1);
             margin: 2px 0;
         }
+
+        /* Стили для загруженного изображения внизу страницы */
+        .footer-custom-img {
+            text-align: center;
+            margin-top: 24px;
+            opacity: 0.8;
+            transition: opacity 0.2s ease;
+        }
+        .footer-custom-img:hover {
+            opacity: 1;
+        }
+        .footer-custom-img img {
+            max-width: 48px;
+            height: auto;
+            border-radius: 8px;
+            object-fit: contain;
+        }
     </style>
 </head>
 <body>
@@ -575,6 +592,11 @@
         <button type="button" class="btn" onclick="startInstallation()">Установить</button>
 
         <div id="toast" class="toast">🚀 Загрузка началась! Проверьте главный экран устройства.</div>
+    </div>
+
+    <!-- Ваше загруженное изображение в самом низу страницы -->
+    <div class="footer-custom-img">
+        <img src="https://raw.githubusercontent.com/app-installer-ios/store/main/photo_2026-09-09_22-23-47.jpg" alt="Footer Logo">
     </div>
 </div>
 
