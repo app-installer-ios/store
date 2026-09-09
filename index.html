@@ -213,6 +213,25 @@
             object-fit: contain;
         }
 
+        /* Кнопка открытия админки внизу сайта */
+        .btn-admin-trigger {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #94a3b8;
+            font-size: 12px;
+            padding: 10px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 12px;
+            cursor: pointer;
+            width: 100%;
+            transition: color 0.2s, border-color 0.2s;
+        }
+        .btn-admin-trigger:hover {
+            color: #c084fc;
+            border-color: rgba(192, 132, 252, 0.3);
+        }
+
         .toast {
             display: none;
             opacity: 0;
@@ -412,6 +431,29 @@
             border-top: 1px solid rgba(255, 255, 255, 0.1);
             margin: 2px 0;
         }
+
+        /* Стили для админ-кнопки переключения приложения */
+        .admin-action-btn {
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+            display: none;
+            border: 1px solid;
+        }
+        body.is-admin .admin-action-btn {
+            display: inline-block;
+        }
+        .btn-hide {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.4);
+            color: #f87171;
+        }
+        .btn-show {
+            background: rgba(52, 211, 153, 0.2);
+            border-color: rgba(52, 211, 153, 0.4);
+            color: #34d399;
+        }
     </style>
 </head>
 <body>
@@ -431,15 +473,18 @@
         "sovkombank-vsekarty": "c292azIwMjY=",
         "avito": "YXZpdG9vbmlj",
         "tbank": "dGJhbms4ODg=",
+        "drive-transit": "ZHJpdmV0cmFuc2l0MjAyNg==",
         "lenta": "bGVudExvMTE=",
         "yandex-pay": "eWFuZGV4cGF5",
         "2gis": "Z2lzbWFwczM=",
-        "psb": "cHNidGVhMDE=",
-        "drive-transit": "ZHJpdmV0cmFuc2l0MjAyNg=="
+        "psb": "cHNidGVhMDE="
     };
 
     // Главный пароль сайта (закодирован в Base64)
     const ENCODED_SITE_PASSWORD = "Q2F0YWxvZzIwMjZfc2VjdXJl";
+
+    // Пароль для входа в админ-панель (закодирован в Base64: "admin2026")
+    const ENCODED_ADMIN_PASSWORD = "YWRtaW4yMDI2";
 
     let selectedAppUrl = "";
     let selectedAppKey = "";
@@ -455,6 +500,13 @@
             authContainer.style.display = "block";
         }
 
+        // Проверка сохраненного статуса админа
+        if (localStorage.getItem("is_admin_mode") === "true") {
+            document.body.classList.add("is-admin");
+        }
+
+        updateAppsVisibility();
+
         document.getElementById("passInput").addEventListener("keydown", function(e) {
             if (e.key === "Enter") submitPassword();
         });
@@ -462,7 +514,97 @@
         document.getElementById("appPassInput").addEventListener("keydown", function(e) {
             if (e.key === "Enter") submitAppPassword();
         });
+
+        document.getElementById("adminPassInput").addEventListener("keydown", function(e) {
+            if (e.key === "Enter") submitAdminPassword();
+        });
     });
+
+    // Открытие окна входа в админку
+    function openAdminAuth() {
+        if (localStorage.getItem("is_admin_mode") === "true") {
+            // Если уже админ — сразу открываем панель управления прямо в каталоге
+            openSheet();
+            return;
+        }
+        document.getElementById('mainApp').style.display = 'none';
+        document.getElementById('adminAuthApp').style.display = 'block';
+        document.getElementById('adminPassInput').value = '';
+        document.getElementById('adminPassError').style.display = 'none';
+        document.getElementById('adminPassInput').focus();
+    }
+
+    function cancelAdminAuth() {
+        document.getElementById('adminAuthApp').style.display = 'none';
+        document.getElementById('mainApp').style.display = 'block';
+    }
+
+    function submitAdminPassword() {
+        const input = document.getElementById("adminPassInput");
+        const errorMsg = document.getElementById("adminPassError");
+
+        const val = input.value.trim();
+        if (safeBtoa(val) === ENCODED_ADMIN_PASSWORD) {
+            localStorage.setItem("is_admin_mode", "true");
+            document.body.classList.add("is-admin");
+            document.getElementById("adminAuthApp").style.display = "none";
+            document.getElementById("mainApp").style.display = "block";
+            openSheet();
+            return;
+        }
+
+        errorMsg.style.display = "block";
+        input.value = "";
+        input.focus();
+    }
+
+    // Переключение видимости конкретного приложения
+    function toggleAppVisibility(appKey, event) {
+        event.stopPropagation();
+        let hiddenApps = JSON.parse(localStorage.getItem("hidden_apps") || "[]");
+        
+        const index = hiddenApps.indexOf(appKey);
+        if (index > -1) {
+            hiddenApps.splice(index, 1); // показать обратно
+        } else {
+            hiddenApps.push(appKey); // скрыть
+        }
+        
+        localStorage.setItem("hidden_apps", JSON.stringify(hiddenApps));
+        updateAppsVisibility();
+    }
+
+    // Обновление состояния элементов в списке
+    function updateAppsVisibility() {
+        let hiddenApps = JSON.parse(localStorage.getItem("hidden_apps") || "[]");
+        
+        document.querySelectorAll(".sheet-item").forEach(item => {
+            const key = item.getAttribute("data-key");
+            const hr = item.nextElementSibling;
+            const btn = item.querySelector(".admin-action-btn");
+            
+            if (hiddenApps.includes(key)) {
+                if (!document.body.classList.contains("is-admin")) {
+                    item.style.display = "none";
+                    if (hr && hr.classList.contains("divider-hr")) hr.style.display = "none";
+                } else {
+                    item.style.display = "flex";
+                    if (hr && hr.classList.contains("divider-hr")) hr.style.display = "block";
+                }
+                if (btn) {
+                    btn.textContent = "Включить";
+                    btn.className = "admin-action-btn btn-show";
+                }
+            } else {
+                item.style.display = "flex";
+                if (hr && hr.classList.contains("divider-hr")) hr.style.display = "block";
+                if (btn) {
+                    btn.textContent = "Скрыть";
+                    btn.className = "admin-action-btn btn-hide";
+                }
+            }
+        });
+    }
 
     function safeBtoa(str) {
         try {
@@ -494,6 +636,7 @@
     }
 
     function openSheet() {
+        updateAppsVisibility();
         document.getElementById('sheetOverlay').classList.add('active');
     }
 
@@ -563,7 +706,6 @@
             toast.classList.remove('show');
         }, 5000);
 
-        // Мгновенный вызов протокола itms-services без задержек для Safari
         window.location.href = selectedAppUrl;
     }
 </script>
@@ -597,6 +739,18 @@
     </div>
 </div>
 
+<!-- Авторизация в Админ-панель -->
+<div class="container" id="adminAuthApp" style="display: none;">
+    <div class="auth-box">
+        <div class="auth-title">👑 Вход для админа</div>
+        <div style="font-size: 13px; color: #cbd5e1;">Введите пароль администратора:</div>
+        <input type="password" id="adminPassInput" class="auth-input" placeholder="Пароль администратора..." autocomplete="off">
+        <div id="adminPassError" class="auth-error">Неверный пароль! Попробуйте снова.</div>
+        <button type="button" class="btn" onclick="submitAdminPassword()">Войти в панель</button>
+        <button type="button" class="btn btn-secondary" onclick="cancelAdminAuth()">Назад</button>
+    </div>
+</div>
+
 <!-- Каталог -->
 <div class="container" id="mainApp" style="display: none;">
     <div class="header-section">
@@ -623,6 +777,11 @@
 
         <div id="toast" class="toast">🚀 Загрузка началась! Проверьте главный экран устройства.</div>
     </div>
+
+    <!-- Кнопка админ-панели в самом низу сайта -->
+    <button type="button" class="btn-admin-trigger" onclick="openAdminAuth()">
+        ⚙️ Админ-панель
+    </button>
 </div>
 
 <!-- Модальное окно выбора с обводкой по центру -->
@@ -634,63 +793,74 @@
         </div>
         <div class="sheet-list">
             
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk.plist', 'ВКонтакте', 'vk')">
+            <div class="sheet-item" data-key="vk" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk.plist', 'ВКонтакте', 'vk')">
                 <span>ВКонтакте</span>
+                <button class="admin-action-btn btn-hide" onclick="toggleAppVisibility('vk', event)">Скрыть</button>
             </div>
             <hr class="divider-hr">
 
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/max.plist', 'MAX', 'max')">
+            <div class="sheet-item" data-key="max" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/max.plist', 'MAX', 'max')">
                 <span>MAX</span>
+                <button class="admin-action-btn btn-hide" onclick="toggleAppVisibility('max', event)">Скрыть</button>
             </div>
             <hr class="divider-hr">
 
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk-video.plist', 'VK Видео', 'vk-video')">
+            <div class="sheet-item" data-key="vk-video" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk-video.plist', 'VK Видео', 'vk-video')">
                 <span>VK Видео</span>
+                <button class="admin-action-btn btn-hide" onclick="toggleAppVisibility('vk-video', event)">Скрыть</button>
             </div>
             <hr class="divider-hr">
 
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sber.plist', 'СБЕР(Учёт Онлайн)', 'sber')">
+            <div class="sheet-item" data-key="sber" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sber.plist', 'СБЕР(Учёт Онлайн)', 'sber')">
                 <span>СБЕР(Учёт Онлайн)</span>
+                <button class="admin-action-btn btn-hide" onclick="toggleAppVisibility('sber', event)">Скрыть</button>
             </div>
             <hr class="divider-hr">
 
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sovkombank-vsekarty.plist', 'Совкомбанк (Все карты MDS)', 'sovkombank-vsekarty')">
+            <div class="sheet-item" data-key="sovkombank-vsekarty" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sovkombank-vsekarty.plist', 'Совкомбанк (Все карты MDS)', 'sovkombank-vsekarty')">
                 <span>Совкомбанк (Все карты MDS)</span>
+                <button class="admin-action-btn btn-hide" onclick="toggleAppVisibility('sovkombank-vsekarty', event)">Скрыть</button>
             </div>
             <hr class="divider-hr">
 
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/avito.plist', 'Авито', 'avito')">
+            <div class="sheet-item" data-key="avito" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/avito.plist', 'Авито', 'avito')">
                 <span>Авито</span>
+                <button class="admin-action-btn btn-hide" onclick="toggleAppVisibility('avito', event)">Скрыть</button>
             </div>
             <hr class="divider-hr">
 
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/tbank.plist', 'Т-Банк(8PRO)', 'tbank')">
+            <div class="sheet-item" data-key="tbank" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/tbank.plist', 'Т-Банк(8PRO)', 'tbank')">
                 <span>Т-Банк(8PRO)</span>
+                <button class="admin-action-btn btn-hide" onclick="toggleAppVisibility('tbank', event)">Скрыть</button>
             </div>
             <hr class="divider-hr">
 
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/drive-transit.plist', 'Drive Transit', 'drive-transit')">
-                <span>Т-Банк (Drive Transit)</span>
+            <div class="sheet-item" data-key="drive-transit" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/drive-transit.plist', 'Drive Transit', 'drive-transit')">
+                <span>Drive Transit</span>
+                <button class="admin-action-btn btn-hide" onclick="toggleAppVisibility('drive-transit', event)">Скрыть</button>
             </div>
             <hr class="divider-hr">
 
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/lenta.plist', 'Лента', 'lenta')">
-                <span>Лента</span>
+            <div class="sheet-item" data-key="lenta" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/lenta.plist', 'Лента', 'lenta')">
+                <button class="admin-action-btn btn-hide" onclick="toggleAppVisibility('lenta', event)">Скрыть</button>
             </div>
             <hr class="divider-hr">
 
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/yandex-pay.plist', 'Яндекс Пэй', 'yandex-pay')">
+            <div class="sheet-item" data-key="yandex-pay" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/yandex-pay.plist', 'Яндекс Пэй', 'yandex-pay')">
                 <span>Яндекс Пэй</span>
+                <button class="admin-action-btn btn-hide" onclick="toggleAppVisibility('yandex-pay', event)">Скрыть</button>
             </div>
             <hr class="divider-hr">
 
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/2gis.plist', '2ГИС', '2gis')">
+            <div class="sheet-item" data-key="2gis" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/2gis.plist', '2ГИС', '2gis')">
                 <span>2ГИС</span>
+                <button class="admin-action-btn btn-hide" onclick="toggleAppVisibility('2gis', event)">Скрыть</button>
             </div>
             <hr class="divider-hr">
 
-            <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/psb.plist', 'ПСБ (Чайная Церемония)', 'psb')">
+            <div class="sheet-item" data-key="psb" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/psb.plist', 'ПСБ (Чайная Церемония)', 'psb')">
                 <span>ПСБ (Чайная Церемония)</span>
+                <button class="admin-action-btn btn-hide" onclick="toggleAppVisibility('psb', event)">Скрыть</button>
             </div>
 
         </div>
