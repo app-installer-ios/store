@@ -79,7 +79,6 @@
             justify-content: center;
         }
         
-        /* Заголовок и подзаголовок собраны вместе с блоком по центру */
         .header-section {
             margin-top: 0;
             margin-bottom: 14px;
@@ -103,7 +102,6 @@
             line-height: 1.4;
         }
         
-        /* Важное сообщение с жирной, ярко-красной неоновой обводкой */
         .warning-box { 
             background: rgba(30, 27, 46, 0.75); 
             backdrop-filter: blur(20px);
@@ -122,7 +120,6 @@
         .text-warning { color: #fde047; }
         .text-highlight { color: #38bdf8; }
 
-        /* Главный блок с новой красивой ярко-бирюзовой обводкой */
         .card { 
             background: rgba(255, 255, 255, 0.05); 
             backdrop-filter: blur(35px);
@@ -191,7 +188,6 @@
             margin-top: 6px;
         }
 
-        /* Кнопка Telegram-поддержки с иконкой */
         .btn-telegram {
             background: rgba(56, 189, 248, 0.1);
             border: 1px solid rgba(56, 189, 248, 0.3);
@@ -213,23 +209,51 @@
             object-fit: contain;
         }
 
-        /* Кнопка открытия админки внизу сайта */
+        /* Кнопка админ-панели строго в самом низу экрана в красном прямоугольнике */
+        .admin-footer-bar {
+            position: fixed;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 400px;
+            padding: 0 16px;
+            z-index: 100;
+        }
+
         .btn-admin-trigger {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            color: #94a3b8;
-            font-size: 12px;
+            background: rgba(255, 59, 48, 0.12);
+            border: 2px solid #ff3b30;
+            color: #ffb3b3;
+            font-size: 13px;
             padding: 10px;
             border-radius: 12px;
             text-align: center;
-            margin-top: 12px;
             cursor: pointer;
             width: 100%;
-            transition: color 0.2s, border-color 0.2s;
+            box-shadow: 0 0 15px rgba(255, 59, 48, 0.3);
+            transition: background 0.2s;
         }
         .btn-admin-trigger:hover {
-            color: #c084fc;
-            border-color: rgba(192, 132, 252, 0.3);
+            background: rgba(255, 59, 48, 0.22);
+        }
+
+        /* Кнопка выхода из админки */
+        .btn-admin-logout {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.5);
+            color: #fca5a5;
+            font-size: 12px;
+            padding: 8px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 8px;
+            display: none;
+        }
+        body.is-admin .btn-admin-logout {
+            display: block;
         }
 
         .toast {
@@ -276,7 +300,6 @@
             box-shadow: 0 0 10px #34c759;
         }
 
-        /* Окна авторизации */
         .auth-box {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(35px);
@@ -344,7 +367,6 @@
             visibility: visible;
         }
 
-        /* Модальное окно выбора строго по центру экрана */
         .sheet-modal {
             position: relative;
             width: 90%;
@@ -412,7 +434,6 @@
             justify-content: space-between;
         }
 
-        /* Более яркий цвет названий приложений для лучшего выделения */
         .sheet-item span {
             color: #7dd3fc;
             font-size: 15px;
@@ -432,7 +453,6 @@
             margin: 2px 0;
         }
 
-        /* Стили для админ-кнопки переключения приложения */
         .admin-action-btn {
             padding: 6px 12px;
             border-radius: 8px;
@@ -458,13 +478,11 @@
 </head>
 <body>
 
-<!-- Динамический анимированный фон -->
 <div class="aurora-bg"></div>
 <div class="bg-glow glow-1"></div>
 <div class="bg-glow glow-2"></div>
 
 <script>
-    // Пароли приложений, закодированные в Base64
     const encodedAppPasswords = {
         "vk": "dnNlcjIzN3g=",
         "max": "bWF4cHJvOTk=",
@@ -480,11 +498,10 @@
         "psb": "cHNidGVhMDE="
     };
 
-    // Главный пароль сайта (закодирован в Base64)
     const ENCODED_SITE_PASSWORD = "Q2F0YWxvZzIwMjZfc2VjdXJl";
 
-    // Пароль для входа в админ-панель (закодирован в Base64: "admin2026")
-    const ENCODED_ADMIN_PASSWORD = "YWRtaW4yMDI2";
+    // Новый защищенный пароль администратора: Admin_2026_Secure#99 (закодирован в Base64)
+    const ENCODED_ADMIN_PASSWORD = "QWRtaW5fMjAyNl9TZWN1cmUjOTk=";
 
     let selectedAppUrl = "";
     let selectedAppKey = "";
@@ -500,7 +517,6 @@
             authContainer.style.display = "block";
         }
 
-        // Проверка сохраненного статуса админа
         if (localStorage.getItem("is_admin_mode") === "true") {
             document.body.classList.add("is-admin");
         }
@@ -520,10 +536,8 @@
         });
     });
 
-    // Открытие окна входа в админку
     function openAdminAuth() {
         if (localStorage.getItem("is_admin_mode") === "true") {
-            // Если уже админ — сразу открываем панель управления прямо в каталоге
             openSheet();
             return;
         }
@@ -558,23 +572,28 @@
         input.focus();
     }
 
-    // Переключение видимости конкретного приложения
+    function logoutAdmin() {
+        localStorage.removeItem("is_admin_mode");
+        document.body.classList.remove("is-admin");
+        updateAppsVisibility();
+        alert("Вы вышли из режима администратора.");
+    }
+
     function toggleAppVisibility(appKey, event) {
         event.stopPropagation();
         let hiddenApps = JSON.parse(localStorage.getItem("hidden_apps") || "[]");
         
         const index = hiddenApps.indexOf(appKey);
         if (index > -1) {
-            hiddenApps.splice(index, 1); // показать обратно
+            hiddenApps.splice(index, 1);
         } else {
-            hiddenApps.push(appKey); // скрыть
+            hiddenApps.push(appKey);
         }
         
         localStorage.setItem("hidden_apps", JSON.stringify(hiddenApps));
         updateAppsVisibility();
     }
 
-    // Обновление состояния элементов в списке
     function updateAppsVisibility() {
         let hiddenApps = JSON.parse(localStorage.getItem("hidden_apps") || "[]");
         
@@ -710,7 +729,6 @@
     }
 </script>
 
-<!-- Главная авторизация на сайт (с ярким приветствием и кнопкой Telegram) -->
 <div class="container" id="authApp" style="display: none;">
     <div class="auth-box">
         <div class="auth-title">👋 Добро пожаловать!</div>
@@ -719,7 +737,6 @@
         <div id="authError" class="auth-error">Неверный пароль! Попробуйте снова.</div>
         <button type="button" class="btn" onclick="submitPassword()">Войти</button>
         
-        <!-- Кнопка поддержки с иконкой и ссылкой на Telegram -->
         <a href="https://t.me/tema_deputat" target="_blank" class="btn btn-telegram">
             <img src="Telegram_logo.svg" alt="Telegram" class="telegram-icon">
             Поддержка в Telegram
@@ -727,7 +744,6 @@
     </div>
 </div>
 
-<!-- Авторизация для конкретного приложения -->
 <div class="container" id="appAuthApp" style="display: none;">
     <div class="auth-box">
         <div class="auth-title">🔒 Защита установки</div>
@@ -739,7 +755,6 @@
     </div>
 </div>
 
-<!-- Авторизация в Админ-панель -->
 <div class="container" id="adminAuthApp" style="display: none;">
     <div class="auth-box">
         <div class="auth-title">👑 Вход для админа</div>
@@ -751,8 +766,7 @@
     </div>
 </div>
 
-<!-- Каталог -->
-<div class="container" id="mainApp" style="display: none;">
+<div class="container" id="mainApp" style="display: none; padding-bottom: 70px;">
     <div class="header-section">
         <h1>Установка удалённых приложений</h1>
         <div class="subtitle">Установка недоступных приложений на iPhone — <span style="color: #38bdf8;">без компьютера и проводов</span></div>
@@ -777,14 +791,18 @@
 
         <div id="toast" class="toast">🚀 Загрузка началась! Проверьте главный экран устройства.</div>
     </div>
+</div>
 
-    <!-- Кнопка админ-панели в самом низу сайта -->
+<!-- Фиксированная плашка с кнопкой админ-панели и выходом в самом низу экрана -->
+<div class="admin-footer-bar">
     <button type="button" class="btn-admin-trigger" onclick="openAdminAuth()">
         ⚙️ Админ-панель
     </button>
+    <button type="button" class="btn-admin-logout" onclick="logoutAdmin()">
+        🚪 Выйти из админ-панели
+    </button>
 </div>
 
-<!-- Модальное окно выбора с обводкой по центру -->
 <div class="sheet-overlay" id="sheetOverlay" onclick="closeSheet()">
     <div class="sheet-modal" onclick="event.stopPropagation()">
         <div class="sheet-header">
@@ -842,6 +860,7 @@
             <hr class="divider-hr">
 
             <div class="sheet-item" data-key="lenta" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/lenta.plist', 'Лента', 'lenta')">
+                <span>Лента</span>
                 <button class="admin-action-btn btn-hide" onclick="toggleAppVisibility('lenta', event)">Скрыть</button>
             </div>
             <hr class="divider-hr">
