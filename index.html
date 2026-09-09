@@ -319,7 +319,6 @@
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 4px;
         }
 
         .sheet-item {
@@ -339,32 +338,36 @@
             background: rgba(99, 102, 241, 0.2);
             color: #a855f7;
         }
+
+        .divider-hr {
+            border: none;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            margin: 2px 0;
+        }
     </style>
 </head>
 <body>
 
 <script>
-    // Зашифрованные пароли (Base64) для каждого приложения индивидуально
     const encodedAppPasswords = {
-        "vk": "dmstMzIx",                  // пароль: vk321
-        "max": "bWF4OTk5",                 // пароль: max999
-        "vk-video": "dmlkZW83Nzc=",        // пароль: video777
-        "sber": "c2JlcjExMQ==",            // пароль: sber111
-        "sovkombank-vsekarty": "c292azIyMg==", // пароль: sovk222
-        "mail": "bWFpbDMzMw==",            // пароль: mail333
-        "vtb": "dnRiNDE0",                 // пароль: vtb414
-        "avito": "YXZpdG81NTU=",           // пароль: avito555
-        "tbank": "dGJhbms2Njk=",           // пароль: tbank669
-        "lenta": "bGVudGE3MTI=",           // пароль: lenta712
-        "yandex-pay": "eWE4ODg=",          // пароль: ya888
-        "vkmusic": "bXVzaWM5OTA=",         // пароль: music990
-        "vk2": "dmsyMDA=",                 // пароль: vk200
-        "2gis": "ZGdpczMzMg==",            // пароль: 2gis332
-        "psb": "cHNiOTQ5"                  // пароль: psb949
+        "vk": "dmstMzIx",
+        "max": "bWF4OTk5",
+        "vk-video": "dmlkZW83Nzc=",
+        "sber": "c2JlcjExMQ==",
+        "sovkombank-vsekarty": "c292azIyMg==",
+        "mail": "bWFpbDMzMw==",
+        "vtb": "dnRiNDE0",
+        "avito": "YXZpdG81NTU=",
+        "tbank": "dGJhbms2Njk=",
+        "lenta": "bGVudGE3MTI=",
+        "yandex-pay": "eWE4ODg=",
+        "vkmusic": "bXVzaWM5OTA=",
+        "vk2": "dmsyMDA=",
+        "2gis": "ZGdpczMzMg==",
+        "psb": "cHNiOTQ5"
     };
 
-    // Зашифрованный пароль для входа в сам каталог (Base64)
-    const ENCODED_SITE_PASSWORD = "c2l0ZXBhc3MyMDI2"; // пароль: sitepass2026
+    const ENCODED_SITE_PASSWORD = "c2l0ZXBhc3MyMDI2";
 
     let selectedAppUrl = "";
     let selectedAppKey = "";
@@ -570,58 +573,72 @@
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vk.plist', 'ВКонтакте', 'vk')">
                 <span>ВКонтакте</span>
             </div>
+            <hr class="divider-hr">
 
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/max.plist', 'MAX', 'max')">
                 <span>MAX</span>
             </div>
+            <hr class="divider-hr">
 
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vk-video.plist', 'VK Видео', 'vk-video')">
                 <span>VK Видео</span>
             </div>
+            <hr class="divider-hr">
 
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/sber.plist', 'СБЕР(Учёт Онлайн)', 'sber')">
                 <span>СБЕР(Учёт Онлайн)</span>
             </div>
+            <hr class="divider-hr">
 
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/sovkombank-vsekarty.plist', 'Совкомбанк (Все карты MDS)', 'sovkombank-vsekarty')">
                 <span>Совкомбанк (Все карты MDS)</span>
             </div>
+            <hr class="divider-hr">
 
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/mail.plist', 'Почта Mail.ru', 'mail')">
                 <span>Почта Mail.ru</span>
             </div>
+            <hr class="divider-hr">
 
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vtb.plist', 'ВТБ (Сириус)', 'vtb')">
                 <span>ВТБ (Сириус)</span>
             </div>
+            <hr class="divider-hr">
 
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/avito.plist', 'Авито', 'avito')">
                 <span>Авито</span>
             </div>
+            <hr class="divider-hr">
 
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/tbank.plist', 'Т-Банк(8PRO)', 'tbank')">
                 <span>Т-Банк(8PRO)</span>
             </div>
+            <hr class="divider-hr">
 
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/lenta.plist', 'Лента', 'lenta')">
                 <span>Лента</span>
             </div>
+            <hr class="divider-hr">
 
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/yandex-pay.plist', 'Яндекс Пэй', 'yandex-pay')">
                 <span>Яндекс Пэй</span>
             </div>
+            <hr class="divider-hr">
 
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vkmusic.plist', 'ВК Музыка', 'vkmusic')">
                 <span>ВК Музыка</span>
             </div>
+            <hr class="divider-hr">
 
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/vk2.plist', 'VK(Version 2)', 'vk2')">
                 <span>ВКонтакте(v2)</span>
             </div>
+            <hr class="divider-hr">
 
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/2gis.plist', '2ГИС', '2gis')">
                 <span>2ГИС</span>
             </div>
+            <hr class="divider-hr">
 
             <div class="sheet-item" onclick="selectApp(this, 'itms-services://?action=download-manifest&amp;url=https://app-installer-ios.github.io/store/psb.plist', 'ПСБ (Чайная Церемония)', 'psb')">
                 <span>ПСБ (Чайная Церемония)</span>
