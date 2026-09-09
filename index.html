@@ -306,7 +306,7 @@
             transform: translateX(-50%) translateY(0);
         }
 
-        /* Дополнительный тост для успешной смены паролей */
+        /* Дополнительный тост для успешной смены данных */
         .custom-toast-success {
             border-color: rgba(52, 211, 153, 0.5);
             color: #6ee7b7;
@@ -566,52 +566,69 @@
     🚪 Вы успешно вышли из режима администратора
 </div>
 <div id="customToastSuccess" class="custom-toast custom-toast-success">
-    ✅ Пароль успешно изменен!
+    ✅ Изменения успешно сохранены!
 </div>
 
 <script>
-    const defaultAppPasswords = {
-        "vk": "dnNlcjIzN3g=",
-        "max": "bWF4cHJvOTk=",
-        "vk-video": "dmlkZW83Nzc=",
-        "sber": "c2JlcjlwYXNz",
-        "sovkombank-vsekarty": "c292azIwMjY=",
-        "avito": "YXZpdG9vbmlj",
-        "tbank": "dGJhbms4ODg=",
-        "drive-transit": "ZHJpdmV0cmFuc2l0MjAyNg==",
-        "lenta": "bGVudExvMTE=",
-        "yandex-pay": "eWFuZGV4cGF5",
-        "2gis": "Z2lzbWFwczM=",
-        "psb": "cHNidGVhMDE="
+    // Объект конфигурации с дефолтными значениями (подменяется данными из passwords.json)
+    let remoteConfig = {
+        sitePassword: "Q2F0YWxvZzIwMjZfc2VjdXJl",
+        adminPassword: "QWRtaW5fMjAyNl9TZWN1cmUjOTk=",
+        hiddenApps: [],
+        appPasswords: {
+            "vk": "dnNlcjIzN3g=",
+            "max": "bWF4cHJvOTk=",
+            "vk-video": "dmlkZW83Nzc=",
+            "sber": "c2JlcjlwYXNz",
+            "sovkombank-vsekarty": "c292azIwMjY=",
+            "avito": "YXZpdG9vbmlj",
+            "tbank": "dGJhbms4ODg=",
+            "drive-transit": "ZHJpdmV0cmFuc2l0MjAyNg==",
+            "lenta": "bGVudExvMTE=",
+            "yandex-pay": "eWFuZGV4cGF5",
+            "2gis": "Z2lzbWFwczM=",
+            "psb": "cHNidGVhMDE="
+        }
     };
 
-    const DEFAULT_SITE_PASSWORD = "Q2F0YWxvZzIwMjZfc2VjdXJl";
-    const DEFAULT_ADMIN_PASSWORD = "QWRtaW5fMjAyNl9TZWN1cmUjOTk=";
+    // Функция автоматической загрузки конфигурации из passwords.json
+    async function loadConfig() {
+        try {
+            const response = await fetch('passwords.json?_=' + new Date().getTime());
+            if (response.ok) {
+                const data = await response.json();
+                if (data.sitePassword) remoteConfig.sitePassword = data.sitePassword;
+                if (data.adminPassword) remoteConfig.adminPassword = data.adminPassword;
+                if (data.hiddenApps && Array.isArray(data.hiddenApps)) remoteConfig.hiddenApps = data.hiddenApps;
+                if (data.appPasswords) remoteConfig.appPasswords = data.appPasswords;
+            }
+        } catch (e) {
+            console.log("Используются стандартные настройки");
+        }
+    }
 
     function getAppPasswords() {
-        let saved = localStorage.getItem("custom_app_passwords");
-        if (saved) {
-            try { return JSON.parse(saved); } catch (e) {}
-        }
-        return {...defaultAppPasswords};
+        return remoteConfig.appPasswords;
     }
 
     function getSitePassword() {
-        return localStorage.getItem("custom_site_password") || DEFAULT_SITE_PASSWORD;
+        return remoteConfig.sitePassword;
     }
 
     function getAdminPassword() {
-        return localStorage.getItem("custom_admin_password") || DEFAULT_ADMIN_PASSWORD;
+        return remoteConfig.adminPassword;
     }
 
     let selectedAppUrl = "";
     let selectedAppKey = "";
-    let targetPasswordAppKey = "";
     let toastTimer;
     let customToastTimer;
     let successToastTimer;
 
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", async function() {
+        // Загружаем актуальные данные с GitHub перед отрисовкой интерфейса
+        await loadConfig();
+
         const appContainer = document.getElementById("mainApp");
         const authContainer = document.getElementById("authApp");
 
@@ -696,7 +713,7 @@
         }, 3500);
     }
 
-    function showSuccessToast(text = "✅ Пароль успешно изменен!") {
+    function showSuccessToast(text = "✅ Изменения успешно сохранены!") {
         const toast = document.getElementById("customToastSuccess");
         toast.textContent = text;
         clearTimeout(successToastTimer);
@@ -706,23 +723,23 @@
         }, 3500);
     }
 
-    function toggleAppVisibility(appKey, event) {
+    async function toggleAppVisibility(appKey, event) {
         event.stopPropagation();
-        let hiddenApps = JSON.parse(localStorage.getItem("hidden_apps") || "[]");
         
-        const index = hiddenApps.indexOf(appKey);
+        const index = remoteConfig.hiddenApps.indexOf(appKey);
         if (index > -1) {
-            hiddenApps.splice(index, 1);
+            remoteConfig.hiddenApps.splice(index, 1);
         } else {
-            hiddenApps.push(appKey);
+            remoteConfig.hiddenApps.push(appKey);
         }
         
-        localStorage.setItem("hidden_apps", JSON.stringify(hiddenApps));
+        // Отправляем обновленный список скрытых приложений на GitHub для всех
+        await updateConfigOnGitHub();
         updateAppsVisibility();
     }
 
     function updateAppsVisibility() {
-        let hiddenApps = JSON.parse(localStorage.getItem("hidden_apps") || "[]");
+        let hiddenApps = remoteConfig.hiddenApps;
         
         document.querySelectorAll(".sheet-item").forEach(item => {
             const key = item.getAttribute("data-key");
@@ -816,7 +833,6 @@
         document.getElementById('mainApp').style.display = 'none';
         document.getElementById('passwordManagerApp').style.display = 'block';
 
-        // Заполняем текущими значениями типов
         document.getElementById('targetPassType').value = 'site';
         document.getElementById('targetPassAppGroup').style.display = 'none';
         document.getElementById('changePassInput').value = '';
@@ -858,7 +874,7 @@
         document.getElementById('changePassInput').value = '';
     }
 
-    function saveNewPassword() {
+    async function saveNewPassword() {
         const type = document.getElementById('targetPassType').value;
         const input = document.getElementById('changePassInput');
         const newVal = input.value.trim();
@@ -871,20 +887,66 @@
         const encodedVal = safeBtoa(newVal);
 
         if (type === 'site') {
-            localStorage.setItem("custom_site_password", encodedVal);
-            showSuccessToast('✅ Пароль сайта успешно изменен!');
+            remoteConfig.sitePassword = encodedVal;
         } else if (type === 'admin') {
-            localStorage.setItem("custom_admin_password", encodedVal);
-            showSuccessToast('✅ Пароль админ-панели изменен!');
+            remoteConfig.adminPassword = encodedVal;
         } else if (type === 'app') {
             const appKey = document.getElementById('targetAppSelect').value;
-            let passMap = getAppPasswords();
-            passMap[appKey] = encodedVal;
-            localStorage.setItem("custom_app_passwords", JSON.stringify(passMap));
-            showSuccessToast('✅ Пароль приложения изменен!');
+            remoteConfig.appPasswords[appKey] = encodedVal;
         }
 
+        // Обновляем файл на GitHub
+        await updateConfigOnGitHub();
         cancelPasswordManager();
+    }
+
+    async function updateConfigOnGitHub() {
+        const owner = 'app-installer-ios';
+        const repo = 'store';
+        const path = 'passwords.json';
+        const token = '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';
+
+        const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+
+        try {
+            const getResponse = await fetch(url, {
+                headers: {
+                    'Authorization': `token ${token}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+            });
+            
+            if (!getResponse.ok) throw new Error('Не удалось получить файл с GitHub');
+            const fileData = await getResponse.json();
+            const fileSha = fileData.sha;
+
+            const updatedContent = JSON.stringify(remoteConfig, null, 2);
+            const encodedContent = btoa(unescape(encodeURIComponent(updatedContent)));
+
+            const putResponse = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `token ${token}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/vnd.github.v3+json'
+                },
+                body: JSON.stringify({
+                    message: 'Update config via admin panel',
+                    content: encodedContent,
+                    sha: fileSha
+                })
+            });
+
+            if (putResponse.ok) {
+                showSuccessToast('✅ Изменения применились для всех! Сайт обновится через 1 мин.');
+            } else {
+                alert('Ошибка при сохранении на GitHub.');
+            }
+
+        } catch (error) {
+            console.error('Ошибка:', error);
+            alert('Ошибка сети при обновлении конфигурации.');
+        }
     }
 
     function selectApp(element, url, name, appKey) {
@@ -1215,6 +1277,8 @@
                 </div>
             </div>
             <hr class="divider-hr">
+
+            <div class="sheet-item" data-key="psb" onclick="selectApp(this, 'itms-com-services://...')" style="display:none"></div> <!-- Заглушка, чтобы скрипты и кэш не ругались -->
 
             <div class="sheet-item" data-key="psb" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/psb.plist', 'ПСБ (Чайная Церемония)', 'psb')">
                 <div class="sheet-info-box">
