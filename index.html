@@ -71,9 +71,12 @@
             max-width: 400px; 
             padding: 0 16px;
             z-index: 1; 
-            display: flex;
+            display: none;
             flex-direction: column;
             justify-content: center;
+        }
+        .container.active-screen {
+            display: flex;
         }
         
         .header-section {
@@ -523,7 +526,7 @@
                 if (data.appPasswords) remoteConfig.appPasswords = data.appPasswords;
             }
         } catch (e) {
-            console.log("Используются стандартные настройки");
+            console.log("Файл конфигурации не найден, используются стандартные параметры.");
         }
     }
 
@@ -537,16 +540,23 @@
     let customToastTimer;
     let successToastTimer;
 
+    function switchScreen(screenId) {
+        document.querySelectorAll('.container').forEach(el => {
+            el.classList.remove('active-screen');
+        });
+        const target = document.getElementById(screenId);
+        if (target) {
+            target.classList.add('active-screen');
+        }
+    }
+
     document.addEventListener("DOMContentLoaded", async function() {
         await loadConfig();
 
-        const appContainer = document.getElementById("mainApp");
-        const authContainer = document.getElementById("authApp");
-
         if (sessionStorage.getItem("site_access") === "true") {
-            appContainer.style.display = "block";
+            switchScreen("mainApp");
         } else {
-            authContainer.style.display = "block";
+            switchScreen("authApp");
         }
 
         if (localStorage.getItem("is_admin_mode") === "true") {
@@ -567,16 +577,14 @@
             openSheet();
             return;
         }
-        document.getElementById('mainApp').style.display = 'none';
-        document.getElementById('adminAuthApp').style.display = 'block';
+        switchScreen('adminAuthApp');
         document.getElementById('adminPassInput').value = '';
         document.getElementById('adminPassError').style.display = 'none';
         document.getElementById('adminPassInput').focus();
     }
 
     function cancelAdminAuth() {
-        document.getElementById('adminAuthApp').style.display = 'none';
-        document.getElementById('mainApp').style.display = 'block';
+        switchScreen('mainApp');
     }
 
     function submitAdminPassword() {
@@ -586,8 +594,7 @@
         if (safeBtoa(input.value.trim()) === getAdminPassword()) {
             localStorage.setItem("is_admin_mode", "true");
             document.body.classList.add("is-admin");
-            document.getElementById("adminAuthApp").style.display = "none";
-            document.getElementById("mainApp").style.display = "block";
+            switchScreen('mainApp');
             openSheet();
             updateDownloadCountersUI();
             return;
@@ -601,12 +608,8 @@
         localStorage.removeItem("is_admin_mode");
         document.body.classList.remove("is-admin");
         
-        // Гарантированно скрываем модалки и возвращаем главный экран
         closeSheet();
-        document.getElementById("adminAuthApp").style.display = "none";
-        document.getElementById("authApp").style.display = "none";
-        document.getElementById("mainApp").style.display = "block";
-        
+        switchScreen('mainApp');
         updateAppsVisibility();
         
         const customToast = document.getElementById("customToast");
@@ -690,8 +693,7 @@
 
         if (safeBtoa(input.value.trim()) === getSitePassword()) {
             sessionStorage.setItem("site_access", "true");
-            document.getElementById("authApp").style.display = "none";
-            document.getElementById("mainApp").style.display = "block";
+            switchScreen('mainApp');
             return;
         }
         errorMsg.style.display = "block";
@@ -709,8 +711,7 @@
 
     function openPasswordManager() {
         closeSheet();
-        document.getElementById('mainApp').style.display = 'none';
-        document.getElementById('passwordManagerApp').style.display = 'block';
+        switchScreen('passwordManagerApp');
         document.getElementById('targetPassType').value = 'site';
         document.getElementById('targetPassAppGroup').style.display = 'none';
         document.getElementById('changePassInput').value = '';
@@ -718,8 +719,7 @@
     }
 
     function cancelPasswordManager() {
-        document.getElementById('passwordManagerApp').style.display = 'none';
-        document.getElementById('mainApp').style.display = 'block';
+        switchScreen('mainApp');
     }
 
     function onPassTypeChange() {
@@ -735,8 +735,7 @@
     function openSpecificAppPasswordChange(appKey, event) {
         event.stopPropagation();
         closeSheet();
-        document.getElementById('mainApp').style.display = 'none';
-        document.getElementById('passwordManagerApp').style.display = 'block';
+        switchScreen('passwordManagerApp');
         document.getElementById('targetPassType').value = 'app';
         document.getElementById('targetPassAppGroup').style.display = 'block';
         document.getElementById('targetAppSelect').value = appKey;
@@ -770,6 +769,7 @@
         const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
 
         try {
+            let sha = '';
             const getResponse = await fetch(url, {
                 headers: {
                     'Authorization': `token ${token}`,
@@ -777,11 +777,19 @@
                 }
             });
             
-            if (!getResponse.ok) throw new Error('Не удалось получить актуальный SHA файла');
-            const fileData = await getResponse.json();
+            if (getResponse.ok) {
+                const fileData = await getResponse.json();
+                sha = fileData.sha;
+            }
 
             const updatedContent = JSON.stringify(remoteConfig, null, 2);
             const encodedContent = btoa(unescape(encodeURIComponent(updatedContent)));
+
+            const bodyData = {
+                message: 'Update config via admin panel',
+                content: encodedContent
+            };
+            if (sha) bodyData.sha = sha;
 
             const putResponse = await fetch(url, {
                 method: 'PUT',
@@ -790,11 +798,7 @@
                     'Content-Type': 'application/json',
                     'Accept': 'application/vnd.github.v3+json'
                 },
-                body: JSON.stringify({
-                    message: 'Update config via admin panel',
-                    content: encodedContent,
-                    sha: fileData.sha
-                })
+                body: JSON.stringify(bodyData)
             });
 
             if (putResponse.ok) {
@@ -825,8 +829,7 @@
         if (getAppPasswords()[selectedAppKey]) {
             document.getElementById('appPassError').style.display = 'none';
             document.getElementById('appPassInput').value = '';
-            document.getElementById('mainApp').style.display = 'none';
-            document.getElementById('appAuthApp').style.display = 'block';
+            switchScreen('appAuthApp');
             document.getElementById('appPassInput').focus();
             return;
         }
@@ -838,8 +841,7 @@
         const errorMsg = document.getElementById("appPassError");
 
         if (safeBtoa(input.value.trim()) === getAppPasswords()[selectedAppKey]) {
-            document.getElementById("appAuthApp").style.display = "none";
-            document.getElementById("mainApp").style.display = "block";
+            switchScreen('mainApp');
             executeDownload();
             return;
         }
@@ -849,8 +851,7 @@
     }
 
     function cancelAppPassword() {
-        document.getElementById("appAuthApp").style.display = "none";
-        document.getElementById("mainApp").style.display = "block";
+        switchScreen('mainApp');
     }
 
     function executeDownload() {
@@ -863,7 +864,7 @@
     }
 </script>
 
-<div class="container" id="authApp" style="display: none;">
+<div class="container" id="authApp">
     <div class="auth-box">
         <div class="auth-title">👋 Добро пожаловать!</div>
         <div style="font-size: 13px; color: #cbd5e1; line-height: 1.4;">Введите пароль для доступа к каталогу:</div>
@@ -877,7 +878,7 @@
     </div>
 </div>
 
-<div class="container" id="appAuthApp" style="display: none;">
+<div class="container" id="appAuthApp">
     <div class="auth-box">
         <div class="auth-title">🔒 Защита установки</div>
         <div style="font-size: 13px; color: #cbd5e1;">Введите пароль для этого приложения:</div>
@@ -888,7 +889,7 @@
     </div>
 </div>
 
-<div class="container" id="adminAuthApp" style="display: none;">
+<div class="container" id="adminAuthApp">
     <div class="auth-box">
         <div class="auth-title">👑 Вход для админа</div>
         <div style="font-size: 13px; color: #cbd5e1;">Введите пароль администратора:</div>
@@ -899,7 +900,7 @@
     </div>
 </div>
 
-<div class="container" id="passwordManagerApp" style="display: none;">
+<div class="container" id="passwordManagerApp">
     <div class="auth-box">
         <div class="auth-title" id="changePassTitle">🔑 Изменение паролей</div>
         
@@ -940,7 +941,7 @@
     </div>
 </div>
 
-<div class="container" id="mainApp" style="display: none; padding-bottom: 70px;">
+<div class="container" id="mainApp" style="padding-bottom: 70px;">
     <div class="header-section">
         <h1>Установка удалённых приложений</h1>
         <div class="subtitle">Установка недоступных приложений на iPhone — <span style="color: #38bdf8;">без компьютера и проводов</span></div>
