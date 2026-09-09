@@ -7,7 +7,7 @@
 
     <style>
         body { 
-            background: linear-gradient(135deg, #07090e 0%, #0b0e14 50%, #111827 100%);
+            background: #05070a;
             color: #ffffff; 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
             margin: 0; 
@@ -17,14 +17,32 @@
             align-items: center; 
             min-height: 100vh;    
             box-sizing: border-box;
+            position: relative;
+            overflow-x: hidden;
         }
-        .container { width: 100%; max-width: 400px; }
+
+        /* Фоновые светящиеся сферы для создания реального эффекта стекла в iOS */
+        .bg-glow {
+            position: fixed;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            filter: blur(85px);
+            z-index: -1;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        .glow-1 { top: -60px; left: -60px; background: #6366f1; }
+        .glow-2 { bottom: -60px; right: -60px; background: #a855f7; }
+        .glow-3 { top: 45%; left: 50%; transform: translate(-50%, -50%); background: #3b82f6; opacity: 0.3; width: 320px; height: 320px; }
+
+        .container { width: 100%; max-width: 400px; z-index: 1; }
         
         h1 { 
             font-size: 22px; 
             margin-bottom: 8px; 
             text-align: center; 
-            background: linear-gradient(135deg, #a855f7, #6366f1);
+            background: linear-gradient(135deg, #c084fc, #818cf8);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             font-weight: 800;
@@ -40,12 +58,12 @@
         }
         
         .warning-box { 
-            background: rgba(239, 68, 68, 0.08); 
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            background: rgba(239, 68, 68, 0.1); 
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
             border: 1px solid rgba(239, 68, 68, 0.3); 
             color: #ff8080; 
-            border-radius: 16px; 
+            border-radius: 20px; 
             padding: 14px 16px; 
             font-size: 13px; 
             line-height: 1.5; 
@@ -60,28 +78,28 @@
         .text-highlight { color: #38bdf8; font-weight: 600; }
 
         .card { 
-            background: rgba(22, 27, 38, 0.65); 
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 20px; 
+            background: rgba(20, 24, 33, 0.45); 
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-radius: 24px; 
             padding: 20px; 
-            border: 1px solid rgba(255, 255, 255, 0.08); 
+            border: 1px solid rgba(255, 255, 255, 0.12); 
             display: flex; 
             flex-direction: column; 
             gap: 14px; 
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
         }
         
         label { font-size: 14px; font-weight: 600; color: #f1f5f9; text-align: left; }
 
         .custom-select-btn {
-            background: rgba(11, 14, 20, 0.6); 
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            background: rgba(15, 20, 30, 0.5); 
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             color: #38bdf8; 
             border: 1px solid rgba(99, 102, 241, 0.4); 
             padding: 14px 12px; 
-            border-radius: 12px; 
+            border-radius: 14px; 
             font-size: 15px; 
             width: 100%; 
             outline: none; 
@@ -98,19 +116,19 @@
         .custom-select-btn::after {
             content: "▼";
             font-size: 11px;
-            color: #6366f1;
+            color: #818cf8;
         }
 
         .btn { 
-            background: linear-gradient(135deg, rgba(168, 85, 247, 0.9), rgba(99, 102, 241, 0.9)); 
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.85), rgba(99, 102, 241, 0.85)); 
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             color: #ffffff; 
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.25);
             font-weight: 700; 
             font-size: 16px; 
             padding: 14px; 
-            border-radius: 12px; 
+            border-radius: 14px; 
             text-align: center; 
             box-shadow: 0 8px 24px rgba(168, 85, 247, 0.35); 
             display: block; 
@@ -124,7 +142,7 @@
         .btn:active { transform: scale(0.97); opacity: 0.9; }
 
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.06);
             border: 1px solid rgba(255, 255, 255, 0.15);
             color: #94a3b8;
             box-shadow: none;
@@ -134,13 +152,13 @@
         .toast {
             display: none;
             opacity: 0;
-            background: rgba(16, 185, 129, 0.15);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            background: rgba(16, 185, 129, 0.2);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(52, 211, 153, 0.4);
             color: #6ee7b7;
             padding: 12px 14px;
-            border-radius: 12px;
+            border-radius: 14px;
             font-size: 13px;
             font-weight: 600;
             text-align: center;
@@ -157,14 +175,14 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 6px 14px;
+            padding: 8px 14px;
             border-radius: 20px;
             font-size: 14px;
             font-weight: 500;
-            background: rgba(255, 255, 255, 0.04);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             color: #e1e1e1;
             margin-bottom: 15px;
         }
@@ -180,23 +198,23 @@
 
         .status-badge.online .status-dot {
             background-color: #34c759;
-            box-shadow: 0 0 8px #34c759;
+            box-shadow: 0 0 10px #34c759;
         }
 
         .status-badge.offline .status-dot {
             background-color: #ff3b30;
-            box-shadow: 0 0 8px #ff3b30;
+            box-shadow: 0 0 10px #ff3b30;
         }
 
         .auth-box {
-            background: rgba(22, 27, 38, 0.65);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border-radius: 20px;
+            background: rgba(20, 24, 33, 0.45);
+            backdrop-filter: blur(35px);
+            -webkit-backdrop-filter: blur(35px);
+            border-radius: 24px;
             padding: 30px 20px;
             text-align: center;
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             display: flex;
             flex-direction: column;
             gap: 16px;
@@ -205,31 +223,31 @@
         .auth-title {
             font-size: 20px;
             font-weight: 800;
-            background: linear-gradient(135deg, #a855f7, #6366f1);
+            background: linear-gradient(135deg, #c084fc, #818cf8);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .auth-input {
-            background: rgba(11, 14, 20, 0.6);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            background: rgba(15, 20, 30, 0.5);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             color: #ffffff;
-            border: 1px solid rgba(105, 108, 255, 0.5);
-            padding: 12px;
-            border-radius: 12px;
+            border: 1px solid rgba(129, 140, 248, 0.4);
+            padding: 14px;
+            border-radius: 14px;
             font-size: 15px;
             text-align: center;
             outline: none;
             font-weight: 600;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.4);
             box-sizing: border-box;
             width: 100%;
         }
 
         .auth-input:focus {
-            border-color: #a855f7;
-            box-shadow: 0 0 16px rgba(168, 85, 247, 0.3), inset 0 2px 4px rgba(0,0,0,0.3);
+            border-color: #c084fc;
+            box-shadow: 0 0 16px rgba(168, 85, 247, 0.35), inset 0 2px 6px rgba(0,0,0,0.4);
         }
 
         .auth-error {
@@ -245,9 +263,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             z-index: 999;
             opacity: 0;
             visibility: hidden;
@@ -272,18 +290,18 @@
             position: relative;
             width: 100%;
             max-width: 400px;
-            background: rgba(22, 27, 38, 0.85);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            border-top-left-radius: 24px;
-            border-top-right-radius: 24px;
+            background: rgba(20, 24, 33, 0.6);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border-top-left-radius: 28px;
+            border-top-right-radius: 28px;
             padding: 16px 16px 24px 16px;
             z-index: 1000;
             max-height: 75vh;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 -16px 40px rgba(0,0,0,0.6);
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 -20px 50px rgba(0,0,0,0.7);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             box-sizing: border-box;
             transform: translateY(100%);
             transition: transform 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
@@ -291,7 +309,7 @@
 
         @media (min-width: 480px) {
             .sheet-modal {
-                border-radius: 24px;
+                border-radius: 28px;
                 transform: scale(0.95);
                 transition: all 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
             }
@@ -326,8 +344,8 @@
             background: rgba(255, 255, 255, 0.08);
             border: none;
             color: #94a3b8;
-            width: 28px;
-            height: 28px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -345,7 +363,7 @@
 
         .sheet-item {
             padding: 12px 14px;
-            border-radius: 10px;
+            border-radius: 12px;
             color: #38bdf8;
             font-size: 15px;
             font-weight: 600;
@@ -357,8 +375,8 @@
         }
 
         .sheet-item:active, .sheet-item.selected {
-            background: rgba(99, 102, 241, 0.25);
-            color: #a855f7;
+            background: rgba(99, 102, 241, 0.3);
+            color: #c084fc;
         }
 
         .divider-hr {
@@ -369,6 +387,11 @@
     </style>
 </head>
 <body>
+
+<!-- Фоновые светящиеся сферы для преломления стекла -->
+<div class="bg-glow glow-1"></div>
+<div class="bg-glow glow-2"></div>
+<div class="bg-glow glow-3"></div>
 
 <script>
     const encodedAppPasswords = {
