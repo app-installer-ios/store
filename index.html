@@ -277,6 +277,35 @@
             opacity: 1;
         }
 
+        /* Стили для кастомного стильного уведомления о выходе */
+        .custom-toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            width: 90%;
+            max-width: 360px;
+            background: rgba(30, 25, 45, 0.85);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(239, 68, 68, 0.5);
+            color: #fca5a5;
+            padding: 14px 18px;
+            border-radius: 16px;
+            font-size: 13px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(239, 68, 68, 0.3);
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
+        }
+        .custom-toast.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
         .status-badge {
             display: inline-flex;
             align-items: center;
@@ -482,6 +511,11 @@
 <div class="bg-glow glow-1"></div>
 <div class="bg-glow glow-2"></div>
 
+<!-- Кастомное стилизованное уведомление -->
+<div id="customToast" class="custom-toast">
+    🚪 Вы успешно вышли из режима администратора
+</div>
+
 <script>
     const encodedAppPasswords = {
         "vk": "dnNlcjIzN3g=",
@@ -499,13 +533,12 @@
     };
 
     const ENCODED_SITE_PASSWORD = "Q2F0YWxvZzIwMjZfc2VjdXJl";
-
-    // Новый защищенный пароль администратора: Admin_2026_Secure#99 (закодирован в Base64)
     const ENCODED_ADMIN_PASSWORD = "QWRtaW5fMjAyNl9TZWN1cmUjOTk=";
 
     let selectedAppUrl = "";
     let selectedAppKey = "";
     let toastTimer;
+    let customToastTimer;
 
     document.addEventListener("DOMContentLoaded", function() {
         const appContainer = document.getElementById("mainApp");
@@ -576,7 +609,15 @@
         localStorage.removeItem("is_admin_mode");
         document.body.classList.remove("is-admin");
         updateAppsVisibility();
-        alert("Вы вышли из режима администратора.");
+        
+        // Показываем красивое стилизованное уведомление
+        const customToast = document.getElementById("customToast");
+        clearTimeout(customToastTimer);
+        customToast.classList.add("show");
+        
+        customToastTimer = setTimeout(() => {
+            customToast.classList.remove("show");
+        }, 3500);
     }
 
     function toggleAppVisibility(appKey, event) {
