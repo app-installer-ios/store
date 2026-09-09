@@ -38,26 +38,26 @@
         .aurora-bg::after {
             content: '';
             position: absolute; inset: 0;
-            background: radial-gradient(circle at 30% 30%, rgba(16, 185, 129, 0.25), transparent 60%),
-                        radial-gradient(circle at 70% 70%, rgba(99, 102, 241, 0.25), transparent 60%);
-            filter: blur(50px);
+            background: radial-gradient(circle at 30% 30%, rgba(16, 185, 129, 0.3), transparent 60%),
+                        radial-gradient(circle at 70% 70%, rgba(99, 102, 241, 0.3), transparent 60%);
+            filter: blur(60px);
             pointer-events: none;
         }
 
-        /* Дополнительные светящиеся сферы для объема стекла */
+        /* Светящиеся сферы для объема */
         .bg-glow {
             position: fixed;
-            width: 260px;
-            height: 260px;
+            width: 300px;
+            height: 300px;
             border-radius: 50%;
-            filter: blur(75px);
+            filter: blur(90px);
             z-index: -1;
-            opacity: 0.4;
+            opacity: 0.5;
             pointer-events: none;
             will-change: transform;
         }
-        .glow-1 { top: -50px; left: -50px; background: #6366f1; }
-        .glow-2 { bottom: -50px; right: -50px; background: #a855f7; }
+        .glow-1 { top: -60px; left: -60px; background: #6366f1; }
+        .glow-2 { bottom: -60px; right: -60px; background: #a855f7; }
 
         .container { width: 100%; max-width: 400px; z-index: 1; }
         
@@ -80,54 +80,57 @@
             line-height: 1.4;
         }
         
+        /* Увеличенное привлечение внимания предупреждения */
         .warning-box { 
-            background: rgba(239, 68, 68, 0.12); 
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(239, 68, 68, 0.3); 
-            color: #ff8080; 
+            background: rgba(239, 68, 68, 0.22); 
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(239, 68, 68, 0.5); 
+            color: #ff9999; 
             border-radius: 20px; 
-            padding: 14px 16px; 
+            padding: 16px 18px; 
             font-size: 13px; 
             line-height: 1.5; 
             margin-bottom: 20px; 
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 35px rgba(239, 68, 68, 0.25), inset 0 1px 0 rgba(255,255,255,0.3);
             text-align: center;
             font-weight: 600;
         }
         
-        .text-warning { color: #fbbf24; font-weight: bold; }
+        .text-warning { color: #fde047; font-weight: 800; text-shadow: 0 0 10px rgba(253, 224, 71, 0.4); }
         .text-danger { color: #f87171; font-weight: bold; }
-        .text-highlight { color: #38bdf8; font-weight: 600; }
+        .text-highlight { color: #38bdf8; font-weight: 700; text-shadow: 0 0 10px rgba(56, 189, 248, 0.4); }
 
+        /* Повышенная прозрачность главного блока */
         .card { 
-            background: rgba(20, 24, 33, 0.5); 
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
+            background: rgba(255, 255, 255, 0.05); 
+            backdrop-filter: blur(35px);
+            -webkit-backdrop-filter: blur(35px);
             border-radius: 24px; 
             padding: 20px; 
-            border: 1px solid rgba(255, 255, 255, 0.12); 
+            border: 1px solid rgba(255, 255, 255, 0.2); 
             display: flex; 
             flex-direction: column; 
             gap: 14px; 
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.25);
         }
         
         label { font-size: 14px; font-weight: 600; color: #f1f5f9; text-align: left; }
 
+        /* Повышенная прозрачность кнопки выбора */
         .custom-select-btn {
-            background: rgba(15, 20, 30, 0.6); 
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
+            background: rgba(255, 255, 255, 0.06); 
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
             color: #38bdf8; 
-            border: 1px solid rgba(99, 102, 241, 0.4); 
-            padding: 14px 12px; 
+            border: 1px solid rgba(255, 255, 255, 0.22); 
+            padding: 14px 14px; 
             border-radius: 14px; 
             font-size: 15px; 
             width: 100%; 
             outline: none; 
             font-weight: 600;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255,255,255,0.15);
             text-align: left;
             display: flex;
             justify-content: space-between;
@@ -143,16 +146,16 @@
 
         .btn { 
             background: linear-gradient(135deg, rgba(168, 85, 247, 0.85), rgba(99, 102, 241, 0.85)); 
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             color: #ffffff; 
-            border: 1px solid rgba(255, 255, 255, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             font-weight: 700; 
             font-size: 16px; 
             padding: 14px; 
             border-radius: 14px; 
             text-align: center; 
-            box-shadow: 0 8px 24px rgba(168, 85, 247, 0.35); 
+            box-shadow: 0 10px 25px rgba(168, 85, 247, 0.4), inset 0 1px 0 rgba(255,255,255,0.3); 
             display: block; 
             width: 100%;
             letter-spacing: 0.5px;
@@ -164,8 +167,8 @@
 
         .btn-secondary {
             background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: #94a3b8;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #cbd5e1;
             box-shadow: none;
             margin-top: 6px;
         }
@@ -173,10 +176,10 @@
         .toast {
             display: none;
             opacity: 0;
-            background: rgba(16, 185, 129, 0.25);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(52, 211, 153, 0.4);
+            background: rgba(16, 185, 129, 0.3);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(52, 211, 153, 0.5);
             color: #6ee7b7;
             padding: 12px 14px;
             border-radius: 14px;
@@ -184,7 +187,7 @@
             font-weight: 600;
             text-align: center;
             line-height: 1.4;
-            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.15);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.2);
             transition: opacity 0.25s ease;
         }
         .toast.show {
@@ -200,10 +203,10 @@
             border-radius: 20px;
             font-size: 14px;
             font-weight: 500;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             color: #e1e1e1;
             margin-bottom: 15px;
         }
@@ -216,15 +219,16 @@
             box-shadow: 0 0 10px #34c759;
         }
 
+        /* Повышенная прозрачность окон авторизации */
         .auth-box {
-            background: rgba(20, 24, 33, 0.5);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(35px);
+            -webkit-backdrop-filter: blur(35px);
             border-radius: 24px;
             padding: 30px 20px;
             text-align: center;
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             display: flex;
             flex-direction: column;
             gap: 16px;
@@ -239,24 +243,24 @@
         }
 
         .auth-input {
-            background: rgba(15, 20, 30, 0.6);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
             color: #ffffff;
-            border: 1px solid rgba(129, 140, 248, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.22);
             padding: 14px;
             border-radius: 14px;
             font-size: 15px;
             text-align: center;
             outline: none;
             font-weight: 600;
-            box-shadow: inset 0 2px 6px rgba(0,0,0,0.4);
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.3);
             width: 100%;
         }
 
         .auth-input:focus {
             border-color: #c084fc;
-            box-shadow: 0 0 16px rgba(168, 85, 247, 0.35), inset 0 2px 6px rgba(0,0,0,0.4);
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.4), inset 0 2px 6px rgba(0,0,0,0.3);
         }
 
         .auth-error {
@@ -269,9 +273,9 @@
         .sheet-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            background: rgba(5, 7, 10, 0.65);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             z-index: 999;
             opacity: 0;
             visibility: hidden;
@@ -290,13 +294,14 @@
             visibility: visible;
         }
 
+        /* Полная прозрачность и жидкое стекло для шторки выбора приложений */
         .sheet-modal {
             position: relative;
             width: 100%;
             max-width: 400px;
-            background: rgba(20, 24, 33, 0.7);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(45px);
+            -webkit-backdrop-filter: blur(45px);
             border-top-left-radius: 28px;
             border-top-right-radius: 28px;
             padding: 16px 16px 24px 16px;
@@ -304,8 +309,8 @@
             max-height: 75vh;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 -20px 50px rgba(0,0,0,0.7);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 -20px 60px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.25);
             transform: translateY(100%);
             transition: transform 0.2s cubic-bezier(0.1, 0.9, 0.2, 1);
             will-change: transform;
@@ -332,16 +337,16 @@
             justify-content: space-between;
             align-items: center;
             padding-bottom: 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
             margin-bottom: 6px;
         }
 
         .sheet-title { font-size: 16px; font-weight: 700; color: #f1f5f9; }
 
         .sheet-close {
-            background: rgba(255, 255, 255, 0.08);
-            border: none;
-            color: #94a3b8;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #cbd5e1;
             width: 30px; height: 30px;
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
@@ -369,13 +374,13 @@
         }
 
         .sheet-item:active, .sheet-item.selected {
-            background: rgba(99, 102, 241, 0.3);
+            background: rgba(168, 85, 247, 0.25);
             color: #c084fc;
         }
 
         .divider-hr {
             border: none;
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
             margin: 2px 0;
         }
     </style>
@@ -573,7 +578,7 @@
         </div>
 
         <button type="button" class="custom-select-btn" onclick="openSheet()">
-            <span id="selectedAppText" style="color: #64748b;">Нажмите для выбора приложения</span>
+            <span id="selectedAppText" style="color: #94a3b8;">Нажмите для выбора приложения</span>
         </button>
 
         <button type="button" class="btn" onclick="startInstallation()">Установить</button>
