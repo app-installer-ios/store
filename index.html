@@ -277,7 +277,7 @@
             opacity: 1;
         }
 
-        /* Стили для кастомного стильного уведомления о выходе */
+        /* Кастомное стилизованное уведомление */
         .custom-toast {
             position: fixed;
             top: 20px;
@@ -463,16 +463,31 @@
             justify-content: space-between;
         }
 
-        .sheet-item span {
+        .sheet-info-box {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .sheet-item span.app-name {
             color: #7dd3fc;
             font-size: 15px;
+        }
+
+        .download-counter {
+            font-size: 11px;
+            color: #94a3b8;
+            display: none;
+        }
+        body.is-admin .download-counter {
+            display: block;
         }
 
         .sheet-item:active, .sheet-item.selected {
             background: rgba(168, 85, 247, 0.25);
         }
 
-        .sheet-item:active span, .sheet-item.selected span {
+        .sheet-item:active span.app-name, .sheet-item.selected span.app-name {
             color: #c084fc;
         }
 
@@ -555,6 +570,7 @@
         }
 
         updateAppsVisibility();
+        updateDownloadCountersUI();
 
         document.getElementById("passInput").addEventListener("keydown", function(e) {
             if (e.key === "Enter") submitPassword();
@@ -597,6 +613,7 @@
             document.getElementById("adminAuthApp").style.display = "none";
             document.getElementById("mainApp").style.display = "block";
             openSheet();
+            updateDownloadCountersUI();
             return;
         }
 
@@ -610,7 +627,6 @@
         document.body.classList.remove("is-admin");
         updateAppsVisibility();
         
-        // Показываем красивое стилизованное уведомление
         const customToast = document.getElementById("customToast");
         clearTimeout(customToastTimer);
         customToast.classList.add("show");
@@ -666,6 +682,26 @@
         });
     }
 
+    function updateDownloadCountersUI() {
+        let downloads = JSON.parse(localStorage.getItem("app_downloads_stats") || "{}");
+        document.querySelectorAll(".sheet-item").forEach(item => {
+            const key = item.getAttribute("data-key");
+            const counterEl = item.querySelector(".download-counter");
+            const count = downloads[key] || 0;
+            if (counterEl) {
+                counterEl.textContent = `Скачиваний: ${count}`;
+            }
+        });
+    }
+
+    function incrementDownloadCount(appKey) {
+        if (!appKey) return;
+        let downloads = JSON.parse(localStorage.getItem("app_downloads_stats") || "{}");
+        downloads[appKey] = (downloads[appKey] || 0) + 1;
+        localStorage.setItem("app_downloads_stats", JSON.stringify(downloads));
+        updateDownloadCountersUI();
+    }
+
     function safeBtoa(str) {
         try {
             return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
@@ -697,6 +733,7 @@
 
     function openSheet() {
         updateAppsVisibility();
+        updateDownloadCountersUI();
         document.getElementById('sheetOverlay').classList.add('active');
     }
 
@@ -758,6 +795,8 @@
     }
 
     function executeDownload() {
+        incrementDownloadCount(selectedAppKey);
+
         const toast = document.getElementById('toast');
         clearTimeout(toastTimer);
         toast.classList.add('show');
@@ -853,73 +892,109 @@
         <div class="sheet-list">
             
             <div class="sheet-item" data-key="vk" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk.plist', 'ВКонтакте', 'vk')">
-                <span>ВКонтакте</span>
+                <div class="sheet-info-box">
+                    <span class="app-name">ВКонтакте</span>
+                    <span class="download-counter">Скачиваний: 0</span>
+                </div>
                 <button class="admin-action-btn btn-hide" onclick="toggleAppVisibility('vk', event)">Скрыть</button>
             </div>
             <hr class="divider-hr">
 
             <div class="sheet-item" data-key="max" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/max.plist', 'MAX', 'max')">
-                <span>MAX</span>
+                <div class="sheet-info-box">
+                    <span class="app-name">MAX</span>
+                    <span class="download-counter">Скачиваний: 0</span>
+                </div>
                 <button class="admin-action-btn btn-hide" onclick="toggleAppVisibility('max', event)">Скрыть</button>
             </div>
             <hr class="divider-hr">
 
             <div class="sheet-item" data-key="vk-video" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk-video.plist', 'VK Видео', 'vk-video')">
-                <span>VK Видео</span>
+                <div class="sheet-info-box">
+                    <span class="app-name">VK Видео</span>
+                    <span class="download-counter">Скачиваний: 0</span>
+                </div>
                 <button class="admin-action-btn btn-hide" onclick="toggleAppVisibility('vk-video', event)">Скрыть</button>
             </div>
             <hr class="divider-hr">
 
             <div class="sheet-item" data-key="sber" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sber.plist', 'СБЕР(Учёт Онлайн)', 'sber')">
-                <span>СБЕР(Учёт Онлайн)</span>
+                <div class="sheet-info-box">
+                    <span class="app-name">СБЕР(Учёт Онлайн)</span>
+                    <span class="download-counter">Скачиваний: 0</span>
+                </div>
                 <button class="admin-action-btn btn-hide" onclick="toggleAppVisibility('sber', event)">Скрыть</button>
             </div>
             <hr class="divider-hr">
 
             <div class="sheet-item" data-key="sovkombank-vsekarty" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sovkombank-vsekarty.plist', 'Совкомбанк (Все карты MDS)', 'sovkombank-vsekarty')">
-                <span>Совкомбанк (Все карты MDS)</span>
+                <div class="sheet-info-box">
+                    <span class="app-name">Совкомбанк (Все карты MDS)</span>
+                    <span class="download-counter">Скачиваний: 0</span>
+                </div>
                 <button class="admin-action-btn btn-hide" onclick="toggleAppVisibility('sovkombank-vsekarty', event)">Скрыть</button>
             </div>
             <hr class="divider-hr">
 
             <div class="sheet-item" data-key="avito" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/avito.plist', 'Авито', 'avito')">
-                <span>Авито</span>
+                <div class="sheet-info-box">
+                    <span class="app-name">Авито</span>
+                    <span class="download-counter">Скачиваний: 0</span>
+                </div>
                 <button class="admin-action-btn btn-hide" onclick="toggleAppVisibility('avito', event)">Скрыть</button>
             </div>
             <hr class="divider-hr">
 
             <div class="sheet-item" data-key="tbank" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/tbank.plist', 'Т-Банк(8PRO)', 'tbank')">
-                <span>Т-Банк(8PRO)</span>
+                <div class="sheet-info-box">
+                    <span class="app-name">Т-Банк(8PRO)</span>
+                    <span class="download-counter">Скачиваний: 0</span>
+                </div>
                 <button class="admin-action-btn btn-hide" onclick="toggleAppVisibility('tbank', event)">Скрыть</button>
             </div>
             <hr class="divider-hr">
 
-            <div class="sheet-item" data-key="drive-transit" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/drive-transit.plist', 'Drive Transit', 'drive-transit')">
-                <span>Drive Transit</span>
+            <div class="sheet-item" data-key="drive-transit" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/drive-transit.plist', 'Т-Банк (Drive Transit)', 'drive-transit')">
+                <div class="sheet-info-box">
+                    <span class="app-name">Т-Банк (Drive Transit)</span>
+                    <span class="download-counter">Скачиваний: 0</span>
+                </div>
                 <button class="admin-action-btn btn-hide" onclick="toggleAppVisibility('drive-transit', event)">Скрыть</button>
             </div>
             <hr class="divider-hr">
 
             <div class="sheet-item" data-key="lenta" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/lenta.plist', 'Лента', 'lenta')">
-                <span>Лента</span>
+                <div class="sheet-info-box">
+                    <span class="app-name">Лента</span>
+                    <span class="download-counter">Скачиваний: 0</span>
+                </div>
                 <button class="admin-action-btn btn-hide" onclick="toggleAppVisibility('lenta', event)">Скрыть</button>
             </div>
             <hr class="divider-hr">
 
             <div class="sheet-item" data-key="yandex-pay" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/yandex-pay.plist', 'Яндекс Пэй', 'yandex-pay')">
-                <span>Яндекс Пэй</span>
+                <div class="sheet-info-box">
+                    <span class="app-name">Яндекс Пэй</span>
+                    <span class="download-counter">Скачиваний: 0</span>
+                </div>
                 <button class="admin-action-btn btn-hide" onclick="toggleAppVisibility('yandex-pay', event)">Скрыть</button>
             </div>
             <hr class="divider-hr">
 
             <div class="sheet-item" data-key="2gis" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/2gis.plist', '2ГИС', '2gis')">
-                <span>2ГИС</span>
+                <div class="sheet-info-box">
+                    <span class="app-name">2ГИС</span>
+                    <span class="download-counter">Скачиваний: 0</span>
+                </div>
                 <button class="admin-action-btn btn-hide" onclick="toggleAppVisibility('2gis', event)">Скрыть</button>
             </div>
             <hr class="divider-hr">
 
             <div class="sheet-item" data-key="psb" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/psb.plist', 'ПСБ (Чайная Церемония)', 'psb')">
-                <span>ПСБ (Чайная Церемония)</span>
+                <div class="sheet-info-box">
+                    <span class="app-name">ПСБ (Чайная Церемония)</span>
+                    <span class="download-counter">Скачиваний: 0</span>
+                </div>
                 <button class="admin-action-btn btn-hide" onclick="toggleAppVisibility('psb', event)">Скрыть</button>
             </div>
 
