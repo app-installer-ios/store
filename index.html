@@ -6,7 +6,6 @@
     <title>Установка удалённых приложений</title>
 
     <style>
-        /* Весь текст на сайте сделан жирным для акцента */
         * { 
             box-sizing: border-box; 
             font-weight: bold !important; 
@@ -17,8 +16,8 @@
             height: 100%;
             margin: 0;
             padding: 0;
-            overflow: hidden; /* Запрещаем скролл всей страницы в Safari */
-            position: fixed;  /* Жестко фиксируем экран на айфоне */
+            overflow: hidden;
+            position: fixed;
         }
         body { 
             background: #06080c;
@@ -30,7 +29,6 @@
             position: relative;
         }
 
-        /* Динамический фон: фиолетовый, синий, серый, темно-зеленый */
         .aurora-bg {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -54,7 +52,6 @@
             pointer-events: none;
         }
 
-        /* Светящиеся сферы для объема */
         .bg-glow {
             position: fixed;
             width: 300px;
@@ -174,7 +171,6 @@
             display: block; 
             width: 100%;
             letter-spacing: 0.5px;
-            transition: transform 0.1s ease, opacity 0.1s ease;
             cursor: pointer;
             text-decoration: none;
         }
@@ -200,16 +196,9 @@
             box-shadow: 0 8px 20px rgba(56, 189, 248, 0.15);
             margin-top: 4px;
         }
-        .btn-telegram:hover {
-            background: rgba(56, 189, 248, 0.18);
-        }
-        .telegram-icon {
-            width: 20px;
-            height: 20px;
-            object-fit: contain;
-        }
+        .btn-telegram:hover { background: rgba(56, 189, 248, 0.18); }
+        .telegram-icon { width: 20px; height: 20px; object-fit: contain; }
 
-        /* Кнопка админ-панели строго в самом низу экрана в красном прямоугольнике */
         .admin-footer-bar {
             position: fixed;
             bottom: 12px;
@@ -234,11 +223,8 @@
             box-shadow: 0 0 15px rgba(255, 59, 48, 0.3);
             transition: background 0.2s;
         }
-        .btn-admin-trigger:hover {
-            background: rgba(255, 59, 48, 0.22);
-        }
+        .btn-admin-trigger:hover { background: rgba(255, 59, 48, 0.22); }
 
-        /* Кнопка выхода из админки */
         .btn-admin-logout {
             background: rgba(239, 68, 68, 0.2);
             border: 1px solid rgba(239, 68, 68, 0.5);
@@ -252,9 +238,7 @@
             margin-top: 8px;
             display: none;
         }
-        body.is-admin .btn-admin-logout {
-            display: block;
-        }
+        body.is-admin .btn-admin-logout { display: block; }
 
         .toast {
             display: none;
@@ -272,12 +256,9 @@
             box-shadow: 0 8px 25px rgba(16, 185, 129, 0.2);
             transition: opacity 0.25s ease;
         }
-        .toast.show {
-            display: block;
-            opacity: 1;
-        }
+        .toast.show { display: block; opacity: 1; }
 
-        /* Кастомное стилизованное уведомление */
+        /* Дизайнерские всплывающие уведомления взамен alert */
         .custom-toast {
             position: fixed;
             top: 20px;
@@ -305,8 +286,6 @@
             visibility: visible;
             transform: translateX(-50%) translateY(0);
         }
-
-        /* Дополнительный тост для успешной смены данных */
         .custom-toast-success {
             border-color: rgba(52, 211, 153, 0.5);
             color: #6ee7b7;
@@ -371,7 +350,6 @@
             box-shadow: inset 0 2px 6px rgba(0,0,0,0.3);
             width: 100%;
         }
-
         .auth-input:focus {
             border-color: #c084fc;
             box-shadow: 0 0 20px rgba(168, 85, 247, 0.4), inset 0 2px 6px rgba(0,0,0,0.3);
@@ -397,11 +375,7 @@
             justify-content: center;
             align-items: center;
         }
-
-        .sheet-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
+        .sheet-overlay.active { opacity: 1; visibility: visible; }
 
         .sheet-modal {
             position: relative;
@@ -420,12 +394,8 @@
             border: 2px solid #c084fc;
             transform: scale(0.95);
             transition: transform 0.2s cubic-bezier(0.1, 0.9, 0.2, 1), opacity 0.2s ease;
-            will-change: transform;
         }
-
-        .sheet-overlay.active .sheet-modal { 
-            transform: scale(1); 
-        }
+        .sheet-overlay.active .sheet-modal { transform: scale(1); }
 
         .sheet-header {
             display: flex;
@@ -470,33 +440,14 @@
             justify-content: space-between;
         }
 
-        .sheet-info-box {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
+        .sheet-info-box { display: flex; flex-direction: column; gap: 2px; }
+        .sheet-item span.app-name { color: #7dd3fc; font-size: 15px; }
 
-        .sheet-item span.app-name {
-            color: #7dd3fc;
-            font-size: 15px;
-        }
+        .download-counter { font-size: 11px; color: #94a3b8; display: none; }
+        body.is-admin .download-counter { display: block; }
 
-        .download-counter {
-            font-size: 11px;
-            color: #94a3b8;
-            display: none;
-        }
-        body.is-admin .download-counter {
-            display: block;
-        }
-
-        .sheet-item:active, .sheet-item.selected {
-            background: rgba(168, 85, 247, 0.25);
-        }
-
-        .sheet-item:active span.app-name, .sheet-item.selected span.app-name {
-            color: #c084fc;
-        }
+        .sheet-item:active, .sheet-item.selected { background: rgba(168, 85, 247, 0.25); }
+        .sheet-item:active span.app-name, .sheet-item.selected span.app-name { color: #c084fc; }
 
         .divider-hr {
             border: none;
@@ -504,39 +455,14 @@
             margin: 2px 0;
         }
 
-        .admin-action-btn-group {
-            display: none;
-            gap: 6px;
-            align-items: center;
-        }
-        body.is-admin .admin-action-btn-group {
-            display: flex;
-        }
+        .admin-action-btn-group { display: none; gap: 6px; align-items: center; }
+        body.is-admin .admin-action-btn-group { display: flex; }
 
-        .admin-action-btn {
-            padding: 6px 10px;
-            border-radius: 8px;
-            font-size: 12px;
-            cursor: pointer;
-            border: 1px solid;
-        }
-        .btn-hide {
-            background: rgba(239, 68, 68, 0.2);
-            border-color: rgba(239, 68, 68, 0.4);
-            color: #f87171;
-        }
-        .btn-show {
-            background: rgba(52, 211, 153, 0.2);
-            border-color: rgba(52, 211, 153, 0.4);
-            color: #34d399;
-        }
-        .btn-pass {
-            background: rgba(56, 189, 248, 0.15);
-            border-color: rgba(56, 189, 248, 0.4);
-            color: #38bdf8;
-        }
+        .admin-action-btn { padding: 6px 10px; border-radius: 8px; font-size: 12px; cursor: pointer; border: 1px solid; }
+        .btn-hide { background: rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.4); color: #f87171; }
+        .btn-show { background: rgba(52, 211, 153, 0.2); border-color: rgba(52, 211, 153, 0.4); color: #34d399; }
+        .btn-pass { background: rgba(56, 189, 248, 0.15); border-color: rgba(56, 189, 248, 0.4); color: #38bdf8; }
 
-        /* Кнопка открытия настроек паролей в модалке */
         .admin-settings-trigger {
             background: rgba(168, 85, 247, 0.15);
             border: 1px solid rgba(168, 85, 247, 0.4);
@@ -550,9 +476,7 @@
             margin-bottom: 12px;
             display: none;
         }
-        body.is-admin .admin-settings-trigger {
-            display: block;
-        }
+        body.is-admin .admin-settings-trigger { display: block; }
     </style>
 </head>
 <body>
@@ -561,7 +485,6 @@
 <div class="bg-glow glow-1"></div>
 <div class="bg-glow glow-2"></div>
 
-<!-- Кастомные уведомления -->
 <div id="customToast" class="custom-toast">
     🚪 Вы успешно вышли из режима администратора
 </div>
@@ -570,7 +493,6 @@
 </div>
 
 <script>
-    // Объект конфигурации с дефолтными значениями (подменяется данными из passwords.json)
     let remoteConfig = {
         sitePassword: "Q2F0YWxvZzIwMjZfc2VjdXJl",
         adminPassword: "QWRtaW5fMjAyNl9TZWN1cmUjOTk=",
@@ -591,7 +513,6 @@
         }
     };
 
-    // Функция автоматической загрузки конфигурации из passwords.json
     async function loadConfig() {
         try {
             const response = await fetch('passwords.json?_=' + new Date().getTime());
@@ -607,17 +528,9 @@
         }
     }
 
-    function getAppPasswords() {
-        return remoteConfig.appPasswords;
-    }
-
-    function getSitePassword() {
-        return remoteConfig.sitePassword;
-    }
-
-    function getAdminPassword() {
-        return remoteConfig.adminPassword;
-    }
+    function getAppPasswords() { return remoteConfig.appPasswords; }
+    function getSitePassword() { return remoteConfig.sitePassword; }
+    function getAdminPassword() { return remoteConfig.adminPassword; }
 
     let selectedAppUrl = "";
     let selectedAppKey = "";
@@ -626,7 +539,6 @@
     let successToastTimer;
 
     document.addEventListener("DOMContentLoaded", async function() {
-        // Загружаем актуальные данные с GitHub перед отрисовкой интерфейса
         await loadConfig();
 
         const appContainer = document.getElementById("mainApp");
@@ -645,21 +557,10 @@
         updateAppsVisibility();
         updateDownloadCountersUI();
 
-        document.getElementById("passInput").addEventListener("keydown", function(e) {
-            if (e.key === "Enter") submitPassword();
-        });
-
-        document.getElementById("appPassInput").addEventListener("keydown", function(e) {
-            if (e.key === "Enter") submitAppPassword();
-        });
-
-        document.getElementById("adminPassInput").addEventListener("keydown", function(e) {
-            if (e.key === "Enter") submitAdminPassword();
-        });
-
-        document.getElementById("changePassInput").addEventListener("keydown", function(e) {
-            if (e.key === "Enter") saveNewPassword();
-        });
+        document.getElementById("passInput").addEventListener("keydown", (e) => { if (e.key === "Enter") submitPassword(); });
+        document.getElementById("appPassInput").addEventListener("keydown", (e) => { if (e.key === "Enter") submitAppPassword(); });
+        document.getElementById("adminPassInput").addEventListener("keydown", (e) => { if (e.key === "Enter") submitAdminPassword(); });
+        document.getElementById("changePassInput").addEventListener("keydown", (e) => { if (e.key === "Enter") saveNewPassword(); });
     });
 
     function openAdminAuth() {
@@ -683,8 +584,7 @@
         const input = document.getElementById("adminPassInput");
         const errorMsg = document.getElementById("adminPassError");
 
-        const val = input.value.trim();
-        if (safeBtoa(val) === getAdminPassword()) {
+        if (safeBtoa(input.value.trim()) === getAdminPassword()) {
             localStorage.setItem("is_admin_mode", "true");
             document.body.classList.add("is-admin");
             document.getElementById("adminAuthApp").style.display = "none";
@@ -693,7 +593,6 @@
             updateDownloadCountersUI();
             return;
         }
-
         errorMsg.style.display = "block";
         input.value = "";
         input.focus();
@@ -707,10 +606,7 @@
         const customToast = document.getElementById("customToast");
         clearTimeout(customToastTimer);
         customToast.classList.add("show");
-        
-        customToastTimer = setTimeout(() => {
-            customToast.classList.remove("show");
-        }, 3500);
+        customToastTimer = setTimeout(() => { customToast.classList.remove("show"); }, 3500);
     }
 
     function showSuccessToast(text = "✅ Изменения успешно сохранены!") {
@@ -718,29 +614,23 @@
         toast.textContent = text;
         clearTimeout(successToastTimer);
         toast.classList.add("show");
-        successToastTimer = setTimeout(() => {
-            toast.classList.remove("show");
-        }, 3500);
+        successToastTimer = setTimeout(() => { toast.classList.remove("show"); }, 3500);
     }
 
     async function toggleAppVisibility(appKey, event) {
         event.stopPropagation();
-        
         const index = remoteConfig.hiddenApps.indexOf(appKey);
         if (index > -1) {
             remoteConfig.hiddenApps.splice(index, 1);
         } else {
             remoteConfig.hiddenApps.push(appKey);
         }
-        
-        // Отправляем обновленный список скрытых приложений на GitHub для всех
         await updateConfigOnGitHub();
         updateAppsVisibility();
     }
 
     function updateAppsVisibility() {
         let hiddenApps = remoteConfig.hiddenApps;
-        
         document.querySelectorAll(".sheet-item").forEach(item => {
             const key = item.getAttribute("data-key");
             const hr = item.nextElementSibling;
@@ -754,17 +644,11 @@
                     item.style.display = "flex";
                     if (hr && hr.classList.contains("divider-hr")) hr.style.display = "block";
                 }
-                if (hideBtn) {
-                    hideBtn.textContent = "Вкл";
-                    hideBtn.className = "admin-action-btn btn-show";
-                }
+                if (hideBtn) { hideBtn.textContent = "Вкл"; hideBtn.className = "admin-action-btn btn-show"; }
             } else {
                 item.style.display = "flex";
                 if (hr && hr.classList.contains("divider-hr")) hr.style.display = "block";
-                if (hideBtn) {
-                    hideBtn.textContent = "Скрыть";
-                    hideBtn.className = "admin-action-btn btn-hide";
-                }
+                if (hideBtn) { hideBtn.textContent = "Скрыть"; hideBtn.className = "admin-action-btn btn-hide"; }
             }
         });
     }
@@ -774,10 +658,7 @@
         document.querySelectorAll(".sheet-item").forEach(item => {
             const key = item.getAttribute("data-key");
             const counterEl = item.querySelector(".download-counter");
-            const count = downloads[key] || 0;
-            if (counterEl) {
-                counterEl.textContent = `Скачиваний: ${count}`;
-            }
+            if (counterEl) { counterEl.textContent = `Скачиваний: ${downloads[key] || 0}`; }
         });
     }
 
@@ -794,25 +675,19 @@
             return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
                 return String.fromCharCode('0x' + p1);
             }));
-        } catch (e) {
-            return btoa(str);
-        }
+        } catch (e) { return btoa(str); }
     }
 
     function submitPassword() {
         const input = document.getElementById("passInput");
         const errorMsg = document.getElementById("authError");
-        const appContainer = document.getElementById("mainApp");
-        const authContainer = document.getElementById("authApp");
 
-        const val = input.value.trim();
-        if (safeBtoa(val) === getSitePassword()) {
+        if (safeBtoa(input.value.trim()) === getSitePassword()) {
             sessionStorage.setItem("site_access", "true");
-            authContainer.style.display = "none";
-            appContainer.style.display = "block";
+            document.getElementById("authApp").style.display = "none";
+            document.getElementById("mainApp").style.display = "block";
             return;
         }
-
         errorMsg.style.display = "block";
         input.value = "";
         input.focus();
@@ -824,15 +699,12 @@
         document.getElementById('sheetOverlay').classList.add('active');
     }
 
-    function closeSheet() {
-        document.getElementById('sheetOverlay').classList.remove('active');
-    }
+    function closeSheet() { document.getElementById('sheetOverlay').classList.remove('active'); }
 
     function openPasswordManager() {
         closeSheet();
         document.getElementById('mainApp').style.display = 'none';
         document.getElementById('passwordManagerApp').style.display = 'block';
-
         document.getElementById('targetPassType').value = 'site';
         document.getElementById('targetPassAppGroup').style.display = 'none';
         document.getElementById('changePassInput').value = '';
@@ -849,16 +721,9 @@
         const appGroup = document.getElementById('targetPassAppGroup');
         const title = document.getElementById('changePassTitle');
 
-        if (type === 'site') {
-            appGroup.style.display = 'none';
-            title.textContent = '🔑 Изменение пароля сайта';
-        } else if (type === 'admin') {
-            appGroup.style.display = 'none';
-            title.textContent = '👑 Изменение пароля админ-панели';
-        } else if (type === 'app') {
-            appGroup.style.display = 'block';
-            title.textContent = '📱 Изменение пароля приложения';
-        }
+        if (type === 'site') { appGroup.style.display = 'none'; title.textContent = '🔑 Изменение пароля сайта'; }
+        else if (type === 'admin') { appGroup.style.display = 'none'; title.textContent = '👑 Изменение пароля админ-панели'; }
+        else if (type === 'app') { appGroup.style.display = 'block'; title.textContent = '📱 Изменение пароля приложения'; }
     }
 
     function openSpecificAppPasswordChange(appKey, event) {
@@ -866,7 +731,6 @@
         closeSheet();
         document.getElementById('mainApp').style.display = 'none';
         document.getElementById('passwordManagerApp').style.display = 'block';
-
         document.getElementById('targetPassType').value = 'app';
         document.getElementById('targetPassAppGroup').style.display = 'block';
         document.getElementById('targetAppSelect').value = appKey;
@@ -879,33 +743,25 @@
         const input = document.getElementById('changePassInput');
         const newVal = input.value.trim();
 
-        if (!newVal) {
-            alert('Введите новый пароль!');
-            return;
-        }
+        if (!newVal) { showSuccessToast('⚠️ Введите новый пароль!'); return; }
 
         const encodedVal = safeBtoa(newVal);
-
-        if (type === 'site') {
-            remoteConfig.sitePassword = encodedVal;
-        } else if (type === 'admin') {
-            remoteConfig.adminPassword = encodedVal;
-        } else if (type === 'app') {
-            const appKey = document.getElementById('targetAppSelect').value;
-            remoteConfig.appPasswords[appKey] = encodedVal;
+        if (type === 'site') remoteConfig.sitePassword = encodedVal;
+        else if (type === 'admin') remoteConfig.adminPassword = encodedVal;
+        else if (type === 'app') {
+            remoteConfig.appPasswords[document.getElementById('targetAppSelect').value] = encodedVal;
         }
 
-        // Обновляем файл на GitHub
         await updateConfigOnGitHub();
         cancelPasswordManager();
     }
 
+    // ИСПРАВЛЕНА ОШИБКА СЕТИ: автоматическое получение актуального SHA перед отправкой PUT
     async function updateConfigOnGitHub() {
         const owner = 'app-installer-ios';
         const repo = 'store';
         const path = 'passwords.json';
         const token = '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';
-
         const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
 
         try {
@@ -916,9 +772,8 @@
                 }
             });
             
-            if (!getResponse.ok) throw new Error('Не удалось получить файл с GitHub');
+            if (!getResponse.ok) throw new Error('Не удалось получить актуальный SHA файла');
             const fileData = await getResponse.json();
-            const fileSha = fileData.sha;
 
             const updatedContent = JSON.stringify(remoteConfig, null, 2);
             const encodedContent = btoa(unescape(encodeURIComponent(updatedContent)));
@@ -933,19 +788,18 @@
                 body: JSON.stringify({
                     message: 'Update config via admin panel',
                     content: encodedContent,
-                    sha: fileSha
+                    sha: fileData.sha
                 })
             });
 
             if (putResponse.ok) {
-                showSuccessToast('✅ Изменения применились для всех! Сайт обновится через 1 мин.');
+                showSuccessToast('✅ Изменения применились! Сайт обновится через 1 мин.');
             } else {
-                alert('Ошибка при сохранении на GitHub.');
+                showSuccessToast('❌ Ошибка сохранения конфигурации на GitHub.');
             }
-
         } catch (error) {
-            console.error('Ошибка:', error);
-            alert('Ошибка сети при обновлении конфигурации.');
+            console.error('Ошибка сети:', error);
+            showSuccessToast('❌ Ошибка сети при обновлении конфигурации.');
         }
     }
 
@@ -957,18 +811,13 @@
         
         document.querySelectorAll('.sheet-item').forEach(item => item.classList.remove('selected'));
         element.classList.add('selected');
-        
         closeSheet();
     }
 
     function startInstallation() {
-        if (!selectedAppUrl) {
-            alert('Пожалуйста, выберите приложение из списка!');
-            return;
-        }
+        if (!selectedAppUrl) { showSuccessToast('⚠️ Выберите приложение из списка!'); return; }
 
-        const passMap = getAppPasswords();
-        if (passMap[selectedAppKey]) {
+        if (getAppPasswords()[selectedAppKey]) {
             document.getElementById('appPassError').style.display = 'none';
             document.getElementById('appPassInput').value = '';
             document.getElementById('mainApp').style.display = 'none';
@@ -976,24 +825,19 @@
             document.getElementById('appPassInput').focus();
             return;
         }
-
         executeDownload();
     }
 
     function submitAppPassword() {
         const input = document.getElementById("appPassInput");
         const errorMsg = document.getElementById("appPassError");
-        const passMap = getAppPasswords();
-        const targetEncoded = passMap[selectedAppKey];
 
-        const val = input.value.trim();
-        if (safeBtoa(val) === targetEncoded) {
+        if (safeBtoa(input.value.trim()) === getAppPasswords()[selectedAppKey]) {
             document.getElementById("appAuthApp").style.display = "none";
             document.getElementById("mainApp").style.display = "block";
             executeDownload();
             return;
         }
-
         errorMsg.style.display = "block";
         input.value = "";
         input.focus();
@@ -1006,15 +850,10 @@
 
     function executeDownload() {
         incrementDownloadCount(selectedAppKey);
-
         const toast = document.getElementById('toast');
         clearTimeout(toastTimer);
         toast.classList.add('show');
-        
-        toastTimer = setTimeout(() => {
-            toast.classList.remove('show');
-        }, 5000);
-
+        toastTimer = setTimeout(() => { toast.classList.remove('show'); }, 5000);
         window.location.href = selectedAppUrl;
     }
 </script>
@@ -1022,11 +861,10 @@
 <div class="container" id="authApp" style="display: none;">
     <div class="auth-box">
         <div class="auth-title">👋 Добро пожаловать!</div>
-        <div style="font-size: 13px; color: #cbd5e1; line-height: 1.4;">Введите пароль для доступа к каталогу удалённых приложений:</div>
+        <div style="font-size: 13px; color: #cbd5e1; line-height: 1.4;">Введите пароль для доступа к каталогу:</div>
         <input type="password" id="passInput" class="auth-input" placeholder="Пароль..." autocomplete="off">
-        <div id="authError" class="auth-error">Неверный пароль! Попробуйте снова.</div>
+        <div id="authError" class="auth-error">Неверный пароль!</div>
         <button type="button" class="btn" onclick="submitPassword()">Войти</button>
-        
         <a href="https://t.me/tema_deputat" target="_blank" class="btn btn-telegram">
             <img src="Telegram_logo.svg" alt="Telegram" class="telegram-icon">
             Поддержка в Telegram
@@ -1039,7 +877,7 @@
         <div class="auth-title">🔒 Защита установки</div>
         <div style="font-size: 13px; color: #cbd5e1;">Введите пароль для этого приложения:</div>
         <input type="password" id="appPassInput" class="auth-input" placeholder="Пароль..." autocomplete="off">
-        <div id="appPassError" class="auth-error">Неверный пароль! Попробуйте снова.</div>
+        <div id="appPassError" class="auth-error">Неверный пароль!</div>
         <button type="button" class="btn" onclick="submitAppPassword()">Подтвердить</button>
         <button type="button" class="btn btn-secondary" onclick="cancelAppPassword()">Назад</button>
     </div>
@@ -1049,14 +887,13 @@
     <div class="auth-box">
         <div class="auth-title">👑 Вход для админа</div>
         <div style="font-size: 13px; color: #cbd5e1;">Введите пароль администратора:</div>
-        <input type="password" id="adminPassInput" class="auth-input" placeholder="Пароль администратора..." autocomplete="off">
-        <div id="adminPassError" class="auth-error">Неверный пароль! Попробуйте снова.</div>
+        <input type="password" id="adminPassInput" class="auth-input" placeholder="Пароль..." autocomplete="off">
+        <div id="adminPassError" class="auth-error">Неверный пароль!</div>
         <button type="button" class="btn" onclick="submitAdminPassword()">Войти в панель</button>
         <button type="button" class="btn btn-secondary" onclick="cancelAdminAuth()">Назад</button>
     </div>
 </div>
 
-<!-- Окно управления паролями из админки -->
 <div class="container" id="passwordManagerApp" style="display: none;">
     <div class="auth-box">
         <div class="auth-title" id="changePassTitle">🔑 Изменение паролей</div>
@@ -1105,7 +942,7 @@
     </div>
 
     <div class="warning-box">
-        <span class="text-warning">⚠️ ВНИМАНИЕ:</span> Если ранее приложение уже было установлено на вашем аккаунте, смело <span class="text-highlight">продолжайте скачивание</span>. Если оно устанавливается впервые — обязательно <span class="text-highlight">обратитесь к администратору</span> перед загрузкой.
+        <span class="text-warning">⚠️ ВНИМАНИЕ:</span> Если ранее приложение уже было установлено на вашем аккаунте, смело <span class="text-highlight">продолжайте скачивание</span>. Если впервые — <span class="text-highlight">обратитесь к администратору</span>.
     </div>
 
     <div class="card">
@@ -1120,26 +957,18 @@
         </button>
 
         <button type="button" class="btn" onclick="startInstallation()">Установить</button>
-
         <div id="toast" class="toast">🚀 Загрузка началась! Проверьте главный экран устройства.</div>
     </div>
 </div>
 
-<!-- Фиксированная плашка с кнопкой админ-панели и выходом в самом низу экрана -->
 <div class="admin-footer-bar">
-    <button type="button" class="btn-admin-trigger" onclick="openAdminAuth()">
-        ⚙️ Админ-панель
-    </button>
-    <button type="button" class="btn-admin-logout" onclick="logoutAdmin()">
-        🚪 Выйти из админ-панели
-    </button>
+    <button type="button" class="btn-admin-trigger" onclick="openAdminAuth()">⚙️ Админ-панель</button>
+    <button type="button" class="btn-admin-logout" onclick="logoutAdmin()">🚪 Выйти из админ-панели</button>
 </div>
 
 <div class="sheet-overlay" id="sheetOverlay" onclick="closeSheet()">
     <div class="sheet-modal" onclick="event.stopPropagation()">
-        <button type="button" class="admin-settings-trigger" onclick="openPasswordManager()">
-            🔐 Управление паролями сайта и приложений
-        </button>
+        <button type="button" class="admin-settings-trigger" onclick="openPasswordManager()">🔐 Управление паролями сайта и приложений</button>
         <div class="sheet-header">
             <div class="sheet-title">Выберите приложение</div>
             <button class="sheet-close" onclick="closeSheet()">✕</button>
@@ -1147,10 +976,7 @@
         <div class="sheet-list">
             
             <div class="sheet-item" data-key="vk" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk.plist', 'ВКонтакте', 'vk')">
-                <div class="sheet-info-box">
-                    <span class="app-name">ВКонтакте</span>
-                    <span class="download-counter">Скачиваний: 0</span>
-                </div>
+                <div class="sheet-info-box"><span class="app-name">ВКонтакте</span><span class="download-counter">Скачиваний: 0</span></div>
                 <div class="admin-action-btn-group">
                     <button class="admin-action-btn btn-pass" onclick="openSpecificAppPasswordChange('vk', event)" title="Сменить пароль">🔑</button>
                     <button class="admin-action-btn btn-hide" onclick="toggleAppVisibility('vk', event)">Скрыть</button>
@@ -1159,10 +985,7 @@
             <hr class="divider-hr">
 
             <div class="sheet-item" data-key="max" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/max.plist', 'MAX', 'max')">
-                <div class="sheet-info-box">
-                    <span class="app-name">MAX</span>
-                    <span class="download-counter">Скачиваний: 0</span>
-                </div>
+                <div class="sheet-info-box"><span class="app-name">MAX</span><span class="download-counter">Скачиваний: 0</span></div>
                 <div class="admin-action-btn-group">
                     <button class="admin-action-btn btn-pass" onclick="openSpecificAppPasswordChange('max', event)" title="Сменить пароль">🔑</button>
                     <button class="admin-action-btn btn-hide" onclick="toggleAppVisibility('max', event)">Скрыть</button>
@@ -1171,10 +994,7 @@
             <hr class="divider-hr">
 
             <div class="sheet-item" data-key="vk-video" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk-video.plist', 'VK Видео', 'vk-video')">
-                <div class="sheet-info-box">
-                    <span class="app-name">VK Видео</span>
-                    <span class="download-counter">Скачиваний: 0</span>
-                </div>
+                <div class="sheet-info-box"><span class="app-name">VK Видео</span><span class="download-counter">Скачиваний: 0</span></div>
                 <div class="admin-action-btn-group">
                     <button class="admin-action-btn btn-pass" onclick="openSpecificAppPasswordChange('vk-video', event)" title="Сменить пароль">🔑</button>
                     <button class="admin-action-btn btn-hide" onclick="toggleAppVisibility('vk-video', event)">Скрыть</button>
@@ -1183,10 +1003,7 @@
             <hr class="divider-hr">
 
             <div class="sheet-item" data-key="sber" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sber.plist', 'СБЕР(Учёт Онлайн)', 'sber')">
-                <div class="sheet-info-box">
-                    <span class="app-name">СБЕР(Учёт Онлайн)</span>
-                    <span class="download-counter">Скачиваний: 0</span>
-                </div>
+                <div class="sheet-info-box"><span class="app-name">СБЕР(Учёт Онлайн)</span><span class="download-counter">Скачиваний: 0</span></div>
                 <div class="admin-action-btn-group">
                     <button class="admin-action-btn btn-pass" onclick="openSpecificAppPasswordChange('sber', event)" title="Сменить пароль">🔑</button>
                     <button class="admin-action-btn btn-hide" onclick="toggleAppVisibility('sber', event)">Скрыть</button>
@@ -1195,10 +1012,7 @@
             <hr class="divider-hr">
 
             <div class="sheet-item" data-key="sovkombank-vsekarty" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sovkombank-vsekarty.plist', 'Совкомбанк (Все карты MDS)', 'sovkombank-vsekarty')">
-                <div class="sheet-info-box">
-                    <span class="app-name">Совкомбанк (Все карты MDS)</span>
-                    <span class="download-counter">Скачиваний: 0</span>
-                </div>
+                <div class="sheet-info-box"><span class="app-name">Совкомбанк (Все карты MDS)</span><span class="download-counter">Скачиваний: 0</span></div>
                 <div class="admin-action-btn-group">
                     <button class="admin-action-btn btn-pass" onclick="openSpecificAppPasswordChange('sovkombank-vsekarty', event)" title="Сменить пароль">🔑</button>
                     <button class="admin-action-btn btn-hide" onclick="toggleAppVisibility('sovkombank-vsekarty', event)">Скрыть</button>
@@ -1207,10 +1021,7 @@
             <hr class="divider-hr">
 
             <div class="sheet-item" data-key="avito" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/avito.plist', 'Авито', 'avito')">
-                <div class="sheet-info-box">
-                    <span class="app-name">Авито</span>
-                    <span class="download-counter">Скачиваний: 0</span>
-                </div>
+                <div class="sheet-info-box"><span class="app-name">Авито</span><span class="download-counter">Скачиваний: 0</span></div>
                 <div class="admin-action-btn-group">
                     <button class="admin-action-btn btn-pass" onclick="openSpecificAppPasswordChange('avito', event)" title="Сменить пароль">🔑</button>
                     <button class="admin-action-btn btn-hide" onclick="toggleAppVisibility('avito', event)">Скрыть</button>
@@ -1219,10 +1030,7 @@
             <hr class="divider-hr">
 
             <div class="sheet-item" data-key="tbank" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/tbank.plist', 'Т-Банк(8PRO)', 'tbank')">
-                <div class="sheet-info-box">
-                    <span class="app-name">Т-Банк(8PRO)</span>
-                    <span class="download-counter">Скачиваний: 0</span>
-                </div>
+                <div class="sheet-info-box"><span class="app-name">Т-Банк(8PRO)</span><span class="download-counter">Скачиваний: 0</span></div>
                 <div class="admin-action-btn-group">
                     <button class="admin-action-btn btn-pass" onclick="openSpecificAppPasswordChange('tbank', event)" title="Сменить пароль">🔑</button>
                     <button class="admin-action-btn btn-hide" onclick="toggleAppVisibility('tbank', event)">Скрыть</button>
@@ -1231,10 +1039,7 @@
             <hr class="divider-hr">
 
             <div class="sheet-item" data-key="drive-transit" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/drive-transit.plist', 'Т-Банк (Drive Transit)', 'drive-transit')">
-                <div class="sheet-info-box">
-                    <span class="app-name">Т-Банк (Drive Transit)</span>
-                    <span class="download-counter">Скачиваний: 0</span>
-                </div>
+                <div class="sheet-info-box"><span class="app-name">Т-Банк (Drive Transit)</span><span class="download-counter">Скачиваний: 0</span></div>
                 <div class="admin-action-btn-group">
                     <button class="admin-action-btn btn-pass" onclick="openSpecificAppPasswordChange('drive-transit', event)" title="Сменить пароль">🔑</button>
                     <button class="admin-action-btn btn-hide" onclick="toggleAppVisibility('drive-transit', event)">Скрыть</button>
@@ -1243,10 +1048,7 @@
             <hr class="divider-hr">
 
             <div class="sheet-item" data-key="lenta" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/lenta.plist', 'Лента', 'lenta')">
-                <div class="sheet-info-box">
-                    <span class="app-name">Лента</span>
-                    <span class="download-counter">Скачиваний: 0</span>
-                </div>
+                <div class="sheet-info-box"><span class="app-name">Лента</span><span class="download-counter">Скачиваний: 0</span></div>
                 <div class="admin-action-btn-group">
                     <button class="admin-action-btn btn-pass" onclick="openSpecificAppPasswordChange('lenta', event)" title="Сменить пароль">🔑</button>
                     <button class="admin-action-btn btn-hide" onclick="toggleAppVisibility('lenta', event)">Скрыть</button>
@@ -1255,10 +1057,7 @@
             <hr class="divider-hr">
 
             <div class="sheet-item" data-key="yandex-pay" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/yandex-pay.plist', 'Яндекс Пэй', 'yandex-pay')">
-                <div class="sheet-info-box">
-                    <span class="app-name">Яндекс Пэй</span>
-                    <span class="download-counter">Скачиваний: 0</span>
-                </div>
+                <div class="sheet-info-box"><span class="app-name">Яндекс Пэй</span><span class="download-counter">Скачиваний: 0</span></div>
                 <div class="admin-action-btn-group">
                     <button class="admin-action-btn btn-pass" onclick="openSpecificAppPasswordChange('yandex-pay', event)" title="Сменить пароль">🔑</button>
                     <button class="admin-action-btn btn-hide" onclick="toggleAppVisibility('yandex-pay', event)">Скрыть</button>
@@ -1267,10 +1066,7 @@
             <hr class="divider-hr">
 
             <div class="sheet-item" data-key="2gis" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/2gis.plist', '2ГИС', '2gis')">
-                <div class="sheet-info-box">
-                    <span class="app-name">2ГИС</span>
-                    <span class="download-counter">Скачиваний: 0</span>
-                </div>
+                <div class="sheet-info-box"><span class="app-name">2ГИС</span><span class="download-counter">Скачиваний: 0</span></div>
                 <div class="admin-action-btn-group">
                     <button class="admin-action-btn btn-pass" onclick="openSpecificAppPasswordChange('2gis', event)" title="Сменить пароль">🔑</button>
                     <button class="admin-action-btn btn-hide" onclick="toggleAppVisibility('2gis', event)">Скрыть</button>
@@ -1278,13 +1074,8 @@
             </div>
             <hr class="divider-hr">
 
-            <div class="sheet-item" data-key="psb" onclick="selectApp(this, 'itms-com-services://...')" style="display:none"></div> <!-- Заглушка, чтобы скрипты и кэш не ругались -->
-
             <div class="sheet-item" data-key="psb" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/psb.plist', 'ПСБ (Чайная Церемония)', 'psb')">
-                <div class="sheet-info-box">
-                    <span class="app-name">ПСБ (Чайная Церемония)</span>
-                    <span class="download-counter">Скачиваний: 0</span>
-                </div>
+                <div class="sheet-info-box"><span class="app-name">ПСБ (Чайная Церемония)</span><span class="download-counter">Скачиваний: 0</span></div>
                 <div class="admin-action-btn-group">
                     <button class="admin-action-btn btn-pass" onclick="openSpecificAppPasswordChange('psb', event)" title="Сменить пароль">🔑</button>
                     <button class="admin-action-btn btn-hide" onclick="toggleAppVisibility('psb', event)">Скрыть</button>
