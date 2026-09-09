@@ -771,9 +771,11 @@
         try {
             let sha = '';
             const getResponse = await fetch(url, {
+                method: 'GET',
                 headers: {
                     'Authorization': `token ${token}`,
-                    'Accept': 'application/vnd.github.v3+json'
+                    'Accept': 'application/vnd.github.v3+json',
+                    'Cache-Control': 'no-cache'
                 }
             });
             
@@ -789,7 +791,9 @@
                 message: 'Update config via admin panel',
                 content: encodedContent
             };
-            if (sha) bodyData.sha = sha;
+            if (sha) {
+                bodyData.sha = sha;
+            }
 
             const putResponse = await fetch(url, {
                 method: 'PUT',
@@ -804,7 +808,9 @@
             if (putResponse.ok) {
                 showSuccessToast('✅ Изменения применились! Сайт обновится через 1 мин.');
             } else {
-                showSuccessToast('❌ Ошибка сохранения конфигурации на GitHub.');
+                const errJson = await putResponse.json().catch(() => ({}));
+                console.error('GitHub API Error:', errJson);
+                showSuccessToast('❌ Ошибка GitHub: ' + (errJson.message || 'не удалось сохранить'));
             }
         } catch (error) {
             console.error('Ошибка сети:', error);
