@@ -600,6 +600,13 @@
     function logoutAdmin() {
         localStorage.removeItem("is_admin_mode");
         document.body.classList.remove("is-admin");
+        
+        // Гарантированно скрываем модалки и возвращаем главный экран
+        closeSheet();
+        document.getElementById("adminAuthApp").style.display = "none";
+        document.getElementById("authApp").style.display = "none";
+        document.getElementById("mainApp").style.display = "block";
+        
         updateAppsVisibility();
         
         const customToast = document.getElementById("customToast");
