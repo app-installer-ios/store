@@ -66,6 +66,12 @@
 
         .container { width: 100%; max-width: 400px; z-index: 1; }
         
+        /* Поднимаем верхний блок (заголовок + подзаголовок) выше */
+        .header-section {
+            margin-top: -30px;
+            margin-bottom: 20px;
+        }
+
         h1 { 
             font-size: 21px; 
             margin-top: 0;
@@ -78,7 +84,7 @@
         .subtitle { 
             font-size: 13px; 
             text-align: center; 
-            margin-bottom: 16px; 
+            margin-bottom: 0; 
             color: #94a3b8;
             letter-spacing: 0.2px;
             line-height: 1.4;
@@ -298,7 +304,7 @@
             transition: opacity 0.2s ease, visibility 0.2s ease;
             display: flex;
             justify-content: center;
-            align-items: center; /* Возвращено строго по центру */
+            align-items: center;
         }
 
         .sheet-overlay.active {
@@ -571,8 +577,10 @@
 
 <!-- Каталог -->
 <div class="container" id="mainApp" style="display: none;">
-    <h1>Установка удалённых приложений</h1>
-    <div class="subtitle">Установка недоступных приложений на iPhone — <span style="color: #38bdf8;">без компьютера, проводов и выхода из App Store</span></div>
+    <div class="header-section">
+        <h1>Установка удалённых приложений</h1>
+        <div class="subtitle">Установка недоступных приложений на iPhone — <span style="color: #38bdf8;">без компьютера и проводов</span></div>
+    </div>
 
     <div class="warning-box">
         <span class="text-warning">⚠️ ВНИМАНИЕ:</span> Если ранее приложение уже было установлено на вашем аккаунте, смело <span class="text-highlight">продолжайте скачивание</span>. Если оно устанавливается впервые — обязательно <span class="text-highlight">обратитесь к администратору</span> перед загрузкой.
