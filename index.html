@@ -16,7 +16,7 @@
             color: #ffffff; 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
             margin: 0; 
-            padding: 20px 16px; 
+            padding: 16px 16px; 
             display: flex; 
             justify-content: center; 
             align-items: center; 
@@ -67,8 +67,9 @@
         .container { width: 100%; max-width: 400px; z-index: 1; }
         
         h1 { 
-            font-size: 22px; 
-            margin-bottom: 8px; 
+            font-size: 21px; 
+            margin-top: 0;
+            margin-bottom: 6px; 
             text-align: center; 
             background: linear-gradient(135deg, #c084fc, #818cf8);
             -webkit-background-clip: text;
@@ -77,29 +78,30 @@
         .subtitle { 
             font-size: 13px; 
             text-align: center; 
-            margin-bottom: 20px; 
+            margin-bottom: 16px; 
             color: #94a3b8;
             letter-spacing: 0.2px;
             line-height: 1.4;
         }
         
-        /* Табличка с важной информацией */
+        /* Аккуратная и гармоничная табличка с важной информацией */
         .warning-box { 
-            background: #1e1b2e; 
-            border: 2px solid #ef4444; 
-            color: #ff9999; 
+            background: rgba(30, 27, 46, 0.7); 
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(239, 68, 68, 0.35); 
+            color: #ffb3b3; 
             border-radius: 20px; 
-            padding: 16px 18px; 
-            font-size: 13px; 
+            padding: 14px 16px; 
+            font-size: 12.5px; 
             line-height: 1.5; 
-            margin-bottom: 20px; 
-            box-shadow: 0 10px 35px rgba(239, 68, 68, 0.25);
+            margin-bottom: 16px; 
+            box-shadow: 0 8px 30px rgba(239, 68, 68, 0.15);
             text-align: center;
         }
         
-        .text-warning { color: #fde047; text-shadow: 0 0 10px rgba(253, 224, 71, 0.4); }
-        .text-danger { color: #f87171; }
-        .text-highlight { color: #38bdf8; text-shadow: 0 0 10px rgba(56, 189, 248, 0.4); }
+        .text-warning { color: #fde047; }
+        .text-highlight { color: #38bdf8; }
 
         /* Повышенная прозрачность главного блока */
         .card { 
@@ -225,7 +227,7 @@
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.15);
             color: #e1e1e1;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
         .status-dot {
@@ -308,11 +310,12 @@
             visibility: visible;
         }
 
+        /* Стильное окно выбора приложений с неоновой фиолетово-синей подсветкой */
         .sheet-modal {
             position: relative;
             width: 100%;
             max-width: 400px;
-            background: rgba(255, 255, 255, 0.07);
+            background: rgba(30, 20, 50, 0.75);
             backdrop-filter: blur(45px);
             -webkit-backdrop-filter: blur(45px);
             border-top-left-radius: 28px;
@@ -322,8 +325,8 @@
             max-height: 75vh;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 -20px 60px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 -20px 60px rgba(124, 58, 237, 0.35), inset 0 1px 0 rgba(192, 132, 252, 0.4);
+            border: 1px solid rgba(168, 85, 247, 0.4);
             transform: translateY(100%);
             transition: transform 0.2s cubic-bezier(0.1, 0.9, 0.2, 1);
             will-change: transform;
@@ -350,16 +353,21 @@
             justify-content: space-between;
             align-items: center;
             padding-bottom: 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            border-bottom: 1px solid rgba(168, 85, 247, 0.25);
             margin-bottom: 6px;
         }
 
-        .sheet-title { font-size: 16px; color: #f1f5f9; }
+        .sheet-title { 
+            font-size: 16px; 
+            background: linear-gradient(135deg, #c084fc, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
         .sheet-close {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #cbd5e1;
+            background: rgba(168, 85, 247, 0.15);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            color: #c084fc;
             width: 30px; height: 30px;
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
@@ -414,7 +422,7 @@
         "sovkombank-vsekarty": "c292azIwMjY=",
         "avito": "YXZpdG9vbmlj",
         "tbank": "dGJhbms4ODg=",
-        "lenta": "bGVudGExMTE=",
+        "lenta": "bGVudExvMTE=",
         "yandex-pay": "eWFuZGV4cGF5",
         "2gis": "Z2lzbWFwczM=",
         "psb": "cHNidGVhMDE="
@@ -553,7 +561,7 @@
 <div class="container" id="authApp" style="display: none;">
     <div class="auth-box">
         <div class="auth-title">👋 Добро пожаловать!</div>
-        <div style="font-size: 13px; color: #cbd5e1; line-height: 1.4;">Введите пароль для доступа к каталогу удаленных приложений:</div>
+        <div style="font-size: 13px; color: #cbd5e1; line-height: 1.4;">Введите пароль для доступа к каталогу удалённых приложений:</div>
         <input type="password" id="passInput" class="auth-input" placeholder="Пароль..." autocomplete="off">
         <div id="authError" class="auth-error">Неверный пароль! Попробуйте снова.</div>
         <button type="button" class="btn" onclick="submitPassword()">Войти</button>
@@ -584,7 +592,7 @@
     <div class="subtitle">Установка недоступных приложений на iPhone — <span style="color: #38bdf8;">без компьютера, проводов и выхода из App Store</span></div>
 
     <div class="warning-box">
-        ⚠️ <span class="text-warning">ВНИМАНИЕ:</span> Если ранее на вашем аккаунте было установлено нужное приложение — <span class="text-highlight">продолжите скачивание</span>. Если ранее приложения не было — <span class="text-highlight">обратитесь к администратору!</span> ⚠️
+        <span class="text-warning">⚠️ ВНИМАНИЕ:</span> Если ранее приложение уже было установлено на вашем аккаунте, смело <span class="text-highlight">продолжайте скачивание</span>. Если оно устанавливается впервые — обязательно <span class="text-highlight">обратитесь к администратору</span> перед загрузкой.
     </div>
 
     <div class="card">
@@ -604,7 +612,7 @@
     </div>
 </div>
 
-<!-- Шторка выбора -->
+<!-- Шторка выбора с подсветкой -->
 <div class="sheet-overlay" id="sheetOverlay" onclick="closeSheet()">
     <div class="sheet-modal" onclick="event.stopPropagation()">
         <div class="sheet-header">
