@@ -386,8 +386,6 @@
         .sheet-item {
             padding: 12px 14px;
             border-radius: 12px;
-            color: #38bdf8;
-            font-size: 15px;
             cursor: pointer;
             transition: background 0.1s;
             display: flex;
@@ -395,8 +393,17 @@
             justify-content: space-between;
         }
 
+        /* Более яркий цвет названий приложений для лучшего выделения */
+        .sheet-item span {
+            color: #7dd3fc;
+            font-size: 15px;
+        }
+
         .sheet-item:active, .sheet-item.selected {
             background: rgba(168, 85, 247, 0.25);
+        }
+
+        .sheet-item:active span, .sheet-item.selected span {
             color: #c084fc;
         }
 
