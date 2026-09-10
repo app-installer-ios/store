@@ -704,8 +704,7 @@
     }
 
     /* ПОИСК */
-
-    .app-search-wrap {
+        .app-search-wrap {
         position: relative;
         flex-shrink: 0;
         margin-bottom: 8px;
@@ -1036,6 +1035,25 @@
     body.app-password-keyboard-open #appAuthApp {
         top: var(--app-password-top, 50%);
     }
+
+    /*
+     * Экран входа на сайт всегда фиксирован по центру.
+     * При открытой клавиатуре JS временно поднимает только top,
+     * после закрытия клавиатуры окно возвращается точно в центр.
+     */
+    #authApp.active-screen {
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        width: 100%;
+        max-width: 420px;
+        transform: translate(-50%, -50%) !important;
+        z-index: 1001;
+    }
+
+    body.site-password-keyboard-open #authApp {
+        top: var(--site-password-top, 50%);
+    }
 </style>
 </head>
 
@@ -1224,10 +1242,8 @@
                     const viewportBottom = viewportTop + viewportHeight;
                     const boxHeight = appAuth.offsetHeight;
                     const gapAboveKeyboard = 14;
-                    const top = Math.max(
-                        viewportTop + boxHeight / 2 + gapAboveKeyboard,
-                        viewportBottom - boxHeight / 2 - gapAboveKeyboard
-                    );
+                    const top =
+                        viewportBottom - boxHeight / 2 - gapAboveKeyboard;
 
                     document.documentElement.style.setProperty(
                         "--app-password-top",
@@ -1238,6 +1254,34 @@
                         "--app-password-top"
                     );
                 }
+
+                const siteAuth = document.getElementById("authApp");
+                const sitePasswordIsActive =
+                    siteAuth && siteAuth.classList.contains("active-screen");
+
+                document.body.classList.toggle(
+                    "site-password-keyboard-open",
+                    keyboardLikelyOpen && sitePasswordIsActive
+                );
+
+                if (keyboardLikelyOpen && sitePasswordIsActive && siteAuth) {
+                    const viewportTop = window.visualViewport.offsetTop || 0;
+                    const viewportBottom = viewportTop + viewportHeight;
+                    const boxHeight = siteAuth.offsetHeight;
+                    const gapAboveKeyboard = 14;
+                    const top =
+                        viewportBottom - boxHeight / 2 - gapAboveKeyboard;
+
+                    document.documentElement.style.setProperty(
+                        "--site-password-top",
+                        `${top}px`
+                    );
+                } else {
+                    document.documentElement.style.removeProperty(
+                        "--site-password-top"
+                    );
+                }
+
             };
 
             window.visualViewport.addEventListener("resize", updateKeyboardState);
@@ -1328,7 +1372,8 @@
             remoteConfig.hiddenApps.push(appKey);
         }
 
-        saveLocalConfig();
+        saveLocalConfi
+        g();
 
         updateAppsVisibility();
         filterApps();
@@ -2025,8 +2070,7 @@
         <div class="status-badge" id="statusBadge">
 
             <span class="status-dot"></span>
-
-            <span>
+                        <span>
                 Все приложения доступны
             </span>
 
