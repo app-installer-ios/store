@@ -52,10 +52,6 @@
         position: relative;
     }
 
-    /* =========================
-       AURORA BACKGROUND
-       ========================= */
-
     .aurora-bg {
         position: fixed;
         inset: 0;
@@ -117,10 +113,6 @@
         background: #2563eb;
     }
 
-    /* =========================
-       MAIN CONTAINERS
-       ========================= */
-
     .container {
         width: 100%;
         max-width: 420px;
@@ -147,10 +139,6 @@
             transform: translateY(0) scale(1);
         }
     }
-
-    /* =========================
-       HEADER
-       ========================= */
 
     .header-section {
         margin-bottom: 18px;
@@ -181,10 +169,6 @@
         letter-spacing: .15px;
         line-height: 1.45;
     }
-
-    /* =========================
-       WARNING
-       ========================= */
 
     .warning-box {
         position: relative;
@@ -224,10 +208,6 @@
     .text-highlight {
         color: #67e8f9;
     }
-
-    /* =========================
-       MAIN CARD
-       ========================= */
 
     .card {
         position: relative;
@@ -270,10 +250,6 @@
         text-align: left;
     }
 
-    /* =========================
-       STATUS
-       ========================= */
-
     .status-badge {
         width: fit-content;
         max-width: 100%;
@@ -312,10 +288,6 @@
             box-shadow: 0 0 18px rgba(52,211,153,1);
         }
     }
-
-    /* =========================
-       SELECT
-       ========================= */
 
     .custom-select-btn {
         position: relative;
@@ -358,10 +330,6 @@
         margin-left: 10px;
         transform: translateY(-2px);
     }
-
-    /* =========================
-       BUTTONS
-       ========================= */
 
     .btn {
         position: relative;
@@ -437,10 +405,6 @@
         box-shadow: none;
     }
 
-    /* =========================
-       TELEGRAM
-       ========================= */
-
     .btn-telegram {
         background: rgba(56,189,248,.055);
         border: 1px solid rgba(56,189,248,.18);
@@ -464,10 +428,6 @@
         height: 19px;
         object-fit: contain;
     }
-
-    /* =========================
-       ADMIN FOOTER
-       ========================= */
 
     .admin-footer-bar {
         position: fixed;
@@ -518,10 +478,6 @@
     body.is-admin .btn-admin-logout {
         display: block;
     }
-
-    /* =========================
-       TOASTS
-       ========================= */
 
     .toast {
         display: none;
@@ -579,10 +535,6 @@
         color: #6ee7b7;
         box-shadow: 0 12px 35px rgba(16,185,129,.12);
     }
-
-    /* =========================
-       AUTH
-       ========================= */
 
     .auth-box {
         background:
@@ -655,10 +607,6 @@
         margin-top: -5px;
     }
 
-    /* =========================
-       BOTTOM SHEET / MODAL
-       ========================= */
-
     .sheet-overlay {
         position: fixed;
         inset: 0;
@@ -671,14 +619,7 @@
         transition: opacity .25s ease, visibility .25s ease;
         display: flex;
         justify-content: center;
-
-        /* ВАЖНО:
-           окно больше не центрируется по высоте.
-           Оно закрепляется сверху доступной области. */
-        align-items: flex-start;
-
-        padding-top: max(12px, env(safe-area-inset-top));
-        padding-bottom: 12px;
+        align-items: center;
     }
 
     .sheet-overlay.active {
@@ -690,38 +631,26 @@
         position: relative;
         width: calc(100% - 30px);
         max-width: 410px;
-
         background:
             linear-gradient(
                 145deg,
                 rgba(27,22,43,.82),
                 rgba(12,15,27,.78)
             );
-
         backdrop-filter: blur(42px) saturate(150%);
         -webkit-backdrop-filter: blur(42px) saturate(150%);
-
         border-radius: 27px;
         padding: 15px 14px 18px;
         z-index: 1000;
-
-        /* Используем dynamic viewport */
-        max-height: calc(100dvh - max(24px, env(safe-area-inset-top)) - 12px);
-
+        max-height: 78vh;
         display: flex;
         flex-direction: column;
-
         box-shadow:
             0 30px 80px rgba(0,0,0,.62),
             inset 0 1px 0 rgba(255,255,255,.12);
-
         border: 1px solid rgba(192,132,252,.24);
-
         transform: scale(.94) translateY(8px);
         opacity: .7;
-
-        transform-origin: center top;
-
         transition:
             transform .25s cubic-bezier(.1,.9,.2,1),
             opacity .2s ease;
@@ -732,119 +661,13 @@
         opacity: 1;
     }
 
-    /* =========================
-       SEARCH
-       ========================= */
-
-    .sheet-search-wrap {
-        position: relative;
-        margin: 0 0 9px;
-        flex-shrink: 0;
-    }
-
-    .sheet-search {
-        width: 100%;
-        height: 43px;
-        padding: 0 40px 0 40px;
-
-        background: rgba(255,255,255,.055);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-
-        border: 1px solid rgba(255,255,255,.10);
-        border-radius: 14px;
-
-        color: #fff;
-        font-size: 13px;
-        outline: none;
-
-        box-shadow:
-            inset 0 1px 0 rgba(255,255,255,.05),
-            0 6px 20px rgba(0,0,0,.10);
-
-        transition:
-            border-color .2s ease,
-            background .2s ease,
-            box-shadow .2s ease;
-    }
-
-    .sheet-search::placeholder {
-        color: #64748b;
-    }
-
-    .sheet-search:focus {
-        border-color: rgba(168,85,247,.42);
-        background: rgba(255,255,255,.07);
-        box-shadow:
-            0 0 20px rgba(168,85,247,.12),
-            inset 0 1px 0 rgba(255,255,255,.06);
-    }
-
-    .sheet-search-icon {
-        position: absolute;
-        left: 14px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #a78bfa;
-        font-size: 15px;
-        pointer-events: none;
-    }
-
-    .sheet-search-clear {
-        position: absolute;
-        right: 8px;
-        top: 50%;
-        transform: translateY(-50%);
-
-        width: 28px;
-        height: 28px;
-
-        border: 0;
-        border-radius: 50%;
-
-        background: rgba(255,255,255,.06);
-        color: #94a3b8;
-
-        font-size: 13px;
-        cursor: pointer;
-
-        display: none;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .sheet-search-clear.show {
-        display: flex;
-    }
-
-    .sheet-search-clear:active {
-        transform: translateY(-50%) scale(.92);
-    }
-
-    .search-empty {
-        display: none;
-        text-align: center;
-        color: #64748b;
-        font-size: 12px;
-        padding: 28px 10px;
-    }
-
-    .search-empty.show {
-        display: block;
-    }
-
-    /* =========================
-       SHEET HEADER
-       ========================= */
-
     .sheet-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 2px 2px 12px;
         border-bottom: 1px solid rgba(255,255,255,.07);
-        margin-bottom: 9px;
-        flex-shrink: 0;
+        margin-bottom: 6px;
     }
 
     .sheet-title {
@@ -867,7 +690,6 @@
         font-size: 13px;
         cursor: pointer;
         transition: .2s ease;
-        flex-shrink: 0;
     }
 
     .sheet-close:hover {
@@ -878,12 +700,10 @@
         overflow-y: auto;
         display: flex;
         flex-direction: column;
-        min-height: 0;
         -webkit-overflow-scrolling: touch;
         scrollbar-width: thin;
         scrollbar-color: rgba(168,85,247,.4) transparent;
         padding-right: 2px;
-        overscroll-behavior: contain;
     }
 
     .sheet-list::-webkit-scrollbar {
@@ -905,7 +725,6 @@
         align-items: center;
         justify-content: space-between;
         gap: 10px;
-        flex-shrink: 0;
     }
 
     .sheet-item:hover {
@@ -952,12 +771,7 @@
         border: none;
         border-top: 1px solid rgba(255,255,255,.055);
         margin: 1px 10px;
-        flex-shrink: 0;
     }
-
-    /* =========================
-       ADMIN ACTIONS
-       ========================= */
 
     .admin-action-btn-group {
         display: none;
@@ -1014,7 +828,6 @@
         margin-bottom: 10px;
         display: none;
         transition: .2s ease;
-        flex-shrink: 0;
     }
 
     .admin-settings-trigger:hover {
@@ -1024,10 +837,6 @@
     body.is-admin .admin-settings-trigger {
         display: block;
     }
-
-    /* =========================
-       SELECT ELEMENTS
-       ========================= */
 
     select {
         appearance: none;
@@ -1047,26 +856,6 @@
         background: #171425;
         color: #fff;
     }
-
-    /* =========================
-       KEYBOARD FIX
-       ========================= */
-
-    body.keyboard-open .sheet-overlay {
-        align-items: flex-start;
-        padding-top: max(8px, env(safe-area-inset-top));
-        padding-bottom: 8px;
-    }
-
-    body.keyboard-open .sheet-modal {
-        margin-top: 0;
-        transform-origin: center top;
-        max-height: calc(100dvh - max(16px, env(safe-area-inset-top)) - 8px);
-    }
-
-    /* =========================
-       SMALL SCREENS
-       ========================= */
 
     @media (max-height: 680px) {
         .container {
@@ -1120,10 +909,6 @@
 </div>
 
 <script>
-    /*
-     * ЛОКАЛЬНАЯ КОНФИГУРАЦИЯ
-     */
-
     const DEFAULT_CONFIG = {
         sitePassword: "Q2F0YWxvZzIwMjZfc2VjdXJl",
         adminPassword: "QWRtaW5fMjAyNl9TZWN1cmUjOTk=",
@@ -1136,6 +921,7 @@
             "sovkombank-vsekarty": "c292azIwMjY=",
             "avito": "YXZpdG9vbmlj",
             "tbank": "dGJhbms4ODg=",
+            "tbank-easycatch": "RWFzeUNhdGNoMjAyNg==",
             "drive-transit": "ZHJpdmV0cmFuc2l0MjAyNg==",
             "lenta": "bGVudExvMTE=",
             "yandex-pay": "eWFuZGV4cGF5",
@@ -1243,20 +1029,6 @@
         document.getElementById("changePassInput").addEventListener("keydown", (e) => {
             if (e.key === "Enter") saveNewPassword();
         });
-
-        /* Поиск приложений */
-        const searchInput = document.getElementById("appSearchInput");
-
-        if (searchInput) {
-            searchInput.addEventListener("input", filterApps);
-
-            searchInput.addEventListener("keydown", function(e) {
-                if (e.key === "Escape") {
-                    clearAppSearch();
-                    this.blur();
-                }
-            });
-        }
     });
 
     function openAdminAuth() {
@@ -1345,7 +1117,6 @@
         saveLocalConfig();
 
         updateAppsVisibility();
-        filterApps();
 
         showSuccessToast("✅ Изменения сохранены на этом устройстве!");
     }
@@ -1395,8 +1166,6 @@
                 }
             }
         });
-
-        filterApps();
     }
 
     function updateDownloadCountersUI() {
@@ -1467,148 +1236,15 @@
         input.focus();
     }
 
-    /* =========================
-       SEARCH
-       ========================= */
-
-    function filterApps() {
-        const searchInput = document.getElementById("appSearchInput");
-        const emptyMessage = document.getElementById("searchEmpty");
-
-        if (!searchInput) return;
-
-        const query = searchInput.value
-            .trim()
-            .toLowerCase();
-
-        const items = document.querySelectorAll(".sheet-item");
-
-        let visibleCount = 0;
-
-        items.forEach(item => {
-
-            const appNameElement =
-                item.querySelector(".app-name");
-
-            if (!appNameElement) return;
-
-            const appName =
-                appNameElement.textContent
-                    .trim()
-                    .toLowerCase();
-
-            const matches =
-                !query ||
-                appName.includes(query);
-
-            const key =
-                item.getAttribute("data-key");
-
-            const hidden =
-                remoteConfig.hiddenApps.includes(key) &&
-                !document.body.classList.contains("is-admin");
-
-            if (matches && !hidden) {
-
-                item.style.display = "flex";
-                visibleCount++;
-
-            } else {
-
-                item.style.display = "none";
-            }
-
-            const hr = item.nextElementSibling;
-
-            if (hr && hr.classList.contains("divider-hr")) {
-
-                hr.style.display =
-                    matches && !hidden
-                        ? "block"
-                        : "none";
-            }
-        });
-
-        if (emptyMessage) {
-
-            if (query && visibleCount === 0) {
-                emptyMessage.classList.add("show");
-            } else {
-                emptyMessage.classList.remove("show");
-            }
-        }
-
-        updateSearchClearButton();
-    }
-
-    function updateSearchClearButton() {
-        const input =
-            document.getElementById("appSearchInput");
-
-        const clearButton =
-            document.getElementById("appSearchClear");
-
-        if (!input || !clearButton) return;
-
-        clearButton.classList.toggle(
-            "show",
-            input.value.length > 0
-        );
-    }
-
-    function clearAppSearch() {
-        const input =
-            document.getElementById("appSearchInput");
-
-        if (!input) return;
-
-        input.value = "";
-
-        filterApps();
-
-        input.focus();
-    }
-
     function openSheet() {
         updateAppsVisibility();
         updateDownloadCountersUI();
 
-        const searchInput =
-            document.getElementById("appSearchInput");
-
-        if (searchInput) {
-            searchInput.value = "";
-        }
-
-        const emptyMessage =
-            document.getElementById("searchEmpty");
-
-        if (emptyMessage) {
-            emptyMessage.classList.remove("show");
-        }
-
-        updateSearchClearButton();
-
-        document
-            .getElementById('sheetOverlay')
-            .classList.add('active');
+        document.getElementById('sheetOverlay').classList.add('active');
     }
 
     function closeSheet() {
-        document
-            .getElementById('sheetOverlay')
-            .classList.remove('active');
-
-        const searchInput =
-            document.getElementById("appSearchInput");
-
-        if (searchInput) {
-            searchInput.value = "";
-            filterApps();
-            searchInput.blur();
-        }
-
-        document.body.classList.remove("keyboard-open");
+        document.getElementById('sheetOverlay').classList.remove('active');
     }
 
     function openPasswordManager() {
@@ -1792,42 +1428,6 @@
 
         window.location.href = selectedAppUrl;
     }
-
-    /* =========================
-       KEYBOARD / VISUAL VIEWPORT
-       ========================= */
-
-    function updateKeyboardState() {
-        if (!window.visualViewport) return;
-
-        const viewport = window.visualViewport;
-
-        const keyboardVisible =
-            window.innerHeight - viewport.height > 120;
-
-        document.body.classList.toggle(
-            "keyboard-open",
-            keyboardVisible
-        );
-    }
-
-    if (window.visualViewport) {
-
-        window.visualViewport.addEventListener(
-            "resize",
-            updateKeyboardState
-        );
-
-        window.visualViewport.addEventListener(
-            "scroll",
-            updateKeyboardState
-        );
-    }
-
-    window.addEventListener(
-        "resize",
-        updateKeyboardState
-    );
 </script>
 
 <div class="container" id="authApp">
@@ -2014,6 +1614,7 @@
                 <option value="sovkombank-vsekarty">Совкомбанк (Все карты MDS)</option>
                 <option value="avito">Авито</option>
                 <option value="tbank">Т-Банк(8PRO)</option>
+                <option value="tbank-easycatch">Т-Банк EasyCatch Sounder</option>
                 <option value="drive-transit">Т-Банк (Drive Transit)</option>
                 <option value="lenta">Лента</option>
                 <option value="yandex-pay">Яндекс Пэй</option>
@@ -2195,43 +1796,6 @@
                 ✕
             </button>
 
-        </div>
-
-        <!-- ПОИСК -->
-        <div class="sheet-search-wrap">
-
-            <span class="sheet-search-icon">
-                🔍
-            </span>
-
-            <input
-                type="search"
-                id="appSearchInput"
-                class="sheet-search"
-                placeholder="Поиск приложения..."
-                autocomplete="off"
-                autocorrect="off"
-                autocapitalize="none"
-                spellcheck="false"
-            >
-
-            <button
-                type="button"
-                id="appSearchClear"
-                class="sheet-search-clear"
-                onclick="clearAppSearch()"
-                aria-label="Очистить поиск"
-            >
-                ✕
-            </button>
-
-        </div>
-
-        <div
-            id="searchEmpty"
-            class="search-empty"
-        >
-            Ничего не найдено
         </div>
 
         <div class="sheet-list">
@@ -2441,6 +2005,45 @@
                     >
                         Скрыть
                     </button>
+                </div>
+            </div>
+
+            <hr class="divider-hr">
+
+            <!-- НОВОЕ ПРИЛОЖЕНИЕ: Т-БАНК EASYCATCH -->
+
+            <div
+                class="sheet-item"
+                data-key="tbank-easycatch"
+                onclick="selectApp(
+                    this,
+                    'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/tbank-easycatch.plist',
+                    'Т-Банк EasyCatch Sounder',
+                    'tbank-easycatch'
+                )"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">Т-Банк EasyCatch Sounder</span>
+                    <span class="download-counter">Скачиваний: 0</span>
+                </div>
+
+                <div class="admin-action-btn-group">
+
+                    <button
+                        class="admin-action-btn btn-pass"
+                        onclick="openSpecificAppPasswordChange('tbank-easycatch', event)"
+                        title="Сменить пароль"
+                    >
+                        🔑
+                    </button>
+
+                    <button
+                        class="admin-action-btn btn-hide"
+                        onclick="toggleAppVisibility('tbank-easycatch', event)"
+                    >
+                        Скрыть
+                    </button>
+
                 </div>
             </div>
 
