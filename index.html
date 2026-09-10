@@ -748,6 +748,87 @@
         background: rgba(168,85,247,.16);
     }
 
+    /* =========================
+       APP SEARCH
+       ========================= */
+
+    .app-search-wrap {
+        position: relative;
+        margin: 2px 0 8px;
+    }
+
+    .app-search-input {
+        width: 100%;
+        height: 43px;
+        padding: 10px 40px 10px 39px;
+        border-radius: 13px;
+        border: 1px solid rgba(255,255,255,.10);
+        background: rgba(255,255,255,.055);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        color: #fff;
+        outline: none;
+        font-size: 13px;
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.05),
+            0 6px 20px rgba(0,0,0,.10);
+        transition: .2s ease;
+    }
+
+    .app-search-input::placeholder {
+        color: #64748b;
+    }
+
+    .app-search-input:focus {
+        border-color: rgba(168,85,247,.42);
+        background: rgba(255,255,255,.07);
+        box-shadow:
+            0 0 20px rgba(168,85,247,.10),
+            inset 0 1px 0 rgba(255,255,255,.06);
+    }
+
+    .app-search-icon {
+        position: absolute;
+        left: 13px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        font-size: 15px;
+        pointer-events: none;
+    }
+
+    .app-search-clear {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 27px;
+        height: 27px;
+        border: 0;
+        border-radius: 50%;
+        background: rgba(255,255,255,.07);
+        color: #94a3b8;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 12px;
+        padding: 0;
+    }
+
+    .app-search-clear:hover {
+        background: rgba(168,85,247,.16);
+        color: #c4b5fd;
+    }
+
+    .app-search-empty {
+        display: none;
+        padding: 22px 10px;
+        text-align: center;
+        color: #64748b;
+        font-size: 12px;
+    }
+
     .sheet-list {
         overflow-y: auto;
         display: flex;
@@ -1100,6 +1181,15 @@
         document.getElementById("changePassInput").addEventListener("keydown", (e) => {
             if (e.key === "Enter") saveNewPassword();
         });
+
+        /* Поиск приложений */
+        document.getElementById("appSearchInput").addEventListener("input", filterApps);
+
+        document.getElementById("appSearchInput").addEventListener("keydown", (e) => {
+            if (e.key === "Escape") {
+                clearAppSearch();
+            }
+        });
     });
 
     function openAdminAuth() {
@@ -1188,6 +1278,7 @@
         saveLocalConfig();
 
         updateAppsVisibility();
+        filterApps();
 
         showSuccessToast("✅ Изменения сохранены на этом устройстве!");
     }
@@ -1311,11 +1402,100 @@
         updateAppsVisibility();
         updateDownloadCountersUI();
 
+        /* Сбрасываем поиск при каждом открытии */
+        clearAppSearch();
+
         document.getElementById('sheetOverlay').classList.add('active');
     }
 
     function closeSheet() {
         document.getElementById('sheetOverlay').classList.remove('active');
+    }
+
+    /*
+     * ПОИСК ПРИЛОЖЕНИЙ
+     *
+     * Фильтрация происходит только внутри окна выбора.
+     * Никакие остальные элементы страницы не затрагиваются.
+     */
+    function filterApps() {
+        const input = document.getElementById("appSearchInput");
+        const query = input.value.trim().toLowerCase();
+
+        const items = document.querySelectorAll(".sheet-item");
+        const emptyMessage = document.getElementById("appSearchEmpty");
+        const clearButton = document.getElementById("appSearchClear");
+
+        let visibleCount = 0;
+
+        items.forEach(item => {
+            const nameElement = item.querySelector(".app-name");
+
+            if (!nameElement) return;
+
+            const name = nameElement.textContent.toLowerCase();
+            const matches = name.includes(query);
+
+            const isHiddenForUser =
+                remoteConfig.hiddenApps.includes(item.getAttribute("data-key")) &&
+                !document.body.classList.contains("is-admin");
+
+            if (matches && !isHiddenForUser) {
+                item.style.display = "flex";
+                visibleCount++;
+
+                const hr = item.nextElementSibling;
+
+                if (hr && hr.classList.contains("divider-hr")) {
+                    hr.style.display = "block";
+                }
+
+            } else {
+                item.style.display = "none";
+
+                const hr = item.nextElementSibling;
+
+                if (hr && hr.classList.contains("divider-hr")) {
+                    hr.style.display = "none";
+                }
+            }
+        });
+
+        if (query.length > 0) {
+            clearButton.style.display = "flex";
+        } else {
+            clearButton.style.display = "none";
+        }
+
+        if (visibleCount === 0) {
+            emptyMessage.style.display = "block";
+        } else {
+            emptyMessage.style.display = "none";
+        }
+    }
+
+    function clearAppSearch() {
+        const input = document.getElementById("appSearchInput");
+
+        if (input) {
+            input.value = "";
+        }
+
+        const clearButton = document.getElementById("appSearchClear");
+
+        if (clearButton) {
+            clearButton.style.display = "none";
+        }
+
+        if (document.querySelector(".sheet-list")) {
+            updateAppsVisibility();
+
+            const emptyMessage = document.getElementById("appSearchEmpty");
+
+            if (emptyMessage) {
+                emptyMessage.style.display = "none";
+            }
+        }
     }
 
     function openPasswordManager() {
@@ -1866,6 +2046,42 @@
                 ✕
             </button>
 
+        </div>
+
+        <!-- ПОИСК -->
+        <div class="app-search-wrap">
+
+            <span class="app-search-icon">
+                🔍
+            </span>
+
+            <input
+                type="search"
+                id="appSearchInput"
+                class="app-search-input"
+                placeholder="Поиск приложения..."
+                autocomplete="off"
+                autocapitalize="none"
+                spellcheck="false"
+            >
+
+            <button
+                type="button"
+                id="appSearchClear"
+                class="app-search-clear"
+                onclick="clearAppSearch()"
+                aria-label="Очистить поиск"
+            >
+                ✕
+            </button>
+
+        </div>
+
+        <div
+            id="appSearchEmpty"
+            class="app-search-empty"
+        >
+            🔎 Ничего не найдено
         </div>
 
         <div class="sheet-list">
