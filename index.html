@@ -517,16 +517,31 @@
 
     async function loadConfig() {
         try {
-            const response = await fetch('passwords.json?_=' + new Date().getTime());
-            if (response.ok) {
-                const data = await response.json();
-                if (data.sitePassword) remoteConfig.sitePassword = data.sitePassword;
-                if (data.adminPassword) remoteConfig.adminPassword = data.adminPassword;
-                if (data.hiddenApps && Array.isArray(data.hiddenApps)) remoteConfig.hiddenApps = data.hiddenApps;
-                if (data.appPasswords) remoteConfig.appPasswords = data.appPasswords;
+            const localConfig = localStorage.getItem("local_remote_config");
+
+            if (localConfig) {
+                const data = JSON.parse(localConfig);
+
+                if (data.sitePassword) {
+                    remoteConfig.sitePassword = data.sitePassword;
+                }
+
+                if (data.adminPassword) {
+                    remoteConfig.adminPassword = data.adminPassword;
+                }
+
+                if (data.hiddenApps && Array.isArray(data.hiddenApps)) {
+                    remoteConfig.hiddenApps = data.hiddenApps;
+                }
+
+                if (data.appPasswords) {
+                    remoteConfig.appPasswords = data.appPasswords;
+                }
+
+                return;
             }
         } catch (e) {
-            console.log("Файл конфигурации не найден, используются стандартные параметры.");
+            console.error("Ошибка загрузки локальной конфигурации:", e);
         }
     }
 
@@ -751,9 +766,12 @@
         if (!newVal) { showSuccessToast('⚠️ Введите новый пароль!'); return; }
 
         const encodedVal = safeBtoa(newVal);
-        if (type === 'site') remoteConfig.sitePassword = encodedVal;
-        else if (type === 'admin') remoteConfig.adminPassword = encodedVal;
-        else if (type === 'app') {
+
+        if (type === 'site') {
+            remoteConfig.sitePassword = encodedVal;
+        } else if (type === 'admin') {
+            remoteConfig.adminPassword = encodedVal;
+        } else if (type === 'app') {
             remoteConfig.appPasswords[document.getElementById('targetAppSelect').value] = encodedVal;
         }
 
@@ -762,59 +780,26 @@
     }
 
     async function updateConfigOnGitHub() {
-        const owner = 'app-installer-ios';
-        const repo = 'store';
-        const path = 'passwords.json';
-        const token = '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';
-        const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
-
         try {
-            let sha = '';
-            const getResponse = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `token ${token}`,
-                    'Accept': 'application/vnd.github.v3+json',
-                    'Cache-Control': 'no-cache'
-                }
-            });
-            
-            if (getResponse.ok) {
-                const fileData = await getResponse.json();
-                sha = fileData.sha;
-            }
+            localStorage.setItem(
+                "local_remote_config",
+                JSON.stringify(remoteConfig)
+            );
 
-            const updatedContent = JSON.stringify(remoteConfig, null, 2);
-            const encodedContent = btoa(unescape(encodeURIComponent(updatedContent)));
+            showSuccessToast(
+                "✅ Изменения сохранены на этом устройстве!"
+            );
 
-            const bodyData = {
-                message: 'Update config via admin panel',
-                content: encodedContent
-            };
-            if (sha) {
-                bodyData.sha = sha;
-            }
+            return true;
 
-            const putResponse = await fetch(url, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `token ${token}`,
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/vnd.github.v3+json'
-                },
-                body: JSON.stringify(bodyData)
-            });
-
-            if (putResponse.ok) {
-                showSuccessToast('✅ Изменения применились! Сайт обновится через 1 мин.');
-            } else {
-                const errJson = await putResponse.json().catch(() => ({}));
-                console.error('GitHub API Error:', errJson);
-                showSuccessToast('❌ Ошибка GitHub: ' + (errJson.message || 'не удалось сохранить'));
-            }
         } catch (error) {
-            console.error('Ошибка сети:', error);
-            showSuccessToast('❌ Ошибка сети при обновлении конфигурации.');
+            console.error("Ошибка локального сохранения:", error);
+
+            showSuccessToast(
+                "❌ Не удалось сохранить изменения."
+            );
+
+            return false;
         }
     }
 
