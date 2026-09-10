@@ -51,6 +51,18 @@
         padding: 20px 0 max(80px, env(safe-area-inset-bottom));
     }
 
+    body:has(input:focus) {
+        padding-bottom: 45vh !important;
+        align-items: flex-start !important;
+        padding-top: 40px !important;
+    }
+
+    body:has(input:focus) .admin-footer-bar {
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease;
+    }
+
     .aurora-bg {
         position: fixed;
         inset: 0;
@@ -1194,7 +1206,8 @@
         document.querySelectorAll('input').forEach(input => {
             input.addEventListener('focus', () => {
                 setTimeout(() => {
-                    input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    const box = input.closest('.auth-box') || input.closest('.card') || input;
+                    box.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }, 300);
             });
         });
