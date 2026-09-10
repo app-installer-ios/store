@@ -703,7 +703,9 @@
         background: rgba(168,85,247,.16);
     }
 
-    /* ПОИСК */    .app-search-wrap {
+    /* ПОИСК */
+
+    .app-search-wrap {
         position: relative;
         flex-shrink: 0;
         margin-bottom: 8px;
@@ -1011,48 +1013,6 @@
         height: calc(100dvh - 30px);
         max-height: calc(100dvh - 30px);
     }
-
-    /*
-     * Окно пароля именно для установки приложения.
-     * При открытой клавиатуре фиксируем его немного выше клавиатуры.
-     */
-    /*
-     * Экран защиты установки всегда фиксирован по центру.
-     * При открытой клавиатуре JS временно меняет только top,
-     * поэтому после её закрытия окно не падает вниз.
-     */
-    #appAuthApp.active-screen {
-        position: fixed;
-        left: 50%;
-        top: 50%;
-        width: 100%;
-        max-width: 420px;
-        transform: translate(-50%, -50%) !important;
-        z-index: 1001;
-    }
-
-    body.app-password-keyboard-open #appAuthApp {
-        top: var(--app-password-top, 50%);
-    }
-
-    /*
-     * Экран входа на сайт всегда фиксирован по центру.
-     * При открытой клавиатуре JS временно поднимает только top,
-     * после закрытия клавиатуры окно возвращается точно в центр.
-     */
-    #authApp.active-screen {
-        position: fixed;
-        left: 50%;
-        top: 50%;
-        width: 100%;
-        max-width: 420px;
-        transform: translate(-50%, -50%) !important;
-        z-index: 1001;
-    }
-
-    body.site-password-keyboard-open #authApp {
-        top: var(--site-password-top, 50%);
-    }
 </style>
 </head>
 
@@ -1219,68 +1179,11 @@
                 const keyboardLikelyOpen =
                     screenHeight - viewportHeight > 120;
 
-                const sheetIsActive =
-                    document.getElementById("sheetOverlay").classList.contains("active");
-
                 document.body.classList.toggle(
                     "keyboard-open",
-                    keyboardLikelyOpen && sheetIsActive
+                    keyboardLikelyOpen &&
+                    document.getElementById("sheetOverlay").classList.contains("active")
                 );
-
-                const appAuth = document.getElementById("appAuthApp");
-                const appPasswordIsActive =
-                    appAuth && appAuth.classList.contains("active-screen");
-
-                document.body.classList.toggle(
-                    "app-password-keyboard-open",
-                    keyboardLikelyOpen && appPasswordIsActive
-                );
-
-                if (keyboardLikelyOpen && appPasswordIsActive && appAuth) {
-                    const viewportTop = window.visualViewport.offsetTop || 0;
-                    const viewportBottom = viewportTop + viewportHeight;
-                    const boxHeight = appAuth.offsetHeight;
-                    const gapAboveKeyboard = 14;
-                    const top =
-                        viewportBottom - boxHeight / 2 - gapAboveKeyboard;
-
-                    document.documentElement.style.setProperty(
-                        "--app-password-top",
-                        `${top}px`
-                    );
-                } else {
-                    document.documentElement.style.removeProperty(
-                        "--app-password-top"
-                    );
-                }
-
-                const siteAuth = document.getElementById("authApp");
-                const sitePasswordIsActive =
-                    siteAuth && siteAuth.classList.contains("active-screen");
-
-                document.body.classList.toggle(
-                    "site-password-keyboard-open",
-                    keyboardLikelyOpen && sitePasswordIsActive
-                );
-
-                if (keyboardLikelyOpen && sitePasswordIsActive && siteAuth) {
-                    const viewportTop = window.visualViewport.offsetTop || 0;
-                    const viewportBottom = viewportTop + viewportHeight;
-                    const boxHeight = siteAuth.offsetHeight;
-                    const gapAboveKeyboard = 14;
-                    const top =
-                        viewportBottom - boxHeight / 2 - gapAboveKeyboard;
-
-                    document.documentElement.style.setProperty(
-                        "--site-password-top",
-                        `${top}px`
-                    );
-                } else {
-                    document.documentElement.style.removeProperty(
-                        "--site-password-top"
-                    );
-                }
-
             };
 
             window.visualViewport.addEventListener("resize", updateKeyboardState);
@@ -2067,7 +1970,9 @@
 
         <div class="status-badge" id="statusBadge">
 
-            <span class="status-dot"></span>            <span>
+            <span class="status-dot"></span>
+
+            <span>
                 Все приложения доступны
             </span>
 
