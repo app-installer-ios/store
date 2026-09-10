@@ -35,8 +35,7 @@
         height: 100%;
         margin: 0;
         padding: 0;
-        overflow: hidden;
-        position: fixed;
+        overflow-x: hidden;
     }
 
     body {
@@ -50,6 +49,10 @@
         justify-content: center;
         align-items: center;
         position: relative;
+        /* Разрешаем скролл на случай маленьких экранов или открытой клавиатуры */
+        overflow-y: auto;
+        min-height: 100vh;
+        min-height: 100dvh;
     }
 
     .aurora-bg {
@@ -116,12 +119,13 @@
     .container {
         width: 100%;
         max-width: 420px;
-        padding: 0 18px;
+        padding: 20px 18px;
         z-index: 1;
         display: none;
         flex-direction: column;
         justify-content: center;
         animation: screenIn .3s ease;
+        margin: auto;
     }
 
     .container.active-screen {
@@ -987,11 +991,13 @@
         }
     }
 
-    /*
-     * При открытой клавиатуре не позволяем модальному окну
-     * пересчитываться и уезжать вниз вместе с viewport.
-     */
+    /* Исправление поведения при открытой клавиатуре */
     @media (max-height: 500px) {
+        body {
+            align-items: flex-start;
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
         .sheet-overlay {
             align-items: flex-start;
             padding-top: 15px;
@@ -1001,6 +1007,12 @@
             height: calc(100dvh - 30px);
             max-height: calc(100dvh - 30px);
         }
+    }
+
+    body.keyboard-open {
+        align-items: flex-start;
+        padding-top: 20px;
+        padding-bottom: 40px;
     }
 
     body.keyboard-open .sheet-overlay {
@@ -1043,6 +1055,7 @@
             "sovkombank-vsekarty": "c292azIwMjY=",
             "avito": "YXZpdG9vbmlj",
             "tbank": "dGJhbms4ODg=",
+            "tbank-easycatch": "dGJhbmtlYXN5Y2F0Y2g=",
             "drive-transit": "ZHJpdmV0cmFuc2l0MjAyNg==",
             "lenta": "bGVudExvMTE=",
             "yandex-pay": "eWFuZGV4cGF5",
@@ -1121,6 +1134,9 @@
         if (target) {
             target.classList.add('active-screen');
         }
+        
+        // При смене экрана прокручиваем страницу наверх, чтобы контент не уезжал
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     document.addEventListener("DOMContentLoaded", function() {
@@ -1168,22 +1184,17 @@
         }
 
         /*
-         * Фиксация модального окна при появлении клавиатуры.
-         * Используем visualViewport, если он доступен.
+         * Фиксация состояния при появлении клавиатуры.
+         * Используем visualViewport для определения реальной высоты экрана с учетом клавиатуры.
          */
         if (window.visualViewport) {
             const updateKeyboardState = () => {
                 const viewportHeight = window.visualViewport.height;
-                const screenHeight = window.screen.height;
+                const screenHeight = window.innerHeight;
 
-                const keyboardLikelyOpen =
-                    screenHeight - viewportHeight > 120;
+                const keyboardLikelyOpen = (screenHeight - viewportHeight) > 120;
 
-                document.body.classList.toggle(
-                    "keyboard-open",
-                    keyboardLikelyOpen &&
-                    document.getElementById("sheetOverlay").classList.contains("active")
-                );
+                document.body.classList.toggle("keyboard-open", keyboardLikelyOpen);
             };
 
             window.visualViewport.addEventListener("resize", updateKeyboardState);
@@ -1411,8 +1422,6 @@
         filterApps();
 
         document.getElementById('sheetOverlay').classList.add('active');
-
-        document.body.classList.remove("keyboard-open");
     }
 
     function closeSheet() {
@@ -1424,7 +1433,6 @@
         }
 
         document.getElementById('sheetOverlay').classList.remove('active');
-        document.body.classList.remove("keyboard-open");
 
         filterApps();
     }
@@ -1879,6 +1887,7 @@
                 <option value="sovkombank-vsekarty">Совкомбанк (Все карты MDS)</option>
                 <option value="avito">Авито</option>
                 <option value="tbank">Т-Банк(8PRO)</option>
+                <option value="tbank-easycatch">Т-Банк (EasyCatch)</option>
                 <option value="drive-transit">Т-Банк (Drive Transit)</option>
                 <option value="lenta">Лента</option>
                 <option value="yandex-pay">Яндекс Пэй</option>
@@ -2305,6 +2314,34 @@
             </div>
 
             <hr class="divider-hr">
+
+            <div
+                class="sheet-item"
+                data-key="tbank-easycatch"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/tbank-easycatch.plist', 'Т-Банк (EasyCatch)', 'tbank-easycatch')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">Т-Банк (EasyCatch)</span>
+                    <span class="download-counter">Скачиваний: 0</span>
+                </div>
+
+                <div class="admin-action-btn-group">
+                    <button
+                        class="admin-action-btn btn-pass"
+                        onclick="openSpecificAppPasswordChange('tbank-easycatch', event)"
+                        title="Сменить пароль"
+                    >
+                        🔑
+                    </button>
+
+                    <button
+                        class="admin-action-btn btn-hide"
+                        onclick="toggleAppVisibility('tbank-easycatch', event)"
+                    >
+                        Скрыть
+                    </button>
+                </div>
+            </div>
 
             <hr class="divider-hr">
 
