@@ -1013,6 +1013,20 @@
         height: calc(100dvh - 30px);
         max-height: calc(100dvh - 30px);
     }
+
+    /*
+     * Окно пароля именно для установки приложения.
+     * При открытой клавиатуре фиксируем его немного выше клавиатуры.
+     */
+    body.app-password-keyboard-open #appAuthApp {
+        position: fixed;
+        left: 50%;
+        top: var(--app-password-top, 50%);
+        width: 100%;
+        max-width: 420px;
+        transform: translate(-50%, -50%) !important;
+        z-index: 1001;
+    }
 </style>
 </head>
 
@@ -1179,11 +1193,38 @@
                 const keyboardLikelyOpen =
                     screenHeight - viewportHeight > 120;
 
+                const sheetIsActive =
+                    document.getElementById("sheetOverlay").classList.contains("active");
+
                 document.body.classList.toggle(
                     "keyboard-open",
-                    keyboardLikelyOpen &&
-                    document.getElementById("sheetOverlay").classList.contains("active")
+                    keyboardLikelyOpen && sheetIsActive
                 );
+
+                const appAuth = document.getElementById("appAuthApp");
+                const appPasswordIsActive =
+                    appAuth && appAuth.classList.contains("active-screen");
+
+                document.body.classList.toggle(
+                    "app-password-keyboard-open",
+                    keyboardLikelyOpen && appPasswordIsActive
+                );
+
+                if (keyboardLikelyOpen && appPasswordIsActive && appAuth) {
+                    const viewportTop = window.visualViewport.offsetTop || 0;
+                    const viewportBottom = viewportTop + viewportHeight;
+                    const boxHeight = appAuth.offsetHeight;
+                    const gapAboveKeyboard = 14;
+                    const top = Math.max(
+                        viewportTop + boxHeight / 2 + gapAboveKeyboard,
+                        viewportBottom - boxHeight / 2 - gapAboveKeyboard
+                    );
+
+                    document.documentElement.style.setProperty(
+                        "--app-password-top",
+                        `${top}px`
+                    );
+                }
             };
 
             window.visualViewport.addEventListener("resize", updateKeyboardState);
