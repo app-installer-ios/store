@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
-    "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+ "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 
 <plist version="1.0">
 <dict>
     <key>items</key>
     <array>
         <dict>
-
             <key>assets</key>
             <array>
                 <dict>
@@ -31,9 +30,8 @@
                 <string>software</string>
 
                 <key>title</key>
-                <string>Т-Банк EasyCatch Sounder</string>
+                <string>Т-Банк (EasyCatch)</string>
             </dict>
-
         </dict>
     </array>
 </dict>
