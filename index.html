@@ -35,7 +35,6 @@
         height: 100%;
         margin: 0;
         padding: 0;
-        overflow: hidden;
     }
 
     body {
@@ -49,6 +48,7 @@
         justify-content: center;
         align-items: center;
         position: relative;
+        padding: 20px 0 max(80px, env(safe-area-inset-bottom));
     }
 
     .aurora-bg {
@@ -120,6 +120,7 @@
         display: none;
         flex-direction: column;
         justify-content: center;
+        margin: auto 0;
         animation: screenIn .3s ease;
     }
 
@@ -536,6 +537,7 @@
     }
 
     .auth-box {
+        max-height: calc(100dvh - 30px);
         background:
             linear-gradient(
                 145deg,
@@ -1188,6 +1190,14 @@
             window.visualViewport.addEventListener("resize", updateKeyboardState);
             window.visualViewport.addEventListener("scroll", updateKeyboardState);
         }
+
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', () => {
+                setTimeout(() => {
+                    input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 300);
+            });
+        });
     });
 
     function openAdminAuth() {
@@ -1692,6 +1702,8 @@
 
         window.location.href = selectedAppUrl;
     }
+
+
 </script>
 
 <div class="container" id="authApp">
