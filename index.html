@@ -1018,14 +1018,23 @@
      * Окно пароля именно для установки приложения.
      * При открытой клавиатуре фиксируем его немного выше клавиатуры.
      */
-    body.app-password-keyboard-open #appAuthApp {
+    /*
+     * Экран защиты установки всегда фиксирован по центру.
+     * При открытой клавиатуре JS временно меняет только top,
+     * поэтому после её закрытия окно не падает вниз.
+     */
+    #appAuthApp.active-screen {
         position: fixed;
         left: 50%;
-        top: var(--app-password-top, 50%);
+        top: 50%;
         width: 100%;
         max-width: 420px;
         transform: translate(-50%, -50%) !important;
         z-index: 1001;
+    }
+
+    body.app-password-keyboard-open #appAuthApp {
+        top: var(--app-password-top, 50%);
     }
 </style>
 </head>
@@ -1223,6 +1232,10 @@
                     document.documentElement.style.setProperty(
                         "--app-password-top",
                         `${top}px`
+                    );
+                } else {
+                    document.documentElement.style.removeProperty(
+                        "--app-password-top"
                     );
                 }
             };
