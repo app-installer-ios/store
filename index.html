@@ -671,7 +671,14 @@
         transition: opacity .25s ease, visibility .25s ease;
         display: flex;
         justify-content: center;
-        align-items: center;
+
+        /* ВАЖНО:
+           окно больше не центрируется по высоте.
+           Оно закрепляется сверху доступной области. */
+        align-items: flex-start;
+
+        padding-top: max(12px, env(safe-area-inset-top));
+        padding-bottom: 12px;
     }
 
     .sheet-overlay.active {
@@ -683,26 +690,38 @@
         position: relative;
         width: calc(100% - 30px);
         max-width: 410px;
+
         background:
             linear-gradient(
                 145deg,
                 rgba(27,22,43,.82),
                 rgba(12,15,27,.78)
             );
+
         backdrop-filter: blur(42px) saturate(150%);
         -webkit-backdrop-filter: blur(42px) saturate(150%);
+
         border-radius: 27px;
         padding: 15px 14px 18px;
         z-index: 1000;
-        max-height: 78vh;
+
+        /* Используем dynamic viewport */
+        max-height: calc(100dvh - max(24px, env(safe-area-inset-top)) - 12px);
+
         display: flex;
         flex-direction: column;
+
         box-shadow:
             0 30px 80px rgba(0,0,0,.62),
             inset 0 1px 0 rgba(255,255,255,.12);
+
         border: 1px solid rgba(192,132,252,.24);
+
         transform: scale(.94) translateY(8px);
         opacity: .7;
+
+        transform-origin: center top;
+
         transition:
             transform .25s cubic-bezier(.1,.9,.2,1),
             opacity .2s ease;
@@ -713,13 +732,119 @@
         opacity: 1;
     }
 
+    /* =========================
+       SEARCH
+       ========================= */
+
+    .sheet-search-wrap {
+        position: relative;
+        margin: 0 0 9px;
+        flex-shrink: 0;
+    }
+
+    .sheet-search {
+        width: 100%;
+        height: 43px;
+        padding: 0 40px 0 40px;
+
+        background: rgba(255,255,255,.055);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+
+        border: 1px solid rgba(255,255,255,.10);
+        border-radius: 14px;
+
+        color: #fff;
+        font-size: 13px;
+        outline: none;
+
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.05),
+            0 6px 20px rgba(0,0,0,.10);
+
+        transition:
+            border-color .2s ease,
+            background .2s ease,
+            box-shadow .2s ease;
+    }
+
+    .sheet-search::placeholder {
+        color: #64748b;
+    }
+
+    .sheet-search:focus {
+        border-color: rgba(168,85,247,.42);
+        background: rgba(255,255,255,.07);
+        box-shadow:
+            0 0 20px rgba(168,85,247,.12),
+            inset 0 1px 0 rgba(255,255,255,.06);
+    }
+
+    .sheet-search-icon {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #a78bfa;
+        font-size: 15px;
+        pointer-events: none;
+    }
+
+    .sheet-search-clear {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+
+        width: 28px;
+        height: 28px;
+
+        border: 0;
+        border-radius: 50%;
+
+        background: rgba(255,255,255,.06);
+        color: #94a3b8;
+
+        font-size: 13px;
+        cursor: pointer;
+
+        display: none;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .sheet-search-clear.show {
+        display: flex;
+    }
+
+    .sheet-search-clear:active {
+        transform: translateY(-50%) scale(.92);
+    }
+
+    .search-empty {
+        display: none;
+        text-align: center;
+        color: #64748b;
+        font-size: 12px;
+        padding: 28px 10px;
+    }
+
+    .search-empty.show {
+        display: block;
+    }
+
+    /* =========================
+       SHEET HEADER
+       ========================= */
+
     .sheet-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 2px 2px 12px;
         border-bottom: 1px solid rgba(255,255,255,.07);
-        margin-bottom: 6px;
+        margin-bottom: 9px;
+        flex-shrink: 0;
     }
 
     .sheet-title {
@@ -742,101 +867,23 @@
         font-size: 13px;
         cursor: pointer;
         transition: .2s ease;
+        flex-shrink: 0;
     }
 
     .sheet-close:hover {
         background: rgba(168,85,247,.16);
     }
 
-    /* =========================
-       APP SEARCH
-       ========================= */
-
-    .app-search-wrap {
-        position: relative;
-        margin: 2px 0 8px;
-    }
-
-    .app-search-input {
-        width: 100%;
-        height: 43px;
-        padding: 10px 40px 10px 39px;
-        border-radius: 13px;
-        border: 1px solid rgba(255,255,255,.10);
-        background: rgba(255,255,255,.055);
-        backdrop-filter: blur(18px);
-        -webkit-backdrop-filter: blur(18px);
-        color: #fff;
-        outline: none;
-        font-size: 13px;
-        box-shadow:
-            inset 0 1px 0 rgba(255,255,255,.05),
-            0 6px 20px rgba(0,0,0,.10);
-        transition: .2s ease;
-    }
-
-    .app-search-input::placeholder {
-        color: #64748b;
-    }
-
-    .app-search-input:focus {
-        border-color: rgba(168,85,247,.42);
-        background: rgba(255,255,255,.07);
-        box-shadow:
-            0 0 20px rgba(168,85,247,.10),
-            inset 0 1px 0 rgba(255,255,255,.06);
-    }
-
-    .app-search-icon {
-        position: absolute;
-        left: 13px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #94a3b8;
-        font-size: 15px;
-        pointer-events: none;
-    }
-
-    .app-search-clear {
-        position: absolute;
-        right: 8px;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 27px;
-        height: 27px;
-        border: 0;
-        border-radius: 50%;
-        background: rgba(255,255,255,.07);
-        color: #94a3b8;
-        display: none;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        font-size: 12px;
-        padding: 0;
-    }
-
-    .app-search-clear:hover {
-        background: rgba(168,85,247,.16);
-        color: #c4b5fd;
-    }
-
-    .app-search-empty {
-        display: none;
-        padding: 22px 10px;
-        text-align: center;
-        color: #64748b;
-        font-size: 12px;
-    }
-
     .sheet-list {
         overflow-y: auto;
         display: flex;
         flex-direction: column;
+        min-height: 0;
         -webkit-overflow-scrolling: touch;
         scrollbar-width: thin;
         scrollbar-color: rgba(168,85,247,.4) transparent;
         padding-right: 2px;
+        overscroll-behavior: contain;
     }
 
     .sheet-list::-webkit-scrollbar {
@@ -858,6 +905,7 @@
         align-items: center;
         justify-content: space-between;
         gap: 10px;
+        flex-shrink: 0;
     }
 
     .sheet-item:hover {
@@ -904,6 +952,7 @@
         border: none;
         border-top: 1px solid rgba(255,255,255,.055);
         margin: 1px 10px;
+        flex-shrink: 0;
     }
 
     /* =========================
@@ -965,6 +1014,7 @@
         margin-bottom: 10px;
         display: none;
         transition: .2s ease;
+        flex-shrink: 0;
     }
 
     .admin-settings-trigger:hover {
@@ -996,6 +1046,22 @@
     option {
         background: #171425;
         color: #fff;
+    }
+
+    /* =========================
+       KEYBOARD FIX
+       ========================= */
+
+    body.keyboard-open .sheet-overlay {
+        align-items: flex-start;
+        padding-top: max(8px, env(safe-area-inset-top));
+        padding-bottom: 8px;
+    }
+
+    body.keyboard-open .sheet-modal {
+        margin-top: 0;
+        transform-origin: center top;
+        max-height: calc(100dvh - max(16px, env(safe-area-inset-top)) - 8px);
     }
 
     /* =========================
@@ -1056,10 +1122,6 @@
 <script>
     /*
      * ЛОКАЛЬНАЯ КОНФИГУРАЦИЯ
-     *
-     * GitHub API, токен и passwords.json полностью удалены.
-     * Изменения администратора сохраняются только в localStorage
-     * текущего браузера.
      */
 
     const DEFAULT_CONFIG = {
@@ -1183,13 +1245,18 @@
         });
 
         /* Поиск приложений */
-        document.getElementById("appSearchInput").addEventListener("input", filterApps);
+        const searchInput = document.getElementById("appSearchInput");
 
-        document.getElementById("appSearchInput").addEventListener("keydown", (e) => {
-            if (e.key === "Escape") {
-                clearAppSearch();
-            }
-        });
+        if (searchInput) {
+            searchInput.addEventListener("input", filterApps);
+
+            searchInput.addEventListener("keydown", function(e) {
+                if (e.key === "Escape") {
+                    clearAppSearch();
+                    this.blur();
+                }
+            });
+        }
     });
 
     function openAdminAuth() {
@@ -1328,6 +1395,8 @@
                 }
             }
         });
+
+        filterApps();
     }
 
     function updateDownloadCountersUI() {
@@ -1398,104 +1467,148 @@
         input.focus();
     }
 
-    function openSheet() {
-        updateAppsVisibility();
-        updateDownloadCountersUI();
+    /* =========================
+       SEARCH
+       ========================= */
 
-        /* Сбрасываем поиск при каждом открытии */
-        clearAppSearch();
-
-        document.getElementById('sheetOverlay').classList.add('active');
-    }
-
-    function closeSheet() {
-        document.getElementById('sheetOverlay').classList.remove('active');
-    }
-
-    /*
-     * ПОИСК ПРИЛОЖЕНИЙ
-     *
-     * Фильтрация происходит только внутри окна выбора.
-     * Никакие остальные элементы страницы не затрагиваются.
-     */
     function filterApps() {
-        const input = document.getElementById("appSearchInput");
-        const query = input.value.trim().toLowerCase();
+        const searchInput = document.getElementById("appSearchInput");
+        const emptyMessage = document.getElementById("searchEmpty");
+
+        if (!searchInput) return;
+
+        const query = searchInput.value
+            .trim()
+            .toLowerCase();
 
         const items = document.querySelectorAll(".sheet-item");
-        const emptyMessage = document.getElementById("appSearchEmpty");
-        const clearButton = document.getElementById("appSearchClear");
 
         let visibleCount = 0;
 
         items.forEach(item => {
-            const nameElement = item.querySelector(".app-name");
 
-            if (!nameElement) return;
+            const appNameElement =
+                item.querySelector(".app-name");
 
-            const name = nameElement.textContent.toLowerCase();
-            const matches = name.includes(query);
+            if (!appNameElement) return;
 
-            const isHiddenForUser =
-                remoteConfig.hiddenApps.includes(item.getAttribute("data-key")) &&
+            const appName =
+                appNameElement.textContent
+                    .trim()
+                    .toLowerCase();
+
+            const matches =
+                !query ||
+                appName.includes(query);
+
+            const key =
+                item.getAttribute("data-key");
+
+            const hidden =
+                remoteConfig.hiddenApps.includes(key) &&
                 !document.body.classList.contains("is-admin");
 
-            if (matches && !isHiddenForUser) {
+            if (matches && !hidden) {
+
                 item.style.display = "flex";
                 visibleCount++;
 
-                const hr = item.nextElementSibling;
-
-                if (hr && hr.classList.contains("divider-hr")) {
-                    hr.style.display = "block";
-                }
-
             } else {
+
                 item.style.display = "none";
+            }
 
-                const hr = item.nextElementSibling;
+            const hr = item.nextElementSibling;
 
-                if (hr && hr.classList.contains("divider-hr")) {
-                    hr.style.display = "none";
-                }
+            if (hr && hr.classList.contains("divider-hr")) {
+
+                hr.style.display =
+                    matches && !hidden
+                        ? "block"
+                        : "none";
             }
         });
 
-        if (query.length > 0) {
-            clearButton.style.display = "flex";
-        } else {
-            clearButton.style.display = "none";
+        if (emptyMessage) {
+
+            if (query && visibleCount === 0) {
+                emptyMessage.classList.add("show");
+            } else {
+                emptyMessage.classList.remove("show");
+            }
         }
 
-        if (visibleCount === 0) {
-            emptyMessage.style.display = "block";
-        } else {
-            emptyMessage.style.display = "none";
-        }
+        updateSearchClearButton();
+    }
+
+    function updateSearchClearButton() {
+        const input =
+            document.getElementById("appSearchInput");
+
+        const clearButton =
+            document.getElementById("appSearchClear");
+
+        if (!input || !clearButton) return;
+
+        clearButton.classList.toggle(
+            "show",
+            input.value.length > 0
+        );
     }
 
     function clearAppSearch() {
-        const input = document.getElementById("appSearchInput");
+        const input =
+            document.getElementById("appSearchInput");
 
-        if (input) {
-            input.value = "";
+        if (!input) return;
+
+        input.value = "";
+
+        filterApps();
+
+        input.focus();
+    }
+
+    function openSheet() {
+        updateAppsVisibility();
+        updateDownloadCountersUI();
+
+        const searchInput =
+            document.getElementById("appSearchInput");
+
+        if (searchInput) {
+            searchInput.value = "";
         }
 
-        const clearButton = document.getElementById("appSearchClear");
+        const emptyMessage =
+            document.getElementById("searchEmpty");
 
-        if (clearButton) {
-            clearButton.style.display = "none";
+        if (emptyMessage) {
+            emptyMessage.classList.remove("show");
         }
 
-        if (document.querySelector(".sheet-list")) {
-            updateAppsVisibility();
+        updateSearchClearButton();
 
-            const emptyMessage = document.getElementById("appSearchEmpty");
+        document
+            .getElementById('sheetOverlay')
+            .classList.add('active');
+    }
 
-            if (emptyMessage) {
-                emptyMessage.style.display = "none";
-            }
+    function closeSheet() {
+        document
+            .getElementById('sheetOverlay')
+            .classList.remove('active');
+
+        const searchInput =
+            document.getElementById("appSearchInput");
+
+        if (searchInput) {
+            searchInput.value = "";
+            filterApps();
+            searchInput.blur();
         }
+
+        document.body.classList.remove("keyboard-open");
     }
 
     function openPasswordManager() {
@@ -1679,6 +1792,42 @@
 
         window.location.href = selectedAppUrl;
     }
+
+    /* =========================
+       KEYBOARD / VISUAL VIEWPORT
+       ========================= */
+
+    function updateKeyboardState() {
+        if (!window.visualViewport) return;
+
+        const viewport = window.visualViewport;
+
+        const keyboardVisible =
+            window.innerHeight - viewport.height > 120;
+
+        document.body.classList.toggle(
+            "keyboard-open",
+            keyboardVisible
+        );
+    }
+
+    if (window.visualViewport) {
+
+        window.visualViewport.addEventListener(
+            "resize",
+            updateKeyboardState
+        );
+
+        window.visualViewport.addEventListener(
+            "scroll",
+            updateKeyboardState
+        );
+    }
+
+    window.addEventListener(
+        "resize",
+        updateKeyboardState
+    );
 </script>
 
 <div class="container" id="authApp">
@@ -2049,18 +2198,19 @@
         </div>
 
         <!-- ПОИСК -->
-        <div class="app-search-wrap">
+        <div class="sheet-search-wrap">
 
-            <span class="app-search-icon">
+            <span class="sheet-search-icon">
                 🔍
             </span>
 
             <input
                 type="search"
                 id="appSearchInput"
-                class="app-search-input"
+                class="sheet-search"
                 placeholder="Поиск приложения..."
                 autocomplete="off"
+                autocorrect="off"
                 autocapitalize="none"
                 spellcheck="false"
             >
@@ -2068,7 +2218,7 @@
             <button
                 type="button"
                 id="appSearchClear"
-                class="app-search-clear"
+                class="sheet-search-clear"
                 onclick="clearAppSearch()"
                 aria-label="Очистить поиск"
             >
@@ -2078,10 +2228,10 @@
         </div>
 
         <div
-            id="appSearchEmpty"
-            class="app-search-empty"
+            id="searchEmpty"
+            class="search-empty"
         >
-            🔎 Ничего не найдено
+            Ничего не найдено
         </div>
 
         <div class="sheet-list">
