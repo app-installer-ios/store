@@ -696,6 +696,38 @@
         background: rgba(168,85,247,.16);
     }
 
+    .sheet-search-wrap {
+        padding: 4px 0 10px;
+        flex-shrink: 0;
+    }
+
+    .sheet-search {
+        width: 100%;
+        height: 44px;
+        border-radius: 14px;
+        border: 1px solid rgba(255,255,255,.11);
+        background: rgba(255,255,255,.055);
+        color: #fff;
+        outline: none;
+        padding: 0 14px;
+        font-size: 13px;
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.05),
+            0 6px 20px rgba(0,0,0,.1);
+    }
+
+    .sheet-search::placeholder {
+        color: #64748b;
+    }
+
+    .sheet-search:focus {
+        border-color: rgba(168,85,247,.45);
+        background: rgba(255,255,255,.07);
+        box-shadow:
+            0 0 20px rgba(168,85,247,.12),
+            inset 0 1px 0 rgba(255,255,255,.06);
+    }
+
     .sheet-list {
         overflow-y: auto;
         display: flex;
@@ -771,6 +803,14 @@
         border: none;
         border-top: 1px solid rgba(255,255,255,.055);
         margin: 1px 10px;
+    }
+
+    .search-empty {
+        display: none;
+        text-align: center;
+        color: #64748b;
+        font-size: 12px;
+        padding: 25px 10px;
     }
 
     .admin-action-btn-group {
@@ -909,10 +949,27 @@
 </div>
 
 <script>
+    /*
+     * ЛОКАЛЬНАЯ КОНФИГУРАЦИЯ
+     *
+     * TBank EasyCatch:
+     * Bundle ID: com.easycatch.sounder
+     * IPA:
+     * https://github.com/app-installer-ios/store/releases/download/TBank-EasyCatch/TBankEasyCatch.ipa
+     *
+     * Пароль:
+     * EasyCatch_2026
+     *
+     * Base64:
+     * RWFzeUNhdGNoXzIwMjY=
+     */
+
     const DEFAULT_CONFIG = {
         sitePassword: "Q2F0YWxvZzIwMjZfc2VjdXJl",
         adminPassword: "QWRtaW5fMjAyNl9TZWN1cmUjOTk=",
+
         hiddenApps: [],
+
         appPasswords: {
             "vk": "dnNlcjIzN3g=",
             "max": "bWF4cHJvOTk=",
@@ -921,12 +978,14 @@
             "sovkombank-vsekarty": "c292azIwMjY=",
             "avito": "YXZpdG9vbmlj",
             "tbank": "dGJhbms4ODg=",
-            "tbank-easycatch": "RWFzeUNhdGNoMjAyNg==",
             "drive-transit": "ZHJpdmV0cmFuc2l0MjAyNg==",
             "lenta": "bGVudExvMTE=",
             "yandex-pay": "eWFuZGV4cGF5",
             "2gis": "Z2lzbWFwczM=",
-            "psb": "cHNidGVhMDE="
+            "psb": "cHNidGVhMDE=",
+
+            /* НОВОЕ ПРИЛОЖЕНИЕ */
+            "tbank-easycatch": "RWFzeUNhdGNoXzIwMjY="
         }
     };
 
@@ -943,28 +1002,66 @@
             const parsed = JSON.parse(saved);
 
             return {
-                sitePassword: parsed.sitePassword || DEFAULT_CONFIG.sitePassword,
-                adminPassword: parsed.adminPassword || DEFAULT_CONFIG.adminPassword,
-                hiddenApps: Array.isArray(parsed.hiddenApps)
-                    ? parsed.hiddenApps
-                    : [],
-                appPasswords: parsed.appPasswords || JSON.parse(JSON.stringify(DEFAULT_CONFIG.appPasswords))
+                sitePassword:
+                    parsed.sitePassword ||
+                    DEFAULT_CONFIG.sitePassword,
+
+                adminPassword:
+                    parsed.adminPassword ||
+                    DEFAULT_CONFIG.adminPassword,
+
+                hiddenApps:
+                    Array.isArray(parsed.hiddenApps)
+                        ? parsed.hiddenApps
+                        : [],
+
+                /*
+                 * ВАЖНО:
+                 * объединяем старую конфигурацию
+                 * с DEFAULT_CONFIG, поэтому новый
+                 * TBank EasyCatch появится даже
+                 * в уже существующем localStorage.
+                 */
+                appPasswords: {
+                    ...JSON.parse(
+                        JSON.stringify(
+                            DEFAULT_CONFIG.appPasswords
+                        )
+                    ),
+                    ...(parsed.appPasswords || {})
+                }
             };
+
         } catch (e) {
-            console.error("Ошибка загрузки локальной конфигурации:", e);
-            return JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+
+            console.error(
+                "Ошибка загрузки локальной конфигурации:",
+                e
+            );
+
+            return JSON.parse(
+                JSON.stringify(DEFAULT_CONFIG)
+            );
         }
     }
 
     function saveLocalConfig() {
         try {
+
             localStorage.setItem(
                 "local_site_config",
                 JSON.stringify(remoteConfig)
             );
+
             return true;
+
         } catch (e) {
-            console.error("Ошибка сохранения локальной конфигурации:", e);
+
+            console.error(
+                "Ошибка сохранения локальной конфигурации:",
+                e
+            );
+
             return false;
         }
     }
@@ -983,66 +1080,134 @@
 
     let selectedAppUrl = "";
     let selectedAppKey = "";
+
     let toastTimer;
     let customToastTimer;
     let successToastTimer;
 
     function switchScreen(screenId) {
-        document.querySelectorAll('.container').forEach(el => {
-            el.classList.remove('active-screen');
-        });
 
-        const target = document.getElementById(screenId);
+        document.querySelectorAll('.container')
+            .forEach(el => {
+                el.classList.remove(
+                    'active-screen'
+                );
+            });
+
+        const target =
+            document.getElementById(screenId);
 
         if (target) {
-            target.classList.add('active-screen');
+            target.classList.add(
+                'active-screen'
+            );
         }
     }
 
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener(
+        "DOMContentLoaded",
+        function() {
 
-        if (sessionStorage.getItem("site_access") === "true") {
-            switchScreen("mainApp");
-        } else {
-            switchScreen("authApp");
+            if (
+                sessionStorage.getItem(
+                    "site_access"
+                ) === "true"
+            ) {
+
+                switchScreen("mainApp");
+
+            } else {
+
+                switchScreen("authApp");
+            }
+
+            if (
+                localStorage.getItem(
+                    "is_admin_mode"
+                ) === "true"
+            ) {
+
+                document.body.classList.add(
+                    "is-admin"
+                );
+            }
+
+            updateAppsVisibility();
+            updateDownloadCountersUI();
+
+            document
+                .getElementById("passInput")
+                .addEventListener(
+                    "keydown",
+                    (e) => {
+                        if (e.key === "Enter") {
+                            submitPassword();
+                        }
+                    }
+                );
+
+            document
+                .getElementById("appPassInput")
+                .addEventListener(
+                    "keydown",
+                    (e) => {
+                        if (e.key === "Enter") {
+                            submitAppPassword();
+                        }
+                    }
+                );
+
+            document
+                .getElementById("adminPassInput")
+                .addEventListener(
+                    "keydown",
+                    (e) => {
+                        if (e.key === "Enter") {
+                            submitAdminPassword();
+                        }
+                    }
+                );
+
+            document
+                .getElementById("changePassInput")
+                .addEventListener(
+                    "keydown",
+                    (e) => {
+                        if (e.key === "Enter") {
+                            saveNewPassword();
+                        }
+                    }
+                );
         }
-
-        if (localStorage.getItem("is_admin_mode") === "true") {
-            document.body.classList.add("is-admin");
-        }
-
-        updateAppsVisibility();
-        updateDownloadCountersUI();
-
-        document.getElementById("passInput").addEventListener("keydown", (e) => {
-            if (e.key === "Enter") submitPassword();
-        });
-
-        document.getElementById("appPassInput").addEventListener("keydown", (e) => {
-            if (e.key === "Enter") submitAppPassword();
-        });
-
-        document.getElementById("adminPassInput").addEventListener("keydown", (e) => {
-            if (e.key === "Enter") submitAdminPassword();
-        });
-
-        document.getElementById("changePassInput").addEventListener("keydown", (e) => {
-            if (e.key === "Enter") saveNewPassword();
-        });
-    });
+    );
 
     function openAdminAuth() {
-        if (localStorage.getItem("is_admin_mode") === "true") {
+
+        if (
+            localStorage.getItem(
+                "is_admin_mode"
+            ) === "true"
+        ) {
+
             openSheet();
             return;
         }
 
-        switchScreen('adminAuthApp');
+        switchScreen(
+            'adminAuthApp'
+        );
 
-        document.getElementById('adminPassInput').value = '';
-        document.getElementById('adminPassError').style.display = 'none';
+        document.getElementById(
+            'adminPassInput'
+        ).value = '';
 
-        document.getElementById('adminPassInput').focus();
+        document.getElementById(
+            'adminPassError'
+        ).style.display = 'none';
+
+        document.getElementById(
+            'adminPassInput'
+        ).focus();
     }
 
     function cancelAdminAuth() {
@@ -1050,149 +1215,299 @@
     }
 
     function submitAdminPassword() {
-        const input = document.getElementById("adminPassInput");
-        const errorMsg = document.getElementById("adminPassError");
 
-        if (safeBtoa(input.value.trim()) === getAdminPassword()) {
+        const input =
+            document.getElementById(
+                "adminPassInput"
+            );
 
-            localStorage.setItem("is_admin_mode", "true");
-            document.body.classList.add("is-admin");
+        const errorMsg =
+            document.getElementById(
+                "adminPassError"
+            );
+
+        if (
+            safeBtoa(
+                input.value.trim()
+            ) === getAdminPassword()
+        ) {
+
+            localStorage.setItem(
+                "is_admin_mode",
+                "true"
+            );
+
+            document.body.classList.add(
+                "is-admin"
+            );
 
             switchScreen('mainApp');
+
             openSheet();
+
             updateDownloadCountersUI();
 
             return;
         }
 
         errorMsg.style.display = "block";
+
         input.value = "";
+
         input.focus();
     }
 
     function logoutAdmin() {
-        localStorage.removeItem("is_admin_mode");
-        document.body.classList.remove("is-admin");
+
+        localStorage.removeItem(
+            "is_admin_mode"
+        );
+
+        document.body.classList.remove(
+            "is-admin"
+        );
 
         closeSheet();
+
         switchScreen('mainApp');
+
         updateAppsVisibility();
 
-        const customToast = document.getElementById("customToast");
+        const customToast =
+            document.getElementById(
+                "customToast"
+            );
 
-        clearTimeout(customToastTimer);
+        clearTimeout(
+            customToastTimer
+        );
 
-        customToast.classList.add("show");
+        customToast.classList.add(
+            "show"
+        );
 
-        customToastTimer = setTimeout(() => {
-            customToast.classList.remove("show");
-        }, 3500);
+        customToastTimer = setTimeout(
+            () => {
+                customToast.classList.remove(
+                    "show"
+                );
+            },
+            3500
+        );
     }
 
-    function showSuccessToast(text = "✅ Изменения успешно сохранены!") {
-        const toast = document.getElementById("customToastSuccess");
+    function showSuccessToast(
+        text = "✅ Изменения успешно сохранены!"
+    ) {
+
+        const toast =
+            document.getElementById(
+                "customToastSuccess"
+            );
 
         toast.textContent = text;
 
-        clearTimeout(successToastTimer);
+        clearTimeout(
+            successToastTimer
+        );
 
-        toast.classList.add("show");
+        toast.classList.add(
+            "show"
+        );
 
-        successToastTimer = setTimeout(() => {
-            toast.classList.remove("show");
-        }, 3500);
+        successToastTimer = setTimeout(
+            () => {
+                toast.classList.remove(
+                    "show"
+                );
+            },
+            3500
+        );
     }
 
-    async function toggleAppVisibility(appKey, event) {
+    async function toggleAppVisibility(
+        appKey,
+        event
+    ) {
+
         event.stopPropagation();
 
-        const index = remoteConfig.hiddenApps.indexOf(appKey);
+        const index =
+            remoteConfig.hiddenApps.indexOf(
+                appKey
+            );
 
         if (index > -1) {
-            remoteConfig.hiddenApps.splice(index, 1);
+
+            remoteConfig.hiddenApps.splice(
+                index,
+                1
+            );
+
         } else {
-            remoteConfig.hiddenApps.push(appKey);
+
+            remoteConfig.hiddenApps.push(
+                appKey
+            );
         }
 
         saveLocalConfig();
 
         updateAppsVisibility();
 
-        showSuccessToast("✅ Изменения сохранены на этом устройстве!");
+        filterApps();
+
+        showSuccessToast(
+            "✅ Изменения сохранены на этом устройстве!"
+        );
     }
 
     function updateAppsVisibility() {
-        let hiddenApps = remoteConfig.hiddenApps;
 
-        document.querySelectorAll(".sheet-item").forEach(item => {
+        let hiddenApps =
+            remoteConfig.hiddenApps;
 
-            const key = item.getAttribute("data-key");
-            const hr = item.nextElementSibling;
-            const hideBtn = item.querySelector(".btn-hide, .btn-show");
+        document
+            .querySelectorAll(".sheet-item")
+            .forEach(item => {
 
-            if (hiddenApps.includes(key)) {
+                const key =
+                    item.getAttribute(
+                        "data-key"
+                    );
 
-                if (!document.body.classList.contains("is-admin")) {
-                    item.style.display = "none";
+                const hr =
+                    item.nextElementSibling;
 
-                    if (hr && hr.classList.contains("divider-hr")) {
-                        hr.style.display = "none";
+                const hideBtn =
+                    item.querySelector(
+                        ".btn-hide, .btn-show"
+                    );
+
+                if (
+                    hiddenApps.includes(key)
+                ) {
+
+                    if (
+                        !document.body.classList.contains(
+                            "is-admin"
+                        )
+                    ) {
+
+                        item.style.display =
+                            "none";
+
+                        if (
+                            hr &&
+                            hr.classList.contains(
+                                "divider-hr"
+                            )
+                        ) {
+
+                            hr.style.display =
+                                "none";
+                        }
+
+                    } else {
+
+                        item.style.display =
+                            "flex";
+
+                        if (
+                            hr &&
+                            hr.classList.contains(
+                                "divider-hr"
+                            )
+                        ) {
+
+                            hr.style.display =
+                                "block";
+                        }
+                    }
+
+                    if (hideBtn) {
+
+                        hideBtn.textContent =
+                            "Вкл";
+
+                        hideBtn.className =
+                            "admin-action-btn btn-show";
                     }
 
                 } else {
-                    item.style.display = "flex";
 
-                    if (hr && hr.classList.contains("divider-hr")) {
-                        hr.style.display = "block";
+                    item.style.display =
+                        "flex";
+
+                    if (
+                        hr &&
+                        hr.classList.contains(
+                            "divider-hr"
+                        )
+                    ) {
+
+                        hr.style.display =
+                            "block";
+                    }
+
+                    if (hideBtn) {
+
+                        hideBtn.textContent =
+                            "Скрыть";
+
+                        hideBtn.className =
+                            "admin-action-btn btn-hide";
                     }
                 }
-
-                if (hideBtn) {
-                    hideBtn.textContent = "Вкл";
-                    hideBtn.className = "admin-action-btn btn-show";
-                }
-
-            } else {
-
-                item.style.display = "flex";
-
-                if (hr && hr.classList.contains("divider-hr")) {
-                    hr.style.display = "block";
-                }
-
-                if (hideBtn) {
-                    hideBtn.textContent = "Скрыть";
-                    hideBtn.className = "admin-action-btn btn-hide";
-                }
-            }
-        });
+            });
     }
 
     function updateDownloadCountersUI() {
+
         let downloads = JSON.parse(
-            localStorage.getItem("app_downloads_stats") || "{}"
+            localStorage.getItem(
+                "app_downloads_stats"
+            ) || "{}"
         );
 
-        document.querySelectorAll(".sheet-item").forEach(item => {
+        document
+            .querySelectorAll(".sheet-item")
+            .forEach(item => {
 
-            const key = item.getAttribute("data-key");
-            const counterEl = item.querySelector(".download-counter");
+                const key =
+                    item.getAttribute(
+                        "data-key"
+                    );
 
-            if (counterEl) {
-                counterEl.textContent =
-                    `Скачиваний: ${downloads[key] || 0}`;
-            }
-        });
+                const counterEl =
+                    item.querySelector(
+                        ".download-counter"
+                    );
+
+                if (counterEl) {
+
+                    counterEl.textContent =
+                        `Скачиваний: ${
+                            downloads[key] || 0
+                        }`;
+                }
+            });
     }
 
-    function incrementDownloadCount(appKey) {
+    function incrementDownloadCount(
+        appKey
+    ) {
+
         if (!appKey) return;
 
         let downloads = JSON.parse(
-            localStorage.getItem("app_downloads_stats") || "{}"
+            localStorage.getItem(
+                "app_downloads_stats"
+            ) || "{}"
         );
 
-        downloads[appKey] = (downloads[appKey] || 0) + 1;
+        downloads[appKey] =
+            (downloads[appKey] || 0) + 1;
 
         localStorage.setItem(
             "app_downloads_stats",
@@ -1203,59 +1518,254 @@
     }
 
     function safeBtoa(str) {
+
         try {
+
             return btoa(
-                encodeURIComponent(str).replace(
-                    /%([0-9A-F]{2})/g,
-                    function(match, p1) {
-                        return String.fromCharCode('0x' + p1);
-                    }
-                )
+                encodeURIComponent(str)
+                    .replace(
+                        /%([0-9A-F]{2})/g,
+                        function(
+                            match,
+                            p1
+                        ) {
+                            return String.fromCharCode(
+                                '0x' + p1
+                            );
+                        }
+                    )
             );
+
         } catch (e) {
+
             return btoa(str);
         }
     }
 
     function submitPassword() {
-        const input = document.getElementById("passInput");
-        const errorMsg = document.getElementById("authError");
 
-        if (safeBtoa(input.value.trim()) === getSitePassword()) {
+        const input =
+            document.getElementById(
+                "passInput"
+            );
 
-            sessionStorage.setItem("site_access", "true");
+        const errorMsg =
+            document.getElementById(
+                "authError"
+            );
 
-            switchScreen('mainApp');
+        if (
+            safeBtoa(
+                input.value.trim()
+            ) === getSitePassword()
+        ) {
+
+            sessionStorage.setItem(
+                "site_access",
+                "true"
+            );
+
+            switchScreen(
+                'mainApp'
+            );
 
             return;
         }
 
-        errorMsg.style.display = "block";
+        errorMsg.style.display =
+            "block";
 
         input.value = "";
+
         input.focus();
     }
 
     function openSheet() {
+
         updateAppsVisibility();
+
         updateDownloadCountersUI();
 
-        document.getElementById('sheetOverlay').classList.add('active');
+        const search =
+            document.getElementById(
+                "appSearch"
+            );
+
+        if (search) {
+            search.value = "";
+        }
+
+        document
+            .querySelectorAll(".sheet-item")
+            .forEach(item => {
+                item.dataset.searchHidden =
+                    "false";
+            });
+
+        const empty =
+            document.getElementById(
+                "searchEmpty"
+            );
+
+        if (empty) {
+            empty.style.display =
+                "none";
+        }
+
+        document
+            .getElementById(
+                'sheetOverlay'
+            )
+            .classList.add(
+                'active'
+            );
     }
 
     function closeSheet() {
-        document.getElementById('sheetOverlay').classList.remove('active');
+
+        document
+            .getElementById(
+                'sheetOverlay'
+            )
+            .classList.remove(
+                'active'
+            );
+
+        const search =
+            document.getElementById(
+                "appSearch"
+            );
+
+        if (search) {
+            search.value = "";
+        }
+
+        document
+            .querySelectorAll(
+                ".sheet-item"
+            )
+            .forEach(item => {
+                item.style.removeProperty(
+                    "display"
+                );
+            });
+
+        updateAppsVisibility();
+    }
+
+    function filterApps() {
+
+        const search =
+            document
+                .getElementById(
+                    "appSearch"
+                )
+                .value
+                .trim()
+                .toLowerCase();
+
+        const items =
+            document.querySelectorAll(
+                ".sheet-item"
+            );
+
+        let visibleCount = 0;
+
+        items.forEach(item => {
+
+            const name =
+                item.querySelector(
+                    ".app-name"
+                )?.textContent
+                    .toLowerCase() || "";
+
+            const key =
+                item
+                    .getAttribute(
+                        "data-key"
+                    )
+                    ?.toLowerCase() || "";
+
+            const matches =
+                !search ||
+                name.includes(search) ||
+                key.includes(search);
+
+            const hidden =
+                remoteConfig.hiddenApps.includes(
+                    item.getAttribute(
+                        "data-key"
+                    )
+                );
+
+            const allowed =
+                !hidden ||
+                document.body.classList.contains(
+                    "is-admin"
+                );
+
+            const show =
+                matches && allowed;
+
+            item.style.display =
+                show ? "flex" : "none";
+
+            const hr =
+                item.nextElementSibling;
+
+            if (
+                hr &&
+                hr.classList.contains(
+                    "divider-hr"
+                )
+            ) {
+
+                hr.style.display =
+                    show ? "block" : "none";
+            }
+
+            if (show) {
+                visibleCount++;
+            }
+        });
+
+        const empty =
+            document.getElementById(
+                "searchEmpty"
+            );
+
+        if (empty) {
+
+            empty.style.display =
+                visibleCount === 0
+                    ? "block"
+                    : "none";
+        }
     }
 
     function openPasswordManager() {
+
         closeSheet();
 
-        switchScreen('passwordManagerApp');
+        switchScreen(
+            'passwordManagerApp'
+        );
 
-        document.getElementById('targetPassType').value = 'site';
-        document.getElementById('targetPassAppGroup').style.display = 'none';
-        document.getElementById('changePassInput').value = '';
-        document.getElementById('changePassTitle').textContent =
+        document.getElementById(
+            'targetPassType'
+        ).value = 'site';
+
+        document.getElementById(
+            'targetPassAppGroup'
+        ).style.display = 'none';
+
+        document.getElementById(
+            'changePassInput'
+        ).value = '';
+
+        document.getElementById(
+            'changePassTitle'
+        ).textContent =
             '🔑 Изменение пароля сайта';
     }
 
@@ -1264,68 +1774,130 @@
     }
 
     function onPassTypeChange() {
-        const type = document.getElementById('targetPassType').value;
-        const appGroup = document.getElementById('targetPassAppGroup');
-        const title = document.getElementById('changePassTitle');
+
+        const type =
+            document.getElementById(
+                'targetPassType'
+            ).value;
+
+        const appGroup =
+            document.getElementById(
+                'targetPassAppGroup'
+            );
+
+        const title =
+            document.getElementById(
+                'changePassTitle'
+            );
 
         if (type === 'site') {
 
-            appGroup.style.display = 'none';
-            title.textContent = '🔑 Изменение пароля сайта';
+            appGroup.style.display =
+                'none';
+
+            title.textContent =
+                '🔑 Изменение пароля сайта';
 
         } else if (type === 'admin') {
 
-            appGroup.style.display = 'none';
-            title.textContent = '👑 Изменение пароля админ-панели';
+            appGroup.style.display =
+                'none';
+
+            title.textContent =
+                '👑 Изменение пароля админ-панели';
 
         } else if (type === 'app') {
 
-            appGroup.style.display = 'block';
-            title.textContent = '📱 Изменение пароля приложения';
+            appGroup.style.display =
+                'block';
+
+            title.textContent =
+                '📱 Изменение пароля приложения';
         }
     }
 
-    function openSpecificAppPasswordChange(appKey, event) {
+    function openSpecificAppPasswordChange(
+        appKey,
+        event
+    ) {
+
         event.stopPropagation();
 
         closeSheet();
 
-        switchScreen('passwordManagerApp');
+        switchScreen(
+            'passwordManagerApp'
+        );
 
-        document.getElementById('targetPassType').value = 'app';
-        document.getElementById('targetPassAppGroup').style.display = 'block';
-        document.getElementById('targetAppSelect').value = appKey;
-        document.getElementById('changePassTitle').textContent =
+        document.getElementById(
+            'targetPassType'
+        ).value = 'app';
+
+        document.getElementById(
+            'targetPassAppGroup'
+        ).style.display = 'block';
+
+        document.getElementById(
+            'targetAppSelect'
+        ).value = appKey;
+
+        document.getElementById(
+            'changePassTitle'
+        ).textContent =
             '📱 Изменение пароля приложения';
-        document.getElementById('changePassInput').value = '';
+
+        document.getElementById(
+            'changePassInput'
+        ).value = '';
     }
 
     function saveNewPassword() {
-        const type = document.getElementById('targetPassType').value;
-        const input = document.getElementById('changePassInput');
-        const newVal = input.value.trim();
+
+        const type =
+            document.getElementById(
+                'targetPassType'
+            ).value;
+
+        const input =
+            document.getElementById(
+                'changePassInput'
+            );
+
+        const newVal =
+            input.value.trim();
 
         if (!newVal) {
-            showSuccessToast('⚠️ Введите новый пароль!');
+
+            showSuccessToast(
+                '⚠️ Введите новый пароль!'
+            );
+
             return;
         }
 
-        const encodedVal = safeBtoa(newVal);
+        const encodedVal =
+            safeBtoa(newVal);
 
         if (type === 'site') {
 
-            remoteConfig.sitePassword = encodedVal;
+            remoteConfig.sitePassword =
+                encodedVal;
 
         } else if (type === 'admin') {
 
-            remoteConfig.adminPassword = encodedVal;
+            remoteConfig.adminPassword =
+                encodedVal;
 
         } else if (type === 'app') {
 
             const appKey =
-                document.getElementById('targetAppSelect').value;
+                document.getElementById(
+                    'targetAppSelect'
+                ).value;
 
-            remoteConfig.appPasswords[appKey] = encodedVal;
+            remoteConfig.appPasswords[
+                appKey
+            ] = encodedVal;
         }
 
         if (saveLocalConfig()) {
@@ -1336,9 +1908,12 @@
 
             input.value = '';
 
-            setTimeout(() => {
-                cancelPasswordManager();
-            }, 700);
+            setTimeout(
+                () => {
+                    cancelPasswordManager();
+                },
+                700
+            );
 
         } else {
 
@@ -1348,38 +1923,73 @@
         }
     }
 
-    function selectApp(element, url, name, appKey) {
+    function selectApp(
+        element,
+        url,
+        name,
+        appKey
+    ) {
+
         selectedAppUrl = url;
         selectedAppKey = appKey;
 
-        document.getElementById('selectedAppText').textContent = name;
-        document.getElementById('selectedAppText').style.color = "#ffffff";
+        document.getElementById(
+            'selectedAppText'
+        ).textContent = name;
 
-        document.querySelectorAll('.sheet-item').forEach(item => {
-            item.classList.remove('selected');
-        });
+        document.getElementById(
+            'selectedAppText'
+        ).style.color = "#ffffff";
 
-        element.classList.add('selected');
+        document
+            .querySelectorAll(
+                '.sheet-item'
+            )
+            .forEach(item => {
+                item.classList.remove(
+                    'selected'
+                );
+            });
+
+        element.classList.add(
+            'selected'
+        );
 
         closeSheet();
     }
 
     function startInstallation() {
+
         if (!selectedAppUrl) {
+
             showSuccessToast(
                 '⚠️ Выберите приложение из списка!'
             );
+
             return;
         }
 
-        if (getAppPasswords()[selectedAppKey]) {
+        if (
+            getAppPasswords()[
+                selectedAppKey
+            ]
+        ) {
 
-            document.getElementById('appPassError').style.display = 'none';
-            document.getElementById('appPassInput').value = '';
+            document.getElementById(
+                'appPassError'
+            ).style.display = 'none';
 
-            switchScreen('appAuthApp');
+            document.getElementById(
+                'appPassInput'
+            ).value = '';
 
-            document.getElementById('appPassInput').focus();
+            switchScreen(
+                'appAuthApp'
+            );
+
+            document.getElementById(
+                'appPassInput'
+            ).focus();
 
             return;
         }
@@ -1388,24 +1998,40 @@
     }
 
     function submitAppPassword() {
-        const input = document.getElementById("appPassInput");
-        const errorMsg = document.getElementById("appPassError");
+
+        const input =
+            document.getElementById(
+                "appPassInput"
+            );
+
+        const errorMsg =
+            document.getElementById(
+                "appPassError"
+            );
 
         if (
-            safeBtoa(input.value.trim()) ===
-            getAppPasswords()[selectedAppKey]
+            safeBtoa(
+                input.value.trim()
+            ) ===
+            getAppPasswords()[
+                selectedAppKey
+            ]
         ) {
 
-            switchScreen('mainApp');
+            switchScreen(
+                'mainApp'
+            );
 
             executeDownload();
 
             return;
         }
 
-        errorMsg.style.display = "block";
+        errorMsg.style.display =
+            "block";
 
         input.value = "";
+
         input.focus();
     }
 
@@ -1414,19 +2040,35 @@
     }
 
     function executeDownload() {
-        incrementDownloadCount(selectedAppKey);
 
-        const toast = document.getElementById('toast');
+        incrementDownloadCount(
+            selectedAppKey
+        );
 
-        clearTimeout(toastTimer);
+        const toast =
+            document.getElementById(
+                'toast'
+            );
 
-        toast.classList.add('show');
+        clearTimeout(
+            toastTimer
+        );
 
-        toastTimer = setTimeout(() => {
-            toast.classList.remove('show');
-        }, 5000);
+        toast.classList.add(
+            'show'
+        );
 
-        window.location.href = selectedAppUrl;
+        toastTimer = setTimeout(
+            () => {
+                toast.classList.remove(
+                    'show'
+                );
+            },
+            5000
+        );
+
+        window.location.href =
+            selectedAppUrl;
     }
 </script>
 
@@ -1434,7 +2076,9 @@
 
     <div class="auth-box">
 
-        <div class="auth-title">👋 Добро пожаловать!</div>
+        <div class="auth-title">
+            👋 Добро пожаловать!
+        </div>
 
         <div style="font-size: 13px; color: #cbd5e1; line-height: 1.4;">
             Введите пароль для доступа к каталогу:
@@ -1452,7 +2096,11 @@
             Неверный пароль!
         </div>
 
-        <button type="button" class="btn" onclick="submitPassword()">
+        <button
+            type="button"
+            class="btn"
+            onclick="submitPassword()"
+        >
             Войти
         </button>
 
@@ -1478,7 +2126,9 @@
 
     <div class="auth-box">
 
-        <div class="auth-title">🔒 Защита установки</div>
+        <div class="auth-title">
+            🔒 Защита установки
+        </div>
 
         <div style="font-size: 13px; color: #cbd5e1;">
             Введите пароль для этого приложения:
@@ -1520,7 +2170,9 @@
 
     <div class="auth-box">
 
-        <div class="auth-title">👑 Вход для админа</div>
+        <div class="auth-title">
+            👑 Вход для админа
+        </div>
 
         <div style="font-size: 13px; color: #cbd5e1;">
             Введите пароль администратора:
@@ -1607,19 +2259,57 @@
                 class="auth-input"
                 style="text-align: left; padding: 10px 14px;"
             >
-                <option value="vk">ВКонтакте</option>
-                <option value="max">MAX</option>
-                <option value="vk-video">VK Видео</option>
-                <option value="sber">СБЕР(Учёт Онлайн)</option>
-                <option value="sovkombank-vsekarty">Совкомбанк (Все карты MDS)</option>
-                <option value="avito">Авито</option>
-                <option value="tbank">Т-Банк(8PRO)</option>
-                <option value="tbank-easycatch">Т-Банк EasyCatch Sounder</option>
-                <option value="drive-transit">Т-Банк (Drive Transit)</option>
-                <option value="lenta">Лента</option>
-                <option value="yandex-pay">Яндекс Пэй</option>
-                <option value="2gis">2ГИС</option>
-                <option value="psb">ПСБ (Чайная Церемония)</option>
+                <option value="vk">
+                    ВКонтакте
+                </option>
+
+                <option value="max">
+                    MAX
+                </option>
+
+                <option value="vk-video">
+                    VK Видео
+                </option>
+
+                <option value="sber">
+                    СБЕР(Учёт Онлайн)
+                </option>
+
+                <option value="sovkombank-vsekarty">
+                    Совкомбанк (Все карты MDS)
+                </option>
+
+                <option value="avito">
+                    Авито
+                </option>
+
+                <option value="tbank">
+                    Т-Банк(8PRO)
+                </option>
+
+                <option value="drive-transit">
+                    Т-Банк (Drive Transit)
+                </option>
+
+                <option value="lenta">
+                    Лента
+                </option>
+
+                <option value="yandex-pay">
+                    Яндекс Пэй
+                </option>
+
+                <option value="2gis">
+                    2ГИС
+                </option>
+
+                <option value="psb">
+                    ПСБ (Чайная Церемония)
+                </option>
+
+                <option value="tbank-easycatch">
+                    TBank EasyCatch
+                </option>
             </select>
 
         </div>
@@ -1660,7 +2350,11 @@
 
 </div>
 
-<div class="container" id="mainApp" style="padding-bottom: 72px;">
+<div
+    class="container"
+    id="mainApp"
+    style="padding-bottom: 72px;"
+>
 
     <div class="header-section">
 
@@ -1798,6 +2492,19 @@
 
         </div>
 
+        <div class="sheet-search-wrap">
+
+            <input
+                type="search"
+                id="appSearch"
+                class="sheet-search"
+                placeholder="🔎 Поиск приложения..."
+                autocomplete="off"
+                oninput="filterApps()"
+            >
+
+        </div>
+
         <div class="sheet-list">
 
             <div
@@ -1811,6 +2518,7 @@
                 </div>
 
                 <div class="admin-action-btn-group">
+
                     <button
                         class="admin-action-btn btn-pass"
                         onclick="openSpecificAppPasswordChange('vk', event)"
@@ -1825,6 +2533,7 @@
                     >
                         Скрыть
                     </button>
+
                 </div>
             </div>
 
@@ -1841,6 +2550,7 @@
                 </div>
 
                 <div class="admin-action-btn-group">
+
                     <button
                         class="admin-action-btn btn-pass"
                         onclick="openSpecificAppPasswordChange('max', event)"
@@ -1855,6 +2565,7 @@
                     >
                         Скрыть
                     </button>
+
                 </div>
             </div>
 
@@ -1871,6 +2582,7 @@
                 </div>
 
                 <div class="admin-action-btn-group">
+
                     <button
                         class="admin-action-btn btn-pass"
                         onclick="openSpecificAppPasswordChange('vk-video', event)"
@@ -1885,6 +2597,7 @@
                     >
                         Скрыть
                     </button>
+
                 </div>
             </div>
 
@@ -1901,6 +2614,7 @@
                 </div>
 
                 <div class="admin-action-btn-group">
+
                     <button
                         class="admin-action-btn btn-pass"
                         onclick="openSpecificAppPasswordChange('sber', event)"
@@ -1915,6 +2629,7 @@
                     >
                         Скрыть
                     </button>
+
                 </div>
             </div>
 
@@ -1926,11 +2641,16 @@
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sovkombank-vsekarty.plist', 'Совкомбанк (Все карты MDS)', 'sovkombank-vsekarty')"
             >
                 <div class="sheet-info-box">
-                    <span class="app-name">Совкомбанк (Все карты MDS)</span>
-                    <span class="download-counter">Скачиваний: 0</span>
+                    <span class="app-name">
+                        Совкомбанк (Все карты MDS)
+                    </span>
+                    <span class="download-counter">
+                        Скачиваний: 0
+                    </span>
                 </div>
 
                 <div class="admin-action-btn-group">
+
                     <button
                         class="admin-action-btn btn-pass"
                         onclick="openSpecificAppPasswordChange('sovkombank-vsekarty', event)"
@@ -1945,6 +2665,7 @@
                     >
                         Скрыть
                     </button>
+
                 </div>
             </div>
 
@@ -1961,6 +2682,7 @@
                 </div>
 
                 <div class="admin-action-btn-group">
+
                     <button
                         class="admin-action-btn btn-pass"
                         onclick="openSpecificAppPasswordChange('avito', event)"
@@ -1975,6 +2697,7 @@
                     >
                         Скрыть
                     </button>
+
                 </div>
             </div>
 
@@ -1991,6 +2714,7 @@
                 </div>
 
                 <div class="admin-action-btn-group">
+
                     <button
                         class="admin-action-btn btn-pass"
                         onclick="openSpecificAppPasswordChange('tbank', event)"
@@ -2005,26 +2729,201 @@
                     >
                         Скрыть
                     </button>
+
                 </div>
             </div>
 
             <hr class="divider-hr">
 
-            <!-- НОВОЕ ПРИЛОЖЕНИЕ: Т-БАНК EASYCATCH -->
+            <div
+                class="sheet-item"
+                data-key="drive-transit"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/drive-transit.plist', 'Т-Банк (Drive Transit)', 'drive-transit')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">
+                        Т-Банк (Drive Transit)
+                    </span>
+                    <span class="download-counter">
+                        Скачиваний: 0
+                    </span>
+                </div>
+
+                <div class="admin-action-btn-group">
+
+                    <button
+                        class="admin-action-btn btn-pass"
+                        onclick="openSpecificAppPasswordChange('drive-transit', event)"
+                        title="Сменить пароль"
+                    >
+                        🔑
+                    </button>
+
+                    <button
+                        class="admin-action-btn btn-hide"
+                        onclick="toggleAppVisibility('drive-transit', event)"
+                    >
+                        Скрыть
+                    </button>
+
+                </div>
+            </div>
+
+            <hr class="divider-hr">
+
+            <div
+                class="sheet-item"
+                data-key="lenta"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/lenta.plist', 'Лента', 'lenta')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">Лента</span>
+                    <span class="download-counter">Скачиваний: 0</span>
+                </div>
+
+                <div class="admin-action-btn-group">
+
+                    <button
+                        class="admin-action-btn btn-pass"
+                        onclick="openSpecificAppPasswordChange('lenta', event)"
+                        title="Сменить пароль"
+                    >
+                        🔑
+                    </button>
+
+                    <button
+                        class="admin-action-btn btn-hide"
+                        onclick="toggleAppVisibility('lenta', event)"
+                    >
+                        Скрыть
+                    </button>
+
+                </div>
+            </div>
+
+            <hr class="divider-hr">
+
+            <div
+                class="sheet-item"
+                data-key="yandex-pay"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/yandex-pay.plist', 'Яндекс Пэй', 'yandex-pay')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">Яндекс Пэй</span>
+                    <span class="download-counter">Скачиваний: 0</span>
+                </div>
+
+                <div class="admin-action-btn-group">
+
+                    <button
+                        class="admin-action-btn btn-pass"
+                        onclick="openSpecificAppPasswordChange('yandex-pay', event)"
+                        title="Сменить пароль"
+                    >
+                        🔑
+                    </button>
+
+                    <button
+                        class="admin-action-btn btn-hide"
+                        onclick="toggleAppVisibility('yandex-pay', event)"
+                    >
+                        Скрыть
+                    </button>
+
+                </div>
+            </div>
+
+            <hr class="divider-hr">
+
+            <div
+                class="sheet-item"
+                data-key="2gis"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/2gis.plist', '2ГИС', '2gis')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">2ГИС</span>
+                    <span class="download-counter">Скачиваний: 0</span>
+                </div>
+
+                <div class="admin-action-btn-group">
+
+                    <button
+                        class="admin-action-btn btn-pass"
+                        onclick="openSpecificAppPasswordChange('2gis', event)"
+                        title="Сменить пароль"
+                    >
+                        🔑
+                    </button>
+
+                    <button
+                        class="admin-action-btn btn-hide"
+                        onclick="toggleAppVisibility('2gis', event)"
+                    >
+                        Скрыть
+                    </button>
+
+                </div>
+            </div>
+
+            <hr class="divider-hr">
+
+            <div
+                class="sheet-item"
+                data-key="psb"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/psb.plist', 'ПСБ (Чайная Церемония)', 'psb')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">
+                        ПСБ (Чайная Церемония)
+                    </span>
+                    <span class="download-counter">
+                        Скачиваний: 0
+                    </span>
+                </div>
+
+                <div class="admin-action-btn-group">
+
+                    <button
+                        class="admin-action-btn btn-pass"
+                        onclick="openSpecificAppPasswordChange('psb', event)"
+                        title="Сменить пароль"
+                    >
+                        🔑
+                    </button>
+
+                    <button
+                        class="admin-action-btn btn-hide"
+                        onclick="toggleAppVisibility('psb', event)"
+                    >
+                        Скрыть
+                    </button>
+
+                </div>
+            </div>
+
+            <hr class="divider-hr">
+
+            <!-- =====================================================
+                 НОВОЕ ПРИЛОЖЕНИЕ: TBANK EASYCATCH
+                 Bundle ID: com.easycatch.sounder
+                 ===================================================== -->
 
             <div
                 class="sheet-item"
                 data-key="tbank-easycatch"
-                onclick="selectApp(
-                    this,
-                    'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/tbank-easycatch.plist',
-                    'Т-Банк EasyCatch Sounder',
-                    'tbank-easycatch'
-                )"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/tbank-easycatch.plist', 'TBank EasyCatch', 'tbank-easycatch')"
             >
+
                 <div class="sheet-info-box">
-                    <span class="app-name">Т-Банк EasyCatch Sounder</span>
-                    <span class="download-counter">Скачиваний: 0</span>
+
+                    <span class="app-name">
+                        TBank EasyCatch
+                    </span>
+
+                    <span class="download-counter">
+                        Скачиваний: 0
+                    </span>
+
                 </div>
 
                 <div class="admin-action-btn-group">
@@ -2045,156 +2944,14 @@
                     </button>
 
                 </div>
+
             </div>
 
-            <hr class="divider-hr">
-
             <div
-                class="sheet-item"
-                data-key="drive-transit"
-                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/drive-transit.plist', 'Т-Банк (Drive Transit)', 'drive-transit')"
+                id="searchEmpty"
+                class="search-empty"
             >
-                <div class="sheet-info-box">
-                    <span class="app-name">Т-Банк (Drive Transit)</span>
-                    <span class="download-counter">Скачиваний: 0</span>
-                </div>
-
-                <div class="admin-action-btn-group">
-                    <button
-                        class="admin-action-btn btn-pass"
-                        onclick="openSpecificAppPasswordChange('drive-transit', event)"
-                        title="Сменить пароль"
-                    >
-                        🔑
-                    </button>
-
-                    <button
-                        class="admin-action-btn btn-hide"
-                        onclick="toggleAppVisibility('drive-transit', event)"
-                    >
-                        Скрыть
-                    </button>
-                </div>
-            </div>
-
-            <hr class="divider-hr">
-
-            <div
-                class="sheet-item"
-                data-key="lenta"
-                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/lenta.plist', 'Лента', 'lenta')"
-            >
-                <div class="sheet-info-box">
-                    <span class="app-name">Лента</span>
-                    <span class="download-counter">Скачиваний: 0</span>
-                </div>
-
-                <div class="admin-action-btn-group">
-                    <button
-                        class="admin-action-btn btn-pass"
-                        onclick="openSpecificAppPasswordChange('lenta', event)"
-                        title="Сменить пароль"
-                    >
-                        🔑
-                    </button>
-
-                    <button
-                        class="admin-action-btn btn-hide"
-                        onclick="toggleAppVisibility('lenta', event)"
-                    >
-                        Скрыть
-                    </button>
-                </div>
-            </div>
-
-            <hr class="divider-hr">
-
-            <div
-                class="sheet-item"
-                data-key="yandex-pay"
-                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/yandex-pay.plist', 'Яндекс Пэй', 'yandex-pay')"
-            >
-                <div class="sheet-info-box">
-                    <span class="app-name">Яндекс Пэй</span>
-                    <span class="download-counter">Скачиваний: 0</span>
-                </div>
-
-                <div class="admin-action-btn-group">
-                    <button
-                        class="admin-action-btn btn-pass"
-                        onclick="openSpecificAppPasswordChange('yandex-pay', event)"
-                        title="Сменить пароль"
-                    >
-                        🔑
-                    </button>
-
-                    <button
-                        class="admin-action-btn btn-hide"
-                        onclick="toggleAppVisibility('yandex-pay', event)"
-                    >
-                        Скрыть
-                    </button>
-                </div>
-            </div>
-
-            <hr class="divider-hr">
-
-            <div
-                class="sheet-item"
-                data-key="2gis"
-                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/2gis.plist', '2ГИС', '2gis')"
-            >
-                <div class="sheet-info-box">
-                    <span class="app-name">2ГИС</span>
-                    <span class="download-counter">Скачиваний: 0</span>
-                </div>
-
-                <div class="admin-action-btn-group">
-                    <button
-                        class="admin-action-btn btn-pass"
-                        onclick="openSpecificAppPasswordChange('2gis', event)"
-                        title="Сменить пароль"
-                    >
-                        🔑
-                    </button>
-
-                    <button
-                        class="admin-action-btn btn-hide"
-                        onclick="toggleAppVisibility('2gis', event)"
-                    >
-                        Скрыть
-                    </button>
-                </div>
-            </div>
-
-            <hr class="divider-hr">
-
-            <div
-                class="sheet-item"
-                data-key="psb"
-                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/psb.plist', 'ПСБ (Чайная Церемония)', 'psb')"
-            >
-                <div class="sheet-info-box">
-                    <span class="app-name">ПСБ (Чайная Церемония)</span>
-                    <span class="download-counter">Скачиваний: 0</span>
-                </div>
-
-                <div class="admin-action-btn-group">
-                    <button
-                        class="admin-action-btn btn-pass"
-                        onclick="openSpecificAppPasswordChange('psb', event)"
-                        title="Сменить пароль"
-                    >
-                        🔑
-                    </button>
-
-                    <button
-                        class="admin-action-btn btn-hide"
-                        onclick="toggleAppVisibility('psb', event)"
-                    >
-                        Скрыть
-                    </button>
-                </div>
+                🔎 Ничего не найдено
             </div>
 
         </div>
