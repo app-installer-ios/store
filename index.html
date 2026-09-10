@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Установка удалённых приложений</title>
 
-
 <style>
     * { 
         box-sizing: border-box; 
@@ -598,8 +597,40 @@
     body.is-admin .admin-settings-trigger {
         display: block;
     }
-</style>
 
+    /* ДОБАВЛЕНО: кнопки экспорта и импорта */
+    .admin-backup-group {
+        display: none;
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+
+    body.is-admin .admin-backup-group {
+        display: flex;
+    }
+
+    .admin-backup-btn {
+        flex: 1;
+        background: rgba(56, 189, 248, 0.12);
+        border: 1px solid rgba(56, 189, 248, 0.35);
+        color: #7dd3fc;
+        font-size: 12px;
+        padding: 10px 8px;
+        border-radius: 12px;
+        text-align: center;
+        cursor: pointer;
+    }
+
+    .admin-backup-btn:hover {
+        background: rgba(56, 189, 248, 0.2);
+    }
+
+    .admin-backup-btn.import {
+        background: rgba(52, 211, 153, 0.12);
+        border-color: rgba(52, 211, 153, 0.35);
+        color: #6ee7b7;
+    }
+</style>
 
 </head>
 
@@ -1064,6 +1095,161 @@
         }
     }
 
+    /*
+     * ЭКСПОРТ НАСТРОЕК
+     *
+     * Экспортируются:
+     * - пароль сайта;
+     * - пароль админ-панели;
+     * - пароли приложений;
+     * - список скрытых приложений.
+     *
+     * Статистика скачиваний экспортируется отдельно,
+     * чтобы настройки и статистика не смешивались.
+     */
+
+    function exportSettings() {
+        try {
+            const exportData = {
+                version: 1,
+                type: "local_site_config",
+                exportedAt: new Date().toISOString(),
+                config: remoteConfig
+            };
+
+            const blob = new Blob(
+                [JSON.stringify(exportData, null, 2)],
+                { type: "application/json;charset=utf-8" }
+            );
+
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+
+            link.href = url;
+            link.download = "site-settings-backup.json";
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            setTimeout(() => {
+                URL.revokeObjectURL(url);
+            }, 1000);
+
+            showSuccessToast("✅ Настройки экспортированы!");
+        } catch (e) {
+            console.error("Ошибка экспорта:", e);
+            showSuccessToast("❌ Не удалось экспортировать настройки.");
+        }
+    }
+
+    /*
+     * ОТКРЫТИЕ ВЫБОРА ФАЙЛА ДЛЯ ИМПОРТА
+     */
+
+    function importSettings() {
+        const input = document.getElementById("settingsImportInput");
+
+        if (input) {
+            input.value = "";
+            input.click();
+        }
+    }
+
+    /*
+     * ИМПОРТ НАСТРОЕК
+     */
+
+    function handleSettingsImport(event) {
+        const file = event.target.files && event.target.files[0];
+
+        if (!file) {
+            return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            try {
+                const importedData = JSON.parse(e.target.result);
+
+                let importedConfig = importedData.config || importedData;
+
+                if (
+                    !importedConfig ||
+                    typeof importedConfig !== "object" ||
+                    Array.isArray(importedConfig)
+                ) {
+                    throw new Error("Неверный формат файла.");
+                }
+
+                if (
+                    typeof importedConfig.sitePassword !== "string" ||
+                    typeof importedConfig.adminPassword !== "string"
+                ) {
+                    throw new Error("Файл не содержит необходимые настройки.");
+                }
+
+                if (!Array.isArray(importedConfig.hiddenApps)) {
+                    importedConfig.hiddenApps = [];
+                }
+
+                if (
+                    !importedConfig.appPasswords ||
+                    typeof importedConfig.appPasswords !== "object" ||
+                    Array.isArray(importedConfig.appPasswords)
+                ) {
+                    importedConfig.appPasswords =
+                        JSON.parse(
+                            JSON.stringify(DEFAULT_CONFIG.appPasswords)
+                        );
+                }
+
+                remoteConfig = {
+                    sitePassword: importedConfig.sitePassword,
+                    adminPassword: importedConfig.adminPassword,
+                    hiddenApps: importedConfig.hiddenApps,
+                    appPasswords: importedConfig.appPasswords
+                };
+
+                if (saveLocalConfig()) {
+
+                    updateAppsVisibility();
+                    updateDownloadCountersUI();
+
+                    showSuccessToast(
+                        "✅ Настройки импортированы!"
+                    );
+
+                } else {
+
+                    throw new Error(
+                        "Не удалось сохранить настройки."
+                    );
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "Ошибка импорта настроек:",
+                    error
+                );
+
+                showSuccessToast(
+                    "❌ Ошибка: файл настроек повреждён или имеет неверный формат."
+                );
+            }
+        };
+
+        reader.onerror = function() {
+            showSuccessToast(
+                "❌ Не удалось прочитать файл."
+            );
+        };
+
+        reader.readAsText(file);
+    }
+
     function selectApp(element, url, name, appKey) {
         selectedAppUrl = url;
         selectedAppKey = appKey;
@@ -1148,43 +1334,42 @@
 
 <div class="container" id="authApp">
 
-```
 <div class="auth-box">
 
-    <div class="auth-title">👋 Добро пожаловать!</div>
+<div class="auth-title">👋 Добро пожаловать!</div>
 
-    <div style="font-size: 13px; color: #cbd5e1; line-height: 1.4;">
-        Введите пароль для доступа к каталогу:
-    </div>
+<div style="font-size: 13px; color: #cbd5e1; line-height: 1.4;">
+    Введите пароль для доступа к каталогу:
+</div>
 
-    <input
-        type="password"
-        id="passInput"
-        class="auth-input"
-        placeholder="Пароль..."
-        autocomplete="off"
+<input
+    type="password"
+    id="passInput"
+    class="auth-input"
+    placeholder="Пароль..."
+    autocomplete="off"
+>
+
+<div id="authError" class="auth-error">
+    Неверный пароль!
+</div>
+
+<button type="button" class="btn" onclick="submitPassword()">
+    Войти
+</button>
+
+<a
+    href="https://t.me/tema_deputat"
+    target="_blank"
+    class="btn btn-telegram"
+>
+    <img
+        src="Telegram_logo.svg"
+        alt="Telegram"
+        class="telegram-icon"
     >
-
-    <div id="authError" class="auth-error">
-        Неверный пароль!
-    </div>
-
-    <button type="button" class="btn" onclick="submitPassword()">
-        Войти
-    </button>
-
-    <a
-        href="https://t.me/tema_deputat"
-        target="_blank"
-        class="btn btn-telegram"
-    >
-        <img
-            src="Telegram_logo.svg"
-            alt="Telegram"
-            class="telegram-icon"
-        >
-        Поддержка в Telegram
-    </a>
+    Поддержка в Telegram
+</a>
 
 </div>
 
@@ -1194,39 +1379,39 @@
 
 <div class="auth-box">
 
-    <div class="auth-title">🔒 Защита установки</div>
+<div class="auth-title">🔒 Защита установки</div>
 
-    <div style="font-size: 13px; color: #cbd5e1;">
-        Введите пароль для этого приложения:
-    </div>
+<div style="font-size: 13px; color: #cbd5e1;">
+    Введите пароль для этого приложения:
+</div>
 
-    <input
-        type="password"
-        id="appPassInput"
-        class="auth-input"
-        placeholder="Пароль..."
-        autocomplete="off"
-    >
+<input
+    type="password"
+    id="appPassInput"
+    class="auth-input"
+    placeholder="Пароль..."
+    autocomplete="off"
+>
 
-    <div id="appPassError" class="auth-error">
-        Неверный пароль!
-    </div>
+<div id="appPassError" class="auth-error">
+    Неверный пароль!
+</div>
 
-    <button
-        type="button"
-        class="btn"
-        onclick="submitAppPassword()"
-    >
-        Подтвердить
-    </button>
+<button
+    type="button"
+    class="btn"
+    onclick="submitAppPassword()"
+>
+    Подтвердить
+</button>
 
-    <button
-        type="button"
-        class="btn btn-secondary"
-        onclick="cancelAppPassword()"
-    >
-        Назад
-    </button>
+<button
+    type="button"
+    class="btn btn-secondary"
+    onclick="cancelAppPassword()"
+>
+    Назад
+</button>
 
 </div>
 
@@ -1236,39 +1421,39 @@
 
 <div class="auth-box">
 
-    <div class="auth-title">👑 Вход для админа</div>
+<div class="auth-title">👑 Вход для админа</div>
 
-    <div style="font-size: 13px; color: #cbd5e1;">
-        Введите пароль администратора:
-    </div>
+<div style="font-size: 13px; color: #cbd5e1;">
+    Введите пароль администратора:
+</div>
 
-    <input
-        type="password"
-        id="adminPassInput"
-        class="auth-input"
-        placeholder="Пароль..."
-        autocomplete="off"
-    >
+<input
+    type="password"
+    id="adminPassInput"
+    class="auth-input"
+    placeholder="Пароль..."
+    autocomplete="off"
+>
 
-    <div id="adminPassError" class="auth-error">
-        Неверный пароль!
-    </div>
+<div id="adminPassError" class="auth-error">
+    Неверный пароль!
+</div>
 
-    <button
-        type="button"
-        class="btn"
-        onclick="submitAdminPassword()"
-    >
-        Войти в панель
-    </button>
+<button
+    type="button"
+    class="btn"
+    onclick="submitAdminPassword()"
+>
+    Войти в панель
+</button>
 
-    <button
-        type="button"
-        class="btn btn-secondary"
-        onclick="cancelAdminAuth()"
-    >
-        Назад
-    </button>
+<button
+    type="button"
+    class="btn btn-secondary"
+    onclick="cancelAdminAuth()"
+>
+    Назад
+</button>
 
 </div>
 
@@ -1278,98 +1463,98 @@
 
 <div class="auth-box">
 
-    <div class="auth-title" id="changePassTitle">
-        🔑 Изменение паролей
-    </div>
+<div class="auth-title" id="changePassTitle">
+    🔑 Изменение паролей
+</div>
 
-    <div style="text-align: left; display: flex; flex-direction: column; gap: 6px;">
+<div style="text-align: left; display: flex; flex-direction: column; gap: 6px;">
 
-        <label style="font-size: 12px; color: #94a3b8;">
-            Выберите категорию:
-        </label>
+    <label style="font-size: 12px; color: #94a3b8;">
+        Выберите категорию:
+    </label>
 
-        <select
-            id="targetPassType"
-            class="auth-input"
-            style="text-align: left; padding: 10px 14px;"
-            onchange="onPassTypeChange()"
-        >
-            <option value="site">
-                Пароль доступа к сайту
-            </option>
+    <select
+        id="targetPassType"
+        class="auth-input"
+        style="text-align: left; padding: 10px 14px;"
+        onchange="onPassTypeChange()"
+    >
+        <option value="site">
+            Пароль доступа к сайту
+        </option>
 
-            <option value="admin">
-                Пароль админ-панели
-            </option>
+        <option value="admin">
+            Пароль админ-панели
+        </option>
 
-            <option value="app">
-                Пароль конкретного приложения
-            </option>
-        </select>
+        <option value="app">
+            Пароль конкретного приложения
+        </option>
+    </select>
 
-    </div>
+</div>
 
-    <div
-        id="targetPassAppGroup"
-        style="text-align: left; display: none; flex-direction: column; gap: 6px;"
+<div
+    id="targetPassAppGroup"
+    style="text-align: left; display: none; flex-direction: column; gap: 6px;"
+>
+
+    <label style="font-size: 12px; color: #94a3b8;">
+        Выберите приложение:
+    </label>
+
+    <select
+        id="targetAppSelect"
+        class="auth-input"
+        style="text-align: left; padding: 10px 14px;"
+    >
+        <option value="vk">ВКонтакте</option>
+        <option value="max">MAX</option>
+        <option value="vk-video">VK Видео</option>
+        <option value="sber">СБЕР(Учёт Онлайн)</option>
+        <option value="sovkombank-vsekarty">Совкомбанк (Все карты MDS)</option>
+        <option value="avito">Авито</option>
+        <option value="tbank">Т-Банк(8PRO)</option>
+        <option value="drive-transit">Т-Банк (Drive Transit)</option>
+        <option value="lenta">Лента</option>
+        <option value="yandex-pay">Яндекс Пэй</option>
+        <option value="2gis">2ГИС</option>
+        <option value="psb">ПСБ (Чайная Церемония)</option>
+    </select>
+
+</div>
+
+<div style="text-align: left; display: flex; flex-direction: column; gap: 6px;">
+
+    <label style="font-size: 12px; color: #94a3b8;">
+        Новый пароль:
+    </label>
+
+    <input
+        type="password"
+        id="changePassInput"
+        class="auth-input"
+        placeholder="Введите новый пароль..."
+        autocomplete="off"
     >
 
-        <label style="font-size: 12px; color: #94a3b8;">
-            Выберите приложение:
-        </label>
+</div>
 
-        <select
-            id="targetAppSelect"
-            class="auth-input"
-            style="text-align: left; padding: 10px 14px;"
-        >
-            <option value="vk">ВКонтакте</option>
-            <option value="max">MAX</option>
-            <option value="vk-video">VK Видео</option>
-            <option value="sber">СБЕР(Учёт Онлайн)</option>
-            <option value="sovkombank-vsekarty">Совкомбанк (Все карты MDS)</option>
-            <option value="avito">Авито</option>
-            <option value="tbank">Т-Банк(8PRO)</option>
-            <option value="drive-transit">Т-Банк (Drive Transit)</option>
-            <option value="lenta">Лента</option>
-            <option value="yandex-pay">Яндекс Пэй</option>
-            <option value="2gis">2ГИС</option>
-            <option value="psb">ПСБ (Чайная Церемония)</option>
-        </select>
+<button
+    type="button"
+    class="btn"
+    onclick="saveNewPassword()"
+>
+    Сохранить пароль
+</button>
 
-    </div>
-
-    <div style="text-align: left; display: flex; flex-direction: column; gap: 6px;">
-
-        <label style="font-size: 12px; color: #94a3b8;">
-            Новый пароль:
-        </label>
-
-        <input
-            type="password"
-            id="changePassInput"
-            class="auth-input"
-            placeholder="Введите новый пароль..."
-            autocomplete="off"
-        >
-
-    </div>
-
-    <button
-        type="button"
-        class="btn"
-        onclick="saveNewPassword()"
-    >
-        Сохранить пароль
-    </button>
-
-    <button
-        type="button"
-        class="btn btn-secondary"
-        onclick="cancelPasswordManager()"
-    >
-        Назад в панель
-    </button>
+<button
+    type="button"
+    class="btn btn-secondary"
+    onclick="cancelPasswordManager()"
+>
+    Назад в панель
+</button>
 
 </div>
 
@@ -1379,80 +1564,80 @@
 
 <div class="header-section">
 
-    <h1>
-        Установка удалённых приложений
-    </h1>
+<h1>
+    Установка удалённых приложений
+</h1>
 
-    <div class="subtitle">
-        Установка недоступных приложений на iPhone —
-        <span style="color: #38bdf8;">
-            без компьютера и проводов
-        </span>
-    </div>
+<div class="subtitle">
+    Установка недоступных приложений на iPhone —
+    <span style="color: #38bdf8;">
+        без компьютера и проводов
+    </span>
+</div>
 
 </div>
 
 <div class="warning-box">
 
-    <span class="text-warning">
-        ⚠️ ВНИМАНИЕ:
-    </span>
+<span class="text-warning">
+    ⚠️ ВНИМАНИЕ:
+</span>
 
-    Если ранее приложение уже было установлено на вашем аккаунте,
-    смело
+Если ранее приложение уже было установлено на вашем аккаунте,
+смело
 
-    <span class="text-highlight">
-        продолжайте скачивание
-    </span>.
+<span class="text-highlight">
+    продолжайте скачивание
+</span>.
 
-    Если впервые —
+Если впервые —
 
-    <span class="text-highlight">
-        обратитесь к администратору
-    </span>.
-
+<span class="text-highlight">
+    обратитесь к администратору
+</span>.
+    
 </div>
 
 <div class="card">
 
-    <label>
-        Выберите приложение:
-    </label>
+<label>
+    Выберите приложение:
+</label>
 
-    <div class="status-badge" id="statusBadge">
+<div class="status-badge" id="statusBadge">
 
-        <span class="status-dot"></span>
+    <span class="status-dot"></span>
 
-        <span>
-            Все приложения доступны
-        </span>
+    <span>
+        Все приложения доступны
+    </span>
 
-    </div>
+</div>
 
-    <button
-        type="button"
-        class="custom-select-btn"
-        onclick="openSheet()"
+<button
+    type="button"
+    class="custom-select-btn"
+    onclick="openSheet()"
+>
+    <span
+        id="selectedAppText"
+        style="color: #94a3b8;"
     >
-        <span
-            id="selectedAppText"
-            style="color: #94a3b8;"
-        >
-            Нажмите для выбора приложения
-        </span>
-    </button>
+        Нажмите для выбора приложения
+    </span>
+</button>
 
-    <button
-        type="button"
-        class="btn"
-        onclick="startInstallation()"
-    >
-        Установить
-    </button>
+<button
+    type="button"
+    class="btn"
+    onclick="startInstallation()"
+>
+    Установить
+</button>
 
-    <div id="toast" class="toast">
-        🚀 Загрузка началась! Проверьте главный экран устройства.
-    </div>
+<div id="toast" class="toast">
+    🚀 Загрузка началась! Проверьте главный экран устройства.
+</div>
 
 </div>
 
@@ -1461,19 +1646,25 @@
 <div class="admin-footer-bar">
 
 <button
-    type="button"
-    class="btn-admin-trigger"
-    onclick="openAdminAuth()"
+type="button"
+class="btn-admin-trigger"
+onclick="openAdminAuth()"
+
 >
-    ⚙️ Админ-панель
+
+⚙️ Админ-панель
+
 </button>
 
 <button
-    type="button"
-    class="btn-admin-logout"
-    onclick="logoutAdmin()"
+type="button"
+class="btn-admin-logout"
+onclick="logoutAdmin()"
+
 >
-    🚪 Выйти из админ-панели
+
+🚪 Выйти из админ-панели
+
 </button>
 
 </div>
@@ -1489,416 +1680,445 @@
     onclick="event.stopPropagation()"
 >
 
+<button
+    type="button"
+    class="admin-settings-trigger"
+    onclick="openPasswordManager()"
+>
+    🔐 Управление паролями сайта и приложений
+</button>
+
+<!-- ДОБАВЛЕНО: экспорт / импорт настроек -->
+<div class="admin-backup-group">
+
     <button
         type="button"
-        class="admin-settings-trigger"
-        onclick="openPasswordManager()"
+        class="admin-backup-btn"
+        onclick="exportSettings()"
     >
-        🔐 Управление паролями сайта и приложений
+        📤 Экспорт настроек
     </button>
 
-    <div class="sheet-header">
+    <button
+        type="button"
+        class="admin-backup-btn import"
+        onclick="importSettings()"
+    >
+        📥 Импорт настроек
+    </button>
 
-        <div class="sheet-title">
-            Выберите приложение
-        </div>
-
-        <button
-            class="sheet-close"
-            onclick="closeSheet()"
-        >
-            ✕
-        </button>
-
-    </div>
-
-    <div class="sheet-list">
-
-        <div
-            class="sheet-item"
-            data-key="vk"
-            onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk.plist', 'ВКонтакте', 'vk')"
-        >
-            <div class="sheet-info-box">
-                <span class="app-name">ВКонтакте</span>
-                <span class="download-counter">Скачиваний: 0</span>
-            </div>
-
-            <div class="admin-action-btn-group">
-
-                <button
-                    class="admin-action-btn btn-pass"
-                    onclick="openSpecificAppPasswordChange('vk', event)"
-                    title="Сменить пароль"
-                >
-                    🔑
-                </button>
-
-                <button
-                    class="admin-action-btn btn-hide"
-                    onclick="toggleAppVisibility('vk', event)"
-                >
-                    Скрыть
-                </button>
-
-            </div>
-        </div>
-
-        <hr class="divider-hr">
-
-        <div
-            class="sheet-item"
-            data-key="max"
-            onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/max.plist', 'MAX', 'max')"
-        >
-            <div class="sheet-info-box">
-                <span class="app-name">MAX</span>
-                <span class="download-counter">Скачиваний: 0</span>
-            </div>
-
-            <div class="admin-action-btn-group">
-
-                <button
-                    class="admin-action-btn btn-pass"
-                    onclick="openSpecificAppPasswordChange('max', event)"
-                    title="Сменить пароль"
-                >
-                    🔑
-                </button>
-
-                <button
-                    class="admin-action-btn btn-hide"
-                    onclick="toggleAppVisibility('max', event)"
-                >
-                    Скрыть
-                </button>
-
-            </div>
-        </div>
-
-        <hr class="divider-hr">
-
-        <div
-            class="sheet-item"
-            data-key="vk-video"
-            onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk-video.plist', 'VK Видео', 'vk-video')"
-        >
-            <div class="sheet-info-box">
-                <span class="app-name">VK Видео</span>
-                <span class="download-counter">Скачиваний: 0</span>
-            </div>
-
-            <div class="admin-action-btn-group">
-
-                <button
-                    class="admin-action-btn btn-pass"
-                    onclick="openSpecificAppPasswordChange('vk-video', event)"
-                    title="Сменить пароль"
-                >
-                    🔑
-                </button>
-
-                <button
-                    class="admin-action-btn btn-hide"
-                    onclick="toggleAppVisibility('vk-video', event)"
-                >
-                    Скрыть
-                </button>
-
-            </div>
-        </div>
-
-        <hr class="divider-hr">
-
-        <div
-            class="sheet-item"
-            data-key="sber"
-            onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sber.plist', 'СБЕР(Учёт Онлайн)', 'sber')"
-        >
-            <div class="sheet-info-box">
-                <span class="app-name">СБЕР(Учёт Онлайн)</span>
-                <span class="download-counter">Скачиваний: 0</span>
-            </div>
-
-            <div class="admin-action-btn-group">
-
-                <button
-                    class="admin-action-btn btn-pass"
-                    onclick="openSpecificAppPasswordChange('sber', event)"
-                    title="Сменить пароль"
-                >
-                    🔑
-                </button>
-
-                <button
-                    class="admin-action-btn btn-hide"
-                    onclick="toggleAppVisibility('sber', event)"
-                >
-                    Скрыть
-                </button>
-
-            </div>
-        </div>
-
-        <hr class="divider-hr">
-
-        <div
-            class="sheet-item"
-            data-key="sovkombank-vsekarty"
-            onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sovkombank-vsekarty.plist', 'Совкомбанк (Все карты MDS)', 'sovkombank-vsekarty')"
-        >
-            <div class="sheet-info-box">
-                <span class="app-name">Совкомбанк (Все карты MDS)</span>
-                <span class="download-counter">Скачиваний: 0</span>
-            </div>
-
-            <div class="admin-action-btn-group">
-
-                <button
-                    class="admin-action-btn btn-pass"
-                    onclick="openSpecificAppPasswordChange('sovkombank-vsekarty', event)"
-                    title="Сменить пароль"
-                >
-                    🔑
-                </button>
-
-                <button
-                    class="admin-action-btn btn-hide"
-                    onclick="toggleAppVisibility('sovkombank-vsekarty', event)"
-                >
-                    Скрыть
-                </button>
-
-            </div>
-        </div>
-
-        <hr class="divider-hr">
-
-        <div
-            class="sheet-item"
-            data-key="avito"
-            onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/avito.plist', 'Авито', 'avito')"
-        >
-            <div class="sheet-info-box">
-                <span class="app-name">Авито</span>
-                <span class="download-counter">Скачиваний: 0</span>
-            </div>
-
-            <div class="admin-action-btn-group">
-
-                <button
-                    class="admin-action-btn btn-pass"
-                    onclick="openSpecificAppPasswordChange('avito', event)"
-                    title="Сменить пароль"
-                >
-                    🔑
-                </button>
-
-                <button
-                    class="admin-action-btn btn-hide"
-                    onclick="toggleAppVisibility('avito', event)"
-                >
-                    Скрыть
-                </button>
-
-            </div>
-        </div>
-
-        <hr class="divider-hr">
-
-        <div
-            class="sheet-item"
-            data-key="tbank"
-            onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/tbank.plist', 'Т-Банк(8PRO)', 'tbank')"
-        >
-            <div class="sheet-info-box">
-                <span class="app-name">Т-Банк(8PRO)</span>
-                <span class="download-counter">Скачиваний: 0</span>
-            </div>
-
-            <div class="admin-action-btn-group">
-
-                <button
-                    class="admin-action-btn btn-pass"
-                    onclick="openSpecificAppPasswordChange('tbank', event)"
-                    title="Сменить пароль"
-                >
-                    🔑
-                </button>
-
-                <button
-                    class="admin-action-btn btn-hide"
-                    onclick="toggleAppVisibility('tbank', event)"
-                >
-                    Скрыть
-                </button>
-
-            </div>
-        </div>
-
-        <hr class="divider-hr">
-
-        <div
-            class="sheet-item"
-            data-key="drive-transit"
-            onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/drive-transit.plist', 'Т-Банк (Drive Transit)', 'drive-transit')"
-        >
-            <div class="sheet-info-box">
-                <span class="app-name">Т-Банк (Drive Transit)</span>
-                <span class="download-counter">Скачиваний: 0</span>
-            </div>
-
-            <div class="admin-action-btn-group">
-
-                <button
-                    class="admin-action-btn btn-pass"
-                    onclick="openSpecificAppPasswordChange('drive-transit', event)"
-                    title="Сменить пароль"
-                >
-                    🔑
-                </button>
-
-                <button
-                    class="admin-action-btn btn-hide"
-                    onclick="toggleAppVisibility('drive-transit', event)"
-                >
-                    Скрыть
-                </button>
-
-            </div>
-        </div>
-
-        <hr class="divider-hr">
-
-        <div
-            class="sheet-item"
-            data-key="lenta"
-            onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/lenta.plist', 'Лента', 'lenta')"
-        >
-            <div class="sheet-info-box">
-                <span class="app-name">Лента</span>
-                <span class="download-counter">Скачиваний: 0</span>
-            </div>
-
-            <div class="admin-action-btn-group">
-
-                <button
-                    class="admin-action-btn btn-pass"
-                    onclick="openSpecificAppPasswordChange('lenta', event)"
-                    title="Сменить пароль"
-                >
-                    🔑
-                </button>
-
-                <button
-                    class="admin-action-btn btn-hide"
-                    onclick="toggleAppVisibility('lenta', event)"
-                >
-                    Скрыть
-                </button>
-
-            </div>
-        </div>
-
-        <hr class="divider-hr">
-
-        <div
-            class="sheet-item"
-            data-key="yandex-pay"
-            onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/yandex-pay.plist', 'Яндекс Пэй', 'yandex-pay')"
-        >
-            <div class="sheet-info-box">
-                <span class="app-name">Яндекс Пэй</span>
-                <span class="download-counter">Скачиваний: 0</span>
-            </div>
-
-            <div class="admin-action-btn-group">
-
-                <button
-                    class="admin-action-btn btn-pass"
-                    onclick="openSpecificAppPasswordChange('yandex-pay', event)"
-                    title="Сменить пароль"
-                >
-                    🔑
-                </button>
-
-                <button
-                    class="admin-action-btn btn-hide"
-                    onclick="toggleAppVisibility('yandex-pay', event)"
-                >
-                    Скрыть
-                </button>
-
-            </div>
-        </div>
-
-        <hr class="divider-hr">
-
-        <div
-            class="sheet-item"
-            data-key="2gis"
-            onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/2gis.plist', '2ГИС', '2gis')"
-        >
-            <div class="sheet-info-box">
-                <span class="app-name">2ГИС</span>
-                <span class="download-counter">Скачиваний: 0</span>
-            </div>
-
-            <div class="admin-action-btn-group">
-
-                <button
-                    class="admin-action-btn btn-pass"
-                    onclick="openSpecificAppPasswordChange('2gis', event)"
-                    title="Сменить пароль"
-                >
-                    🔑
-                </button>
-
-                <button
-                    class="admin-action-btn btn-hide"
-                    onclick="toggleAppVisibility('2gis', event)"
-                >
-                    Скрыть
-                </button>
-
-            </div>
-        </div>
-
-        <hr class="divider-hr">
-
-        <div
-            class="sheet-item"
-            data-key="psb"
-            onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/psb.plist', 'ПСБ (Чайная Церемония)', 'psb')"
-        >
-            <div class="sheet-info-box">
-                <span class="app-name">ПСБ (Чайная Церемония)</span>
-                <span class="download-counter">Скачиваний: 0</span>
-            </div>
-
-            <div class="admin-action-btn-group">
-
-                <button
-                    class="admin-action-btn btn-pass"
-                    onclick="openSpecificAppPasswordChange('psb', event)"
-                    title="Сменить пароль"
-                >
-                    🔑
-                </button>
-
-                <button
-                    class="admin-action-btn btn-hide"
-                    onclick="toggleAppVisibility('psb', event)"
-                >
-                    Скрыть
-                </button>
-
-            </div>
-        </div>
-
-    </div>
 </div>
-```
+
+<input
+    type="file"
+    id="settingsImportInput"
+    accept=".json,application/json"
+    style="display: none;"
+    onchange="handleSettingsImport(event)"
+>
+
+<div class="sheet-header">
+
+    <div class="sheet-title">
+        Выберите приложение
+    </div>
+
+    <button
+        class="sheet-close"
+        onclick="closeSheet()"
+    >
+        ✕
+    </button>
+
+</div>
+
+<div class="sheet-list">
+
+    <div
+        class="sheet-item"
+        data-key="vk"
+        onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk.plist', 'ВКонтакте', 'vk')"
+    >
+        <div class="sheet-info-box">
+            <span class="app-name">ВКонтакте</span>
+            <span class="download-counter">Скачиваний: 0</span>
+        </div>
+
+        <div class="admin-action-btn-group">
+
+            <button
+                class="admin-action-btn btn-pass"
+                onclick="openSpecificAppPasswordChange('vk', event)"
+                title="Сменить пароль"
+            >
+                🔑
+            </button>
+
+            <button
+                class="admin-action-btn btn-hide"
+                onclick="toggleAppVisibility('vk', event)"
+            >
+                Скрыть
+            </button>
+
+        </div>
+    </div>
+
+    <hr class="divider-hr">
+
+    <div
+        class="sheet-item"
+        data-key="max"
+        onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/max.plist', 'MAX', 'max')"
+    >
+        <div class="sheet-info-box">
+            <span class="app-name">MAX</span>
+            <span class="download-counter">Скачиваний: 0</span>
+        </div>
+
+        <div class="admin-action-btn-group">
+
+            <button
+                class="admin-action-btn btn-pass"
+                onclick="openSpecificAppPasswordChange('max', event)"
+                title="Сменить пароль"
+            >
+                🔑
+            </button>
+
+            <button
+                class="admin-action-btn btn-hide"
+                onclick="toggleAppVisibility('max', event)"
+            >
+                Скрыть
+            </button>
+
+        </div>
+    </div>
+
+    <hr class="divider-hr">
+
+    <div
+        class="sheet-item"
+        data-key="vk-video"
+        onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk-video.plist', 'VK Видео', 'vk-video')"
+    >
+        <div class="sheet-info-box">
+            <span class="app-name">VK Видео</span>
+            <span class="download-counter">Скачиваний: 0</span>
+        </div>
+
+        <div class="admin-action-btn-group">
+
+            <button
+                class="admin-action-btn btn-pass"
+                onclick="openSpecificAppPasswordChange('vk-video', event)"
+                title="Сменить пароль"
+            >
+                🔑
+            </button>
+
+            <button
+                class="admin-action-btn btn-hide"
+                onclick="toggleAppVisibility('vk-video', event)"
+            >
+                Скрыть
+            </button>
+
+        </div>
+    </div>
+
+    <hr class="divider-hr">
+
+    <div
+        class="sheet-item"
+        data-key="sber"
+        onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sber.plist', 'СБЕР(Учёт Онлайн)', 'sber')"
+    >
+        <div class="sheet-info-box">
+            <span class="app-name">СБЕР(Учёт Онлайн)</span>
+            <span class="download-counter">Скачиваний: 0</span>
+        </div>
+
+        <div class="admin-action-btn-group">
+
+            <button
+                class="admin-action-btn btn-pass"
+                onclick="openSpecificAppPasswordChange('sber', event)"
+                title="Сменить пароль"
+            >
+                🔑
+            </button>
+
+            <button
+                class="admin-action-btn btn-hide"
+                onclick="toggleAppVisibility('sber', event)"
+            >
+                Скрыть
+            </button>
+
+        </div>
+    </div>
+
+    <hr class="divider-hr">
+
+    <div
+        class="sheet-item"
+        data-key="sovkombank-vsekarty"
+        onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sovkombank-vsekarty.plist', 'Совкомбанк (Все карты MDS)', 'sovkombank-vsekarty')"
+    >
+        <div class="sheet-info-box">
+            <span class="app-name">Совкомбанк (Все карты MDS)</span>
+            <span class="download-counter">Скачиваний: 0</span>
+        </div>
+
+        <div class="admin-action-btn-group">
+
+            <button
+                class="admin-action-btn btn-pass"
+                onclick="openSpecificAppPasswordChange('sovkombank-vsekarty', event)"
+                title="Сменить пароль"
+            >
+                🔑
+            </button>
+
+            <button
+                class="admin-action-btn btn-hide"
+                onclick="toggleAppVisibility('sovkombank-vsekarty', event)"
+            >
+                Скрыть
+            </button>
+
+        </div>
+    </div>
+
+    <hr class="divider-hr">
+
+    <div
+        class="sheet-item"
+        data-key="avito"
+        onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/avito.plist', 'Авито', 'avito')"
+    >
+        <div class="sheet-info-box">
+            <span class="app-name">Авито</span>
+            <span class="download-counter">Скачиваний: 0</span>
+        </div>
+
+        <div class="admin-action-btn-group">
+
+            <button
+                class="admin-action-btn btn-pass"
+                onclick="openSpecificAppPasswordChange('avito', event)"
+                title="Сменить пароль"
+            >
+                🔑
+            </button>
+
+            <button
+                class="admin-action-btn btn-hide"
+                onclick="toggleAppVisibility('avito', event)"
+            >
+                Скрыть
+            </button>
+
+        </div>
+    </div>
+
+    <hr class="divider-hr">
+
+    <div
+        class="sheet-item"
+        data-key="tbank"
+        onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/tbank.plist', 'Т-Банк(8PRO)', 'tbank')"
+    >
+        <div class="sheet-info-box">
+            <span class="app-name">Т-Банк(8PRO)</span>
+            <span class="download-counter">Скачиваний: 0</span>
+        </div>
+
+        <div class="admin-action-btn-group">
+
+            <button
+                class="admin-action-btn btn-pass"
+                onclick="openSpecificAppPasswordChange('tbank', event)"
+                title="Сменить пароль"
+            >
+                🔑
+            </button>
+
+            <button
+                class="admin-action-btn btn-hide"
+                onclick="toggleAppVisibility('tbank', event)"
+            >
+                Скрыть
+            </button>
+
+        </div>
+    </div>
+
+    <hr class="divider-hr">
+
+    <div
+        class="sheet-item"
+        data-key="drive-transit"
+        onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/drive-transit.plist', 'Т-Банк (Drive Transit)', 'drive-transit')"
+    >
+        <div class="sheet-info-box">
+            <span class="app-name">Т-Банк (Drive Transit)</span>
+            <span class="download-counter">Скачиваний: 0</span>
+        </div>
+
+        <div class="admin-action-btn-group">
+
+            <button
+                class="admin-action-btn btn-pass"
+                onclick="openSpecificAppPasswordChange('drive-transit', event)"
+                title="Сменить пароль"
+            >
+                🔑
+            </button>
+
+            <button
+                class="admin-action-btn btn-hide"
+                onclick="toggleAppVisibility('drive-transit', event)"
+            >
+                Скрыть
+            </button>
+
+        </div>
+    </div>
+
+    <hr class="divider-hr">
+
+    <div
+        class="sheet-item"
+        data-key="lenta"
+        onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/lenta.plist', 'Лента', 'lenta')"
+    >
+        <div class="sheet-info-box">
+            <span class="app-name">Лента</span>
+            <span class="download-counter">Скачиваний: 0</span>
+        </div>
+
+        <div class="admin-action-btn-group">
+
+            <button
+                class="admin-action-btn btn-pass"
+                onclick="openSpecificAppPasswordChange('lenta', event)"
+                title="Сменить пароль"
+            >
+                🔑
+            </button>
+
+            <button
+                class="admin-action-btn btn-hide"
+                onclick="toggleAppVisibility('lenta', event)"
+            >
+                Скрыть
+            </button>
+
+        </div>
+    </div>
+
+    <hr class="divider-hr">
+
+    <div
+        class="sheet-item"
+        data-key="yandex-pay"
+        onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/yandex-pay.plist', 'Яндекс Пэй', 'yandex-pay')"
+    >
+        <div class="sheet-info-box">
+            <span class="app-name">Яндекс Пэй</span>
+            <span class="download-counter">Скачиваний: 0</span>
+        </div>
+
+        <div class="admin-action-btn-group">
+
+            <button
+                class="admin-action-btn btn-pass"
+                onclick="openSpecificAppPasswordChange('yandex-pay', event)"
+                title="Сменить пароль"
+            >
+                🔑
+            </button>
+
+            <button
+                class="admin-action-btn btn-hide"
+                onclick="toggleAppVisibility('yandex-pay', event)"
+            >
+                Скрыть
+            </button>
+
+        </div>
+    </div>
+
+    <hr class="divider-hr">
+
+    <div
+        class="sheet-item"
+        data-key="2gis"
+        onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/2gis.plist', '2ГИС', '2gis')"
+    >
+        <div class="sheet-info-box">
+            <span class="app-name">2ГИС</span>
+            <span class="download-counter">Скачиваний: 0</span>
+        </div>
+
+        <div class="admin-action-btn-group">
+
+            <button
+                class="admin-action-btn btn-pass"
+                onclick="openSpecificAppPasswordChange('2gis', event)"
+                title="Сменить пароль"
+            >
+                🔑
+            </button>
+
+            <button
+                class="admin-action-btn btn-hide"
+                onclick="toggleAppVisibility('2gis', event)"
+            >
+                Скрыть
+            </button>
+
+        </div>
+    </div>
+
+    <hr class="divider-hr">
+
+    <div
+        class="sheet-item"
+        data-key="psb"
+        onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/psb.plist', 'ПСБ (Чайная Церемония)', 'psb')"
+    >
+        <div class="sheet-info-box">
+            <span class="app-name">ПСБ (Чайная Церемония)</span>
+            <span class="download-counter">Скачиваний: 0</span>
+        </div>
+
+        <div class="admin-action-btn-group">
+
+            <button
+                class="admin-action-btn btn-pass"
+                onclick="openSpecificAppPasswordChange('psb', event)"
+                title="Сменить пароль"
+            >
+                🔑
+            </button>
+
+            <button
+                class="admin-action-btn btn-hide"
+                onclick="toggleAppVisibility('psb', event)"
+            >
+                Скрыть
+            </button>
+
+        </div>
+    </div>
+
+</div>
+
+</div>
 
 </div>
 
