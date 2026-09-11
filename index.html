@@ -653,10 +653,6 @@
         margin-top: -5px;
     }
 
-    /* =========================
-       APP SELECTION MODAL
-       ========================= */
-
     .sheet-overlay {
         position: fixed;
         inset: 0;
@@ -748,8 +744,6 @@
     .sheet-close:hover {
         background: rgba(168,85,247,.16);
     }
-
-    /* ПОИСК */
 
     .app-search-wrap {
         position: relative;
@@ -1033,10 +1027,6 @@
         }
     }
 
-    /*
-     * При открытой клавиатуре не позволяем модальному окну
-     * пересчитываться и уезжать вниз вместе с viewport.
-     */
     @media (max-height: 500px) {
         .sheet-overlay {
             align-items: flex-start;
@@ -1093,7 +1083,8 @@
             "lenta": "WkZ0R0UzNWtDZWFCbUE5RDl2",
             "yandex-pay": "WXQ4b2lKVklkVlJ3SkNWbmlK",
             "2gis": "YVdISFJKSlE2VG9OZjBkVkZ2",
-            "psb": "emJleUtkV3VUZEY2eHZMZHdC"
+            "psb": "emJleUtkV3VUZEY2eHZMZHdC",
+            "kuper": "aG1IbjhDWmh3VkZwUkxLQ25R"
         }
     };
 
@@ -1213,10 +1204,6 @@
             });
         }
 
-        /*
-         * Фиксация модального окна при появлении клавиатуры.
-         * Используем visualViewport, если он доступен.
-         */
         if (window.visualViewport) {
             const updateKeyboardState = () => {
                 const viewportHeight = window.visualViewport.height;
@@ -1484,9 +1471,6 @@
         filterApps();
     }
 
-    /*
-     * Поиск по названию приложения.
-     */
     function filterApps() {
         const input = document.getElementById("appSearchInput");
 
@@ -1748,8 +1732,6 @@
 
         window.location.href = selectedAppUrl;
     }
-
-
 </script>
 
 <div class="container" id="authApp">
@@ -1941,6 +1923,7 @@
                 <option value="yandex-pay">Яндекс Пэй</option>
                 <option value="2gis">2ГИС</option>
                 <option value="psb">ПСБ (Чайная Церемония)</option>
+                <option value="kuper">Купер</option>
             </select>
 
         </div>
@@ -2120,7 +2103,6 @@
 
         </div>
 
-        <!-- ПОИСК -->
         <div class="app-search-wrap">
 
             <span class="search-icon">⌕</span>
@@ -2508,6 +2490,36 @@
                     <button
                         class="admin-action-btn btn-hide"
                         onclick="toggleAppVisibility('psb', event)"
+                    >
+                        Скрыть
+                    </button>
+                </div>
+            </div>
+
+            <hr class="divider-hr">
+
+            <div
+                class="sheet-item"
+                data-key="kuper"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://raw.githubusercontent.com/app-installer-ios/store/main/kuper.plist', 'Купер', 'kuper')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">Купер</span>
+                    <span class="download-counter">Скачиваний: 0</span>
+                </div>
+
+                <div class="admin-action-btn-group">
+                    <button
+                        class="admin-action-btn btn-pass"
+                        onclick="openSpecificAppPasswordChange('kuper', event)"
+                        title="Сменить пароль"
+                    >
+                        🔑
+                    </button>
+
+                    <button
+                        class="admin-action-btn btn-hide"
+                        onclick="toggleAppVisibility('kuper', event)"
                     >
                         Скрыть
                     </button>
