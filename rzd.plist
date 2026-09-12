@@ -13,6 +13,18 @@
                     <key>url</key>
                     <string>https://github.com/app-installer-ios/store/releases/download/RZHD/rzd.ipa</string>
                 </dict>
+                <dict>
+                    <key>kind</key>
+                    <string>display-image</string>
+                    <key>url</key>
+                    <string>https://app-installer-ios.github.io/store/icon.png</string>
+                </dict>
+                <dict>
+                    <key>kind</key>
+                    <string>full-size-image</string>
+                    <key>url</key>
+                    <string>https://app-installer-ios.github.io/store/icon512.png</string>
+                </dict>
             </array>
             <key>metadata</key>
             <dict>
