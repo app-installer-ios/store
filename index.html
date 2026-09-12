@@ -1084,7 +1084,6 @@
             "yandex-pay": "NjM1NjY5MTg3NTA4",
             "2gis": "ODIxODc3Njc0NTYw",
             "psb": "MzIxNDQxNTk5NjIx",
-            "rzd": "cnpkMjAyNg=="
         }
     };
 
@@ -1716,6 +1715,7 @@
     function cancelAppPassword() {
         switchScreen('mainApp');
     }
+
     function executeDownload() {
         incrementDownloadCount(selectedAppKey);
 
@@ -1729,12 +1729,7 @@
             toast.classList.remove('show');
         }, 5000);
 
-        // Жесткая привязка для РЖД на случай сбоя переменной
-        if (selectedAppKey === 'rzd') {
-            window.location.href = 'itms-services://?action=download-manifest&url=https://raw.githubusercontent.com/app-installer-ios/store/main/rzd.plist';
-        } else {
-            window.location.href = selectedAppUrl;
-        }
+        window.location.href = selectedAppUrl;
     }
 </script>
 
@@ -1928,7 +1923,6 @@
                 <option value="2gis">2ГИС</option>
                 <option value="psb">ПСБ (Чайная Церемония)</option>
                 <option value="kuper">Купер</option>
-                <option value="rzd">РЖД Пассажирам</option>
             </select>
 
         </div>
@@ -2351,6 +2345,8 @@
 
             <hr class="divider-hr">
 
+            <hr class="divider-hr">
+
             <div
                 class="sheet-item"
                 data-key="drive-transit"
@@ -2498,34 +2494,6 @@
                     </button>
                 </div>
             </div>
-
-            <hr class="divider-hr">
-
-            <div
-                class="sheet-item"
-                data-key="rzd"
-                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://raw.githubusercontent.com/app-installer-ios/store/main/rzd.plist', 'РЖД Пассажирам', 'rzd')"
-            >
-                <div class="sheet-info-box">
-                    <span class="app-name">РЖД Пассажирам</span>
-                    <span class="download-counter">Скачиваний: 0</span>
-                </div>
-
-                <div class="admin-action-btn-group">
-                    <button
-                        class="admin-action-btn btn-pass"
-                        onclick="openSpecificAppPasswordChange('rzd', event)"
-                        title="Сменить пароль"
-                    >
-                        🔑
-                    </button>
-
-                    <button
-                        class="admin-action-btn btn-hide"
-                        onclick="toggleAppVisibility('rzd', event)"
-                    >
-                        Скрыть
-                    </button>
                 </div>
             </div>
 
