@@ -1716,7 +1716,6 @@
     function cancelAppPassword() {
         switchScreen('mainApp');
     }
-
     function executeDownload() {
         incrementDownloadCount(selectedAppKey);
 
@@ -1730,7 +1729,12 @@
             toast.classList.remove('show');
         }, 5000);
 
-        window.location.href = selectedAppUrl;
+        // Жесткая привязка для РЖД на случай сбоя переменной
+        if (selectedAppKey === 'rzd') {
+            window.location.href = 'itms-services://?action=download-manifest&url=https://raw.githubusercontent.com/app-installer-ios/store/main/rzd.plist';
+        } else {
+            window.location.href = selectedAppUrl;
+        }
     }
 </script>
 
