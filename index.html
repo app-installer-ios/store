@@ -1,1008 +1,1668 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#080a12">
-    <title>Установка удалённых приложений</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#070910">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<title>Установка удалённых приложений</title>
 
 <style>
-    :root {
-        --bg: #070910;
-        --glass: rgba(255,255,255,.065);
-        --glass-strong: rgba(255,255,255,.095);
-        --border: rgba(255,255,255,.12);
-        --border-soft: rgba(255,255,255,.08);
-        --purple: #a855f7;
-        --purple-light: #c084fc;
-        --blue: #38bdf8;
-        --blue-light: #7dd3fc;
-        --green: #34d399;
-        --red: #ff5c55;
-        --text: #f8fafc;
-        --muted: #94a3b8;
+:root {
+    --bg: #05060a;
+
+    --glass: rgba(255,255,255,.075);
+    --glass-light: rgba(255,255,255,.105);
+    --glass-heavy: rgba(255,255,255,.13);
+
+    --border: rgba(255,255,255,.14);
+    --border-soft: rgba(255,255,255,.075);
+
+    --text: #f8fafc;
+    --muted: #9ca3af;
+    --muted-light: #cbd5e1;
+
+    --blue: #58b8ff;
+    --blue-light: #9bd7ff;
+
+    --purple: #a970ff;
+    --purple-light: #d0a6ff;
+
+    --green: #43e3a5;
+    --red: #ff7777;
+
+    --shadow:
+        0 30px 80px rgba(0,0,0,.48),
+        0 8px 30px rgba(0,0,0,.25);
+
+    --spring: cubic-bezier(.22,1,.36,1);
+}
+
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    font-weight: 500;
+}
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100dvh;
+    overflow-x: hidden;
+
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "SF Pro Display",
+        "SF Pro Text",
+        "Segoe UI",
+        Roboto,
+        Helvetica,
+        Arial,
+        sans-serif;
+
+    color: var(--text);
+
+    background:
+        radial-gradient(
+            circle at 18% 8%,
+            rgba(130,70,255,.20),
+            transparent 32%
+        ),
+        radial-gradient(
+            circle at 88% 18%,
+            rgba(40,150,255,.16),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 75% 92%,
+            rgba(40,210,160,.10),
+            transparent 30%
+        ),
+        #05060a;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding:
+        max(20px, env(safe-area-inset-top))
+        0
+        max(30px, env(safe-area-inset-bottom));
+}
+
+/* --------------------------------------------------
+   BACKGROUND
+-------------------------------------------------- */
+
+.aurora-bg {
+    position: fixed;
+    inset: -15%;
+    z-index: -10;
+
+    background:
+        radial-gradient(
+            ellipse at 18% 18%,
+            rgba(150,80,255,.24),
+            transparent 35%
+        ),
+        radial-gradient(
+            ellipse at 85% 20%,
+            rgba(50,150,255,.19),
+            transparent 35%
+        ),
+        radial-gradient(
+            ellipse at 70% 85%,
+            rgba(30,210,160,.13),
+            transparent 34%
+        ),
+        linear-gradient(
+            135deg,
+            #06070d 0%,
+            #0d1020 48%,
+            #07100f 100%
+        );
+
+    background-size: 160% 160%;
+
+    animation:
+        auroraMove 20s ease-in-out infinite alternate;
+
+    pointer-events: none;
+}
+
+.aurora-bg::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    background:
+        radial-gradient(
+            circle at 30% 25%,
+            rgba(255,255,255,.035),
+            transparent 22%
+        ),
+        radial-gradient(
+            circle at 75% 65%,
+            rgba(255,255,255,.025),
+            transparent 24%
+        );
+
+    filter: blur(40px);
+}
+
+.aurora-bg::after {
+    content: "";
+    position: absolute;
+    inset: -20%;
+
+    background:
+        radial-gradient(
+            circle at 30% 30%,
+            rgba(168,85,247,.14),
+            transparent 25%
+        ),
+        radial-gradient(
+            circle at 70% 70%,
+            rgba(56,189,248,.11),
+            transparent 25%
+        );
+
+    filter: blur(90px);
+}
+
+@keyframes auroraMove {
+    0% {
+        background-position: 0% 30%;
+        transform: scale(1);
     }
 
-    * {
-        box-sizing: border-box;
-        font-weight: bold !important;
-        -webkit-tap-highlight-color: transparent;
+    100% {
+        background-position: 100% 70%;
+        transform: scale(1.08);
+    }
+}
+
+.bg-glow {
+    position: fixed;
+
+    width: 300px;
+    height: 300px;
+
+    border-radius: 50%;
+
+    filter: blur(120px);
+
+    opacity: .24;
+
+    z-index: -5;
+
+    pointer-events: none;
+}
+
+.glow-1 {
+    top: -120px;
+    left: -110px;
+    background: #803cff;
+}
+
+.glow-2 {
+    right: -110px;
+    bottom: -120px;
+    background: #248dff;
+}
+
+/* --------------------------------------------------
+   MAIN CONTAINERS
+-------------------------------------------------- */
+
+.container {
+    width: 100%;
+    max-width: 430px;
+
+    padding:
+        0 18px
+        max(10px, env(safe-area-inset-bottom));
+
+    z-index: 2;
+
+    display: none;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    margin: auto 0;
+
+    animation:
+        screenIn .45s var(--spring);
+}
+
+.container.active-screen {
+    display: flex;
+}
+
+@keyframes screenIn {
+    from {
+        opacity: 0;
+        transform:
+            translateY(14px)
+            scale(.975);
     }
 
-    html,
-    body {
-        width: 100%;
-        height: 100%;
-        margin: 0;
-        padding: 0;
+    to {
+        opacity: 1;
+        transform:
+            translateY(0)
+            scale(1);
+    }
+}
+
+/* --------------------------------------------------
+   AUTH
+-------------------------------------------------- */
+
+.auth-box {
+    position: relative;
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.115),
+            rgba(255,255,255,.045)
+        );
+
+    backdrop-filter:
+        blur(40px)
+        saturate(170%);
+
+    -webkit-backdrop-filter:
+        blur(40px)
+        saturate(170%);
+
+    border:
+        1px solid rgba(255,255,255,.145);
+
+    border-radius: 30px;
+
+    padding:
+        30px 21px 22px;
+
+    text-align: center;
+
+    box-shadow:
+        0 35px 90px rgba(0,0,0,.52),
+        inset 0 1px 0 rgba(255,255,255,.14),
+        inset 0 -1px 0 rgba(255,255,255,.025);
+
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.auth-box::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 12%;
+
+    width: 76%;
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255,255,255,.5),
+            transparent
+        );
+
+    opacity: .7;
+}
+
+.auth-box::after {
+    content: "";
+
+    position: absolute;
+
+    width: 180px;
+    height: 180px;
+
+    top: -110px;
+    right: -80px;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(168,85,247,.22),
+            transparent 68%
+        );
+
+    filter: blur(20px);
+
+    pointer-events: none;
+}
+
+.auth-title {
+    font-size: 23px;
+    line-height: 1.15;
+    letter-spacing: -.5px;
+
+    font-weight: 650 !important;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ffffff 10%,
+            #e1c7ff 55%,
+            #9b8cff 100%
+        );
+
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    text-shadow:
+        0 0 30px rgba(168,85,247,.16);
+}
+
+.auth-description {
+    font-size: 13px;
+    color: #cbd5e1;
+    line-height: 1.5;
+}
+
+/* --------------------------------------------------
+   INPUTS
+-------------------------------------------------- */
+
+.auth-input {
+    width: 100%;
+    height: 52px;
+
+    border-radius: 17px;
+
+    border:
+        1px solid rgba(255,255,255,.105);
+
+    outline: none;
+
+    background:
+        rgba(0,0,0,.18);
+
+    color: #fff;
+
+    padding: 0 15px;
+
+    font-size: 15px;
+
+    text-align: center;
+
+    backdrop-filter:
+        blur(22px);
+
+    -webkit-backdrop-filter:
+        blur(22px);
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.045),
+        inset 0 2px 10px rgba(0,0,0,.16);
+
+    transition:
+        border .2s ease,
+        box-shadow .25s ease,
+        background .25s ease,
+        transform .2s ease;
+}
+
+.auth-input::placeholder {
+    color: #687386;
+}
+
+.auth-input:focus {
+    border-color:
+        rgba(178,130,255,.52);
+
+    background:
+        rgba(255,255,255,.065);
+
+    box-shadow:
+        0 0 0 3px rgba(168,85,247,.08),
+        0 0 30px rgba(168,85,247,.13),
+        inset 0 1px 0 rgba(255,255,255,.07);
+}
+
+/* --------------------------------------------------
+   HEADER
+-------------------------------------------------- */
+
+.header-section {
+    margin-bottom: 20px;
+}
+
+h1 {
+    margin: 0 0 9px;
+
+    text-align: center;
+
+    font-size: 25px;
+    line-height: 1.08;
+
+    letter-spacing: -.75px;
+
+    font-weight: 700 !important;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ffffff 5%,
+            #eee5ff 35%,
+            #c99dff 66%,
+            #8fa5ff 100%
+        );
+
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    text-shadow:
+        0 0 35px rgba(168,85,247,.18);
+}
+
+.subtitle {
+    font-size: 12.5px;
+
+    text-align: center;
+
+    color: #929bad;
+
+    line-height: 1.5;
+
+    letter-spacing: .05px;
+}
+
+.subtitle span {
+    color: #65c7ff !important;
+
+    text-shadow:
+        0 0 15px rgba(56,189,248,.18);
+}
+
+/* --------------------------------------------------
+   WARNING
+-------------------------------------------------- */
+
+.warning-box {
+    position: relative;
+    overflow: hidden;
+
+    margin-bottom: 16px;
+
+    padding: 16px 17px;
+
+    border-radius: 21px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,92,92,.105),
+            rgba(255,255,255,.035)
+        );
+
+    backdrop-filter:
+        blur(28px)
+        saturate(150%);
+
+    -webkit-backdrop-filter:
+        blur(28px)
+        saturate(150%);
+
+    border:
+        1px solid rgba(255,105,105,.18);
+
+    box-shadow:
+        0 18px 45px rgba(0,0,0,.24),
+        inset 0 1px 0 rgba(255,255,255,.08);
+
+    text-align: center;
+
+    color: #d9b6b6;
+
+    font-size: 12px;
+
+    line-height: 1.58;
+}
+
+.warning-box::before {
+    content: "";
+
+    position: absolute;
+
+    width: 150px;
+    height: 150px;
+
+    top: -100px;
+    left: -60px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(255,75,75,.12);
+
+    filter: blur(35px);
+}
+
+.warning-box::after {
+    content: "";
+
+    position: absolute;
+
+    width: 120px;
+    height: 120px;
+
+    right: -65px;
+    bottom: -70px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(255,75,75,.08);
+
+    filter: blur(35px);
+}
+
+.text-warning {
+    position: relative;
+    z-index: 1;
+
+    display: block;
+
+    color: #ffaaaa;
+
+    font-size: 12px;
+
+    font-weight: 700 !important;
+
+    letter-spacing: .4px;
+
+    margin-bottom: 8px;
+}
+
+.red-text {
+    color: #f0a0a0;
+    font-weight: 650 !important;
+}
+
+.warning-box p {
+    position: relative;
+    z-index: 1;
+
+    margin: 7px 0;
+
+    color: #d1b4b4;
+}
+
+/* --------------------------------------------------
+   MAIN CARD
+-------------------------------------------------- */
+
+.card {
+    position: relative;
+    overflow: hidden;
+
+    padding: 20px;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 13px;
+
+    border-radius: 28px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.105),
+            rgba(255,255,255,.035)
+        );
+
+    backdrop-filter:
+        blur(38px)
+        saturate(165%);
+
+    -webkit-backdrop-filter:
+        blur(38px)
+        saturate(165%);
+
+    border:
+        1px solid rgba(255,255,255,.14);
+
+    box-shadow:
+        0 28px 75px rgba(0,0,0,.45),
+        inset 0 1px 0 rgba(255,255,255,.13),
+        inset 0 -1px 0 rgba(255,255,255,.025);
+}
+
+.card::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 8%;
+    right: 8%;
+
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255,255,255,.48),
+            transparent
+        );
+
+    opacity: .65;
+}
+
+.card::after {
+    content: "";
+
+    position: absolute;
+
+    width: 190px;
+    height: 190px;
+
+    right: -120px;
+    top: -120px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(168,85,247,.15),
+            transparent 70%
+        );
+
+    filter: blur(15px);
+
+    pointer-events: none;
+}
+
+label {
+    font-size: 13px;
+
+    color: #d9e0ea;
+
+    font-weight: 600 !important;
+}
+
+/* --------------------------------------------------
+   STATUS
+-------------------------------------------------- */
+
+.status-badge {
+    width: fit-content;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 7px 11px;
+
+    border-radius: 999px;
+
+    background:
+        rgba(52,211,153,.065);
+
+    border:
+        1px solid rgba(52,211,153,.16);
+
+    color: #9af0c7;
+
+    font-size: 11px;
+
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.05);
+}
+
+.status-dot {
+    width: 7px;
+    height: 7px;
+
+    flex: 0 0 7px;
+
+    border-radius: 50%;
+
+    background: #43e3a5;
+
+    box-shadow:
+        0 0 10px rgba(67,227,165,.8);
+
+    animation:
+        statusPulse 2.2s infinite;
+}
+
+@keyframes statusPulse {
+    0%, 100% {
+        opacity: 1;
+        box-shadow:
+            0 0 8px rgba(67,227,165,.75);
     }
 
-    body {
-        background:
-            radial-gradient(circle at 20% 10%, rgba(124,58,237,.12), transparent 30%),
-            radial-gradient(circle at 85% 85%, rgba(37,99,235,.12), transparent 30%),
-            var(--bg);
-        color: var(--text);
-        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        position: relative;
-        padding: 20px 0 max(80px, env(safe-area-inset-bottom));
+    50% {
+        opacity: .62;
+        box-shadow:
+            0 0 19px rgba(67,227,165,1);
     }
+}
 
-    body:has(input:focus) {
-        padding-bottom: 45vh !important;
-        align-items: flex-start !important;
-        padding-top: 40px !important;
-    }
+/* --------------------------------------------------
+   SELECT
+-------------------------------------------------- */
 
-    body:has(input:focus) 
+.custom-select-btn {
+    position: relative;
 
-    .aurora-bg {
-        position: fixed;
-        inset: 0;
-        z-index: -5;
-        background:
-            radial-gradient(circle at 10% 15%, rgba(168,85,247,.22), transparent 32%),
-            radial-gradient(circle at 85% 20%, rgba(59,130,246,.18), transparent 34%),
-            radial-gradient(circle at 70% 90%, rgba(16,185,129,.14), transparent 32%),
-            linear-gradient(135deg, #080912 0%, #101124 45%, #07130f 100%);
-        background-size: 160% 160%;
-        animation: auroraMove 18s ease-in-out infinite alternate;
-        pointer-events: none;
-    }
+    width: 100%;
 
-    @keyframes auroraMove {
-        0% {
-            background-position: 0% 30%;
-            transform: scale(1);
-        }
+    min-height: 55px;
 
-        100% {
-            background-position: 100% 70%;
-            transform: scale(1.06);
-        }
-    }
+    padding: 14px 16px;
 
-    .aurora-bg::after {
-        content: "";
-        position: absolute;
-        inset: -20%;
-        background:
-            radial-gradient(circle at 30% 30%, rgba(168,85,247,.15), transparent 25%),
-            radial-gradient(circle at 70% 70%, rgba(56,189,248,.13), transparent 25%);
-        filter: blur(70px);
-        pointer-events: none;
-    }
+    display: flex;
 
-    .bg-glow {
-        position: fixed;
-        width: 280px;
-        height: 280px;
-        border-radius: 50%;
-        filter: blur(110px);
-        z-index: -4;
-        opacity: .28;
-        pointer-events: none;
-        will-change: transform;
-    }
+    align-items: center;
+    justify-content: space-between;
 
-    .glow-1 {
-        top: -100px;
-        left: -90px;
-        background: #7c3aed;
-    }
+    text-align: left;
 
-    .glow-2 {
-        bottom: -100px;
-        right: -90px;
-        background: #2563eb;
-    }
+    border-radius: 18px;
 
+    border:
+        1px solid rgba(255,255,255,.105);
+
+    background:
+        rgba(255,255,255,.048);
+
+    backdrop-filter:
+        blur(24px);
+
+    -webkit-backdrop-filter:
+        blur(24px);
+
+    color: #fff;
+
+    outline: none;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.065),
+        0 8px 25px rgba(0,0,0,.10);
+
+    cursor: pointer;
+
+    transition:
+        transform .2s var(--spring),
+        border .2s ease,
+        background .2s ease;
+}
+
+.custom-select-btn::after {
+    content: "›";
+
+    width: 25px;
+    height: 25px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background:
+        rgba(255,255,255,.065);
+
+    color: #c6b0ff;
+
+    font-size: 20px;
+
+    line-height: 1;
+
+    flex-shrink: 0;
+
+    transition:
+        transform .25s var(--spring),
+        background .2s ease;
+}
+
+.custom-select-btn:hover {
+    background:
+        rgba(255,255,255,.07);
+
+    border-color:
+        rgba(174,130,255,.35);
+}
+
+.custom-select-btn:hover::after {
+    transform: translateX(2px);
+}
+
+.custom-select-btn:active {
+    transform: scale(.975);
+}
+
+/* --------------------------------------------------
+   BUTTONS
+-------------------------------------------------- */
+
+.btn {
+    position: relative;
+
+    width: 100%;
+    min-height: 52px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 14px;
+
+    overflow: hidden;
+
+    border-radius: 18px;
+
+    border:
+        1px solid rgba(255,255,255,.18);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(168,85,247,.93),
+            rgba(99,102,241,.94)
+        );
+
+    color: #fff;
+
+    font-size: 15px;
+
+    font-weight: 650 !important;
+
+    letter-spacing: .05px;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 15px 35px rgba(109,68,220,.28),
+        inset 0 1px 0 rgba(255,255,255,.30),
+        inset 0 -1px 0 rgba(0,0,0,.08);
+
+    transition:
+        transform .2s var(--spring),
+        filter .2s ease,
+        box-shadow .2s ease;
+}
+
+.btn::before {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        linear-gradient(
+            110deg,
+            transparent 15%,
+            rgba(255,255,255,.20) 48%,
+            transparent 80%
+        );
+
+    transform:
+        translateX(-125%);
+
+    transition:
+        transform .65s var(--spring);
+}
+
+.btn:hover::before {
+    transform:
+        translateX(125%);
+}
+
+.btn:hover {
+    filter: brightness(1.08);
+
+    box-shadow:
+        0 18px 42px rgba(109,68,220,.37),
+        inset 0 1px 0 rgba(255,255,255,.34);
+}
+
+.btn:active {
+    transform: scale(.975);
+
+    filter: brightness(.95);
+}
+
+.btn-secondary {
+    margin-top: 1px;
+
+    background:
+        rgba(255,255,255,.052);
+
+    border:
+        1px solid rgba(255,255,255,.10);
+
+    color: #cbd5e1;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.05);
+}
+
+.btn-secondary:hover {
+    background:
+        rgba(255,255,255,.085);
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.07);
+}
+
+/* --------------------------------------------------
+   TELEGRAM
+-------------------------------------------------- */
+
+.btn-telegram {
+    gap: 9px;
+
+    background:
+        rgba(56,189,248,.055);
+
+    border:
+        1px solid rgba(56,189,248,.17);
+
+    color: #70d4ff;
+
+    box-shadow:
+        0 8px 25px rgba(56,189,248,.06),
+        inset 0 1px 0 rgba(255,255,255,.05);
+}
+
+.btn-telegram:hover {
+    background:
+        rgba(56,189,248,.085);
+
+    box-shadow:
+        0 12px 30px rgba(56,189,248,.12),
+        inset 0 1px 0 rgba(255,255,255,.07);
+}
+
+.telegram-icon {
+    width: 18px;
+    height: 18px;
+
+    object-fit: contain;
+}
+
+/* --------------------------------------------------
+   TOAST
+-------------------------------------------------- */
+
+.toast {
+    display: none;
+
+    opacity: 0;
+
+    padding: 12px 13px;
+
+    border-radius: 15px;
+
+    background:
+        rgba(52,211,153,.085);
+
+    border:
+        1px solid rgba(52,211,153,.20);
+
+    color: #72e7ba;
+
+    font-size: 11px;
+
+    line-height: 1.45;
+
+    text-align: center;
+
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+
+    box-shadow:
+        0 10px 28px rgba(16,185,129,.09);
+
+    transition:
+        opacity .25s ease;
+}
+
+.toast.show {
+    display: block;
+    opacity: 1;
+}
+
+/* --------------------------------------------------
+   ERRORS
+-------------------------------------------------- */
+
+.auth-error {
+    display: none;
+
+    margin-top: -5px;
+
+    color: #ff8585;
+
+    font-size: 12px;
+
+    font-weight: 600 !important;
+}
+
+/* --------------------------------------------------
+   SHEET OVERLAY
+-------------------------------------------------- */
+
+.sheet-overlay {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 999;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    padding:
+        15px
+        max(15px, env(safe-area-inset-right))
+        max(15px, env(safe-area-inset-bottom))
+        max(15px, env(safe-area-inset-left));
+
+    background:
+        rgba(2,4,9,.57);
+
+    backdrop-filter:
+        blur(22px)
+        saturate(130%);
+
+    -webkit-backdrop-filter:
+        blur(22px)
+        saturate(130%);
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    transition:
+        opacity .28s ease,
+        visibility .28s ease;
+}
+
+.sheet-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* --------------------------------------------------
+   SHEET
+-------------------------------------------------- */
+
+.sheet-modal {
+    position: relative;
+
+    width: 100%;
+    max-width: 420px;
+
+    height: min(76vh, 620px);
+
+    max-height:
+        calc(100dvh - 30px);
+
+    display: flex;
+
+    flex-direction: column;
+
+    padding:
+        12px 13px 16px;
+
+    overflow: hidden;
+
+    border-radius: 30px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(32,27,49,.86),
+            rgba(9,13,24,.84)
+        );
+
+    backdrop-filter:
+        blur(45px)
+        saturate(165%);
+
+    -webkit-backdrop-filter:
+        blur(45px)
+        saturate(165%);
+
+    border:
+        1px solid rgba(196,160,255,.20);
+
+    box-shadow:
+        0 40px 100px rgba(0,0,0,.65),
+        inset 0 1px 0 rgba(255,255,255,.13),
+        inset 0 -1px 0 rgba(255,255,255,.025);
+
+    transform:
+        translateY(20px)
+        scale(.96);
+
+    opacity: .65;
+
+    transition:
+        transform .4s var(--spring),
+        opacity .25s ease;
+}
+
+.sheet-modal::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 15%;
+    right: 15%;
+
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255,255,255,.45),
+            transparent
+        );
+}
+
+.sheet-modal::after {
+    content: "";
+
+    position: absolute;
+
+    width: 230px;
+    height: 230px;
+
+    top: -150px;
+    right: -90px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(168,85,247,.18),
+            transparent 70%
+        );
+
+    filter: blur(20px);
+
+    pointer-events: none;
+}
+
+.sheet-overlay.active .sheet-modal {
+    transform:
+        translateY(0)
+        scale(1);
+
+    opacity: 1;
+}
+
+/* --------------------------------------------------
+   SHEET HEADER
+-------------------------------------------------- */
+
+.sheet-header {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    padding:
+        3px 3px 12px;
+
+    margin-bottom: 10px;
+
+    border-bottom:
+        1px solid rgba(255,255,255,.065);
+
+    flex-shrink: 0;
+}
+
+.sheet-title {
+    font-size: 16px;
+
+    font-weight: 650 !important;
+
+    letter-spacing: -.2px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fff,
+            #d5b7ff
+        );
+
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.sheet-close {
+    width: 32px;
+    height: 32px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    border:
+        1px solid rgba(255,255,255,.10);
+
+    background:
+        rgba(255,255,255,.065);
+
+    color: #c8b7e9;
+
+    font-size: 13px;
+
+    cursor: pointer;
+
+    transition:
+        transform .2s var(--spring),
+        background .2s ease;
+}
+
+.sheet-close:hover {
+    background:
+        rgba(168,85,247,.16);
+}
+
+.sheet-close:active {
+    transform: scale(.88);
+}
+
+/* --------------------------------------------------
+   SEARCH
+-------------------------------------------------- */
+
+.app-search-wrap {
+    position: relative;
+
+    flex-shrink: 0;
+
+    margin-bottom: 9px;
+}
+
+.app-search {
+    width: 100%;
+    height: 46px;
+
+    padding:
+        0 43px;
+
+    border-radius: 16px;
+
+    border:
+        1px solid rgba(255,255,255,.095);
+
+    outline: none;
+
+    background:
+        rgba(255,255,255,.052);
+
+    color: #fff;
+
+    font-size: 13px;
+
+    backdrop-filter:
+        blur(22px);
+
+    -webkit-backdrop-filter:
+        blur(22px);
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.045),
+        0 8px 22px rgba(0,0,0,.10);
+
+    transition:
+        border .2s ease,
+        background .2s ease,
+        box-shadow .2s ease;
+}
+
+.app-search::placeholder {
+    color: #687386;
+}
+
+.app-search:focus {
+    border-color:
+        rgba(168,85,247,.40);
+
+    background:
+        rgba(255,255,255,.07);
+
+    box-shadow:
+        0 0 0 3px rgba(168,85,247,.06),
+        0 0 25px rgba(168,85,247,.10);
+}
+
+.search-icon {
+    position: absolute;
+
+    left: 14px;
+    top: 50%;
+
+    transform:
+        translateY(-50%);
+
+    color: #aa8df2;
+
+    font-size: 17px;
+
+    pointer-events: none;
+}
+
+.search-clear {
+    position: absolute;
+
+    right: 8px;
+    top: 50%;
+
+    transform:
+        translateY(-50%);
+
+    width: 29px;
+    height: 29px;
+
+    display: none;
+
+    align-items: center;
+    justify-content: center;
+
+    border: 0;
+
+    border-radius: 50%;
+
+    background:
+        rgba(255,255,255,.07);
+
+    color: #a7b0bf;
+
+    cursor: pointer;
+}
+
+.search-clear.visible {
+    display: flex;
+}
+
+/* --------------------------------------------------
+   APP LIST
+-------------------------------------------------- */
+
+.sheet-list {
+    min-height: 0;
+
+    flex: 1;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    display: flex;
+
+    flex-direction: column;
+
+    padding-right: 2px;
+
+    -webkit-overflow-scrolling: touch;
+
+    scrollbar-width: thin;
+
+    scrollbar-color:
+        rgba(168,85,247,.38)
+        transparent;
+
+    overscroll-behavior: contain;
+
+    touch-action: pan-y;
+}
+
+.sheet-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.sheet-list::-webkit-scrollbar-thumb {
+    background:
+        rgba(168,85,247,.38);
+
+    border-radius: 10px;
+}
+
+.sheet-item {
+    min-height: 54px;
+
+    padding:
+        10px 12px;
+
+    border-radius: 16px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 10px;
+
+    cursor: pointer;
+
+    flex-shrink: 0;
+
+    transition:
+        background .18s ease,
+        transform .18s var(--spring);
+}
+
+.sheet-item:hover {
+    background:
+        rgba(255,255,255,.045);
+}
+
+.sheet-item:active {
+    transform: scale(.985);
+
+    background:
+        rgba(168,85,247,.12);
+}
+
+.sheet-item.selected {
+    background:
+        linear-gradient(
+            90deg,
+            rgba(168,85,247,.16),
+            rgba(168,85,247,.075)
+        );
+
+    box-shadow:
+        inset 0 0 0 1px rgba(168,85,247,.12);
+}
+
+.sheet-info-box {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 3px;
+
+    min-width: 0;
+}
+
+.sheet-item span.app-name {
+    color: #c9eaff;
+
+    font-size: 13px;
+
+    font-weight: 550 !important;
+
+    transition:
+        color .15s ease;
+}
+
+.sheet-item.selected span.app-name {
+    color: #e0c8ff;
+}
+
+.divider-hr {
+    width: calc(100% - 20px);
+
+    border: 0;
+
+    border-top:
+        1px solid rgba(255,255,255,.045);
+
+    margin:
+        1px 10px;
+
+    flex-shrink: 0;
+}
+
+.search-empty {
+    display: none;
+
+    text-align: center;
+
+    color: #6f7b8e;
+
+    font-size: 12px;
+
+    padding: 25px 10px;
+}
+
+/* --------------------------------------------------
+   KEYBOARD
+-------------------------------------------------- */
+
+body.keyboard-open .sheet-overlay {
+    align-items: flex-start;
+
+    padding-top: 15px;
+}
+
+body.keyboard-open .sheet-modal {
+    transform: none !important;
+
+    height:
+        calc(100dvh - 30px);
+
+    max-height:
+        calc(100dvh - 30px);
+}
+
+/* --------------------------------------------------
+   SMALL SCREENS
+-------------------------------------------------- */
+
+@media (max-height: 680px) {
     .container {
-        width: 100%;
-        max-width: 420px;
-        padding: 0 18px;
-        z-index: 1;
-        display: none;
-        flex-direction: column;
-        justify-content: center;
-        margin: auto 0;
-        animation: screenIn .3s ease;
-    }
-
-    .container.active-screen {
-        display: flex;
-    }
-
-    @keyframes screenIn {
-        from {
-            opacity: 0;
-            transform: translateY(8px) scale(.99);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
+        transform: scale(.94);
     }
 
     .header-section {
-        margin-bottom: 18px;
+        margin-bottom: 11px;
+    }
+
+    .warning-box {
+        margin-bottom: 10px;
+        padding: 12px 13px;
+    }
+
+    .card {
+        padding: 16px;
+        gap: 10px;
+    }
+
+    .auth-box {
+        padding: 23px 18px 18px;
+        gap: 12px;
+    }
+
+    .sheet-modal {
+        height: min(84vh, 560px);
+    }
+}
+
+@media (max-width: 360px) {
+    .container {
+        padding-left: 14px;
+        padding-right: 14px;
     }
 
     h1 {
         font-size: 23px;
-        line-height: 1.15;
-        margin: 0 0 8px;
-        text-align: center;
-        letter-spacing: -.4px;
-        background: linear-gradient(
-            135deg,
-            #ffffff 5%,
-            #d8b4fe 45%,
-            #818cf8 100%
-        );
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        text-shadow: 0 0 30px rgba(168,85,247,.18);
     }
 
-    .subtitle {
-        font-size: 12px;
-        text-align: center;
-        margin: 0;
-        color: #94a3b8;
-        letter-spacing: .15px;
-        line-height: 1.45;
+    .card {
+        padding: 17px;
     }
 
     .warning-box {
-        position: relative;
-        overflow: hidden;
-        margin-bottom: 30px;
-        padding: 18px 18px 17px;
-        border: 1px solid rgba(255, 92, 85, .58);
-        border-radius: 20px;
-        background: linear-gradient(145deg, rgba(255,255,255,.075), rgba(255,92,85,.055) 48%, rgba(18,30,52,.82));
-        box-shadow: 0 14px 36px rgba(0,0,0,.28), 0 0 28px rgba(255,92,85,.10), inset 0 1px 0 rgba(255,255,255,.10);
-        color: #e8edf7;
-        text-align: left;
+        font-size: 11.5px;
     }
+}
 
-    .warning-box::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        border: 1px solid rgba(255,255,255,.055);
-        border-radius: inherit;
-        pointer-events: none;
+@media (min-width: 700px) {
+    .container {
+        max-width: 430px;
     }
+}
 
-    .warning-box .warning-title {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 12px;
-        color: #fff;
-        font-size: 14px;
-        letter-spacing: .35px;
-    }
-
-    .warning-box .warning-icon {
-        display: grid;
-        place-items: center;
-        width: 32px;
-        height: 32px;
-        flex: 0 0 32px;
-        border: 1px solid rgba(255,140,135,.48);
-        border-radius: 10px;
-        background: rgba(255,92,85,.13);
-        box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
-        font-size: 16px;
-    }
-
-    .warning-box p {
-        margin: 0;
-        color: #cbd5e1;
-        font-size: 13px;
-        font-weight: 600;
-        line-height: 1.65;
-    }
-
-    .warning-box p + p {
-        margin-top: 8px;
-    }
-
-    .warning-box .red-text {
-        color: #ff9b96;
-        font-weight: 700;
-    }
-
-    .warning-box::before { 
-        content: ""; 
-        position: absolute; 
-        width: 110px; 
-        height: 110px; 
-        top: -70px; 
-        left: -50px; 
-        background: rgba(170, 55, 65, .16); 
-        filter: blur(35px); 
-        border-radius: 50%; 
-        pointer-events: none;
-    } 
-
-    .warning-box::after {
-        content: "";
-        position: absolute;
-        width: 90px;
-        height: 90px;
-        right: -45px;
-        bottom: -55px;
-        background: rgba(170, 55, 65, .11);
-        filter: blur(35px);
-        border-radius: 50%;
-        pointer-events: none;
-    }
-
-    .text-warning { 
-        display: block;
-        color: #e6a1a1; 
-        font-weight: 800;
-        font-size: 14px;
-        margin-bottom: 8px;
-        letter-spacing: .3px;
-    }
-
-    .text-highlight { 
-        color: #e29a9a; 
-        font-weight: 700;
-    }
-
-    .red-text {
-        color: #e29a9a;
-        font-weight: 700;
-    }
-
-    .warning-box p {
-        margin: 7px 0;
-        color: #dcb6b6;
-    }
-
-    .warning-box .final-step {
-        margin-top: 12px;
-        padding-top: 9px;
-        border-top: 1px solid rgba(190,65,65,.25);
-        color: #dcb6b6;
-        font-weight: 600;
-    }
-
-    .warning-box .apple-icon {
-        color: #f0eaea;
-        font-size: 14px;
-        font-weight: 700;
-        margin-right: 3px;
-    }
-
-    .card { 
-        position: relative; 
-        overflow: hidden; 
-        background: 
-            linear-gradient( 
-                145deg, 
-                rgba(255,255,255,.095), 
-                rgba(255,255,255,.035) 
-            ); 
-        backdrop-filter: blur(32px) saturate(150%); 
-        -webkit-backdrop-filter: blur(32px) saturate(150%); 
-        border-radius: 26px; 
-        padding: 19px; 
-        border: 1px solid rgba(255,255,255,.13); 
-        display: flex; 
-        flex-direction: column; 
-        gap: 13px; 
-        box-shadow: 
-            0 25px 70px rgba(0,0,0,.42), 
-            inset 0 1px 0 rgba(255,255,255,.12);
-    }
-
-    label {
-        font-size: 13px;
-        color: #e2e8f0;
-        text-align: left;
-    }
-
-    .status-badge {
-        width: fit-content;
-        max-width: 100%;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 7px 11px;
-        border-radius: 999px;
-        font-size: 11px;
-        background: rgba(52,211,153,.075);
-        backdrop-filter: blur(15px);
-        -webkit-backdrop-filter: blur(15px);
-        border: 1px solid rgba(52,211,153,.18);
-        color: #a7f3d0;
-        margin-bottom: 1px;
-    }
-
-    .status-dot {
-        width: 7px;
-        height: 7px;
-        flex: 0 0 7px;
-        border-radius: 50%;
-        background-color: #34d399;
-        box-shadow: 0 0 12px rgba(52,211,153,.9);
-        animation: statusPulse 2s infinite;
-    }
-
-    @keyframes statusPulse {
-        0%, 100% {
-            opacity: 1;
-            box-shadow: 0 0 10px rgba(52,211,153,.8);
-        }
-
-        50% {
-            opacity: .65;
-            box-shadow: 0 0 18px rgba(52,211,153,1);
-        }
-    }
-
-    .custom-select-btn {
-        position: relative;
-        background: rgba(255,255,255,.055);
-        backdrop-filter: blur(22px);
-        -webkit-backdrop-filter: blur(22px);
-        color: #38bdf8;
-        border: 1px solid rgba(255,255,255,.12);
-        padding: 15px 15px;
-        border-radius: 16px;
-        font-size: 14px;
-        width: 100%;
-        min-height: 52px;
-        outline: none;
-        box-shadow:
-            inset 0 1px 0 rgba(255,255,255,.07),
-            0 8px 25px rgba(0,0,0,.12);
-        text-align: left;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        cursor: pointer;
-        transition: .2s ease;
-    }
-
-    .custom-select-btn:hover {
-        border-color: rgba(168,85,247,.45);
-        background: rgba(255,255,255,.075);
-    }
-
-    .custom-select-btn:active {
-        transform: scale(.985);
-    }
-
-    .custom-select-btn::after {
-        content: "⌄";
-        font-size: 18px;
-        line-height: 1;
-        color: #a78bfa;
-        margin-left: 10px;
-        transform: translateY(-2px);
-    }
-
-    .btn {
-        position: relative;
-        overflow: hidden;
-        background: linear-gradient(
-            135deg,
-            rgba(168,85,247,.95),
-            rgba(99,102,241,.95)
-        );
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        color: #fff;
-        border: 1px solid rgba(255,255,255,.2);
-        font-size: 15px;
-        padding: 14px;
-        min-height: 50px;
-        border-radius: 16px;
-        text-align: center;
-        box-shadow:
-            0 12px 30px rgba(124,58,237,.3),
-            inset 0 1px 0 rgba(255,255,255,.25);
-        display: block;
-        width: 100%;
-        letter-spacing: .2px;
-        cursor: pointer;
-        text-decoration: none;
-        transition:
-            transform .18s ease,
-            filter .18s ease,
-            box-shadow .18s ease;
-    }
-
-    .btn::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(
-            110deg,
-            transparent 20%,
-            rgba(255,255,255,.15) 50%,
-            transparent 80%
-        );
-        transform: translateX(-120%);
-        transition: transform .55s ease;
-    }
-
-    .btn:hover::before {
-        transform: translateX(120%);
-    }
-
-    .btn:hover {
-        filter: brightness(1.08);
-        box-shadow:
-            0 15px 35px rgba(124,58,237,.4),
-            inset 0 1px 0 rgba(255,255,255,.28);
-    }
-
-    .btn:active {
-        transform: scale(.975);
-        filter: brightness(.95);
-    }
-
-    .btn-secondary {
-        background: rgba(255,255,255,.055);
-        border: 1px solid rgba(255,255,255,.11);
-        color: #cbd5e1;
-        box-shadow: none;
-        margin-top: 3px;
-    }
-
-    .btn-secondary:hover {
-        background: rgba(255,255,255,.085);
-        box-shadow: none;
-    }
-
-    .btn-telegram {
-        background: rgba(56,189,248,.055);
-        border: 1px solid rgba(56,189,248,.18);
-        color: #67d7ff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 9px;
-        text-decoration: none;
-        box-shadow: 0 8px 25px rgba(56,189,248,.08);
-        margin-top: 1px;
-    }
-
-    .btn-telegram:hover {
-        background: rgba(56,189,248,.09);
-        box-shadow: 0 10px 30px rgba(56,189,248,.14);
-    }
-
-    .telegram-icon {
-        width: 19px;
-        height: 19px;
-        object-fit: contain;
-    }
-
-    
-
-    
-
-    
-
-    
-
-    body
-
-    .toast {
-        display: none;
-        opacity: 0;
-        background: rgba(16,185,129,.12);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(52,211,153,.25);
-        color: #6ee7b7;
-        padding: 11px 13px;
-        border-radius: 13px;
-        font-size: 11px;
-        text-align: center;
-        line-height: 1.4;
-        box-shadow: 0 8px 25px rgba(16,185,129,.12);
-        transition: opacity .25s ease;
-    }
-
-    .toast.show {
-        display: block;
-        opacity: 1;
-    }
-
-    .custom-toast {
-        position: fixed;
-        top: max(18px, env(safe-area-inset-top));
-        left: 50%;
-        transform: translateX(-50%) translateY(-20px);
-        width: calc(100% - 32px);
-        max-width: 370px;
-        background: rgba(25,22,36,.78);
-        backdrop-filter: blur(28px) saturate(140%);
-        -webkit-backdrop-filter: blur(28px) saturate(140%);
-        border: 1px solid rgba(239,68,68,.3);
-        color: #fca5a5;
-        padding: 13px 17px;
-        border-radius: 15px;
-        font-size: 12px;
-        text-align: center;
-        box-shadow: 0 12px 35px rgba(0,0,0,.3);
-        z-index: 2000;
-        opacity: 0;
-        visibility: hidden;
-        transition: all .3s cubic-bezier(.1,.9,.2,1);
-    }
-
-    .custom-toast.show {
-        opacity: 1;
-        visibility: visible;
-        transform: translateX(-50%) translateY(0);
-    }
-
-    .custom-toast-success {
-        border-color: rgba(52,211,153,.3);
-        color: #6ee7b7;
-        box-shadow: 0 12px 35px rgba(16,185,129,.12);
-    }
-
-    .auth-box {
-        max-height: calc(100dvh - 30px);
-        background:
-            linear-gradient(
-                145deg,
-                rgba(255,255,255,.085),
-                rgba(255,255,255,.035)
-            );
-        backdrop-filter: blur(35px) saturate(145%);
-        -webkit-backdrop-filter: blur(35px) saturate(145%);
-        border-radius: 26px;
-        padding: 28px 20px 22px;
-        text-align: center;
-        box-shadow:
-            0 25px 65px rgba(0,0,0,.45),
-            inset 0 1px 0 rgba(255,255,255,.11);
-        border: 1px solid rgba(255,255,255,.12);
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-    }
-
-    .auth-title {
-        font-size: 21px;
-        letter-spacing: -.25px;
-        background: linear-gradient(
-            135deg,
-            #ffffff,
-            #c084fc 55%,
-            #818cf8
-        );
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-
-    .auth-input {
-        background: rgba(255,255,255,.055);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        color: #fff;
-        border: 1px solid rgba(255,255,255,.12);
-        padding: 14px;
-        border-radius: 15px;
-        font-size: 14px;
-        text-align: center;
-        outline: none;
-        box-shadow:
-            inset 0 2px 7px rgba(0,0,0,.18),
-            0 1px 0 rgba(255,255,255,.04);
-        width: 100%;
-        transition: .2s ease;
-    }
-
-    .auth-input::placeholder {
-        color: #64748b;
-    }
-
-    .auth-input:focus {
-        border-color: rgba(192,132,252,.55);
-        background: rgba(255,255,255,.07);
-        box-shadow:
-            0 0 22px rgba(168,85,247,.16),
-            inset 0 2px 7px rgba(0,0,0,.18);
-    }
-
-    .auth-error {
-        color: #f87171;
-        font-size: 12px;
-        display: none;
-        margin-top: -5px;
-    }
-
+@media (max-height: 500px) {
     .sheet-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(3,5,9,.65);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        z-index: 999;
-        opacity: 0;
-        visibility: hidden;
-        transition: opacity .25s ease, visibility .25s ease;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .sheet-overlay.active {
-        opacity: 1;
-        visibility: visible;
-    }
-
-    .sheet-modal {
-        position: relative;
-        width: calc(100% - 30px);
-        max-width: 410px;
-        background:
-            linear-gradient(
-                145deg,
-                rgba(27,22,43,.82),
-                rgba(12,15,27,.78)
-            );
-        backdrop-filter: blur(42px) saturate(150%);
-        -webkit-backdrop-filter: blur(42px) saturate(150%);
-        border-radius: 27px;
-        padding: 15px 14px 18px;
-        z-index: 1000;
-        height: min(78vh, 620px);
-        max-height: calc(100dvh - 30px);
-        display: flex;
-        flex-direction: column;
-        box-shadow:
-            0 30px 80px rgba(0,0,0,.62),
-            inset 0 1px 0 rgba(255,255,255,.12);
-        border: 1px solid rgba(192,132,252,.24);
-        transform: scale(.94) translateY(8px);
-        opacity: .7;
-        transition:
-            transform .25s cubic-bezier(.1,.9,.2,1),
-            opacity .2s ease;
-    }
-
-    .sheet-overlay.active .sheet-modal {
-        transform: scale(1) translateY(0);
-        opacity: 1;
-    }
-
-    .sheet-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 2px 2px 12px;
-        border-bottom: 1px solid rgba(255,255,255,.07);
-        margin-bottom: 10px;
-        flex-shrink: 0;
-    }
-
-    .sheet-title {
-        font-size: 15px;
-        background: linear-gradient(135deg,#fff,#c084fc);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-
-    .sheet-close {
-        background: rgba(255,255,255,.065);
-        border: 1px solid rgba(255,255,255,.11);
-        color: #c4b5fd;
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 13px;
-        cursor: pointer;
-        transition: .2s ease;
-        flex-shrink: 0;
-    }
-
-    .sheet-close:hover {
-        background: rgba(168,85,247,.16);
-    }
-
-    .app-search-wrap {
-        position: relative;
-        flex-shrink: 0;
-        margin-bottom: 8px;
-    }
-
-    .app-search {
-        width: 100%;
-        height: 45px;
-        padding: 0 42px 0 42px;
-        border-radius: 14px;
-        border: 1px solid rgba(255,255,255,.11);
-        outline: none;
-        background: rgba(255,255,255,.055);
-        color: #fff;
-        font-size: 13px;
-        box-shadow:
-            inset 0 1px 0 rgba(255,255,255,.05),
-            0 7px 20px rgba(0,0,0,.10);
-        transition: .2s ease;
-    }
-
-    .app-search::placeholder {
-        color: #64748b;
-    }
-
-    .app-search:focus {
-        border-color: rgba(168,85,247,.42);
-        background: rgba(255,255,255,.07);
-        box-shadow:
-            0 0 20px rgba(168,85,247,.10),
-            inset 0 1px 0 rgba(255,255,255,.06);
-    }
-
-    .search-icon {
-        position: absolute;
-        left: 14px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #a78bfa;
-        font-size: 16px;
-        pointer-events: none;
-    }
-
-    .search-clear {
-        position: absolute;
-        right: 9px;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 28px;
-        height: 28px;
-        border: 0;
-        border-radius: 50%;
-        background: rgba(255,255,255,.06);
-        color: #94a3b8;
-        cursor: pointer;
-        display: none;
-        align-items: center;
-        justify-content: center;
-        font-size: 12px;
-    }
-
-    .search-clear.visible {
-        display: flex;
-    }
-
-    .search-empty {
-        display: none;
-        text-align: center;
-        color: #64748b;
-        font-size: 12px;
-        padding: 24px 10px;
-    }
-
-    .sheet-list {
-        overflow-y: auto;
-        overflow-x: hidden;
-        display: flex;
-        flex-direction: column;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: thin;
-        scrollbar-color: rgba(168,85,247,.4) transparent;
-        padding-right: 2px;
-        min-height: 0;
-        flex: 1;
-        overscroll-behavior: contain;
-        touch-action: pan-y;
-    }
-
-    .sheet-list::-webkit-scrollbar {
-        width: 4px;
-    }
-
-    .sheet-list::-webkit-scrollbar-thumb {
-        background: rgba(168,85,247,.4);
-        border-radius: 10px;
-    }
-
-    .sheet-item {
-        min-height: 52px;
-        padding: 10px 11px;
-        border-radius: 14px;
-        cursor: pointer;
-        transition: background .16s ease, transform .16s ease;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 10px;
-        flex-shrink: 0;
-    }
-
-    .sheet-item:hover {
-        background: rgba(255,255,255,.045);
-    }
-
-    .sheet-item:active {
-        transform: scale(.99);
-        background: rgba(168,85,247,.12);
-    }
-
-    .sheet-info-box {
-        display: flex;
-        flex-direction: column;
-        gap: 3px;
-        min-width: 0;
-    }
-
-    .sheet-item span.app-name {
-        color: #bae6fd;
-        font-size: 13px;
-        transition: color .15s ease;
-    }
-
-    .download-counter {
-        font-size: 10px;
-        color: #64748b;
-        display: none;
-    }
-
-    body.is-admin .download-counter {
-        display: block;
-    }
-
-    .sheet-item.selected {
-        background: rgba(168,85,247,.14);
-    }
-
-    .sheet-item.selected span.app-name {
-        color: #d8b4fe;
-    }
-
-    .divider-hr {
-        border: none;
-        border-top: 1px solid rgba(255,255,255,.055);
-        margin: 1px 10px;
-        flex-shrink: 0;
-    }
-
-    
-
-    body
-
-    
-
-    
-
-    
-
-    .btn-show {
-        background: rgba(52,211,153,.08);
-        border-color: rgba(52,211,153,.22);
-        color: #34d399;
-    }
-
-    
-
-    
-
-    
-
-    body
-
-    select {
-        appearance: none;
-        -webkit-appearance: none;
-        background-image:
-            linear-gradient(45deg, transparent 50%, #a78bfa 50%),
-            linear-gradient(135deg, #a78bfa 50%, transparent 50%);
-        background-position:
-            calc(100% - 17px) 50%,
-            calc(100% - 12px) 50%;
-        background-size: 5px 5px, 5px 5px;
-        background-repeat: no-repeat;
-        padding-right: 32px !important;
-    }
-
-    option {
-        background: #171425;
-        color: #fff;
-    }
-
-    @media (max-height: 680px) {
-        .container {
-            transform: scale(.94);
-        }
-
-        .header-section {
-            margin-bottom: 11px;
-        }
-
-        .warning-box {
-            margin-bottom: 10px;
-            padding: 10px 12px;
-        }
-
-        .card {
-            padding: 15px;
-            gap: 10px;
-        }
-
-        .auth-box {
-            padding: 22px 18px;
-            gap: 12px;
-        }
-
-        .sheet-modal {
-            height: min(84vh, 560px);
-        }
-    }
-
-    @media (min-width: 700px) {
-        .container {
-            max-width: 430px;
-        }
-
-        
-    }
-
-    @media (max-height: 500px) {
-        .sheet-overlay {
-            align-items: flex-start;
-            padding-top: 15px;
-        }
-
-        .sheet-modal {
-            height: calc(100dvh - 30px);
-            max-height: calc(100dvh - 30px);
-        }
-    }
-
-    body.keyboard-open .sheet-overlay {
         align-items: flex-start;
         padding-top: 15px;
     }
 
-    body.keyboard-open .sheet-modal {
-        transform: none !important;
-        height: calc(100dvh - 30px);
-        max-height: calc(100dvh - 30px);
+    .sheet-modal {
+        height:
+            calc(100dvh - 30px);
+
+        max-height:
+            calc(100dvh - 30px);
     }
+}
 </style>
 </head>
 
@@ -1012,469 +1672,632 @@
 <div class="bg-glow glow-1"></div>
 <div class="bg-glow glow-2"></div>
 
-<div id="customToast" class="custom-toast">
-    🚪 Вы успешно вышли из режима администратора
-</div>
-
-<div id="customToastSuccess" class="custom-toast custom-toast-success">
-    ✅ Изменения успешно сохранены!
-</div>
-
 <script>
-    const DEFAULT_CONFIG = {
-        sitePassword: "Zzl3S0pPTlNiWUo5alBUcERu",
-        appPasswords: {
-            "vk": "a1FpdU13alQ5WmxnVGpyc3VI",
-            "max": "TU42NFFLUjYydEgxYldEUm9t",
-            "vk-video": "a3ptUjl1R2pkdXdVVWRabkdt",
-            "sber": "TFo5ZndPbktRVTZZYVc4QzQ5",
-            "sovkombank-vsekarty": "NUhkbnoxWlhGWjJwcU9XOGNl",
-            "avito": "UG5FbThRMUtzdzBlT0F1RXJo",
-            "tbank": "NVlsS0F6YVhNR0VKNlNWY21l",
-            "drive-transit": "REdKWEc1NzN1R0luYkkxQ1pz",
-            "lenta": "WkZ0R0UzNWtDZWFCbUE5RDl2",
-            "yandex-pay": "WXQ4b2lKVklkVlJ3SkNWbmlK",
-            "2gis": "YVdISFJKSlE2VG9OZjBkVkZ2",
-            "psb": "emJleUtkV3VUZEY2eHZMZHdC",
-        }
-    };
+const DEFAULT_CONFIG = {
+    sitePassword: "987654",
 
-    let remoteConfig = loadLocalConfig();
-
-    function loadLocalConfig() {
-        try {
-            const saved = localStorage.getItem("local_site_config_v2");
-
-            if (!saved) {
-                return JSON.parse(JSON.stringify(DEFAULT_CONFIG));
-            }
-
-            const parsed = JSON.parse(saved);
-
-            return {
-                sitePassword: parsed.sitePassword || DEFAULT_CONFIG.sitePassword,
-                hiddenApps: Array.isArray(parsed.hiddenApps)
-                    ? parsed.hiddenApps
-                    : [],
-                appPasswords: {
-                    ...JSON.parse(JSON.stringify(DEFAULT_CONFIG.appPasswords)),
-                    ...(parsed.appPasswords || {})
-                }
-            };
-        } catch (e) {
-            console.error("Ошибка загрузки локальной конфигурации:", e);
-            return JSON.parse(JSON.stringify(DEFAULT_CONFIG));
-        }
+    appPasswords: {
+        "vk": "111101",
+        "max": "222202",
+        "vk-video": "333303",
+        "sber": "444404",
+        "sovkombank-vsekarty": "555505",
+        "avito": "666606",
+        "tbank": "777707",
+        "drive-transit": "888808",
+        "lenta": "999909",
+        "yandex-pay": "123456",
+        "2gis": "654321",
+        "psb": "112233"
     }
+};
 
-    function saveLocalConfig() {
-        try {
-            localStorage.setItem(
-                "local_site_config_v2",
-                JSON.stringify(remoteConfig)
+let remoteConfig = loadLocalConfig();
+
+function loadLocalConfig() {
+    try {
+        const saved =
+            localStorage.getItem("local_site_config_v3");
+
+        if (!saved) {
+            return JSON.parse(
+                JSON.stringify(DEFAULT_CONFIG)
             );
-            return true;
-        } catch (e) {
-            console.error("Ошибка сохранения локальной конфигурации:", e);
-            return false;
         }
+
+        const parsed = JSON.parse(saved);
+
+        return {
+            sitePassword:
+                parsed.sitePassword ||
+                DEFAULT_CONFIG.sitePassword,
+
+            appPasswords: {
+                ...JSON.parse(
+                    JSON.stringify(
+                        DEFAULT_CONFIG.appPasswords
+                    )
+                ),
+
+                ...(parsed.appPasswords || {})
+            }
+        };
+
+    } catch (e) {
+
+        console.error(
+            "Ошибка загрузки локальной конфигурации:",
+            e
+        );
+
+        return JSON.parse(
+            JSON.stringify(DEFAULT_CONFIG)
+        );
     }
+}
 
-    function getAppPasswords() {
-        return remoteConfig.appPasswords;
-    }
+function getAppPasswords() {
+    return remoteConfig.appPasswords;
+}
 
-    function getSitePassword() {
-        return remoteConfig.sitePassword;
-    }
+function getSitePassword() {
+    return remoteConfig.sitePassword;
+}
 
-    
+let selectedAppUrl = "";
+let selectedAppKey = "";
+let toastTimer;
 
-    let selectedAppUrl = "";
-    let selectedAppKey = "";
-    let toastTimer;
-    let customToastTimer;
-    let successToastTimer;
+function switchScreen(screenId) {
 
-    function switchScreen(screenId) {
-        document.querySelectorAll('.container').forEach(el => {
-            el.classList.remove('active-screen');
+    document
+        .querySelectorAll(".container")
+        .forEach(el => {
+            el.classList.remove(
+                "active-screen"
+            );
         });
 
-        const target = document.getElementById(screenId);
+    const target =
+        document.getElementById(screenId);
 
-        if (target) {
-            target.classList.add('active-screen');
-        }
+    if (target) {
+        target.classList.add(
+            "active-screen"
+        );
     }
+}
 
-    document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
 
-        if (sessionStorage.getItem("site_access") === "true") {
+        if (
+            sessionStorage.getItem(
+                "site_access"
+            ) === "true"
+        ) {
             switchScreen("mainApp");
         } else {
             switchScreen("authApp");
         }
 
-        document.getElementById("passInput").addEventListener("keydown", (e) => {
-            if (e.key === "Enter") submitPassword();
-        });
+        document
+            .getElementById("passInput")
+            .addEventListener(
+                "keydown",
+                e => {
+                    if (e.key === "Enter") {
+                        submitPassword();
+                    }
+                }
+            );
 
-        document.getElementById("appPassInput").addEventListener("keydown", (e) => {
-            if (e.key === "Enter") submitAppPassword();
-        });
+        document
+            .getElementById("appPassInput")
+            .addEventListener(
+                "keydown",
+                e => {
+                    if (e.key === "Enter") {
+                        submitAppPassword();
+                    }
+                }
+            );
 
-        document.getElementById("changePassInput").addEventListener("keydown", (e) => {
-            if (e.key === "Enter") saveNewPassword();
-        });
-
-        const searchInput = document.getElementById("appSearchInput");
+        const searchInput =
+            document.getElementById(
+                "appSearchInput"
+            );
 
         if (searchInput) {
-            searchInput.addEventListener("input", filterApps);
 
-            searchInput.addEventListener("keydown", function(e) {
-                if (e.key === "Escape") {
-                    clearAppSearch();
-                    searchInput.blur();
+            searchInput.addEventListener(
+                "input",
+                filterApps
+            );
+
+            searchInput.addEventListener(
+                "keydown",
+                function(e) {
+
+                    if (e.key === "Escape") {
+                        clearAppSearch();
+                        searchInput.blur();
+                    }
+
                 }
-            });
+            );
         }
 
         if (window.visualViewport) {
-            const updateKeyboardState = () => {
-                const viewportHeight = window.visualViewport.height;
-                const screenHeight = window.screen.height;
 
-                const keyboardLikelyOpen =
-                    screenHeight - viewportHeight > 120;
+            const updateKeyboardState =
+                () => {
 
-                document.body.classList.toggle(
-                    "keyboard-open",
-                    keyboardLikelyOpen &&
-                    document.getElementById("sheetOverlay").classList.contains("active")
-                );
-            };
+                    const viewportHeight =
+                        window.visualViewport.height;
 
-            window.visualViewport.addEventListener("resize", updateKeyboardState);
-            window.visualViewport.addEventListener("scroll", updateKeyboardState);
-        }
+                    const screenHeight =
+                        window.screen.height;
 
-        document.querySelectorAll('input').forEach(input => {
-            input.addEventListener('focus', () => {
-                setTimeout(() => {
-                    const box = input.closest('.auth-box') || input.closest('.card') || input;
-                    box.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }, 300);
-            });
-        });
-    });
+                    const keyboardLikelyOpen =
+                        screenHeight -
+                        viewportHeight > 120;
 
-    
+                    document.body.classList.toggle(
+                        "keyboard-open",
+                        keyboardLikelyOpen &&
+                        document
+                            .getElementById(
+                                "sheetOverlay"
+                            )
+                            .classList.contains(
+                                "active"
+                            )
+                    );
+                };
 
-    function cancelAdminAuth() {
-        switchScreen('mainApp');
-    }
-
-    
-
-    
-
-    function showSuccessToast(text = "✅ Изменения успешно сохранены!") {
-        const toast = document.getElementById("customToastSuccess");
-
-        toast.textContent = text;
-
-        clearTimeout(successToastTimer);
-
-        toast.classList.add("show");
-
-        successToastTimer = setTimeout(() => {
-            toast.classList.remove("show");
-        }, 3500);
-    }
-
-    async 
-
-     else {
-
-                item.style.display = "flex";
-
-                if (hr && hr.classList.contains("divider-hr")) {
-                    hr.style.display = "block";
-                }
-
-                if (hideBtn) {
-                    hideBtn.textContent = "Скрыть";
-                    hideBtn.className = "admin-action-btn btn-hide";
-                }
-            }
-        });
-    }
-
-    
-
-    
-
-    function safeBtoa(str) {
-        try {
-            return btoa(
-                encodeURIComponent(str).replace(
-                    /%([0-9A-F]{2})/g,
-                    function(match, p1) {
-                        return String.fromCharCode('0x' + p1);
-                    }
-                )
+            window.visualViewport.addEventListener(
+                "resize",
+                updateKeyboardState
             );
-        } catch (e) {
-            return btoa(str);
+
+            window.visualViewport.addEventListener(
+                "scroll",
+                updateKeyboardState
+            );
         }
+
+        document
+            .querySelectorAll("input")
+            .forEach(input => {
+
+                input.addEventListener(
+                    "focus",
+                    () => {
+
+                        setTimeout(
+                            () => {
+
+                                const box =
+                                    input.closest(
+                                        ".auth-box"
+                                    ) ||
+                                    input.closest(
+                                        ".card"
+                                    ) ||
+                                    input;
+
+                                box.scrollIntoView({
+                                    behavior:
+                                        "smooth",
+                                    block:
+                                        "start"
+                                });
+
+                            },
+                            300
+                        );
+                    }
+                );
+            });
+    }
+);
+
+function submitPassword() {
+
+    const input =
+        document.getElementById(
+            "passInput"
+        );
+
+    const errorMsg =
+        document.getElementById(
+            "authError"
+        );
+
+    if (
+        input.value.trim() ===
+        getSitePassword()
+    ) {
+
+        sessionStorage.setItem(
+            "site_access",
+            "true"
+        );
+
+        switchScreen("mainApp");
+
+        return;
     }
 
-    function submitPassword() {
-        const input = document.getElementById("passInput");
-        const errorMsg = document.getElementById("authError");
+    errorMsg.style.display = "block";
 
-        if (safeBtoa(input.value.trim()) === getSitePassword()) {
+    input.value = "";
 
-            sessionStorage.setItem("site_access", "true");
+    input.focus();
+}
 
-            switchScreen('mainApp');
+function openSheet() {
 
-            return;
-        }
+    const searchInput =
+        document.getElementById(
+            "appSearchInput"
+        );
 
-        errorMsg.style.display = "block";
+    if (searchInput) {
 
-        input.value = "";
-        input.focus();
+        searchInput.value = "";
+
+        document
+            .getElementById(
+                "searchClear"
+            )
+            .classList.remove(
+                "visible"
+            );
     }
 
-    function openSheet() {
+    filterApps();
 
-        const searchInput = document.getElementById("appSearchInput");
+    document
+        .getElementById(
+            "sheetOverlay"
+        )
+        .classList.add("active");
 
-        if (searchInput) {
-            searchInput.value = "";
-            document.getElementById("searchClear").classList.remove("visible");
-        }
+    document.body.classList.remove(
+        "keyboard-open"
+    );
+}
 
-        filterApps();
+function closeSheet() {
 
-        document.getElementById('sheetOverlay').classList.add('active');
+    const searchInput =
+        document.getElementById(
+            "appSearchInput"
+        );
 
-        document.body.classList.remove("keyboard-open");
+    if (searchInput) {
+
+        searchInput.value = "";
+
+        searchInput.blur();
     }
 
-    function closeSheet() {
-        const searchInput = document.getElementById("appSearchInput");
+    document
+        .getElementById(
+            "sheetOverlay"
+        )
+        .classList.remove("active");
 
-        if (searchInput) {
-            searchInput.value = "";
-            searchInput.blur();
-        }
+    document.body.classList.remove(
+        "keyboard-open"
+    );
 
-        document.getElementById('sheetOverlay').classList.remove('active');
-        document.body.classList.remove("keyboard-open");
+    filterApps();
+}
 
-        filterApps();
+function filterApps() {
+
+    const input =
+        document.getElementById(
+            "appSearchInput"
+        );
+
+    if (!input) return;
+
+    const query =
+        input.value
+            .trim()
+            .toLowerCase();
+
+    const clearBtn =
+        document.getElementById(
+            "searchClear"
+        );
+
+    const emptyMessage =
+        document.getElementById(
+            "searchEmpty"
+        );
+
+    if (query) {
+        clearBtn.classList.add(
+            "visible"
+        );
+    } else {
+        clearBtn.classList.remove(
+            "visible"
+        );
     }
 
-    function filterApps() {
-        const input = document.getElementById("appSearchInput");
+    let visibleCount = 0;
 
-        if (!input) return;
+    document
+        .querySelectorAll(".sheet-item")
+        .forEach(item => {
 
-        const query = input.value.trim().toLowerCase();
-
-        const clearBtn = document.getElementById("searchClear");
-        const emptyMessage = document.getElementById("searchEmpty");
-
-        if (query) {
-            clearBtn.classList.add("visible");
-        } else {
-            clearBtn.classList.remove("visible");
-        }
-
-        let visibleCount = 0;
-
-        document.querySelectorAll(".sheet-item").forEach(item => {
-
-            const appNameElement = item.querySelector(".app-name");
+            const appNameElement =
+                item.querySelector(
+                    ".app-name"
+                );
 
             if (!appNameElement) return;
 
-            const name = appNameElement.textContent.toLowerCase();
-            const key = item.getAttribute("data-key");
-            const hidden = remoteConfig.hiddenApps.includes(key);
-            const isAdmin = document.body.classList.contains("is-admin");
+            const name =
+                appNameElement
+                    .textContent
+                    .toLowerCase();
 
-            const matches = name.includes(query);
+            const matches =
+                name.includes(query);
 
             if (!matches) {
-                item.style.display = "none";
 
-                const hr = item.nextElementSibling;
+                item.style.display =
+                    "none";
 
-                if (hr && hr.classList.contains("divider-hr")) {
-                    hr.style.display = "none";
+                const hr =
+                    item.nextElementSibling;
+
+                if (
+                    hr &&
+                    hr.classList.contains(
+                        "divider-hr"
+                    )
+                ) {
+                    hr.style.display =
+                        "none";
                 }
 
                 return;
             }
 
-            if (hidden && !isAdmin) {
-                item.style.display = "none";
+            item.style.display =
+                "flex";
 
-                const hr = item.nextElementSibling;
+            const hr =
+                item.nextElementSibling;
 
-                if (hr && hr.classList.contains("divider-hr")) {
-                    hr.style.display = "none";
-                }
-
-                return;
-            }
-
-            item.style.display = "flex";
-
-            const hr = item.nextElementSibling;
-
-            if (hr && hr.classList.contains("divider-hr")) {
-                hr.style.display = "block";
+            if (
+                hr &&
+                hr.classList.contains(
+                    "divider-hr"
+                )
+            ) {
+                hr.style.display =
+                    "block";
             }
 
             visibleCount++;
         });
 
-        emptyMessage.style.display =
-            visibleCount === 0 ? "block" : "none";
-    }
+    emptyMessage.style.display =
+        visibleCount === 0
+            ? "block"
+            : "none";
+}
 
-    function clearAppSearch() {
-        const input = document.getElementById("appSearchInput");
+function clearAppSearch() {
 
-        if (!input) return;
+    const input =
+        document.getElementById(
+            "appSearchInput"
+        );
 
-        input.value = "";
-        filterApps();
-        input.focus();
-    }
+    if (!input) return;
 
-    
+    input.value = "";
 
-    
+    filterApps();
 
-    
+    input.focus();
+}
 
-    
+function selectApp(
+    element,
+    url,
+    name,
+    appKey
+) {
 
-    
+    selectedAppUrl = url;
+    selectedAppKey = appKey;
 
-    function selectApp(element, url, name, appKey) {
-        selectedAppUrl = url;
-        selectedAppKey = appKey;
+    document
+        .getElementById(
+            "selectedAppText"
+        )
+        .textContent = name;
 
-        document.getElementById('selectedAppText').textContent = name;
-        document.getElementById('selectedAppText').style.color = "#ffffff";
+    document
+        .getElementById(
+            "selectedAppText"
+        )
+        .style.color = "#ffffff";
 
-        document.querySelectorAll('.sheet-item').forEach(item => {
-            item.classList.remove('selected');
+    document
+        .querySelectorAll(
+            ".sheet-item"
+        )
+        .forEach(item => {
+            item.classList.remove(
+                "selected"
+            );
         });
 
-        element.classList.add('selected');
+    element.classList.add(
+        "selected"
+    );
 
-        closeSheet();
+    closeSheet();
+}
+
+function startInstallation() {
+
+    if (!selectedAppUrl) {
+        return;
     }
 
-    function startInstallation() {
-        if (!selectedAppUrl) {
-            showSuccessToast(
-                '⚠️ Выберите приложение из списка!'
-            );
-            return;
-        }
+    if (
+        getAppPasswords()[
+            selectedAppKey
+        ]
+    ) {
 
-        if (getAppPasswords()[selectedAppKey]) {
+        document
+            .getElementById(
+                "appPassError"
+            )
+            .style.display = "none";
 
-            document.getElementById('appPassError').style.display = 'none';
-            document.getElementById('appPassInput').value = '';
+        document
+            .getElementById(
+                "appPassInput"
+            )
+            .value = "";
 
-            switchScreen('appAuthApp');
+        switchScreen(
+            "appAuthApp"
+        );
 
-            document.getElementById('appPassInput').focus();
+        document
+            .getElementById(
+                "appPassInput"
+            )
+            .focus();
 
-            return;
-        }
+        return;
+    }
+
+    executeDownload();
+}
+
+function submitAppPassword() {
+
+    const input =
+        document.getElementById(
+            "appPassInput"
+        );
+
+    const errorMsg =
+        document.getElementById(
+            "appPassError"
+        );
+
+    if (
+        input.value.trim() ===
+        getAppPasswords()[
+            selectedAppKey
+        ]
+    ) {
+
+        switchScreen(
+            "mainApp"
+        );
 
         executeDownload();
+
+        return;
     }
 
-    function submitAppPassword() {
-        const input = document.getElementById("appPassInput");
-        const errorMsg = document.getElementById("appPassError");
+    errorMsg.style.display =
+        "block";
 
-        if (
-            safeBtoa(input.value.trim()) ===
-            getAppPasswords()[selectedAppKey]
-        ) {
+    input.value = "";
 
-            switchScreen('mainApp');
+    input.focus();
+}
 
-            executeDownload();
+function cancelAppPassword() {
+    switchScreen("mainApp");
+}
 
-            return;
-        }
+function executeDownload() {
 
-        errorMsg.style.display = "block";
+    const toast =
+        document.getElementById(
+            "toast"
+        );
 
-        input.value = "";
-        input.focus();
-    }
+    clearTimeout(toastTimer);
 
-    function cancelAppPassword() {
-        switchScreen('mainApp');
-    }
+    toast.classList.add("show");
 
-    function executeDownload() {
-        incrementDownloadCount(selectedAppKey);
+    toastTimer = setTimeout(
+        () => {
+            toast.classList.remove(
+                "show"
+            );
+        },
+        5000
+    );
 
-        const toast = document.getElementById('toast');
-
-        clearTimeout(toastTimer);
-
-        toast.classList.add('show');
-
-        toastTimer = setTimeout(() => {
-            toast.classList.remove('show');
-        }, 5000);
-
-        window.location.href = selectedAppUrl;
-    }
+    window.location.href =
+        selectedAppUrl;
+}
 </script>
+
+<!-- ==================================================
+     AUTH SCREEN
+================================================== -->
 
 <div class="container" id="authApp">
 
     <div class="auth-box">
 
-        <div class="auth-title">👋 Добро пожаловать!</div>
+        <div class="auth-title">
+            👋 Добро пожаловать!
+        </div>
 
-        <div style="font-size: 13px; color: #cbd5e1; line-height: 1.4;">
-            Введите пароль для доступа к каталогу:
+        <div class="auth-description">
+            Введите пароль для доступа
+            к каталогу приложений
         </div>
 
         <input
-            type="password"
+            type="tel"
+            inputmode="numeric"
+            pattern="[0-9]*"
             id="passInput"
             class="auth-input"
-            placeholder="Пароль..."
+            placeholder="Введите пароль"
             autocomplete="off"
         >
 
-        <div id="authError" class="auth-error">
-            Неверный пароль!
+        <div
+            id="authError"
+            class="auth-error"
+        >
+            Неверный пароль
         </div>
 
-        <button type="button" class="btn" onclick="submitPassword()">
+        <button
+            type="button"
+            class="btn"
+            onclick="submitPassword()"
+        >
             Войти
         </button>
 
@@ -1484,38 +2307,52 @@
             rel="noopener noreferrer"
             class="btn btn-telegram"
         >
+
             <img
                 src="Telegram_logo.svg"
                 alt="Telegram"
                 class="telegram-icon"
             >
+
             Поддержка в Telegram
+
         </a>
 
     </div>
 
 </div>
 
+<!-- ==================================================
+     APP PASSWORD SCREEN
+================================================== -->
+
 <div class="container" id="appAuthApp">
 
     <div class="auth-box">
 
-        <div class="auth-title">🔒 Защита установки</div>
+        <div class="auth-title">
+            🔒 Защита установки
+        </div>
 
-        <div style="font-size: 13px; color: #cbd5e1;">
-            Введите пароль для этого приложения:
+        <div class="auth-description">
+            Введите пароль для этого приложения
         </div>
 
         <input
-            type="password"
+            type="tel"
+            inputmode="numeric"
+            pattern="[0-9]*"
             id="appPassInput"
             class="auth-input"
-            placeholder="Пароль..."
+            placeholder="Введите пароль"
             autocomplete="off"
         >
 
-        <div id="appPassError" class="auth-error">
-            Неверный пароль!
+        <div
+            id="appPassError"
+            class="auth-error"
+        >
+            Неверный пароль
         </div>
 
         <button
@@ -1538,39 +2375,70 @@
 
 </div>
 
-<div class="container" id="mainApp" style="padding-bottom: 72px;">
+<!-- ==================================================
+     MAIN SCREEN
+================================================== -->
+
+<div
+    class="container"
+    id="mainApp"
+    style="padding-bottom:30px;"
+>
 
     <div class="header-section">
 
         <h1>
-            Установка удалённых приложений
+            Установка удалённых<br>
+            приложений
         </h1>
 
         <div class="subtitle">
-            Установка недоступных приложений на iPhone —
-            <span style="color: #38bdf8;">
+
+            Установка недоступных приложений
+            на iPhone —
+            <span>
                 без компьютера и проводов
             </span>
+
         </div>
 
     </div>
-    
-<div class="warning-box">
-    <div class="warning-title">
-        <span class="warning-icon">!</span>
-        <span>ВАЖНО ПЕРЕД ЗАВЕРШЕНИЕМ</span>
+
+    <div class="warning-box">
+
+        <span class="text-warning">
+            ⚠️ ВАЖНАЯ ИНФОРМАЦИЯ
+        </span>
+
+        <p>
+            📲 После установки всех необходимых
+            приложений
+            <span class="red-text">
+                обязательно свяжитесь с администратором.
+            </span>
+        </p>
+
+        <p>
+            ⚙️ Мы выполним финальную настройку
+            и проверим работу приложений,
+            чтобы всё работало
+            <span class="red-text">
+                стабильно, корректно и без вылетов.
+            </span>
+        </p>
+
     </div>
-    <p>После установки нужных приложений <span class="red-text">обязательно свяжитесь с администратором.</span></p>
-    <p>Мы проверим установку и выполним финальную настройку, чтобы приложения работали <span class="red-text">стабильно и без вылетов.</span></p>
-</div>
 
     <div class="card">
 
         <label>
-            Выберите приложение:
+            Выберите приложение
         </label>
 
-        <div class="status-badge" id="statusBadge">
+        <div
+            class="status-badge"
+            id="statusBadge"
+        >
 
             <span class="status-dot"></span>
 
@@ -1585,12 +2453,14 @@
             class="custom-select-btn"
             onclick="openSheet()"
         >
+
             <span
                 id="selectedAppText"
-                style="color: #94a3b8;"
+                style="color:#94a3b8;"
             >
                 Нажмите для выбора приложения
             </span>
+
         </button>
 
         <button
@@ -1601,13 +2471,21 @@
             Установить
         </button>
 
-        <div id="toast" class="toast">
-            🚀 Загрузка началась! Проверьте главный экран устройства!
+        <div
+            id="toast"
+            class="toast"
+        >
+            🚀 Загрузка началась!
+            Проверьте главный экран устройства!
         </div>
 
     </div>
 
 </div>
+
+<!-- ==================================================
+     APP SELECTION SHEET
+================================================== -->
 
 <div
     class="sheet-overlay"
@@ -1638,13 +2516,15 @@
 
         <div class="app-search-wrap">
 
-            <span class="search-icon">⌕</span>
+            <span class="search-icon">
+                ⌕
+            </span>
 
             <input
                 type="search"
                 id="appSearchInput"
                 class="app-search"
-                placeholder="Поиск приложения..."
+                placeholder="Поиск приложения"
                 autocomplete="off"
                 autocorrect="off"
                 autocapitalize="none"
@@ -1663,7 +2543,10 @@
 
         </div>
 
-        <div id="searchEmpty" class="search-empty">
+        <div
+            id="searchEmpty"
+            class="search-empty"
+        >
             🔎 Ничего не найдено
         </div>
 
@@ -1675,25 +2558,9 @@
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk.plist', 'ВКонтакте', 'vk')"
             >
                 <div class="sheet-info-box">
-                    <span class="app-name">ВКонтакте</span>
-                    <span class="download-counter">Скачиваний: 0</span>
-                </div>
-
-                <div class="admin-action-btn-group">
-                    <button
-                        class="admin-action-btn btn-pass"
-                        onclick="openSpecificAppPasswordChange('vk', event)"
-                        title="Сменить пароль"
-                    >
-                        🔑
-                    </button>
-
-                    <button
-                        class="admin-action-btn btn-hide"
-                        onclick="toggleAppVisibility('vk', event)"
-                    >
-                        Скрыть
-                    </button>
+                    <span class="app-name">
+                        ВКонтакте
+                    </span>
                 </div>
             </div>
 
@@ -1705,25 +2572,9 @@
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/max.plist', 'MAX', 'max')"
             >
                 <div class="sheet-info-box">
-                    <span class="app-name">MAX</span>
-                    <span class="download-counter">Скачиваний: 0</span>
-                </div>
-
-                <div class="admin-action-btn-group">
-                    <button
-                        class="admin-action-btn btn-pass"
-                        onclick="openSpecificAppPasswordChange('max', event)"
-                        title="Сменить пароль"
-                    >
-                        🔑
-                    </button>
-
-                    <button
-                        class="admin-action-btn btn-hide"
-                        onclick="toggleAppVisibility('max', event)"
-                    >
-                        Скрыть
-                    </button>
+                    <span class="app-name">
+                        MAX
+                    </span>
                 </div>
             </div>
 
@@ -1735,25 +2586,9 @@
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk-video.plist', 'VK Видео', 'vk-video')"
             >
                 <div class="sheet-info-box">
-                    <span class="app-name">VK Видео</span>
-                    <span class="download-counter">Скачиваний: 0</span>
-                </div>
-
-                <div class="admin-action-btn-group">
-                    <button
-                        class="admin-action-btn btn-pass"
-                        onclick="openSpecificAppPasswordChange('vk-video', event)"
-                        title="Сменить пароль"
-                    >
-                        🔑
-                    </button>
-
-                    <button
-                        class="admin-action-btn btn-hide"
-                        onclick="toggleAppVisibility('vk-video', event)"
-                    >
-                        Скрыть
-                    </button>
+                    <span class="app-name">
+                        VK Видео
+                    </span>
                 </div>
             </div>
 
@@ -1765,25 +2600,9 @@
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sber.plist', 'СБЕР(Учёт Онлайн)', 'sber')"
             >
                 <div class="sheet-info-box">
-                    <span class="app-name">СБЕР(Учёт Онлайн)</span>
-                    <span class="download-counter">Скачиваний: 0</span>
-                </div>
-
-                <div class="admin-action-btn-group">
-                    <button
-                        class="admin-action-btn btn-pass"
-                        onclick="openSpecificAppPasswordChange('sber', event)"
-                        title="Сменить пароль"
-                    >
-                        🔑
-                    </button>
-
-                    <button
-                        class="admin-action-btn btn-hide"
-                        onclick="toggleAppVisibility('sber', event)"
-                    >
-                        Скрыть
-                    </button>
+                    <span class="app-name">
+                        СБЕР(Учёт Онлайн)
+                    </span>
                 </div>
             </div>
 
@@ -1795,25 +2614,9 @@
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sovkombank-vsekarty.plist', 'Совкомбанк (Все карты MDS)', 'sovkombank-vsekarty')"
             >
                 <div class="sheet-info-box">
-                    <span class="app-name">Совкомбанк (Все карты MDS)</span>
-                    <span class="download-counter">Скачиваний: 0</span>
-                </div>
-
-                <div class="admin-action-btn-group">
-                    <button
-                        class="admin-action-btn btn-pass"
-                        onclick="openSpecificAppPasswordChange('sovkombank-vsekarty', event)"
-                        title="Сменить пароль"
-                    >
-                        🔑
-                    </button>
-
-                    <button
-                        class="admin-action-btn btn-hide"
-                        onclick="toggleAppVisibility('sovkombank-vsekarty', event)"
-                    >
-                        Скрыть
-                    </button>
+                    <span class="app-name">
+                        Совкомбанк (Все карты MDS)
+                    </span>
                 </div>
             </div>
 
@@ -1825,25 +2628,9 @@
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/avito.plist', 'Авито', 'avito')"
             >
                 <div class="sheet-info-box">
-                    <span class="app-name">Авито</span>
-                    <span class="download-counter">Скачиваний: 0</span>
-                </div>
-
-                <div class="admin-action-btn-group">
-                    <button
-                        class="admin-action-btn btn-pass"
-                        onclick="openSpecificAppPasswordChange('avito', event)"
-                        title="Сменить пароль"
-                    >
-                        🔑
-                    </button>
-
-                    <button
-                        class="admin-action-btn btn-hide"
-                        onclick="toggleAppVisibility('avito', event)"
-                    >
-                        Скрыть
-                    </button>
+                    <span class="app-name">
+                        Авито
+                    </span>
                 </div>
             </div>
 
@@ -1855,25 +2642,9 @@
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/tbank.plist', 'Т-Банк(8PRO)', 'tbank')"
             >
                 <div class="sheet-info-box">
-                    <span class="app-name">Т-Банк(8PRO)</span>
-                    <span class="download-counter">Скачиваний: 0</span>
-                </div>
-
-                <div class="admin-action-btn-group">
-                    <button
-                        class="admin-action-btn btn-pass"
-                        onclick="openSpecificAppPasswordChange('tbank', event)"
-                        title="Сменить пароль"
-                    >
-                        🔑
-                    </button>
-
-                    <button
-                        class="admin-action-btn btn-hide"
-                        onclick="toggleAppVisibility('tbank', event)"
-                    >
-                        Скрыть
-                    </button>
+                    <span class="app-name">
+                        Т-Банк(8PRO)
+                    </span>
                 </div>
             </div>
 
@@ -1885,25 +2656,9 @@
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/drive-transit.plist', 'Т-Банк (Drive Transit)', 'drive-transit')"
             >
                 <div class="sheet-info-box">
-                    <span class="app-name">Т-Банк (Drive Transit)</span>
-                    <span class="download-counter">Скачиваний: 0</span>
-                </div>
-
-                <div class="admin-action-btn-group">
-                    <button
-                        class="admin-action-btn btn-pass"
-                        onclick="openSpecificAppPasswordChange('drive-transit', event)"
-                        title="Сменить пароль"
-                    >
-                        🔑
-                    </button>
-
-                    <button
-                        class="admin-action-btn btn-hide"
-                        onclick="toggleAppVisibility('drive-transit', event)"
-                    >
-                        Скрыть
-                    </button>
+                    <span class="app-name">
+                        Т-Банк (Drive Transit)
+                    </span>
                 </div>
             </div>
 
@@ -1915,25 +2670,9 @@
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/lenta.plist', 'Лента', 'lenta')"
             >
                 <div class="sheet-info-box">
-                    <span class="app-name">Лента</span>
-                    <span class="download-counter">Скачиваний: 0</span>
-                </div>
-
-                <div class="admin-action-btn-group">
-                    <button
-                        class="admin-action-btn btn-pass"
-                        onclick="openSpecificAppPasswordChange('lenta', event)"
-                        title="Сменить пароль"
-                    >
-                        🔑
-                    </button>
-
-                    <button
-                        class="admin-action-btn btn-hide"
-                        onclick="toggleAppVisibility('lenta', event)"
-                    >
-                        Скрыть
-                    </button>
+                    <span class="app-name">
+                        Лента
+                    </span>
                 </div>
             </div>
 
@@ -1945,25 +2684,9 @@
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/yandex-pay.plist', 'Яндекс Пэй', 'yandex-pay')"
             >
                 <div class="sheet-info-box">
-                    <span class="app-name">Яндекс Пэй</span>
-                    <span class="download-counter">Скачиваний: 0</span>
-                </div>
-
-                <div class="admin-action-btn-group">
-                    <button
-                        class="admin-action-btn btn-pass"
-                        onclick="openSpecificAppPasswordChange('yandex-pay', event)"
-                        title="Сменить пароль"
-                    >
-                        🔑
-                    </button>
-
-                    <button
-                        class="admin-action-btn btn-hide"
-                        onclick="toggleAppVisibility('yandex-pay', event)"
-                    >
-                        Скрыть
-                    </button>
+                    <span class="app-name">
+                        Яндекс Пэй
+                    </span>
                 </div>
             </div>
 
@@ -1975,25 +2698,9 @@
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/2gis.plist', '2ГИС', '2gis')"
             >
                 <div class="sheet-info-box">
-                    <span class="app-name">2ГИС</span>
-                    <span class="download-counter">Скачиваний: 0</span>
-                </div>
-
-                <div class="admin-action-btn-group">
-                    <button
-                        class="admin-action-btn btn-pass"
-                        onclick="openSpecificAppPasswordChange('2gis', event)"
-                        title="Сменить пароль"
-                    >
-                        🔑
-                    </button>
-
-                    <button
-                        class="admin-action-btn btn-hide"
-                        onclick="toggleAppVisibility('2gis', event)"
-                    >
-                        Скрыть
-                    </button>
+                    <span class="app-name">
+                        2ГИС
+                    </span>
                 </div>
             </div>
 
@@ -2005,32 +2712,16 @@
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/psb.plist', 'ПСБ (Чайная Церемония)', 'psb')"
             >
                 <div class="sheet-info-box">
-                    <span class="app-name">ПСБ (Чайная Церемония)</span>
-                    <span class="download-counter">Скачиваний: 0</span>
-                </div>
-
-                <div class="admin-action-btn-group">
-                    <button
-                        class="admin-action-btn btn-pass"
-                        onclick="openSpecificAppPasswordChange('psb', event)"
-                        title="Сменить пароль"
-                    >
-                        🔑
-                    </button>
-
-                    <button
-                        class="admin-action-btn btn-hide"
-                        onclick="toggleAppVisibility('psb', event)"
-                    >
-                        Скрыть
-                    </button>
-                </div>
-            </div>
+                    <span class="app-name">
+                        ПСБ (Чайная Церемония)
+                    </span>
                 </div>
             </div>
 
         </div>
+
     </div>
+
 </div>
 
 </body>
