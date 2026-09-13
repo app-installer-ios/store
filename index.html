@@ -975,36 +975,17 @@
         });
     });
 
-    function safeBtoa(str) {
-        try {
-            return btoa(
-                encodeURIComponent(str).replace(
-                    /%([0-9A-F]{2})/g,
-                    function(match, p1) {
-                        return String.fromCharCode('0x' + p1);
-                    }
-                )
-            );
-        } catch (e) {
-            return btoa(str);
-        }
-    }
-
     function submitPassword() {
         const input = document.getElementById("passInput");
         const errorMsg = document.getElementById("authError");
 
-        if (safeBtoa(input.value.trim()) === getSitePassword()) {
-
+        if (input.value.trim() === getSitePassword()) {
             sessionStorage.setItem("site_access", "true");
-
             switchScreen('mainApp');
-
             return;
         }
 
         errorMsg.style.display = "block";
-
         input.value = "";
         input.focus();
     }
@@ -1020,7 +1001,6 @@
         filterApps();
 
         document.getElementById('sheetOverlay').classList.add('active');
-
         document.body.classList.remove("keyboard-open");
     }
 
@@ -1044,7 +1024,6 @@
         if (!input) return;
 
         const query = input.value.trim().toLowerCase();
-
         const clearBtn = document.getElementById("searchClear");
         const emptyMessage = document.getElementById("searchEmpty");
 
@@ -1057,7 +1036,6 @@
         let visibleCount = 0;
 
         document.querySelectorAll(".sheet-item").forEach(item => {
-
             const appNameElement = item.querySelector(".app-name");
 
             if (!appNameElement) return;
@@ -1088,8 +1066,7 @@
             visibleCount++;
         });
 
-        emptyMessage.style.display =
-            visibleCount === 0 ? "block" : "none";
+        emptyMessage.style.display = visibleCount === 0 ? "block" : "none";
     }
 
     function clearAppSearch() {
@@ -1124,12 +1101,10 @@
         }
 
         if (getAppPasswords()[selectedAppKey]) {
-
             document.getElementById('appPassError').style.display = 'none';
             document.getElementById('appPassInput').value = '';
 
             switchScreen('appAuthApp');
-
             document.getElementById('appPassInput').focus();
 
             return;
@@ -1142,20 +1117,13 @@
         const input = document.getElementById("appPassInput");
         const errorMsg = document.getElementById("appPassError");
 
-        if (
-            safeBtoa(input.value.trim()) ===
-            getAppPasswords()[selectedAppKey]
-        ) {
-
+        if (input.value.trim() === getAppPasswords()[selectedAppKey]) {
             switchScreen('mainApp');
-
             executeDownload();
-
             return;
         }
 
         errorMsg.style.display = "block";
-
         input.value = "";
         input.focus();
     }
@@ -1168,7 +1136,6 @@
         const toast = document.getElementById('toast');
 
         clearTimeout(toastTimer);
-
         toast.classList.add('show');
 
         toastTimer = setTimeout(() => {
@@ -1180,9 +1147,7 @@
 </script>
 
 <div class="container" id="authApp">
-
     <div class="auth-box">
-
         <div class="auth-title">👋 Добро пожаловать!</div>
 
         <div style="font-size: 13px; color: #cbd5e1; line-height: 1.4;">
@@ -1220,15 +1185,11 @@
             >
             Поддержка в Telegram
         </a>
-
     </div>
-
 </div>
 
 <div class="container" id="appAuthApp">
-
     <div class="auth-box">
-
         <div class="auth-title">🔒 Защита установки</div>
 
         <div style="font-size: 13px; color: #cbd5e1;">
@@ -1264,15 +1225,11 @@
         >
             Назад
         </button>
-
     </div>
-
 </div>
 
 <div class="container" id="mainApp" style="padding-bottom: 30px;">
-
     <div class="header-section">
-
         <h1>
             Установка удалённых приложений
         </h1>
@@ -1283,45 +1240,39 @@
                 без компьютера и проводов
             </span>
         </div>
-
     </div>
     
-<div class="warning-box" style="font-weight: 700;">
-
-    <span class="text-warning">
-        ⚠️ <span class="red-text">ВАЖНАЯ ИНФОРМАЦИЯ</span> ⚠️
-    </span>
-
-    <p>
-        📲 После установки всех необходимых приложений
-        <span class="red-text">
-            обязательно свяжитесь с администратором.
+    <div class="warning-box" style="font-weight: 700;">
+        <span class="text-warning">
+            ⚠️ <span class="red-text">ВАЖНАЯ ИНФОРМАЦИЯ</span> ⚠️
         </span>
-    </p>
 
-    <p>
-        ⚙️ Мы выполним финальную настройку и проверим работу приложений,
-        чтобы всё работало
-        <span class="red-text">
-            стабильно, корректно и без вылетов.
-        </span>
-    </p>
-</div>
+        <p>
+            📲 После установки всех необходимых приложений
+            <span class="red-text">
+                обязательно свяжитесь с администратором.
+            </span>
+        </p>
+
+        <p>
+            ⚙️ Мы выполним финальную настройку и проверим работу приложений,
+            чтобы всё работало
+            <span class="red-text">
+                стабильно, корректно и без вылетов.
+            </span>
+        </p>
+    </div>
 
     <div class="card">
-
         <label>
             Выберите приложение:
         </label>
 
         <div class="status-badge" id="statusBadge">
-
             <span class="status-dot"></span>
-
             <span>
                 Все приложения доступны
             </span>
-
         </div>
 
         <button
@@ -1348,9 +1299,7 @@
         <div id="toast" class="toast">
             🚀 Загрузка началась! Проверьте главный экран устройства!
         </div>
-
     </div>
-
 </div>
 
 <div
@@ -1358,14 +1307,11 @@
     id="sheetOverlay"
     onclick="closeSheet()"
 >
-
     <div
         class="sheet-modal"
         onclick="event.stopPropagation()"
     >
-
         <div class="sheet-header">
-
             <div class="sheet-title">
                 Выберите приложение
             </div>
@@ -1377,11 +1323,9 @@
             >
                 ✕
             </button>
-
         </div>
 
         <div class="app-search-wrap">
-
             <span class="search-icon">⌕</span>
 
             <input
@@ -1404,7 +1348,6 @@
             >
                 ✕
             </button>
-
         </div>
 
         <div id="searchEmpty" class="search-empty">
@@ -1412,7 +1355,6 @@
         </div>
 
         <div class="sheet-list">
-
             <div
                 class="sheet-item"
                 data-key="vk"
@@ -1439,10 +1381,6 @@
 
             <div
                 class="sheet-item"
-                data-key="vk-video"
-                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk-video.plist', 'VK Видео', 'vk-video')"
-            >
-                <div class="sheet-item"
                 data-key="vk-video"
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk-video.plist', 'VK Видео', 'vk-video')"
             >
@@ -1570,7 +1508,6 @@
                     <span class="app-name">Купер</span>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
