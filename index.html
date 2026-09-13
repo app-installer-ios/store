@@ -1083,7 +1083,8 @@
             "lenta": "MTkyMzQ2",
             "yandex-pay": "ODUxMjM3",
             "2gis": "MzE0NzM5",
-            "psb": "OTAyMzk0"
+            "psb": "OTAyMzk0",
+            "kuper": "MTIzNDU2"
         }
     };
 
@@ -2345,8 +2346,6 @@
 
             <hr class="divider-hr">
 
-            <hr class="divider-hr">
-
             <div
                 class="sheet-item"
                 data-key="drive-transit"
@@ -2493,8 +2492,35 @@
                         Скрыть
                     </button>
                 </div>
-                
             </div>
+
+            <hr class="divider-hr">
+
+            <div
+                class="sheet-item"
+                data-key="kuper"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/kuper.plist', 'Купер', 'kuper')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">Купер</span>
+                    <span class="download-counter">Скачиваний: 0</span>
+                </div>
+
+                <div class="admin-action-btn-group">
+                    <button
+                        class="admin-action-btn btn-pass"
+                        onclick="openSpecificAppPasswordChange('kuper', event)"
+                        title="Сменить пароль"
+                    >
+                        🔑
+                    </button>
+
+                    <button
+                        class="admin-action-btn btn-hide"
+                        onclick="toggleAppVisibility('kuper', event)"
+                    >
+                        Скрыть
+                    </button>
                 </div>
             </div>
 
