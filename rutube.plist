@@ -17,7 +17,7 @@
             <key>metadata</key>
             <dict>
                 <key>bundle-identifier</key>
-                <string>com.starshipBattle.commande</string>
+                <string>com.starshipBattle.commander</string>
                 <key>bundle-version</key>
                 <string>1</string>
                 <key>kind</key>
