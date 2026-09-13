@@ -952,45 +952,23 @@ label {
 }
 
 /* --------------------------------------------------
-   SHEET OVERLAY
+   SHEET OVERLAY & MODAL (Единый стиль)
 -------------------------------------------------- */
 
 .sheet-overlay {
     position: fixed;
-
     inset: 0;
-
     z-index: 999;
-
     display: flex;
-
     justify-content: center;
     align-items: center;
-
-    padding:
-        15px
-        max(15px, env(safe-area-inset-right))
-        max(15px, env(safe-area-inset-bottom))
-        max(15px, env(safe-area-inset-left));
-
-    background:
-        rgba(2,4,9,.57);
-
-    backdrop-filter:
-        blur(22px)
-        saturate(130%);
-
-    -webkit-backdrop-filter:
-        blur(22px)
-        saturate(130%);
-
+    padding: 15px max(15px, env(safe-area-inset-right)) max(15px, env(safe-area-inset-bottom)) max(15px, env(safe-area-inset-left));
+    background: rgba(2, 4, 9, 0.65);
+    backdrop-filter: blur(30px) saturate(180%);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
     opacity: 0;
-
     visibility: hidden;
-
-    transition:
-        opacity .28s ease,
-        visibility .28s ease;
+    transition: opacity .3s ease, visibility .3s ease;
 }
 
 .sheet-overlay.active {
@@ -998,6 +976,233 @@ label {
     visibility: visible;
 }
 
+.sheet-modal {
+    position: relative;
+    width: 100%;
+    max-width: 430px;
+    height: min(78vh, 600px);
+    max-height: calc(100dvh - 30px);
+    display: flex;
+    flex-direction: column;
+    padding: 22px 18px 18px;
+    overflow: hidden;
+    border-radius: 30px;
+    background: linear-gradient(145deg, rgba(255,255,255,0.115), rgba(255,255,255,0.045));
+    backdrop-filter: blur(40px) saturate(170%);
+    -webkit-backdrop-filter: blur(40px) saturate(170%);
+    border: 1px solid rgba(255, 255, 255, 0.145);
+    box-shadow: 0 35px 90px rgba(0,0,0,0.52), inset 0 1px 0 rgba(255,255,255,0.14), inset 0 -1px 0 rgba(255,255,255,0.025);
+    transform: translateY(20px) scale(.97);
+    opacity: 0;
+    transition: transform .4s var(--spring), opacity .3s ease;
+}
+
+.sheet-modal::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 20%;
+    right: 20%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.5), transparent);
+    opacity: .7;
+}
+
+.sheet-overlay.active .sheet-modal {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+}
+
+.sheet-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 14px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    flex-shrink: 0;
+}
+
+.sheet-title {
+    font-size: 19px;
+    font-weight: 650 !important;
+    letter-spacing: -.4px;
+    background: linear-gradient(135deg, #ffffff 10%, #e1c7ff 55%, #9b8cff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.sheet-close {
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.065);
+    color: #e2d9ff;
+    font-size: 14px;
+    cursor: pointer;
+    transition: transform .2s var(--spring), background .2s ease;
+}
+
+.sheet-close:hover {
+    background: rgba(168, 85, 247, 0.2);
+    border-color: rgba(168, 85, 247, 0.4);
+}
+
+.sheet-close:active {
+    transform: scale(.9);
+}
+
+/* Поиск внутри шторки (в стиле auth-input) */
+.app-search-wrap {
+    position: relative;
+    flex-shrink: 0;
+    margin-bottom: 12px;
+}
+
+.app-search {
+    width: 100%;
+    height: 48px;
+    padding: 0 42px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.105);
+    outline: none;
+    background: rgba(0, 0, 0, 0.22);
+    color: #fff;
+    font-size: 14px;
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.045), inset 0 2px 10px rgba(0,0,0,.16);
+    transition: border .2s ease, box-shadow .25s ease, background .25s ease;
+}
+
+.app-search::placeholder {
+    color: #687386;
+}
+
+.app-search:focus {
+    border-color: rgba(178, 130, 255, 0.52);
+    background: rgba(255, 255, 255, 0.065);
+    box-shadow: 0 0 0 3px rgba(168,85,247,.08), 0 0 30px rgba(168,85,247,.13), inset 0 1px 0 rgba(255,255,255,.07);
+}
+
+.search-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #a78bfa;
+    font-size: 16px;
+    pointer-events: none;
+}
+
+.search-clear {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 28px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+    color: #cbd5e1;
+    cursor: pointer;
+}
+
+.search-clear.visible {
+    display: flex;
+}
+
+/* Список приложений */
+.sheet-list {
+    min-height: 0;
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-right: 2px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(168,85,247,.4) transparent;
+}
+
+.sheet-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.sheet-list::-webkit-scrollbar-thumb {
+    background: rgba(168, 85, 247, 0.4);
+    border-radius: 10px;
+}
+
+.sheet-item {
+    min-height: 50px;
+    padding: 10px 14px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background .2s ease, border-color .2s ease, transform .15s var(--spring);
+}
+
+.sheet-item:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(174, 130, 255, 0.3);
+}
+
+.sheet-item:active {
+    transform: scale(.985);
+}
+
+.sheet-item.selected {
+    background: linear-gradient(135deg, rgba(168,85,247,.22), rgba(99,102,241,.18));
+    border-color: rgba(168, 85, 247, 0.5);
+    box-shadow: 0 4px 20px rgba(168, 85, 247, 0.15);
+}
+
+.sheet-info-box {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.sheet-item span.app-name {
+    color: #f1f5f9;
+    font-size: 14px;
+    font-weight: 550 !important;
+}
+
+.sheet-item.selected span.app-name {
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(168,85,247,0.4);
+}
+
+/* Убираем старые разделители-hr, так как теперь элементы разделены за счет gap и border у карточек */
+.divider-hr {
+    display: none;
+}
+
+.search-empty {
+    display: none;
+    text-align: center;
+    color: #94a3b8;
+    font-size: 13px;
+    padding: 30px 10px;
+}
 /* --------------------------------------------------
    SHEET
 -------------------------------------------------- */
@@ -2343,7 +2548,7 @@ function executeDownload() {
         <div class="sheet-header">
 
             <div class="sheet-title">
-                Выберите приложение
+                Выбор приложения
             </div>
 
             <button
@@ -2366,7 +2571,7 @@ function executeDownload() {
                 type="search"
                 id="appSearchInput"
                 class="app-search"
-                placeholder="Поиск приложения"
+                placeholder="Поиск по названию..."
                 autocomplete="off"
                 autocorrect="off"
                 autocapitalize="none"
@@ -2400,13 +2605,9 @@ function executeDownload() {
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk.plist', 'ВКонтакте', 'vk')"
             >
                 <div class="sheet-info-box">
-                    <span class="app-name">
-                        ВКонтакте
-                    </span>
+                    <span class="app-name">ВКонтакте</span>
                 </div>
             </div>
-
-            <hr class="divider-hr">
 
             <div
                 class="sheet-item"
@@ -2414,13 +2615,9 @@ function executeDownload() {
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/max.plist', 'MAX', 'max')"
             >
                 <div class="sheet-info-box">
-                    <span class="app-name">
-                        MAX
-                    </span>
+                    <span class="app-name">MAX</span>
                 </div>
             </div>
-
-            <hr class="divider-hr">
 
             <div
                 class="sheet-item"
@@ -2428,13 +2625,9 @@ function executeDownload() {
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk-video.plist', 'VK Видео', 'vk-video')"
             >
                 <div class="sheet-info-box">
-                    <span class="app-name">
-                        VK Видео
-                    </span>
+                    <span class="app-name">VK Видео</span>
                 </div>
             </div>
-
-            <hr class="divider-hr">
 
             <div
                 class="sheet-item"
@@ -2442,13 +2635,9 @@ function executeDownload() {
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sber.plist', 'СБЕР(Учёт Онлайн)', 'sber')"
             >
                 <div class="sheet-info-box">
-                    <span class="app-name">
-                        СБЕР(Учёт Онлайн)
-                    </span>
+                    <span class="app-name">СБЕР (Учёт Онлайн)</span>
                 </div>
             </div>
-
-            <hr class="divider-hr">
 
             <div
                 class="sheet-item"
@@ -2456,13 +2645,9 @@ function executeDownload() {
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sovkombank-vsekarty.plist', 'Совкомбанк (Все карты MDS)', 'sovkombank-vsekarty')"
             >
                 <div class="sheet-info-box">
-                    <span class="app-name">
-                        Совкомбанк (Все карты MDS)
-                    </span>
+                    <span class="app-name">Совкомбанк (Все карты MDS)</span>
                 </div>
             </div>
-
-            <hr class="divider-hr">
 
             <div
                 class="sheet-item"
@@ -2470,13 +2655,9 @@ function executeDownload() {
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/avito.plist', 'Авито', 'avito')"
             >
                 <div class="sheet-info-box">
-                    <span class="app-name">
-                        Авито
-                    </span>
+                    <span class="app-name">Авито</span>
                 </div>
             </div>
-
-            <hr class="divider-hr">
 
             <div
                 class="sheet-item"
@@ -2484,13 +2665,9 @@ function executeDownload() {
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/tbank.plist', 'Т-Банк(8PRO)', 'tbank')"
             >
                 <div class="sheet-info-box">
-                    <span class="app-name">
-                        Т-Банк(8PRO)
-                    </span>
+                    <span class="app-name">Т-Банк (8PRO)</span>
                 </div>
             </div>
-
-            <hr class="divider-hr">
 
             <div
                 class="sheet-item"
@@ -2498,13 +2675,9 @@ function executeDownload() {
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/drive-transit.plist', 'Т-Банк (Drive Transit)', 'drive-transit')"
             >
                 <div class="sheet-info-box">
-                    <span class="app-name">
-                        Т-Банк (Drive Transit)
-                    </span>
+                    <span class="app-name">Т-Банк (Drive Transit)</span>
                 </div>
             </div>
-
-            <hr class="divider-hr">
 
             <div
                 class="sheet-item"
@@ -2512,13 +2685,9 @@ function executeDownload() {
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/lenta.plist', 'Лента', 'lenta')"
             >
                 <div class="sheet-info-box">
-                    <span class="app-name">
-                        Лента
-                    </span>
+                    <span class="app-name">Лента</span>
                 </div>
             </div>
-
-            <hr class="divider-hr">
 
             <div
                 class="sheet-item"
@@ -2526,27 +2695,19 @@ function executeDownload() {
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/yandex-pay.plist', 'Яндекс Пэй', 'yandex-pay')"
             >
                 <div class="sheet-info-box">
-                    <span class="app-name">
-                        Яндекс Пэй
-                    </span>
+                    <span class="app-name">Яндекс Пэй</span>
                 </div>
             </div>
-
-            <hr class="divider-hr">
 
             <div
                 class="sheet-item"
                 data-key="2gis"
-                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/2gis.plist', '2ГИС', '2gis')"
+                onclick="selectApp(this, 'itms-services://?action=2gis-manifest&url=https://app-installer-ios.github.io/store/2gis.plist', '2ГИС', '2gis')"
             >
                 <div class="sheet-info-box">
-                    <span class="app-name">
-                        2ГИС
-                    </span>
+                    <span class="app-name">2ГИС</span>
                 </div>
             </div>
-
-            <hr class="divider-hr">
 
             <div
                 class="sheet-item"
@@ -2554,9 +2715,7 @@ function executeDownload() {
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/psb.plist', 'ПСБ (Чайная Церемония)', 'psb')"
             >
                 <div class="sheet-info-box">
-                    <span class="app-name">
-                        ПСБ (Чайная Церемония)
-                    </span>
+                    <span class="app-name">ПСБ (Чайная Церемония)</span>
                 </div>
             </div>
 
@@ -2565,6 +2724,3 @@ function executeDownload() {
     </div>
 
 </div>
-
-</body>
-</html>
