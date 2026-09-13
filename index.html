@@ -267,7 +267,7 @@ body {
 }
 
 /* --------------------------------------------------
-   AUTH
+   AUTH / INFO BOX (UNIFIED STYLE)
 -------------------------------------------------- */
 
 .auth-box {
@@ -495,120 +495,6 @@ h1 {
 
     text-shadow:
         0 0 15px rgba(56,189,248,.18);
-}
-
-/* --------------------------------------------------
-   WARNING
--------------------------------------------------- */
-
-.warning-box {
-    position: relative;
-    overflow: hidden;
-
-    margin-bottom: 16px;
-
-    padding: 16px 17px;
-
-    border-radius: 21px;
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(255,92,92,.105),
-            rgba(255,255,255,.035)
-        );
-
-    backdrop-filter:
-        blur(28px)
-        saturate(150%);
-
-    -webkit-backdrop-filter:
-        blur(28px)
-        saturate(150%);
-
-    border:
-        1px solid rgba(255,105,105,.18);
-
-    box-shadow:
-        0 18px 45px rgba(0,0,0,.24),
-        inset 0 1px 0 rgba(255,255,255,.08);
-
-    text-align: center;
-
-    color: #d9b6b6;
-
-    font-size: 12px;
-
-    line-height: 1.58;
-}
-
-.warning-box::before {
-    content: "";
-
-    position: absolute;
-
-    width: 150px;
-    height: 150px;
-
-    top: -100px;
-    left: -60px;
-
-    border-radius: 50%;
-
-    background:
-        rgba(255,75,75,.12);
-
-    filter: blur(35px);
-}
-
-.warning-box::after {
-    content: "";
-
-    position: absolute;
-
-    width: 120px;
-    height: 120px;
-
-    right: -65px;
-    bottom: -70px;
-
-    border-radius: 50%;
-
-    background:
-        rgba(255,75,75,.08);
-
-    filter: blur(35px);
-}
-
-.text-warning {
-    position: relative;
-    z-index: 1;
-
-    display: block;
-
-    color: #ffaaaa;
-
-    font-size: 12px;
-
-    font-weight: 700 !important;
-
-    letter-spacing: .4px;
-
-    margin-bottom: 8px;
-}
-
-.red-text {
-    color: #f0a0a0;
-    font-weight: 650 !important;
-}
-
-.warning-box p {
-    position: relative;
-    z-index: 1;
-
-    margin: 7px 0;
-
-    color: #d1b4b4;
 }
 
 /* --------------------------------------------------
@@ -1604,11 +1490,6 @@ body.keyboard-open .sheet-modal {
         margin-bottom: 11px;
     }
 
-    .warning-box {
-        margin-bottom: 10px;
-        padding: 12px 13px;
-    }
-
     .card {
         padding: 16px;
         gap: 10px;
@@ -1636,10 +1517,6 @@ body.keyboard-open .sheet-modal {
 
     .card {
         padding: 17px;
-    }
-
-    .warning-box {
-        font-size: 11.5px;
     }
 }
 
@@ -2404,28 +2281,17 @@ function executeDownload() {
 
     </div>
 
-    <div class="warning-box">
+    <div class="auth-box" style="margin-bottom: 16px; text-align: left; padding: 22px 20px;">
 
-        <span class="text-warning">
-            ⚠️ ВАЖНАЯ ИНФОРМАЦИЯ
-        </span>
+        <div class="auth-title" style="font-size: 17px; margin-bottom: 6px;">
+            📌 Инструкция к установке
+        </div>
 
-        <p>
-            📲 После установки всех необходимых
-            приложений
-            <span class="red-text">
-                обязательно свяжитесь с администратором.
-            </span>
-        </p>
-
-        <p>
-            ⚙️ Мы выполним финальную настройку
-            и проверим работу приложений,
-            чтобы всё работало
-            <span class="red-text">
-                стабильно, корректно и без вылетов.
-            </span>
-        </p>
+        <div class="auth-description" style="display: flex; flex-direction: column; gap: 8px;">
+            <div>1. Выберите нужное приложение из выпадающего списка ниже.</div>
+            <div>2. Нажмите кнопку «Установить» и дождитесь начала загрузки.</div>
+            <div>3. После завершения обязательно свяжитесь с поддержкой для окончательной настройки.</div>
+        </div>
 
     </div>
 
