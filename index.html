@@ -57,11 +57,7 @@
         padding-top: 40px !important;
     }
 
-    body:has(input:focus) .admin-footer-bar {
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.2s ease;
-    }
+    body:has(input:focus) 
 
     .aurora-bg {
         position: fixed;
@@ -185,24 +181,89 @@
     .warning-box {
         position: relative;
         overflow: hidden;
-        background:
-            radial-gradient(circle at 0% 0%, rgba(190, 65, 65, .10), transparent 42%),
-            radial-gradient(circle at 100% 100%, rgba(190, 65, 65, .07), transparent 38%),
-            rgba(18, 30, 52, .72);
-        backdrop-filter: blur(25px) saturate(135%);
-        -webkit-backdrop-filter: blur(25px) saturate(135%);
-        border: 1px solid rgba(190, 65, 65, .55);
-        color: #e6b8b8;
-        border-radius: 18px;
-        padding: 15px 17px;
-        font-size: 13px;
-        line-height: 1.65;
         margin-bottom: 30px;
-        box-shadow:
-            0 12px 35px rgba(0,0,0,.25),
-            0 0 25px rgba(150,45,55,.08),
-            inset 0 1px 0 rgba(255,255,255,.07);
-        text-align: center;
+        padding: 18px 18px 17px;
+        border: 1px solid rgba(255, 92, 85, .58);
+        border-radius: 20px;
+        background: linear-gradient(145deg, rgba(255,255,255,.075), rgba(255,92,85,.055) 48%, rgba(18,30,52,.82));
+        box-shadow: 0 14px 36px rgba(0,0,0,.28), 0 0 28px rgba(255,92,85,.10), inset 0 1px 0 rgba(255,255,255,.10);
+        color: #e8edf7;
+        text-align: left;
+    }
+
+    .warning-box::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border: 1px solid rgba(255,255,255,.055);
+        border-radius: inherit;
+        pointer-events: none;
+    }
+
+    .warning-box .warning-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 12px;
+        color: #fff;
+        font-size: 14px;
+        letter-spacing: .35px;
+    }
+
+    .warning-box .warning-icon {
+        display: grid;
+        place-items: center;
+        width: 32px;
+        height: 32px;
+        flex: 0 0 32px;
+        border: 1px solid rgba(255,140,135,.48);
+        border-radius: 10px;
+        background: rgba(255,92,85,.13);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+        font-size: 16px;
+    }
+
+    .warning-box p {
+        margin: 0;
+        color: #cbd5e1;
+        font-size: 13px;
+        font-weight: 600;
+        line-height: 1.65;
+    }
+
+    .warning-box p + p {
+        margin-top: 8px;
+    }
+
+    .warning-box .red-text {
+        color: #ff9b96;
+        font-weight: 700;
+    }
+
+    .warning-box::before { 
+        content: ""; 
+        position: absolute; 
+        width: 110px; 
+        height: 110px; 
+        top: -70px; 
+        left: -50px; 
+        background: rgba(170, 55, 65, .16); 
+        filter: blur(35px); 
+        border-radius: 50%; 
+        pointer-events: none;
+    } 
+
+    .warning-box::after {
+        content: "";
+        position: absolute;
+        width: 90px;
+        height: 90px;
+        right: -45px;
+        bottom: -55px;
+        background: rgba(170, 55, 65, .11);
+        filter: blur(35px);
+        border-radius: 50%;
+        pointer-events: none;
     }
 
     .text-warning { 
@@ -451,55 +512,15 @@
         object-fit: contain;
     }
 
-    .admin-footer-bar {
-        position: fixed;
-        bottom: max(12px, env(safe-area-inset-bottom));
-        left: 50%;
-        transform: translateX(-50%);
-        width: 100%;
-        max-width: 420px;
-        padding: 0 18px;
-        z-index: 100;
-    }
+    
 
-    .btn-admin-trigger {
-        background: rgba(255,255,255,.035);
-        backdrop-filter: blur(18px);
-        -webkit-backdrop-filter: blur(18px);
-        border: 1px solid rgba(255,255,255,.10);
-        color: #a5b4fc;
-        font-size: 11px;
-        padding: 9px;
-        border-radius: 12px;
-        text-align: center;
-        cursor: pointer;
-        width: 100%;
-        box-shadow: 0 8px 25px rgba(0,0,0,.18);
-        transition: .2s ease;
-    }
+    
 
-    .btn-admin-trigger:hover {
-        background: rgba(168,85,247,.08);
-        border-color: rgba(168,85,247,.25);
-    }
+    
 
-    .btn-admin-logout {
-        background: rgba(239,68,68,.08);
-        border: 1px solid rgba(239,68,68,.25);
-        color: #fca5a5;
-        font-size: 11px;
-        padding: 8px;
-        border-radius: 10px;
-        text-align: center;
-        cursor: pointer;
-        width: 100%;
-        margin-top: 7px;
-        display: none;
-    }
+    
 
-    body.is-admin .btn-admin-logout {
-        display: block;
-    }
+    body
 
     .toast {
         display: none;
@@ -880,35 +901,15 @@
         flex-shrink: 0;
     }
 
-    .admin-action-btn-group {
-        display: none;
-        gap: 5px;
-        align-items: center;
-        flex-shrink: 0;
-    }
+    
 
-    body.is-admin .admin-action-btn-group {
-        display: flex;
-    }
+    body
 
-    .admin-action-btn {
-        padding: 6px 9px;
-        border-radius: 8px;
-        font-size: 11px;
-        cursor: pointer;
-        border: 1px solid;
-        transition: .15s ease;
-    }
+    
 
-    .admin-action-btn:active {
-        transform: scale(.94);
-    }
+    
 
-    .btn-hide {
-        background: rgba(239,68,68,.08);
-        border-color: rgba(239,68,68,.22);
-        color: #f87171;
-    }
+    
 
     .btn-show {
         background: rgba(52,211,153,.08);
@@ -916,35 +917,13 @@
         color: #34d399;
     }
 
-    .btn-pass {
-        background: rgba(56,189,248,.08);
-        border-color: rgba(56,189,248,.22);
-        color: #38bdf8;
-    }
+    
 
-    .admin-settings-trigger {
-        background: rgba(168,85,247,.08);
-        border: 1px solid rgba(168,85,247,.22);
-        color: #c084fc;
-        font-size: 11px;
-        padding: 10px;
-        border-radius: 12px;
-        text-align: center;
-        cursor: pointer;
-        width: 100%;
-        margin-bottom: 10px;
-        display: none;
-        transition: .2s ease;
-        flex-shrink: 0;
-    }
+    
 
-    .admin-settings-trigger:hover {
-        background: rgba(168,85,247,.13);
-    }
+    
 
-    body.is-admin .admin-settings-trigger {
-        display: block;
-    }
+    body
 
     select {
         appearance: none;
@@ -999,9 +978,7 @@
             max-width: 430px;
         }
 
-        .admin-footer-bar {
-            max-width: 430px;
-        }
+        
     }
 
     @media (max-height: 500px) {
@@ -1046,8 +1023,6 @@
 <script>
     const DEFAULT_CONFIG = {
         sitePassword: "Zzl3S0pPTlNiWUo5alBUcERu",
-        adminPassword: "c1lCOXdhUjdNOTVyOEdaRFA5",
-        hiddenApps: [],
         appPasswords: {
             "vk": "a1FpdU13alQ5WmxnVGpyc3VI",
             "max": "TU42NFFLUjYydEgxYldEUm9t",
@@ -1078,7 +1053,6 @@
 
             return {
                 sitePassword: parsed.sitePassword || DEFAULT_CONFIG.sitePassword,
-                adminPassword: parsed.adminPassword || DEFAULT_CONFIG.adminPassword,
                 hiddenApps: Array.isArray(parsed.hiddenApps)
                     ? parsed.hiddenApps
                     : [],
@@ -1114,9 +1088,7 @@
         return remoteConfig.sitePassword;
     }
 
-    function getAdminPassword() {
-        return remoteConfig.adminPassword;
-    }
+    
 
     let selectedAppUrl = "";
     let selectedAppKey = "";
@@ -1144,23 +1116,12 @@
             switchScreen("authApp");
         }
 
-        if (localStorage.getItem("is_admin_mode") === "true") {
-            document.body.classList.add("is-admin");
-        }
-
-        updateAppsVisibility();
-        updateDownloadCountersUI();
-
         document.getElementById("passInput").addEventListener("keydown", (e) => {
             if (e.key === "Enter") submitPassword();
         });
 
         document.getElementById("appPassInput").addEventListener("keydown", (e) => {
             if (e.key === "Enter") submitAppPassword();
-        });
-
-        document.getElementById("adminPassInput").addEventListener("keydown", (e) => {
-            if (e.key === "Enter") submitAdminPassword();
         });
 
         document.getElementById("changePassInput").addEventListener("keydown", (e) => {
@@ -1209,63 +1170,15 @@
         });
     });
 
-    function openAdminAuth() {
-        if (localStorage.getItem("is_admin_mode") === "true") {
-            openSheet();
-            return;
-        }
-
-        switchScreen('adminAuthApp');
-
-        document.getElementById('adminPassInput').value = '';
-        document.getElementById('adminPassError').style.display = 'none';
-
-        document.getElementById('adminPassInput').focus();
-    }
+    
 
     function cancelAdminAuth() {
         switchScreen('mainApp');
     }
 
-    function submitAdminPassword() {
-        const input = document.getElementById("adminPassInput");
-        const errorMsg = document.getElementById("adminPassError");
+    
 
-        if (safeBtoa(input.value.trim()) === getAdminPassword()) {
-
-            localStorage.setItem("is_admin_mode", "true");
-            document.body.classList.add("is-admin");
-
-            switchScreen('mainApp');
-            openSheet();
-            updateDownloadCountersUI();
-
-            return;
-        }
-
-        errorMsg.style.display = "block";
-        input.value = "";
-        input.focus();
-    }
-
-    function logoutAdmin() {
-        localStorage.removeItem("is_admin_mode");
-        document.body.classList.remove("is-admin");
-
-        closeSheet();
-        switchScreen('mainApp');
-        updateAppsVisibility();
-
-        const customToast = document.getElementById("customToast");
-
-        clearTimeout(customToastTimer);
-
-        customToast.classList.add("show");
-
-        customToastTimer = setTimeout(() => {
-            customToast.classList.remove("show");
-        }, 3500);
-    }
+    
 
     function showSuccessToast(text = "✅ Изменения успешно сохранены!") {
         const toast = document.getElementById("customToastSuccess");
@@ -1281,57 +1194,9 @@
         }, 3500);
     }
 
-    async function toggleAppVisibility(appKey, event) {
-        event.stopPropagation();
+    async 
 
-        const index = remoteConfig.hiddenApps.indexOf(appKey);
-
-        if (index > -1) {
-            remoteConfig.hiddenApps.splice(index, 1);
-        } else {
-            remoteConfig.hiddenApps.push(appKey);
-        }
-
-        saveLocalConfig();
-
-        updateAppsVisibility();
-        filterApps();
-
-        showSuccessToast("✅ Изменения сохранены на этом устройстве!");
-    }
-
-    function updateAppsVisibility() {
-        let hiddenApps = remoteConfig.hiddenApps;
-
-        document.querySelectorAll(".sheet-item").forEach(item => {
-
-            const key = item.getAttribute("data-key");
-            const hr = item.nextElementSibling;
-            const hideBtn = item.querySelector(".btn-hide, .btn-show");
-
-            if (hiddenApps.includes(key)) {
-
-                if (!document.body.classList.contains("is-admin")) {
-                    item.style.display = "none";
-
-                    if (hr && hr.classList.contains("divider-hr")) {
-                        hr.style.display = "none";
-                    }
-
-                } else {
-                    item.style.display = "flex";
-
-                    if (hr && hr.classList.contains("divider-hr")) {
-                        hr.style.display = "block";
-                    }
-                }
-
-                if (hideBtn) {
-                    hideBtn.textContent = "Вкл";
-                    hideBtn.className = "admin-action-btn btn-show";
-                }
-
-            } else {
+     else {
 
                 item.style.display = "flex";
 
@@ -1347,39 +1212,9 @@
         });
     }
 
-    function updateDownloadCountersUI() {
-        let downloads = JSON.parse(
-            localStorage.getItem("app_downloads_stats") || "{}"
-        );
+    
 
-        document.querySelectorAll(".sheet-item").forEach(item => {
-
-            const key = item.getAttribute("data-key");
-            const counterEl = item.querySelector(".download-counter");
-
-            if (counterEl) {
-                counterEl.textContent =
-                    `Скачиваний: ${downloads[key] || 0}`;
-            }
-        });
-    }
-
-    function incrementDownloadCount(appKey) {
-        if (!appKey) return;
-
-        let downloads = JSON.parse(
-            localStorage.getItem("app_downloads_stats") || "{}"
-        );
-
-        downloads[appKey] = (downloads[appKey] || 0) + 1;
-
-        localStorage.setItem(
-            "app_downloads_stats",
-            JSON.stringify(downloads)
-        );
-
-        updateDownloadCountersUI();
-    }
+    
 
     function safeBtoa(str) {
         try {
@@ -1416,8 +1251,6 @@
     }
 
     function openSheet() {
-        updateAppsVisibility();
-        updateDownloadCountersUI();
 
         const searchInput = document.getElementById("appSearchInput");
 
@@ -1527,106 +1360,15 @@
         input.focus();
     }
 
-    function openPasswordManager() {
-        closeSheet();
+    
 
-        switchScreen('passwordManagerApp');
+    
 
-        document.getElementById('targetPassType').value = 'site';
-        document.getElementById('targetPassAppGroup').style.display = 'none';
-        document.getElementById('changePassInput').value = '';
-        document.getElementById('changePassTitle').textContent =
-            '🔑 Изменение пароля сайта';
-    }
+    
 
-    function cancelPasswordManager() {
-        switchScreen('mainApp');
-    }
+    
 
-    function onPassTypeChange() {
-        const type = document.getElementById('targetPassType').value;
-        const appGroup = document.getElementById('targetPassAppGroup');
-        const title = document.getElementById('changePassTitle');
-
-        if (type === 'site') {
-
-            appGroup.style.display = 'none';
-            title.textContent = '🔑 Изменение пароля сайта';
-
-        } else if (type === 'admin') {
-
-            appGroup.style.display = 'none';
-            title.textContent = '👑 Изменение пароля админ-панели';
-
-        } else if (type === 'app') {
-
-            appGroup.style.display = 'block';
-            title.textContent = '📱 Изменение пароля приложения';
-        }
-    }
-
-    function openSpecificAppPasswordChange(appKey, event) {
-        event.stopPropagation();
-
-        closeSheet();
-
-        switchScreen('passwordManagerApp');
-
-        document.getElementById('targetPassType').value = 'app';
-        document.getElementById('targetPassAppGroup').style.display = 'block';
-        document.getElementById('targetAppSelect').value = appKey;
-        document.getElementById('changePassTitle').textContent =
-            '📱 Изменение пароля приложения';
-        document.getElementById('changePassInput').value = '';
-    }
-
-    function saveNewPassword() {
-        const type = document.getElementById('targetPassType').value;
-        const input = document.getElementById('changePassInput');
-        const newVal = input.value.trim();
-
-        if (!newVal) {
-            showSuccessToast('⚠️ Введите новый пароль!');
-            return;
-        }
-
-        const encodedVal = safeBtoa(newVal);
-
-        if (type === 'site') {
-
-            remoteConfig.sitePassword = encodedVal;
-
-        } else if (type === 'admin') {
-
-            remoteConfig.adminPassword = encodedVal;
-
-        } else if (type === 'app') {
-
-            const appKey =
-                document.getElementById('targetAppSelect').value;
-
-            remoteConfig.appPasswords[appKey] = encodedVal;
-        }
-
-        if (saveLocalConfig()) {
-
-            showSuccessToast(
-                '✅ Пароль сохранён на этом устройстве!'
-            );
-
-            input.value = '';
-
-            setTimeout(() => {
-                cancelPasswordManager();
-            }, 700);
-
-        } else {
-
-            showSuccessToast(
-                '❌ Не удалось сохранить пароль.'
-            );
-        }
-    }
+    
 
     function selectApp(element, url, name, appKey) {
         selectedAppUrl = url;
@@ -1796,150 +1538,6 @@
 
 </div>
 
-<div class="container" id="adminAuthApp">
-
-    <div class="auth-box">
-
-        <div class="auth-title">👑 Вход для админа</div>
-
-        <div style="font-size: 13px; color: #cbd5e1;">
-            Введите пароль администратора:
-        </div>
-
-        <input
-            type="password"
-            id="adminPassInput"
-            class="auth-input"
-            placeholder="Пароль..."
-            autocomplete="off"
-        >
-
-        <div id="adminPassError" class="auth-error">
-            Неверный пароль!
-        </div>
-
-        <button
-            type="button"
-            class="btn"
-            onclick="submitAdminPassword()"
-        >
-            Войти в панель
-        </button>
-
-        <button
-            type="button"
-            class="btn btn-secondary"
-            onclick="cancelAdminAuth()"
-        >
-            Назад
-        </button>
-
-    </div>
-
-</div>
-
-<div class="container" id="passwordManagerApp">
-
-    <div class="auth-box">
-
-        <div class="auth-title" id="changePassTitle">
-            🔑 Изменение паролей
-        </div>
-
-        <div style="text-align: left; display: flex; flex-direction: column; gap: 6px;">
-
-            <label style="font-size: 12px; color: #94a3b8;">
-                Выберите категорию:
-            </label>
-
-            <select
-                id="targetPassType"
-                class="auth-input"
-                style="text-align: left; padding: 10px 14px;"
-                onchange="onPassTypeChange()"
-            >
-                <option value="site">
-                    Пароль доступа к сайту
-                </option>
-
-                <option value="admin">
-                    Пароль админ-панели
-                </option>
-
-                <option value="app">
-                    Пароль конкретного приложения
-                </option>
-            </select>
-
-        </div>
-
-        <div
-            id="targetPassAppGroup"
-            style="text-align: left; display: none; flex-direction: column; gap: 6px;"
-        >
-
-            <label style="font-size: 12px; color: #94a3b8;">
-                Выберите приложение:
-            </label>
-
-            <select
-                id="targetAppSelect"
-                class="auth-input"
-                style="text-align: left; padding: 10px 14px;"
-            >
-                <option value="vk">ВКонтакте</option>
-                <option value="max">MAX</option>
-                <option value="vk-video">VK Видео</option>
-                <option value="sber">СБЕР(Учёт Онлайн)</option>
-                <option value="sovkombank-vsekarty">Совкомбанк (Все карты MDS)</option>
-                <option value="avito">Авито</option>
-                <option value="tbank">Т-Банк(8PRO)</option>
-                <option value="drive-transit">Т-Банк (Drive Transit)</option>
-                <option value="lenta">Лента</option>
-                <option value="yandex-pay">Яндекс Пэй</option>
-                <option value="2gis">2ГИС</option>
-                <option value="psb">ПСБ (Чайная Церемония)</option>
-                <option value="kuper">Купер</option>
-            </select>
-
-        </div>
-
-        <div style="text-align: left; display: flex; flex-direction: column; gap: 6px;">
-
-            <label style="font-size: 12px; color: #94a3b8;">
-                Новый пароль:
-            </label>
-
-            <input
-                type="password"
-                id="changePassInput"
-                class="auth-input"
-                placeholder="Введите новый пароль..."
-                autocomplete="off"
-            >
-
-        </div>
-
-        <button
-            type="button"
-            class="btn"
-            onclick="saveNewPassword()"
-        >
-            Сохранить пароль
-        </button>
-
-        <button
-            type="button"
-            class="btn btn-secondary"
-            onclick="cancelPasswordManager()"
-        >
-            Назад в панель
-        </button>
-
-    </div>
-
-</div>
-
 <div class="container" id="mainApp" style="padding-bottom: 72px;">
 
     <div class="header-section">
@@ -1957,26 +1555,13 @@
 
     </div>
     
-<div class="warning-box" style="font-weight: 700;">
-
-    <span class="text-warning">
-        ⚠️ <span class="red-text">ВАЖНАЯ ИНФОРМАЦИЯ</span> ⚠️
-    </span>
-
-    <p>
-        📲 После установки всех необходимых приложений
-        <span class="red-text">
-            обязательно свяжитесь с администратором.
-        </span>
-    </p>
-
-    <p>
-        ⚙️ Мы выполним финальную настройку и проверим работу приложений,
-        чтобы всё работало
-        <span class="red-text">
-            стабильно, корректно и без вылетов.
-        </span>
-    </p>
+<div class="warning-box">
+    <div class="warning-title">
+        <span class="warning-icon">!</span>
+        <span>ВАЖНО ПЕРЕД ЗАВЕРШЕНИЕМ</span>
+    </div>
+    <p>После установки нужных приложений <span class="red-text">обязательно свяжитесь с администратором.</span></p>
+    <p>Мы проверим установку и выполним финальную настройку, чтобы приложения работали <span class="red-text">стабильно и без вылетов.</span></p>
 </div>
 
     <div class="card">
@@ -2024,26 +1609,6 @@
 
 </div>
 
-<div class="admin-footer-bar">
-
-    <button
-        type="button"
-        class="btn-admin-trigger"
-        onclick="openAdminAuth()"
-    >
-        ⚙️ Админ-панель
-    </button>
-
-    <button
-        type="button"
-        class="btn-admin-logout"
-        onclick="logoutAdmin()"
-    >
-        🚪 Выйти из админ-панели
-    </button>
-
-</div>
-
 <div
     class="sheet-overlay"
     id="sheetOverlay"
@@ -2054,14 +1619,6 @@
         class="sheet-modal"
         onclick="event.stopPropagation()"
     >
-
-        <button
-            type="button"
-            class="admin-settings-trigger"
-            onclick="openPasswordManager()"
-        >
-            🔐 Управление паролями сайта и приложений
-        </button>
 
         <div class="sheet-header">
 
@@ -2319,8 +1876,6 @@
                     </button>
                 </div>
             </div>
-
-            <hr class="divider-hr">
 
             <hr class="divider-hr">
 
