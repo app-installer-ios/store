@@ -132,7 +132,7 @@ body {
         );
 
     background-size: 160% 160%;
-    background-position: 40% 50%; /* Зафиксировано положение */
+    background-position: 40% 50%;
 
     pointer-events: none;
 }
@@ -301,9 +301,9 @@ body {
     position: absolute;
 
     top: 0;
-    left: 12%;
+    left: 20%; /* Уменьшена ширина и сдвинуто внутрь, чтобы линия не вылезала за углы */
+    right: 20%;
 
-    width: 76%;
     height: 1px;
 
     background:
@@ -315,7 +315,6 @@ body {
         );
 
     opacity: .7;
-    border-radius: 50%; /* Исправлен баг выступания за уголок */
 }
 
 .auth-box::after {
@@ -531,8 +530,8 @@ h1 {
     position: absolute;
 
     top: 0;
-    left: 8%;
-    right: 8%;
+    left: 15%;
+    right: 15%;
 
     height: 1px;
 
@@ -2510,7 +2509,7 @@ function executeDownload() {
             <div
                 class="sheet-item"
                 data-key="lenta"
-                onclick="select`App(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/lenta.plist', 'Лента', 'lenta')"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/lenta.plist', 'Лента', 'lenta')"
             >
                 <div class="sheet-info-box">
                     <span class="app-name">
