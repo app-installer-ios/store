@@ -100,7 +100,7 @@ body {
 }
 
 /* --------------------------------------------------
-   BACKGROUND
+   BACKGROUND (Статичный градиент без анимации)
 -------------------------------------------------- */
 
 .aurora-bg {
@@ -132,9 +132,7 @@ body {
         );
 
     background-size: 160% 160%;
-
-    animation:
-        auroraMove 20s ease-in-out infinite alternate;
+    background-position: 40% 50%; /* Зафиксировано положение */
 
     pointer-events: none;
 }
@@ -177,18 +175,6 @@ body {
         );
 
     filter: blur(90px);
-}
-
-@keyframes auroraMove {
-    0% {
-        background-position: 0% 30%;
-        transform: scale(1);
-    }
-
-    100% {
-        background-position: 100% 70%;
-        transform: scale(1.08);
-    }
 }
 
 .bg-glow {
@@ -329,6 +315,7 @@ body {
         );
 
     opacity: .7;
+    border-radius: 50%; /* Исправлен баг выступания за уголок */
 }
 
 .auth-box::after {
@@ -2523,7 +2510,7 @@ function executeDownload() {
             <div
                 class="sheet-item"
                 data-key="lenta"
-                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/lenta.plist', 'Лента', 'lenta')"
+                onclick="select`App(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/lenta.plist', 'Лента', 'lenta')"
             >
                 <div class="sheet-info-box">
                     <span class="app-name">
