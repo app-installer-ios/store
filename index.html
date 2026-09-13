@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#080a12">
+
     <title>Установка удалённых приложений</title>
 
 <style>
@@ -864,7 +865,8 @@
             "yandex-pay": "123456",
             "2gis": "654321",
             "psb": "112233",
-            "kuper": "445566"
+            "kuper": "445566",
+            "rutube": "000000"
         }
     };
 
@@ -1480,6 +1482,7 @@
                 data-key="2gis"
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/2gis.plist', '2ГИС', '2gis')"
             >
+                <div class="sheet-item"
                 <div class="sheet-info-box">
                     <span class="app-name">2ГИС</span>
                 </div>
@@ -1506,6 +1509,18 @@
             >
                 <div class="sheet-info-box">
                     <span class="app-name">Купер</span>
+                </div>
+            </div>
+
+            <hr class="divider-hr">
+
+            <div
+                class="sheet-item"
+                data-key="rutube"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/rutube.plist', 'Rutube', 'rutube')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">Rutube</span>
                 </div>
             </div>
         </div>
