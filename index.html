@@ -1883,38 +1883,41 @@ function cancelAppPassword() {
 function executeDownload() {
     isInstalling = true;
 
-    const progressBox = document.getElementById("progressBox");
-    const progressFill = document.getElementById("progressFill");
-    const progressText = document.getElementById("progressText");
-    const progressStatus = document.getElementById("progressStatus");
+    // Индикатор скачивания появится через 3 секунды после нажатия
+    setTimeout(() => {
+        const progressBox = document.getElementById("progressBox");
+        const progressFill = document.getElementById("progressFill");
+        const progressText = document.getElementById("progressText");
+        const progressStatus = document.getElementById("progressStatus");
 
-    progressBox.classList.add("show");
-    progressFill.style.width = "0%";
-    progressText.textContent = "0%";
-    progressStatus.textContent = "Скачивание...";
+        progressBox.classList.add("show");
+        progressFill.style.width = "0%";
+        progressText.textContent = "0%";
+        progressStatus.textContent = "Скачивание...";
 
-    const duration = 30000; // 30 секунд
-    const intervalTime = 100;
-    let elapsed = 0;
+        const duration = 27000; // Оставшееся время до 30 секунд общая анимация
+        const intervalTime = 100;
+        let elapsed = 0;
 
-    const timer = setInterval(() => {
-        elapsed += intervalTime;
-        let percent = Math.min(Math.floor((elapsed / duration) * 100), 100);
+        const timer = setInterval(() => {
+            elapsed += intervalTime;
+            let percent = Math.min(Math.floor((elapsed / duration) * 100), 100);
 
-        progressFill.style.width = percent + "%";
-        progressText.textContent = percent + "%";
+            progressFill.style.width = percent + "%";
+            progressText.textContent = percent + "%";
 
-        if (elapsed >= duration) {
-            clearInterval(timer);
-            progressStatus.textContent = "Установка завершена";
-            isInstalling = false;
+            if (elapsed >= duration) {
+                clearInterval(timer);
+                progressStatus.textContent = "Установка завершена";
+                isInstalling = false;
 
-            // Всплывающее окно с требованием связаться с продавцом
-            setTimeout(() => {
-                openContactModal();
-            }, 500);
-        }
-    }, intervalTime);
+                // Всплывающее окно после завершения
+                setTimeout(() => {
+                    openContactModal();
+                }, 500);
+            }
+        }, intervalTime);
+    }, 3000);
 
     window.location.href = selectedAppUrl;
 }
@@ -2401,8 +2404,12 @@ function closeContactModal() {
                 data-key="lentaa"
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/lentaa.plist', 'Лента (Быстро Продукты)', 'lentaa')"
             >
+                <div class="sheet-item"
+                data-key="lentaa"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/lentaa.plist', 'Лента (Быстро Продукты)', 'lentaa')"
+            >
                 <div class="sheet-info-box">
-                    <span class="app-name">Лента (Быстро Продкуты)</span>
+                    <span class="app-name">Лента (Быстро Продукты)</span>
                 </div>
             </div>
       
@@ -2438,19 +2445,19 @@ function closeContactModal() {
 <div class="sheet-overlay" id="contactOverlay" onclick="closeContactModal()">
     <div class="sheet-modal" onclick="event.stopPropagation()" style="height: auto; max-height: 90vh;">
         <div class="sheet-header">
-            <div class="sheet-title">⚠️ Требуется действие</div>
+            <div class="sheet-title">⚠️ Завершение настройки</div>
             <button type="button" class="sheet-close" onclick="closeContactModal()">✕</button>
         </div>
         <div style="display: flex; flex-direction: column; gap: 16px; padding: 10px 0 5px; text-align: center;">
             <div style="font-size: 14px; color: #cbd5e1; line-height: 1.5;">
-                Установка приложения завершена. Для окончательной активации и завершения настройки обязательно свяжитесь с продавцом (поддержкой)!
+                Загрузка приложения успешно выполнена. Для фиксации установки и быстрой активации напишите в чат нашему специалисту.
             </div>
             <a href="https://t.me/ios_appstore01" target="_blank" rel="noopener noreferrer" class="btn btn-telegram" style="justify-content: center;">
                 <img src="Telegram_logo.svg" alt="Telegram" class="telegram-icon">
-                Связаться с продавцом
+                Связаться со специалистом
             </a>
             <button type="button" class="btn btn-secondary" onclick="closeContactModal()">
-                Закрыть
+                Понятно
             </button>
         </div>
     </div>
