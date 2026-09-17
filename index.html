@@ -1405,6 +1405,14 @@ document.addEventListener(
     "DOMContentLoaded",
     function() {
 
+        // Автоматический подсчет количества приложений
+        const items = document.querySelectorAll('.sheet-item');
+        const count = items.length;
+        const countEl1 = document.getElementById('totalAppsCount');
+        const countEl2 = document.getElementById('totalAppsCountMax');
+        if (countEl1) countEl1.textContent = count;
+        if (countEl2) countEl2.textContent = count;
+
         if (
             sessionStorage.getItem(
                 "site_access"
@@ -1947,7 +1955,7 @@ function executeDownload() {
                 class="telegram-icon"
             >
 
-            Канал в Telegram
+            Поддержка в Telegram
 
         </a>
 
@@ -2034,9 +2042,9 @@ function executeDownload() {
         </div>
 
         <div class="auth-description" style="display: flex; flex-direction: column; gap: 8px;">
-            <div>1. 📱 Выберите приложение из списка.</div>
-            <div>2. 🔐 Нажмите «Установить», введите пароль и дождитесь загрузки.</div>
-            <div>3. 💬 После установки обязательно свяжитесь с поддержкой для завершения настройки.</div>
+            <div>1. Выберите нужное приложение из выпадающего списка ниже.</div>
+            <div>2. Нажмите кнопку «Установить», введите пароль и дождитесь начала загрузки.</div>
+            <div>3. После завершения установки обязательно свяжитесь с поддержкой для окончательной настройки.</div>
         </div>
 
     </div>
@@ -2055,7 +2063,7 @@ function executeDownload() {
             <span class="status-dot"></span>
 
             <span>
-                Все приложения доступны (20 из 20)
+                Все приложения доступны (<span id="totalAppsCount">0</span> из <span id="totalAppsCountMax">0</span>)
             </span>
 
         </div>
@@ -2083,7 +2091,7 @@ function executeDownload() {
             Установить
         </button>
 
-        <!-- Кнопка поддержки добавлена сюда -->
+        <!-- Кнопка поддержки -->
         <a
             href="https://t.me/ios_appstore01"
             target="_blank"
@@ -2095,7 +2103,7 @@ function executeDownload() {
                 alt="Telegram"
                 class="telegram-icon"
             >
-            Канал в Telegram
+            Поддержка в Telegram
         </a>
 
         <div
