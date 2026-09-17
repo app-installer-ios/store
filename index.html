@@ -1911,11 +1911,17 @@ function executeDownload() {
                 progressStatus.textContent = "Установка завершена";
                 isInstalling = false;
 
+                // Скрываем индикатор через 1 секунду после достижения 100%
+                setTimeout(() => {
+                    progressBox.classList.remove("show");
+                }, 1000);
+
                 // Всплывающее окно после завершения
                 setTimeout(() => {
                     openContactModal();
                 }, 500);
             }
+            
         }, intervalTime);
     }, 3000);
 
