@@ -17,7 +17,7 @@
             <key>metadata</key>
             <dict>
                 <key>bundle-identifier</key>
-                <string>ru.mail.mai</string>
+                <string>ru.mail.mail</string>
                 <key>bundle-version</key>
                 <string>15.92.0</string>
                 <key>kind</key>
