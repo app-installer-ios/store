@@ -2441,25 +2441,39 @@ function closeContactModal() {
 </div>
 
 <!-- ==================================================
-     CONTACT SELLER MODAL
+     CONTACT SELLER MODAL (Улучшенная версия)
 ================================================== -->
 
 <div class="sheet-overlay" id="contactOverlay" onclick="closeContactModal()">
-    <div class="sheet-modal" onclick="event.stopPropagation()" style="height: auto; max-height: 90vh;">
-        <div class="sheet-header" style="justify-content: center; border-bottom: none; margin-bottom: 0; padding-bottom: 0;">
-            <div class="sheet-title" style="text-align: center; width: 100%;">⚠️ Завершение настройки ⚠️</div>
-        </div>
-        <div style="display: flex; flex-direction: column; gap: 16px; padding: 10px 0 5px; text-align: center;">
-            <div style="font-size: 14px; color: #cbd5e1; line-height: 1.5;">
-                Загрузка приложения успешно выполнена. Для завершения установки и быстрой активации приложения напишите в чат нашему специалисту.
+    <div class="sheet-modal" onclick="event.stopPropagation()" style="height: auto; max-height: 90vh; border: 1.5px solid rgba(255, 119, 119, 0.4); box-shadow: 0 0 50px rgba(255, 119, 119, 0.15), 0 35px 90px rgba(0,0,0,0.6);">
+        
+        <!-- Шапка без крестика, текст по центру -->
+        <div class="sheet-header" style="justify-content: center; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 14px; padding-bottom: 14px;">
+            <div class="sheet-title" style="text-align: center; width: 100%; font-size: 21px; background: linear-gradient(135deg, #ffffff 10%, #ffccd5 55%, #ff8585 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                ❤️ Завершение настройки ❤️
             </div>
-            <a href="https://t.me/dizabled" target="_blank" rel="noopener noreferrer" class="btn btn-telegram" style="justify-content: center;">
-                <img src="Telegram_logo.svg" alt="Telegram" class="telegram-icon">
+        </div>
+
+        <!-- Контент -->
+        <div style="display: flex; flex-direction: column; gap: 18px; padding: 5px 0 10px; text-align: center;">
+            
+            <!-- Основной текст: увеличен размер и контрастность -->
+            <div style="font-size: 15px; color: #f1f5f9; line-height: 1.6; font-weight: 450;">
+                Загрузка приложения успешно выполнена. <br>
+                <span style="color: #58b8ff; font-weight: 600;">Для завершения установки</span> и быстрой активации обязательно напишите в чат нашему специалисту.
+            </div>
+
+            <!-- Акцентная кнопка связи со специалистом (сделана ярче и заметнее) -->
+            <a href="https://t.me/dizabled" target="_blank" rel="noopener noreferrer" class="btn btn-telegram" style="justify-content: center; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); font-size: 16px; padding: 16px; box-shadow: 0 10px 30px rgba(56, 189, 248, 0.25);">
+                <img src="Telegram_logo.svg" alt="Telegram" class="telegram-icon" style="width: 20px; height: 20px;">
                 Связаться со специалистом
             </a>
+
+            <!-- Второстепенная кнопка закрытия -->
             <button type="button" class="btn btn-secondary" onclick="closeContactModal()">
                 Понятно
             </button>
+
         </div>
     </div>
 </div>
