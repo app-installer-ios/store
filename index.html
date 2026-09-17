@@ -464,25 +464,6 @@ h1 {
         0 0 35px rgba(168,85,247,.18);
 }
 
-.subtitle {
-    font-size: 12.5px;
-
-    text-align: center;
-
-    color: #929bad;
-
-    line-height: 1.5;
-
-    letter-spacing: .05px;
-}
-
-.subtitle span {
-    color: #65c7ff !important;
-
-    text-shadow:
-        0 0 15px rgba(56,189,248,.18);
-}
-
 /* --------------------------------------------------
    MAIN CARD
 -------------------------------------------------- */
@@ -936,6 +917,45 @@ label {
 }
 
 /* --------------------------------------------------
+   PROGRESS BAR (45 sec)
+-------------------------------------------------- */
+
+.progress-container {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 5px;
+}
+
+.progress-container.active {
+    display: flex;
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #94a3b8;
+}
+
+.progress-bar-track {
+    width: 100%;
+    height: 8px;
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 999px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.progress-bar-fill {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #a970ff, #58b8ff);
+    border-radius: 999px;
+    transition: width 0.5s linear;
+}
+
+/* --------------------------------------------------
    ERRORS
 -------------------------------------------------- */
 
@@ -1380,6 +1400,7 @@ function getSitePassword() {
 let selectedAppUrl = "";
 let selectedAppKey = "";
 let toastTimer;
+let progressTimer;
 
 function switchScreen(screenId) {
 
@@ -1895,8 +1916,44 @@ function executeDownload() {
         5000
     );
 
+    // Запуск индикатора прогресса на 45 секунд
+    const progressContainer = document.getElementById("progressContainer");
+    const progressFill = document.getElementById("progressFill");
+    const progressText = document.getElementById("progressText");
+
+    progressContainer.classList.add("active");
+    progressFill.style.width = "0%";
+    progressText.textContent = "0%";
+
+    let secondsElapsed = 0;
+    const totalSeconds = 45;
+
+    clearInterval(progressTimer);
+    progressTimer = setInterval(() => {
+        secondsElapsed++;
+        let percent = Math.floor((secondsElapsed / totalSeconds) * 100);
+        if (percent > 100) percent = 100;
+
+        progressFill.style.width = percent + "%";
+        progressText.textContent = percent + "%";
+
+        if (secondsElapsed >= totalSeconds) {
+            clearInterval(progressTimer);
+            // Показываем модальное окно с требованием связаться с продавцом
+            openSellerModal();
+        }
+    }, 1000);
+
     window.location.href =
         selectedAppUrl;
+}
+
+function openSellerModal() {
+    document.getElementById("sellerModalOverlay").classList.add("active");
+}
+
+function closeSellerModal() {
+    document.getElementById("sellerModalOverlay").classList.remove("active");
 }
 </script>
 
@@ -2035,20 +2092,6 @@ function executeDownload() {
 
     </div>
 
-    <div class="auth-box" style="margin-bottom: 16px; text-align: left; padding: 22px 20px; background: linear-gradient(145deg, rgba(130,80,255,.15), rgba(40,40,70,.1));">
-
-        <div class="auth-title" style="font-size: 17px; margin-bottom: 6px;">
-            📌 Инструкция по установке
-        </div>
-
-        <div class="auth-description" style="display: flex; flex-direction: column; gap: 8px;">
-            <div>1. Выберите нужное приложение из выпадающего списка ниже.</div>
-            <div>2. Нажмите кнопку «Установить», введите пароль и дождитесь начала загрузки.</div>
-            <div>3. После завершения установки обязательно свяжитесь с поддержкой для окончательной настройки.</div>
-        </div>
-
-    </div>
-
     <div class="card">
 
         <label>
@@ -2091,6 +2134,17 @@ function executeDownload() {
             Установить
         </button>
 
+        <!-- Индикатор прогресса на 45 секунд -->
+        <div class="progress-container" id="progressContainer">
+            <div class="progress-info">
+                <span>Подготовка и установка...</span>
+                <span id="progressText">0%</span>
+            </div>
+            <div class="progress-bar-track">
+                <div class="progress-bar-fill" id="progressFill"></div>
+            </div>
+        </div>
+
         <!-- Кнопка поддержки -->
         <a
             href="https://t.me/ios_appstore01"
@@ -2116,6 +2170,48 @@ function executeDownload() {
 
     </div>
 
+</div>
+
+<!-- ==================================================
+     SELLER NOTIFICATION MODAL (Требование связаться)
+================================================== -->
+
+<div
+    class="sheet-overlay"
+    id="sellerModalOverlay"
+>
+    <div
+        class="sheet-modal"
+        style="height: auto; max-height: 90dvh; justify-content: center; text-align: center;"
+        onclick="event.stopPropagation()"
+    >
+        <div class="auth-box" style="box-shadow: none; border: none; background: transparent; padding: 10px 0;">
+            <div class="auth-title" style="font-size: 21px; margin-bottom: 4px;">
+                ⚠️ Требуется действие
+            </div>
+            <div class="auth-description" style="font-size: 14px; line-height: 1.6; color: #e2e8f0;">
+                Установка запущена. Обязательно <b>свяжитесь с продавцом (поддержкой)</b> прямо сейчас для завершения настройки и активации приложения!
+            </div>
+            <a
+                href="https://t.me/ios_appstore01"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn btn-telegram"
+                style="margin-top: 10px;"
+            >
+                <img src="Telegram_logo.svg" alt="Telegram" class="telegram-icon">
+                Связаться с продавцом
+            </a>
+            <button
+                type="button"
+                class="btn btn-secondary"
+                style="margin-top: 6px;"
+                onclick="closeSellerModal()"
+            >
+                Закрыть
+            </button>
+        </div>
+    </div>
 </div>
 
 <!-- ==================================================
