@@ -1174,11 +1174,16 @@ label {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    
+    /* Делаем фон не серым, а мягким полупрозрачным градиентом с легким сине-фиолетовым отливом */
+    background: linear-gradient(135deg, rgba(88, 184, 255, 0.06), rgba(168, 85, 247, 0.05));
+    
+    /* Тонкая, едва заметная изящная рамка */
+    border: 1px solid rgba(130, 140, 255, 0.18);
+    
     cursor: pointer;
     flex-shrink: 0;
-    transition: background .2s ease, border-color .2s ease, transform .15s var(--spring);
+    transition: all 0.25s cubic-bezier(.22,1,.36,1);
 }
 
 .sheet-item:hover {
