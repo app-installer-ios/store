@@ -572,7 +572,7 @@ h1 {
 }
 
 label {
-    font-size: 13px;
+    font-size: 15px;
 
     color: #d9e0ea;
 
@@ -588,9 +588,9 @@ label {
 
     width: 100%;
 
-    min-height: 55px;
+    min-height: 58px;
 
-    padding: 14px 16px;
+    padding: 14px 18px;
 
     display: flex;
 
@@ -629,6 +629,10 @@ label {
         background .2s ease;
 }
 
+.custom-select-btn span {
+    font-size: 16px;
+}
+
 .custom-select-btn::after {
     content: "›";
 
@@ -647,7 +651,7 @@ label {
 
     color: #c6b0ff;
 
-    font-size: 20px;
+    font-size: 22px;
 
     line-height: 1;
 
@@ -682,7 +686,7 @@ label {
     position: relative;
 
     width: 100%;
-    min-height: 52px;
+    min-height: 56px;
 
     display: flex;
 
@@ -707,7 +711,7 @@ label {
 
     color: #fff;
 
-    font-size: 15px;
+    font-size: 17px;
 
     font-weight: 650 !important;
 
@@ -797,7 +801,7 @@ label {
 -------------------------------------------------- */
 
 .btn-telegram {
-    gap: 9px;
+    gap: 10px;
 
     background:
         rgba(56,189,248,.055);
@@ -806,6 +810,8 @@ label {
         1px solid rgba(56,189,248,.17);
 
     color: #70d4ff;
+
+    font-size: 17px;
 
     box-shadow:
         0 8px 25px rgba(56,189,248,.06),
@@ -822,8 +828,8 @@ label {
 }
 
 .telegram-icon {
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
 
     object-fit: contain;
 }
@@ -836,7 +842,7 @@ label {
     display: none;
     flex-direction: column;
     gap: 10px;
-    padding: 14px;
+    padding: 16px;
     border-radius: 16px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -852,13 +858,13 @@ label {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 12px;
+    font-size: 14px;
     color: #cbd5e1;
 }
 
 .progress-track {
     width: 100%;
-    height: 8px;
+    height: 9px;
     background: rgba(0, 0, 0, 0.3);
     border-radius: 999px;
     overflow: hidden;
@@ -886,7 +892,7 @@ label {
 
     color: #ff8585;
 
-    font-size: 12px;
+    font-size: 14px;
 
     font-weight: 600 !important;
 }
@@ -920,7 +926,7 @@ label {
     position: relative;
     width: 100%;
     max-width: 430px;
-    height: min(78vh, 600px);
+    height: min(82vh, 640px);
     max-height: calc(100dvh - 30px);
     display: flex;
     flex-direction: column;
@@ -970,7 +976,7 @@ label {
 }
 
 .sheet-title {
-    font-size: 19px;
+    font-size: 21px;
     font-weight: 650 !important;
     letter-spacing: -.4px;
     background: linear-gradient(135deg, #ffffff 10%, #e1c7ff 55%, #9b8cff 100%);
@@ -979,8 +985,8 @@ label {
 }
 
 .sheet-close {
-    width: 34px;
-    height: 34px;
+    width: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -988,7 +994,7 @@ label {
     border: 1px solid rgba(255, 255, 255, 0.12);
     background: rgba(255, 255, 255, 0.065);
     color: #e2d9ff;
-    font-size: 14px;
+    font-size: 16px;
     cursor: pointer;
     transition: transform .2s var(--spring), background .2s ease;
 }
@@ -1011,15 +1017,15 @@ label {
 
 .app-search {
     width: 100%;
-    height: 48px;
-    padding: 0 42px;
+    height: 52px;
+    padding: 0 44px;
     border-radius: 16px;
     /* Делаем изначальную рамку фиолетовой */
     border: 1.5px solid rgba(168, 85, 247, 0.85);
     outline: none;
     background: rgba(0, 0, 0, 0.3);
     color: #fff;
-    font-size: 14px;
+    font-size: 16px;
     backdrop-filter: blur(22px);
     -webkit-backdrop-filter: blur(22px);
     /* Фиолетовое свечение в обычном состоянии */
@@ -1047,23 +1053,23 @@ label {
 
 .search-icon {
     position: absolute;
-    left: 15px;
+    left: 16px;
     top: 50%;
     transform: translateY(-50%);
     /* Меняем цвет иконки на фиолетовый */
     color: #d946ef; 
-    font-size: 16px;
+    font-size: 18px;
     pointer-events: none;
     text-shadow: 0 0 10px rgba(217, 70, 239, 0.6);
 }
 
 .search-clear {
     position: absolute;
-    right: 10px;
+    right: 12px;
     top: 50%;
     transform: translateY(-50%);
-    width: 28px;
-    height: 28px;
+    width: 30px;
+    height: 30px;
     display: none;
     align-items: center;
     justify-content: center;
@@ -1079,7 +1085,7 @@ label {
 }
 
 /* --------------------------------------------------
-   НОВЫЕ ИНФОРМАЦИОННЫЕ БЛОКИ (Статус + Инструкция)
+   НОВЫЕ ИНФОРМАЦИОННЫЕ БЛОКИ (Обведены красным, размещены НАД поиском)
 -------------------------------------------------- */
 
 .info-blocks-container {
@@ -1091,16 +1097,18 @@ label {
 
 .info-card {
     flex: 1;
-    min-height: 52px;
-    padding: 10px 12px;
+    min-height: 58px;
+    padding: 10px 14px;
     border-radius: 14px;
     display: flex;
     align-items: center;
     gap: 10px;
     background: rgba(255, 255, 255, 0.04);
-    border: 1.5px solid rgba(88, 184, 255, 0.25);
+    /* Обведены красным цветом по запросу */
+    border: 1.5px solid rgba(255, 119, 119, 0.7);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 0 15px rgba(255, 119, 119, 0.2);
     transition: all 0.25s ease;
 }
 
@@ -1109,9 +1117,9 @@ label {
 }
 
 .instruction-card:hover {
-    border-color: rgba(34, 211, 238, 0.6);
-    background: rgba(34, 211, 238, 0.08);
-    box-shadow: 0 0 15px rgba(34, 211, 238, 0.2);
+    border-color: rgba(255, 119, 119, 0.95);
+    background: rgba(255, 119, 119, 0.08);
+    box-shadow: 0 0 20px rgba(255, 119, 119, 0.35);
     transform: translateY(-1px);
 }
 
@@ -1132,9 +1140,9 @@ label {
 }
 
 .info-icon-book {
-    font-size: 16px;
+    font-size: 18px;
     flex-shrink: 0;
-    filter: drop-shadow(0 0 6px rgba(34, 211, 238, 0.5));
+    filter: drop-shadow(0 0 6px rgba(255, 119, 119, 0.5));
 }
 
 .info-text {
@@ -1145,7 +1153,7 @@ label {
 }
 
 .info-title {
-    font-size: 13px;
+    font-size: 14.5px;
     font-weight: 600;
     color: #fff;
     line-height: 1.2;
@@ -1155,9 +1163,9 @@ label {
 }
 
 .info-subtitle {
-    font-size: 11px;
-    color: rgba(255, 255, 255, 0.55);
-    margin-top: 2px;
+    font-size: 12.5px;
+    color: rgba(255, 255, 255, 0.65);
+    margin-top: 3px;
 }
 
 /* --------------------------------------------------
@@ -1195,8 +1203,8 @@ label {
     box-shadow: 0 0 8px rgba(74, 222, 128, 0.4);
 }
 .sheet-item {
-    min-height: 50px;
-    padding: 10px 14px;
+    min-height: 56px;
+    padding: 12px 16px;
     border-radius: 14px;
     display: flex;
     align-items: center;
@@ -1236,7 +1244,7 @@ label {
 
 .sheet-item span.app-name {
     color: #f1f5f9;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 550 !important;
 }
 
@@ -1253,8 +1261,54 @@ label {
     display: none;
     text-align: center;
     color: #94a3b8;
-    font-size: 13px;
+    font-size: 15px;
     padding: 30px 10px;
+}
+
+/* --------------------------------------------------
+   МОДАЛЬНОЕ ОКНО ИНСТРУКЦИИ
+-------------------------------------------------- */
+
+.instruction-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 5px 0 10px;
+    text-align: left;
+    overflow-y: auto;
+    max-height: calc(75vh - 100px);
+    padding-right: 4px;
+}
+
+.instruction-step {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 12px 14px;
+    border-radius: 14px;
+}
+
+.step-number {
+    background: linear-gradient(135deg, #a970ff, #58b8ff);
+    color: #fff;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+    box-shadow: 0 0 10px rgba(168,85,247,0.5);
+}
+
+.step-text {
+    font-size: 15px;
+    color: #e2e8f0;
+    line-height: 1.5;
 }
 
 /* --------------------------------------------------
@@ -1301,7 +1355,7 @@ body.keyboard-open .sheet-modal {
     }
 
     .sheet-modal {
-        height: min(84vh, 560px);
+        height: min(86vh, 580px);
     }
 }
 
@@ -1999,9 +2053,14 @@ function closeContactModal() {
     document.getElementById("contactOverlay").classList.remove("active");
 }
 
-// Заглушка для клика по кнопке инструкции в шторке
+// Открытие модального окна инструкции
 function openInstructionModal() {
-    alert("Раздел инструкции находится в разработке");
+    document.getElementById("instructionOverlay").classList.add("active");
+}
+
+// Закрытие модального окна инструкции
+function closeInstructionModal() {
+    document.getElementById("instructionOverlay").classList.remove("active");
 }
 </script>
 
@@ -2232,6 +2291,27 @@ function openInstructionModal() {
 
         </div>
 
+        <!-- НОВЫЕ ИНФОРМАЦИОННЫЕ БЛОКИ (Обведены красным, размещены НАД поиском) -->
+        <div class="info-blocks-container">
+            <!-- Блок 1: Динамический статус приложений -->
+            <div class="info-card app-status-card">
+                <div class="pulse-dot"></div>
+                <div class="info-text">
+                    <span class="info-title" id="app-counter-text">Все приложения активны</span>
+                    <span class="info-subtitle">Работают стабильно</span>
+                </div>
+            </div>
+
+            <!-- Блок 2: Карточка инструкции (слова "Как установить?" убраны) -->
+            <div class="info-card instruction-card" onclick="openInstructionModal()">
+                <div class="info-icon-book">📖</div>
+                <div class="info-text">
+                    <span class="info-title">Инструкция</span>
+                    <span class="info-subtitle">Смотреть этапы</span>
+                </div>
+            </div>
+        </div>
+
         <div class="app-search-wrap">
 
             <span class="search-icon">
@@ -2259,27 +2339,6 @@ function openInstructionModal() {
                 ✕
             </button>
 
-        </div>
-
-        <!-- НОВЫЕ ИНФОРМАЦИОННЫЕ БЛОКИ ПОД ПОИСКОМ -->
-        <div class="info-blocks-container">
-            <!-- Блок 1: Динамический статус приложений -->
-            <div class="info-card app-status-card">
-                <div class="pulse-dot"></div>
-                <div class="info-text">
-                    <span class="info-title" id="app-counter-text">Все приложения активны</span>
-                    <span class="info-subtitle">Работают стабильно</span>
-                </div>
-            </div>
-
-            <!-- Блок 2: Карточка инструкции -->
-            <div class="info-card instruction-card" onclick="openInstructionModal()">
-                <div class="info-icon-book">📖</div>
-                <div class="info-text">
-                    <span class="info-title">Инструкция</span>
-                    <span class="info-subtitle">Как установить?</span>
-                </div>
-            </div>
         </div>
 
         <div
@@ -2523,6 +2582,46 @@ function openInstructionModal() {
       
         </div>
 </div>
+</div>
+
+<!-- ==================================================
+     MODAL: ИНСТРУКЦИЯ ПО УСТАНОВКЕ
+================================================== -->
+
+<div class="sheet-overlay" id="instructionOverlay" onclick="closeInstructionModal()">
+    <div class="sheet-modal" onclick="event.stopPropagation()" style="height: auto; max-height: 85vh; border: 1.5px solid rgba(88, 184, 255, 0.4); box-shadow: 0 0 50px rgba(88, 184, 255, 0.15), 0 35px 90px rgba(0,0,0,0.6);">
+        
+        <div class="sheet-header">
+            <div class="sheet-title">
+                📖 Инструкция по установке
+            </div>
+            <button type="button" class="sheet-close" onclick="closeInstructionModal()">
+                ✕
+            </button>
+        </div>
+
+        <div class="instruction-content">
+            <div class="instruction-step">
+                <div class="step-number">1</div>
+                <div class="step-text">Выберите нужное приложение из выпадающего списка каталога и нажмите кнопку <b>«Установить»</b>.</div>
+            </div>
+            <div class="instruction-step">
+                <div class="step-number">2</div>
+                <div class="step-text">Подтвердите установку приложения во всплывающем системном окне вашего iPhone.</div>
+            </div>
+            <div class="instruction-step">
+                <div class="step-number">3</div>
+                <div class="step-text">После завершения загрузки для активации приложения свяжитесь с нашим специалистом через чат поддержки.</div>
+            </div>
+        </div>
+
+        <div style="margin-top: 16px;">
+            <button type="button" class="btn btn-secondary" onclick="closeInstructionModal()">
+                Понятно
+            </button>
+        </div>
+
+    </div>
 </div>
 
 <!-- ==================================================
