@@ -1165,8 +1165,7 @@ label {
 .sheet-list::-webkit-scrollbar-thumb {
     background: rgba(168, 85, 247, 0.4);
     border-radius: 10px;
-}
-    
+}    
 .sheet-item {
     min-height: 50px;
     padding: 10px 14px;
@@ -1175,11 +1174,14 @@ label {
     align-items: center;
     justify-content: space-between;
     
-    /* Делаем фон не серым, а мягким полупрозрачным градиентом с легким сине-фиолетовым отливом */
+    /* Мягкий полупрозрачный фон */
     background: linear-gradient(135deg, rgba(88, 184, 255, 0.06), rgba(168, 85, 247, 0.05));
     
-    /* Тонкая, едва заметная изящная рамка */
-    border: 1px solid rgba(130, 140, 255, 0.18);
+    /* Делаем обводку неяркого зеленого цвета толщиной 1.5px */
+    border: 1.5px solid rgba(74, 222, 128, 0.4);
+    
+    /* Добавляем легкое приглушенное зеленое свечение для глубины */
+    box-shadow: 0 0 12px rgba(74, 222, 128, 0.1);
     
     cursor: pointer;
     flex-shrink: 0;
