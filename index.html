@@ -1174,16 +1174,20 @@ label {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.05);
+    /* Аккуратная тонкая граница по умолчанию */
+    border: 1px solid rgba(255, 255, 255, 0.1);
     cursor: pointer;
     flex-shrink: 0;
-    transition: background .2s ease, border-color .2s ease, transform .15s var(--spring);
+    transition: all 0.25s cubic-bezier(.22,1,.36,1);
 }
 
 .sheet-item:hover {
-    background: rgba(255, 255, 255, 0.13);
-    border-color: rgba(174, 130, 255, 0.4);
+    background: rgba(168, 85, 247, 0.1);
+    /* Неоновая фиолетовая подсветка при наведении */
+    border-color: rgba(168, 85, 247, 0.5);
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.2);
+    transform: translateY(-1px);
 }
 
 .sheet-item:active {
@@ -1191,9 +1195,12 @@ label {
 }
 
 .sheet-item.selected {
-    background: linear-gradient(135deg, rgba(168,85,247,.22), rgba(99,102,241,.18));
-    border-color: rgba(168, 85, 247, 0.5);
-    box-shadow: 0 4px 20px rgba(168, 85, 247, 0.15);
+    /* Яркий градиент и мощное неоновое свечение для выбранного приложения */
+    background: linear-gradient(135deg, rgba(168,85,247,.28), rgba(99,102,241,.22));
+    border: 1.5px solid rgba(168, 85, 247, 0.85);
+    box-shadow: 
+        0 4px 20px rgba(168, 85, 247, 0.25),
+        0 0 30px rgba(168, 85, 247, 0.15);
 }
 
 .sheet-info-box {
