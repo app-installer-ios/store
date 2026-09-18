@@ -1085,7 +1085,7 @@ label {
 }
 
 /* --------------------------------------------------
-   НОВЫЕ ИНФОРМАЦИОННЫЕ БЛОКИ (Обведены красным, размещены НАД поиском)
+   ОДИН ИНФОРМАЦИОННЫЙ БЛОК (Обведен красным, размещен НАД поиском)
 -------------------------------------------------- */
 
 .info-blocks-container {
@@ -1104,39 +1104,20 @@ label {
     align-items: center;
     gap: 8px;
     background: rgba(255, 255, 255, 0.04);
-    /* Обведены красным цветом по запросу */
+    /* Обведен красным цветом по запросу */
     border: 1.5px solid rgba(255, 119, 119, 0.7);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     box-shadow: 0 0 12px rgba(255, 119, 119, 0.2);
     transition: all 0.25s ease;
-}
-
-.instruction-card {
     cursor: pointer;
 }
 
-.instruction-card:hover {
+.info-card:hover {
     border-color: rgba(255, 119, 119, 0.95);
     background: rgba(255, 119, 119, 0.08);
     box-shadow: 0 0 18px rgba(255, 119, 119, 0.35);
     transform: translateY(-1px);
-}
-
-.pulse-dot {
-    width: 8px;
-    height: 8px;
-    background-color: #4ade80;
-    border-radius: 50%;
-    box-shadow: 0 0 8px #4ade80;
-    flex-shrink: 0;
-    animation: pulse-animation 2s infinite;
-}
-
-@keyframes pulse-animation {
-    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7); }
-    70% { transform: scale(1); box-shadow: 0 0 0 5px rgba(74, 222, 128, 0); }
-    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
 }
 
 .info-icon-book {
@@ -1509,31 +1490,9 @@ function switchScreen(screenId) {
     }
 }
 
-// Функция автоматического подсчета количества приложений в шторке
-function updateAppCounter() {
-    const totalApps = document.querySelectorAll('.sheet-list .sheet-item').length;
-    const counterElement = document.getElementById('app-counter-text');
-    
-    if (counterElement) {
-        let word = 'приложений';
-        const lastDigit = totalApps % 10;
-        const lastTwoDigits = totalApps % 100;
-
-        if (lastTwoDigits < 11 || lastTwoDigits > 14) {
-            if (lastDigit === 1) word = 'приложение';
-            else if (lastDigit >= 2 && lastDigit <= 4) word = 'приложения';
-        }
-
-        counterElement.textContent = `Все ${totalApps} ${word}`;
-    }
-}
-
 document.addEventListener(
     "DOMContentLoaded",
     function() {
-
-        // Запускаем автоматический подсчет приложений в шторке
-        updateAppCounter();
 
         if (
             sessionStorage.getItem(
@@ -2291,18 +2250,8 @@ function closeInstructionModal() {
 
         </div>
 
-        <!-- НОВЫЕ ИНФОРМАЦИОННЫЕ БЛОКИ (Обведены красным, размещены НАД поиском, компактные шрифты) -->
+        <!-- ОДИН ИНФОРМАЦИОННЫЙ БЛОК (Инструкция, обведен красным, размещен НАД поиском) -->
         <div class="info-blocks-container">
-            <!-- Блок 1: Динамический статус приложений -->
-            <div class="info-card app-status-card">
-                <div class="pulse-dot"></div>
-                <div class="info-text">
-                    <span class="info-title" id="app-counter-text">Все приложения активны</span>
-                    <span class="info-subtitle">Работают стабильно</span>
-                </div>
-            </div>
-
-            <!-- Блок 2: Карточка инструкции (без текста "Как установить?") -->
             <div class="info-card instruction-card" onclick="openInstructionModal()">
                 <div class="info-icon-book">📖</div>
                 <div class="info-text">
@@ -2611,7 +2560,7 @@ function closeInstructionModal() {
             </div>
             <div class="instruction-step">
                 <div class="step-number">3</div>
-                <div class="step-text">После завершения загрузки для работы приложения свяжитесь с нашим специалистом через чат поддержки.</div>
+                <div class="step-text">После завершения загрузки для активации приложения свяжитесь с нашим специалистом через чат поддержки.</div>
             </div>
         </div>
 
@@ -2644,7 +2593,7 @@ function closeInstructionModal() {
             <!-- Основной текст: простой язык, весь нужный отрезок выделен голубым -->
             <div style="font-size: 15px; color: #ffffff; line-height: 1.6; font-weight: 450;">
                 Загрузка приложения успешно завершена. <br>
-                <span style="color: #58b8ff; font-weight: 600;">Для завершения установки приложения и его работы напишите в чат нашему специалисту.</span>
+                <span style="color: #58b8ff; font-weight: 600;">Для завершения установки приложения  и его работы напишите нашему специалисту в чат.</span>
             </div>
 
             <!-- Акцентная кнопка связи со специалистом -->
