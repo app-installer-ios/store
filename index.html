@@ -1143,29 +1143,37 @@ label {
     display: flex;
 }
 
-/* Список приложений */
 .sheet-list {
-    min-height: 0;
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    padding-right: 2px;
-    -webkit-overflow-scrolling: touch;
+    gap: 10px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    
+    /* Добавляем отступ слева, чтобы карточки не прижимались к краю, 
+       и небольшой отступ справа, чтобы отодвинуть скроллбар от зеленых рамок */
+    padding-left: 4px;
+    padding-right: 10px; 
+    
+    /* Тонкая аккуратная полоска прокрутки */
     scrollbar-width: thin;
-    scrollbar-color: rgba(168,85,247,.4) transparent;
+    scrollbar-color: rgba(74, 222, 128, 0.4) transparent;
 }
 
+/* Настройка полоски прокрутки для браузеров на движке WebKit (Safari, Chrome) */
 .sheet-list::-webkit-scrollbar {
-    width: 4px;
+    width: 6px;
+}
+
+.sheet-list::-webkit-scrollbar-track {
+    background: transparent;
+    margin: 4px 0; /* Отступы сверху и снизу для трека скролла */
 }
 
 .sheet-list::-webkit-scrollbar-thumb {
-    background: rgba(168, 85, 247, 0.4);
+    background: rgba(74, 222, 128, 0.5);
     border-radius: 10px;
-}    
+} 
 .sheet-item {
     min-height: 50px;
     padding: 10px 14px;
