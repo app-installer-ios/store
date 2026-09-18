@@ -1085,7 +1085,7 @@ label {
 }
 
 /* --------------------------------------------------
-   ОДИН ИНФОРМАЦИОННЫЙ БЛОК (Обведен красным, размещен НАД поиском)
+   ОДИН ИНФОРМАЦИОННЫЙ БЛОК (Статус приложений, обведен красным, размещен НАД поиском)
 -------------------------------------------------- */
 
 .info-blocks-container {
@@ -1110,20 +1110,22 @@ label {
     -webkit-backdrop-filter: blur(12px);
     box-shadow: 0 0 12px rgba(255, 119, 119, 0.2);
     transition: all 0.25s ease;
-    cursor: pointer;
 }
 
-.info-card:hover {
-    border-color: rgba(255, 119, 119, 0.95);
-    background: rgba(255, 119, 119, 0.08);
-    box-shadow: 0 0 18px rgba(255, 119, 119, 0.35);
-    transform: translateY(-1px);
-}
-
-.info-icon-book {
-    font-size: 15px;
+.pulse-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #4ade80;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #4ade80;
     flex-shrink: 0;
-    filter: drop-shadow(0 0 5px rgba(255, 119, 119, 0.5));
+    animation: pulse-animation 2s infinite;
+}
+
+@keyframes pulse-animation {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 5px rgba(74, 222, 128, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
 }
 
 .info-text {
@@ -1244,52 +1246,6 @@ label {
     color: #94a3b8;
     font-size: 13px;
     padding: 20px 10px;
-}
-
-/* --------------------------------------------------
-   МОДАЛЬНОЕ ОКНО ИНСТРУКЦИИ
--------------------------------------------------- */
-
-.instruction-content {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding: 4px 0 8px;
-    text-align: left;
-    overflow-y: auto;
-    max-height: calc(75vh - 90px);
-    padding-right: 4px;
-}
-
-.instruction-step {
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 10px 12px;
-    border-radius: 12px;
-}
-
-.step-number {
-    background: linear-gradient(135deg, #a970ff, #58b8ff);
-    color: #fff;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    font-weight: 700;
-    flex-shrink: 0;
-    box-shadow: 0 0 8px rgba(168,85,247,0.5);
-}
-
-.step-text {
-    font-size: 13.5px;
-    color: #e2e8f0;
-    line-height: 1.45;
 }
 
 /* --------------------------------------------------
@@ -1490,9 +1446,31 @@ function switchScreen(screenId) {
     }
 }
 
+// Функция автоматического подсчета количества приложений в шторке
+function updateAppCounter() {
+    const totalApps = document.querySelectorAll('.sheet-list .sheet-item').length;
+    const counterElement = document.getElementById('app-counter-text');
+    
+    if (counterElement) {
+        let word = 'приложений';
+        const lastDigit = totalApps % 10;
+        const lastTwoDigits = totalApps % 100;
+
+        if (lastTwoDigits < 11 || lastTwoDigits > 14) {
+            if (lastDigit === 1) word = 'приложение';
+            else if (lastDigit >= 2 && lastDigit <= 4) word = 'приложения';
+        }
+
+        counterElement.textContent = `Все ${totalApps} ${word}`;
+    }
+}
+
 document.addEventListener(
     "DOMContentLoaded",
     function() {
+
+        // Запускаем автоматический подсчет приложений в шторке
+        updateAppCounter();
 
         if (
             sessionStorage.getItem(
@@ -2011,16 +1989,6 @@ function openContactModal() {
 function closeContactModal() {
     document.getElementById("contactOverlay").classList.remove("active");
 }
-
-// Открытие модального окна инструкции
-function openInstructionModal() {
-    document.getElementById("instructionOverlay").classList.add("active");
-}
-
-// Закрытие модального окна инструкции
-function closeInstructionModal() {
-    document.getElementById("instructionOverlay").classList.remove("active");
-}
 </script>
 
 <!-- ==================================================
@@ -2250,13 +2218,13 @@ function closeInstructionModal() {
 
         </div>
 
-        <!-- ОДИН ИНФОРМАЦИОННЫЙ БЛОК (Инструкция, обведен красным, размещен НАД поиском) -->
+        <!-- ОДИН ИНФОРМАЦИОННЫЙ БЛОК (Статус доступности приложений, обведен красным, размещен НАД поиском) -->
         <div class="info-blocks-container">
-            <div class="info-card instruction-card" onclick="openInstructionModal()">
-                <div class="info-icon-book">📖</div>
+            <div class="info-card app-status-card">
+                <div class="pulse-dot"></div>
                 <div class="info-text">
-                    <span class="info-title">Инструкция</span>
-                    <span class="info-subtitle">Смотреть этапы</span>
+                    <span class="info-title" id="app-counter-text">Все приложения активны</span>
+                    <span class="info-subtitle">Работают стабильно</span>
                 </div>
             </div>
         </div>
@@ -2492,6 +2460,7 @@ function closeInstructionModal() {
        <div
                 class="sheet-item"
                 data-key="air-pilot"
+                onclick="test"
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/air-pilot.plist', 'Т-Банк (Air Pilot)', 'air-pilot')"
             >
                 <div class="sheet-info-box">
@@ -2531,46 +2500,6 @@ function closeInstructionModal() {
       
         </div>
 </div>
-</div>
-
-<!-- ==================================================
-     MODAL: ИНСТРУКЦИЯ ПО УСТАНОВКЕ
-================================================== -->
-
-<div class="sheet-overlay" id="instructionOverlay" onclick="closeInstructionModal()">
-    <div class="sheet-modal" onclick="event.stopPropagation()" style="height: auto; max-height: 85vh; border: 1.5px solid rgba(88, 184, 255, 0.4); box-shadow: 0 0 50px rgba(88, 184, 255, 0.15), 0 35px 90px rgba(0,0,0,0.6);">
-        
-        <div class="sheet-header">
-            <div class="sheet-title">
-                📖 Инструкция по установке
-            </div>
-            <button type="button" class="sheet-close" onclick="closeInstructionModal()">
-                ✕
-            </button>
-        </div>
-
-        <div class="instruction-content">
-            <div class="instruction-step">
-                <div class="step-number">1</div>
-                <div class="step-text">Выберите нужное приложение из выпадающего списка каталога и нажмите кнопку <b>«Установить»</b>.</div>
-            </div>
-            <div class="instruction-step">
-                <div class="step-number">2</div>
-                <div class="step-text">Подтвердите установку приложения во всплывающем системном окне вашего iPhone.</div>
-            </div>
-            <div class="instruction-step">
-                <div class="step-number">3</div>
-                <div class="step-text">После завершения загрузки для активации приложения свяжитесь с нашим специалистом через чат поддержки.</div>
-            </div>
-        </div>
-
-        <div style="margin-top: 14px;">
-            <button type="button" class="btn btn-secondary" onclick="closeInstructionModal()">
-                Понятно
-            </button>
-        </div>
-
-    </div>
 </div>
 
 <!-- ==================================================
