@@ -1142,7 +1142,26 @@ label {
 .search-clear.visible {
     display: flex;
 }
+<!-- Информационные блоки (Статус и Инструкция) -->
+<div class="info-blocks-container">
+    <!-- Блок 1: Динамический статус приложений -->
+    <div class="info-card app-status-card">
+        <div class="info-icon pulse-dot"></div>
+        <div class="info-text">
+            <span class="info-title" id="app-counter-text">Все приложения активны</span>
+            <span class="info-subtitle">Работают стабильно</span>
+        </div>
+    </div>
 
+    <!-- Блок 2: Кнопка / Карточка инструкции -->
+    <div class="info-card instruction-card" onclick="openInstructionModal()">
+        <div class="info-icon-book">📖</div>
+        <div class="info-text">
+            <span class="info-title">Инструкция</span>
+            <span class="info-subtitle">Как установить?</span>
+        </div>
+    </div>
+</div>
 .sheet-list {
     display: flex;
     flex-direction: column;
@@ -1318,6 +1337,83 @@ body.keyboard-open .sheet-modal {
         max-height:
             calc(100dvh - 30px);
     }
+}
+    /* Контейнер для двух блоков в ряд */
+.info-blocks-container {
+    display: flex;
+    gap: 10px;
+    margin: 14px 0 16px 0;
+}
+
+/* Общий вид карточек статуса и инструкции */
+.info-card {
+    flex: 1;
+    min-height: 52px;
+    padding: 10px 12px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1.5px solid rgba(88, 184, 255, 0.25);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: all 0.25s ease;
+}
+
+/* Эффект при нажатии на карточку инструкции */
+.instruction-card {
+    cursor: pointer;
+}
+.instruction-card:hover {
+    border-color: rgba(34, 211, 238, 0.6);
+    background: rgba(34, 211, 238, 0.08);
+    box-shadow: 0 0 15px rgba(34, 211, 238, 0.2);
+    transform: translateY(-1px);
+}
+
+/* Пульсирующая зеленая точка для статуса */
+.pulse-dot {
+    width: 10px;
+    height: 10px;
+    background-color: #4ade80;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #4ade80;
+    flex-shrink: 0;
+    animation: pulse-animation 2s infinite;
+}
+
+@keyframes pulse-animation {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(74, 222, 128, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+}
+
+/* Иконка книги для инструкции */
+.info-icon-book {
+    font-size: 16px;
+    flex-shrink: 0;
+    filter: drop-shadow(0 0 6px rgba(34, 211, 238, 0.5));
+}
+
+/* Текст внутри карточек */
+.info-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.info-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    line-height: 1.2;
+}
+
+.info-subtitle {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.55);
+    margin-top: 2px;
 }
 </style>
 </head>
@@ -1963,6 +2059,28 @@ function openContactModal() {
 function closeContactModal() {
     document.getElementById("contactOverlay").classList.remove("active");
 }
+    function updateAppCounter() {
+    // Считаем количество элементов приложений в списке (.sheet-item)
+    const totalApps = document.querySelectorAll('.sheet-list .sheet-item').length;
+    const counterElement = document.getElementById('app-counter-text');
+    
+    if (counterElement) {
+        // Функция склонения слова "приложение" (например: 1 приложение, 3 приложения, 5 приложений)
+        let word = 'приложений';
+        const lastDigit = totalApps % 10;
+        const lastTwoDigits = totalApps % 100;
+
+        if (lastTwoDigits < 11 || lastTwoDigits > 14) {
+            if (lastDigit === 1) word = 'приложение';
+            else if (lastDigit >= 2 && lastDigit <= 4) word = 'приложения';
+        }
+
+        counterElement.textContent = `Все ${totalApps} ${word}`;
+    }
+}
+
+// Запускаем подсчет при загрузке страницы
+document.addEventListener('DOMContentLoaded', updateAppCounter);
 </script>
 
 <!-- ==================================================
