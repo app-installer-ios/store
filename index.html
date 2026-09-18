@@ -1150,30 +1150,29 @@ label {
     overflow-y: auto;
     overflow-x: hidden;
     
-    /* Добавляем отступ слева, чтобы карточки не прижимались к краю, 
-       и небольшой отступ справа, чтобы отодвинуть скроллбар от зеленых рамок */
     padding-left: 4px;
     padding-right: 10px; 
     
-    /* Тонкая аккуратная полоска прокрутки */
+    /* Зеленоватая полоска прокрутки */
     scrollbar-width: thin;
-    scrollbar-color: rgba(74, 222, 128, 0.4) transparent;
+    scrollbar-color: rgba(74, 222, 128, 0.6) transparent;
 }
 
-/* Настройка полоски прокрутки для браузеров на движке WebKit (Safari, Chrome) */
 .sheet-list::-webkit-scrollbar {
     width: 6px;
 }
 
 .sheet-list::-webkit-scrollbar-track {
     background: transparent;
-    margin: 4px 0; /* Отступы сверху и снизу для трека скролла */
+    margin: 4px 0;
 }
 
 .sheet-list::-webkit-scrollbar-thumb {
-    background: rgba(74, 222, 128, 0.5);
+    /* Насыщенный зеленый цвет для ползунка скролла */
+    background: rgba(74, 222, 128, 0.7);
     border-radius: 10px;
-} 
+    box-shadow: 0 0 8px rgba(74, 222, 128, 0.4);
+}
 .sheet-item {
     min-height: 50px;
     padding: 10px 14px;
@@ -1182,14 +1181,14 @@ label {
     align-items: center;
     justify-content: space-between;
     
-    /* Мягкий полупрозрачный фон */
-    background: linear-gradient(135deg, rgba(88, 184, 255, 0.06), rgba(168, 85, 247, 0.05));
+    /* Мягкий полупрозрачный фон с бирюзовым отливом */
+    background: linear-gradient(135deg, rgba(34, 211, 238, 0.05), rgba(88, 184, 255, 0.06));
     
-    /* Делаем обводку неяркого зеленого цвета толщиной 1.5px */
-    border: 1.5px solid rgba(74, 222, 128, 0.4);
+    /* Бирюзовая обводка толщиной 1.5px */
+    border: 1.5px solid rgba(34, 211, 238, 0.45);
     
-    /* Добавляем легкое приглушенное зеленое свечение для глубины */
-    box-shadow: 0 0 12px rgba(74, 222, 128, 0.1);
+    /* Легкое бирюзовое свечение */
+    box-shadow: 0 0 12px rgba(34, 211, 238, 0.12);
     
     cursor: pointer;
     flex-shrink: 0;
@@ -1197,8 +1196,10 @@ label {
 }
 
 .sheet-item:hover {
-    background: rgba(255, 255, 255, 0.13);
-    border-color: rgba(174, 130, 255, 0.4);
+    background: rgba(34, 211, 238, 0.12);
+    border-color: rgba(34, 211, 238, 0.75);
+    box-shadow: 0 0 20px rgba(34, 211, 238, 0.25);
+    transform: translateY(-1px);
 }
 
 .sheet-item:active {
