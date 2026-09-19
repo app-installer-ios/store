@@ -835,25 +835,6 @@ label {
 }
 
 /* --------------------------------------------------
-   BTN WHAT'S NEW (Стиль под цвета сайта с красной рамкой под запрос)
--------------------------------------------------- */
-
-.btn-whatsnew {
-    gap: 8px;
-    background: linear-gradient(145deg, rgba(255,255,255,.09), rgba(255,255,255,.03));
-    border: 1.5px solid #ff7777;
-    color: #e2cbf8;
-    font-size: 14px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.3), 0 0 20px rgba(255, 119, 119, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-}
-
-.btn-whatsnew:hover {
-    background: rgba(255, 119, 119, 0.1);
-    border-color: #ff9999;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.4), 0 0 25px rgba(255, 119, 119, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.12);
-}
-
-/* --------------------------------------------------
    PROGRESS CONTAINER (Замена тоста)
 -------------------------------------------------- */
 
@@ -1460,7 +1441,6 @@ function getSitePassword() {
 
 let selectedAppUrl = "";
 let selectedAppKey = "";
-let selectedAppName = "";
 let isInstalling = false;
 
 function switchScreen(screenId) {
@@ -1735,15 +1715,6 @@ function closeSheet() {
     filterApps();
 }
 
-// Функции для управления модальным окном «Что нового»
-function openWhatsNewModal() {
-    document.getElementById("whatsNewOverlay").classList.add("active");
-}
-
-function closeWhatsNewModal() {
-    document.getElementById("whatsNewOverlay").classList.remove("active");
-}
-
 function filterApps() {
 
     const input =
@@ -1870,7 +1841,6 @@ function selectApp(
 
     selectedAppUrl = url;
     selectedAppKey = appKey;
-    selectedAppName = name;
 
     document
         .getElementById(
@@ -1924,12 +1894,6 @@ function startInstallation() {
                 "appPassInput"
             )
             .value = "";
-
-        // Отображаем выбранное приложение в окне ввода пароля
-        const targetLabel = document.getElementById("targetAppName");
-        if (targetLabel) {
-            targetLabel.textContent = selectedAppName;
-        }
 
         switchScreen(
             "appAuthApp"
@@ -2120,8 +2084,7 @@ function closeContactModal() {
         </div>
 
         <div class="auth-description">
-            Введите пароль для установки приложения:
-            <div id="targetAppName" style="color: #58b8ff; font-weight: 650; margin-top: 4px; font-size: 15px;">—</div>
+            Введите пароль для этого приложения
         </div>
 
         <input
@@ -2239,67 +2202,6 @@ function closeContactModal() {
 
     </div>
 
-    <!-- КНОПКА «ЧТО НОВОГО» ПОД ОСНОВНЫМ ОКНОМ С ОТСТУПОМ ОКОЛО 1 СМ (mt-8 / ~30px) -->
-    <div style="margin-top: 30px;">
-        <button
-            type="button"
-            class="btn btn-whatsnew"
-            onclick="openWhatsNewModal()"
-        >
-            ✨ Что нового (Версия 3.2)
-        </button>
-    </div>
-
-</div>
-
-<!-- ==================================================
-     WHAT'S NEW MODAL (Шторка с кастомным списком и скроллом, сдвинутым правее)
-================================================== -->
-
-<div class="sheet-overlay" id="whatsNewOverlay" onclick="closeWhatsNewModal()">
-    <div class="sheet-modal" onclick="event.stopPropagation()" style="border: 1.5px solid #ff7777; box-shadow: 0 35px 90px rgba(0,0,0,0.65), 0 0 30px rgba(255, 119, 119, 0.2);">
-        
-        <div class="sheet-header">
-            <div class="sheet-title">
-                ✨ Что нового
-            </div>
-            <button
-                type="button"
-                class="sheet-close"
-                onclick="closeWhatsNewModal()"
-            >
-                ✕
-            </button>
-        </div>
-
-        <!-- Контейнер списка со скроллом, сдвинутым немного правее с помощью паддингов -->
-        <div style="overflow-y: auto; padding-right: 2px; padding-left: 6px; scrollbar-width: thin; scrollbar-color: rgba(168,85,247,0.7) transparent; flex-grow: 1;">
-            <style>
-                #whatsNewOverlay div::-webkit-scrollbar { width: 6px; }
-                #whatsNewOverlay div::-webkit-scrollbar-track { background: transparent; margin-right: 4px; }
-                #whatsNewOverlay div::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.7); border-radius: 10px; border-right: 2px solid transparent; background-clip: padding-box; }
-            </style>
-            <ul style="margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 10px; font-size: 13.5px; color: #cbd5e1; line-height: 1.5;">
-                <li>Добавлены новые корпоративные профили для стабильной установки без сбоев.</li>
-                <li>Расширен каталог банковских и финансовых приложений по вашим заявкам.</li>
-                <li>Значительно ускорена обработка манифестов для мгновенного старта загрузки.</li>
-                <li>Оптимизирована работа таймера и индикатора прогресса скачивания.</li>
-                <li>Улучшен дизайн элементов интерфейса для комфортной работы в темное время суток.</li>
-                <li>Обновлены алгоритмы быстрого поиска по всему перечню доступных программ.</li>
-                <li>Повышена общая стабильность и отзывчивость интерфейса на всех версиях iOS.</li>
-                <li>Исправлены мелкие визуальные недочёты в модальных окнах и шторках.</li>
-                <li>Усовершенствована защита доступа и безопасность каталога.</li>
-                <li>Добавлена прямая и быстрая связь с технической поддержкой проекта.</li>
-            </ul>
-        </div>
-
-        <div style="margin-top: 14px; flex-shrink: 0;">
-            <button type="button" class="btn btn-secondary" onclick="closeWhatsNewModal()">
-                Понятно
-            </button>
-        </div>
-
-    </div>
 </div>
 
 <!-- ==================================================
@@ -2694,3 +2596,10 @@ function closeContactModal() {
             <button type="button" class="btn btn-secondary" onclick="closeContactModal()">
                 Понятно
             </button>
+
+        </div>
+    </div>
+</div>
+    
+</body>
+</html>
