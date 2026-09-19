@@ -580,106 +580,6 @@ label {
 }
 
 /* --------------------------------------------------
-   WHAT'S NEW WIDGET
--------------------------------------------------- */
-
-.whats-new-card {
-    margin-top: 15px;
-    position: relative;
-    overflow: hidden;
-    padding: 18px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    border-radius: 24px;
-    background:
-        linear-gradient(
-            145deg,
-            rgba(255,255,255,.09),
-            rgba(255,255,255,.03)
-        );
-    backdrop-filter: blur(35px) saturate(160%);
-    -webkit-backdrop-filter: blur(35px) saturate(160%);
-    border: 1px solid rgba(168, 85, 247, 0.3);
-    box-shadow:
-        0 20px 50px rgba(0,0,0,.4),
-        0 0 25px rgba(168, 85, 247, 0.1),
-        inset 0 1px 0 rgba(255,255,255,.12);
-}
-
-.whats-new-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.whats-new-title {
-    font-size: 15px;
-    font-weight: 650 !important;
-    background: linear-gradient(135deg, #ffffff 10%, #e1c7ff 55%, #9b8cff 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.whats-new-badge {
-    font-size: 10.5px;
-    font-weight: 600;
-    color: #43e3a5;
-    background: rgba(67, 227, 165, 0.12);
-    border: 1px solid rgba(67, 227, 165, 0.35);
-    padding: 2px 8px;
-    border-radius: 6px;
-}
-
-.whats-new-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    max-height: 180px;
-    overflow-y: auto;
-    padding-right: 4px;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(168, 85, 247, 0.4) transparent;
-}
-
-.whats-new-list::-webkit-scrollbar {
-    width: 4px;
-}
-
-.whats-new-list::-webkit-scrollbar-thumb {
-    background: rgba(168, 85, 247, 0.4);
-    border-radius: 4px;
-}
-
-.whats-new-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 8px;
-    font-size: 13px;
-    color: #cbd5e1;
-    line-height: 1.4;
-    background: rgba(255, 255, 255, 0.03);
-    padding: 8px 10px;
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.whats-new-dot {
-    width: 6px;
-    height: 6px;
-    background: #a970ff;
-    border-radius: 50%;
-    margin-top: 6px;
-    flex-shrink: 0;
-    box-shadow: 0 0 8px #a970ff;
-}
-
-.whats-new-item span strong {
-    color: #ffffff;
-    font-weight: 600;
-}
-
-/* --------------------------------------------------
    SELECT
 -------------------------------------------------- */
 
@@ -1357,7 +1257,7 @@ label {
     display: none;
     text-align: center;
     color: #94a3b8;
-    font-size: 13.5px;
+    font-size: 13px;
     padding: 20px 10px;
 }
 
@@ -1487,14 +1387,6 @@ const DEFAULT_CONFIG = {
     }
 };
 
-// Список последних изменений для виджета «Что нового в каталоге»
-const newsChanges = [
-    "Добавлены новые актуальные сертификаты и приложения под iOS 17+",
-    "Повышена стабильность загрузки и установки приложений",
-    "Обновлены версии СберБанк (Финансы Онлайн) и Т-Банк",
-    "Оптимизирован поиск и улучшен интерфейс каталога"
-];
-
 let remoteConfig = loadLocalConfig();
 
 function loadLocalConfig() {
@@ -1590,43 +1482,6 @@ function updateAppCounter() {
     }
 }
 
-// Инициализация виджета «Что нового» (показывается всегда)
-function initWhatsNewWidget() {
-    const listContainer = document.getElementById('whatsNewList');
-    const widgetContainer = document.getElementById('whatsNewWidget');
-    
-    if (!listContainer || !widgetContainer) return;
-
-    // Убеждаемся, что виджет виден при открытии/перезагрузке
-    widgetContainer.style.display = 'flex';
-    widgetContainer.style.opacity = '1';
-    widgetContainer.style.transform = 'scale(1)';
-
-    // Рендерим изменения автоматически из массива
-    listContainer.innerHTML = '';
-    newsChanges.forEach(text => {
-        const item = document.createElement('div');
-        item.className = 'whats-new-item';
-        item.innerHTML = `
-            <div class="whats-new-dot"></div>
-            <span>${text}</span>
-        `;
-        listContainer.appendChild(item);
-    });
-}
-
-function closeWhatsNewWidget() {
-    const widgetContainer = document.getElementById('whatsNewWidget');
-    if (widgetContainer) {
-        widgetContainer.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-        widgetContainer.style.opacity = '0';
-        widgetContainer.style.transform = 'scale(0.95)';
-        setTimeout(() => {
-            widgetContainer.style.display = 'none';
-        }, 300);
-    }
-}
-
 document.addEventListener(
     "DOMContentLoaded",
     function() {
@@ -1634,8 +1489,8 @@ document.addEventListener(
         // Запускаем автоматический подсчет приложений в шторке
         updateAppCounter();
         
-        // Инициализируем виджет обновлений
-        initWhatsNewWidget();
+        // Заполняем список обновлений автоматически
+        populateUpdatesList();
 
         if (
             sessionStorage.getItem(
@@ -1792,6 +1647,11 @@ function submitPassword() {
         );
 
         switchScreen("mainApp");
+        
+        // Проверяем, показывалось ли уже окно обновлений (теперь сохраняется в localStorage для каждого визита)
+        setTimeout(() => {
+            checkAndShowUpdatesModal();
+        }, 300);
 
         return;
     }
@@ -2154,6 +2014,64 @@ function openContactModal() {
 function closeContactModal() {
     document.getElementById("contactOverlay").classList.remove("active");
 }
+
+/* --------------------------------------------------
+   ЛОГИКА ОКНА ПОСЛЕДНИХ ОБНОВЛЕНИЙ
+-------------------------------------------------- */
+
+// ВЕРСИЯ ОБНОВЛЕНИЙ: измените эту строку (например, v4, v5 и т.д.), чтобы окно показалось снова всем пользователям даже при наличии закрытого флага в localStorage!
+const CURRENT_UPDATES_VERSION = "v1.0.1";
+
+// Список обновлений (минимум 10 пунктов, автоматически отображается в модальном окне)
+const updatesList = [
+    "Добавлено автоматическое всплывающее окно с историей изменений и патчноутами.",
+    "Интегрирована поддержка постоянного хранения состояния просмотра через localStorage.",
+    "Обновлена и оптимизирована плашка статуса доступности всех удаленных приложений.",
+    "Улучшена стабильность работы встроенного поискового фильтра в каталоге приложений.",
+    "Добавлена поддержка точного подсчета и склонения названий элементов в интерфейсе.",
+    "Оптимизирована плавная анимация появления модальных окон на мобильных устройствах.",
+    "Повышена безопасность ввода основного пароля и кодов защиты для конкретных приложений.",
+    "Обновлены стили скроллбаров и индикаторов прогресса под единую палитру сайта.",
+    "Исправлены мелкие визуальные баги интерфейса при открытии виртуальной клавиатуры.",
+    "Актуализированы сертификаты и манифесты для стабильной установки софта на iOS 16–17+."
+];
+
+function populateUpdatesList() {
+    const listContainer = document.getElementById("updatesListContainer");
+    if (!listContainer) return;
+    
+    listContainer.innerHTML = "";
+    updatesList.forEach((itemText, index) => {
+        const itemEl = document.createElement("div");
+        itemEl.style.cssText = "display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border-radius: 12px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); font-size: 13.5px; color: #f1f5f9; line-height: 1.4;";
+        
+        const badgeEl = document.createElement("span");
+        badgeEl.style.cssText = "font-size: 11px; font-weight: 600; color: #e1c7ff; background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.4); padding: 1px 6px; border-radius: 6px; flex-shrink: 0; margin-top: 1px;";
+        badgeEl.textContent = `#${index + 1}`;
+        
+        const textEl = document.createElement("span");
+        textEl.style.cssText = "flex: 1; word-break: break-word;";
+        textEl.textContent = itemText;
+        
+        itemEl.appendChild(badgeEl);
+        itemEl.appendChild(textEl);
+        listContainer.appendChild(itemEl);
+    });
+}
+
+function checkAndShowUpdatesModal() {
+    const savedVersion = localStorage.getItem("site_updates_version_seen");
+    
+    // Окно показывается, если версия изменилась или пользователь еще не нажимал кнопку подтверждения
+    if (savedVersion !== CURRENT_UPDATES_VERSION) {
+        document.getElementById("updatesOverlay").classList.add("active");
+    }
+}
+
+function closeUpdatesModal() {
+    localStorage.setItem("site_updates_version_seen", CURRENT_UPDATES_VERSION);
+    document.getElementById("updatesOverlay").classList.remove("active");
+}
 </script>
 
 <!-- ==================================================
@@ -2348,25 +2266,6 @@ function closeContactModal() {
             </div>
         </div>
 
-    </div>
-
-    <!-- ВИДЖЕТ: Что нового в каталоге -->
-    <div class="whats-new-card" id="whatsNewWidget">
-        <div class="whats-new-header">
-            <div class="whats-new-title">✨ Что нового в каталоге</div>
-            <div class="whats-new-badge">Обновлено</div>
-        </div>
-        <div class="whats-new-list" id="whatsNewList">
-            <!-- Динамически заполняется из массива newsChanges -->
-        </div>
-        <button
-            type="button"
-            class="btn btn-secondary"
-            onclick="closeWhatsNewWidget()"
-            style="margin-top: 4px;"
-        >
-            Понятно, продолжить
-        </button>
     </div>
 
 </div>
@@ -2738,7 +2637,7 @@ function closeContactModal() {
     <div class="sheet-modal" onclick="event.stopPropagation()" style="height: auto; max-height: 90vh; border: 1.5px solid rgba(255, 119, 119, 0.4); box-shadow: 0 0 50px rgba(255, 119, 119, 0.15), 0 35px 90px rgba(0,0,0,0.6);">
         
         <!-- Шапка без крестика, текст по центру -->
-        <div class="header-section" style="justify-content: center; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 14px; padding-bottom: 14px;">
+        <div class="sheet-header" style="justify-content: center; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 14px; padding-bottom: 14px;">
             <div class="sheet-title" style="text-align: center; width: 100%; font-size: 21px; color: #ffffff; -webkit-text-fill-color: #ffffff;">
                 ⚠️ Завершение настройки ⚠️
             </div>
@@ -2765,6 +2664,47 @@ function closeContactModal() {
             </button>
 
         </div>
+    </div>
+</div>
+
+<!-- ==================================================
+     UPDATES MODAL (Всплывающее окно изменений)
+================================================== -->
+
+<div class="sheet-overlay" id="updatesOverlay" onclick="event.stopPropagation()">
+    <div class="sheet-modal" onclick="event.stopPropagation()" style="height: min(82vh, 600px);">
+        
+        <!-- Шапка -->
+        <div class="sheet-header">
+            <div class="sheet-title">
+                🚀 Последние обновления
+            </div>
+            <button
+                type="button"
+                class="sheet-close"
+                onclick="closeUpdatesModal()"
+            >
+                ✕
+            </button>
+        </div>
+
+        <!-- Описание -->
+        <div style="font-size: 13px; color: #94a3b8; margin-bottom: 12px; flex-shrink: 0; line-height: 1.4;">
+            Список последних улучшений и изменений, внесенных на сайт:
+        </div>
+
+        <!-- Список пунктов обновлений (генерируется автоматически из JavaScript массива updatesList) -->
+        <div id="updatesListContainer" style="display: flex; flex-direction: column; gap: 8px; overflow-y: auto; overflow-x: hidden; padding-right: 6px; margin-bottom: 14px; scrollbar-width: thin; scrollbar-color: rgba(74, 222, 128, 0.6) transparent;">
+            <!-- Скрипт заполнит этот блок автоматически -->
+        </div>
+
+        <!-- Кнопка продолжить -->
+        <div style="flex-shrink: 0; margin-top: auto;">
+            <button type="button" class="btn" onclick="closeUpdatesModal()">
+                Понятно, продолжить
+            </button>
+        </div>
+
     </div>
 </div>
     
