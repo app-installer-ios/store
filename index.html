@@ -1854,6 +1854,12 @@ function selectApp(
         )
         .style.color = "#ffffff";
 
+    // Устанавливаем название выбранного приложения в окно защиты установки
+    const appAuthNameEl = document.getElementById("appAuthAppName");
+    if (appAuthNameEl) {
+        appAuthNameEl.textContent = name;
+    }
+
     document
         .querySelectorAll(
             ".sheet-item"
@@ -2084,7 +2090,8 @@ function closeContactModal() {
         </div>
 
         <div class="auth-description">
-            Введите пароль для этого приложения
+            Вы выбрали приложение: <br>
+            <span id="appAuthAppName" style="color: #58b8ff; font-weight: 600;">Не выбрано</span>
         </div>
 
         <input
