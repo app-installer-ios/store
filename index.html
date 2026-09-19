@@ -1258,7 +1258,7 @@ label {
     flex-direction: column;
     gap: 10px;
     text-align: left;
-    max-height: 200px;
+    max-height: 230px;
     overflow-y: auto;
     padding-right: 4px;
     margin: 4px 0 8px;
@@ -1298,6 +1298,12 @@ label {
     background: rgba(88, 184, 255, 0.15);
     color: #58b8ff;
     border: 1px solid rgba(88, 184, 255, 0.4);
+}
+
+.changelog-badge.fix {
+    background: rgba(255, 119, 119, 0.15);
+    color: #ff7777;
+    border: 1px solid rgba(255, 119, 119, 0.4);
 }
 
 /* --------------------------------------------------
@@ -1473,8 +1479,8 @@ let selectedAppUrl = "";
 let selectedAppKey = "";
 let isInstalling = false;
 
-// Текущая версия каталога для виджета «Что нового»
-const CURRENT_CHANGELOG_VERSION = "1.4.0";
+// Версия каталога для виджета «Что нового»
+const CURRENT_CHANGELOG_VERSION = "1.5.0";
 
 function switchScreen(screenId) {
 
@@ -1519,9 +1525,6 @@ document.addEventListener(
     function() {
 
         updateAppCounter();
-
-        // Проверяем, нужно ли показать виджет «Что нового»
-        checkChangelogModal();
 
         if (
             sessionStorage.getItem(
@@ -1655,14 +1658,13 @@ document.addEventListener(
     }
 );
 
-// Логика показа виджета «Что нового»
+// Логика показа виджета «Что нового» (теперь срабатывает после входа)
 function checkChangelogModal() {
     const seenVersion = localStorage.getItem("seen_changelog_version");
     if (seenVersion !== CURRENT_CHANGELOG_VERSION) {
-        // Небольшая задержка перед появлением для плавности загрузки
         setTimeout(() => {
             document.getElementById("changelogOverlay").classList.add("active");
-        }, 400);
+        }, 500);
     }
 }
 
@@ -1694,6 +1696,9 @@ function submitPassword() {
         );
 
         switchScreen("mainApp");
+
+        // Запуск проверки виджета «Что нового» сразу после перехода на основной экран
+        checkChangelogModal();
 
         return;
     }
@@ -2619,7 +2624,7 @@ function closeContactModal() {
         
         <div class="sheet-header">
             <div class="sheet-title">
-                ✨ Что нового в каталоге
+                ✨ Что нового в каталоге v1.5.0
             </div>
             <button
                 type="button"
@@ -2632,28 +2637,42 @@ function closeContactModal() {
 
         <div style="display: flex; flex-direction: column; gap: 14px; padding: 4px 0;">
             <div style="font-size: 13.5px; color: #94a3b8; text-align: left;">
-                Мы регулярно обновляем каталог и добавляем новые приложения. Вот последние изменения:
+                Список последних обновлений, добавленных приложений и улучшений интерфейса:
             </div>
 
             <div class="changelog-content-list">
                 <div class="changelog-item">
                     <span class="changelog-badge new">Новое</span>
                     <div>
-                        <strong style="color: #fff; font-weight: 600;">СовкомБанк (SCB Notes)</strong> — Добавлено новое приложение в каталог (требуется iOS 17.0).
+                        <strong style="color: #fff; font-weight: 600;">СовкомБанк (SCB Notes)</strong> — Добавлено новое приложение для пользователей iOS 17.0+.
                     </div>
                 </div>
 
                 <div class="changelog-item">
                     <span class="changelog-badge new">Новое</span>
                     <div>
-                        <strong style="color: #fff; font-weight: 600;">Т-Банк (Craftersy)</strong> — Пополнена коллекция приложений для клиентов Т-Банка.
+                        <strong style="color: #fff; font-weight: 600;">Т-Банк (Craftersy)</strong> — Пополнена коллекция альтернативных сборок Т-Банка.
                     </div>
                 </div>
 
                 <div class="changelog-item">
                     <span class="changelog-badge update">Обновление</span>
                     <div>
-                        <strong style="color: #fff; font-weight: 600;">Стабильность установки</strong> — Оптимизирован процесс загрузки и повышена стабильность манифестов.
+                        <strong style="color: #fff; font-weight: 600;">Виджет «Что нового»</strong> — Добавлено приветственное всплывающее окно с историей изменений сразу после авторизации на сайте.
+                    </div>
+                </div>
+
+                <div class="changelog-item">
+                    <span class="changelog-badge update">Обновление</span>
+                    <div>
+                        <strong style="color: #fff; font-weight: 600;">Интерактивный поиск</strong> — Улучшена шторка выбора приложений: добавлен живой поиск по названию, счётчик активных позиций и плашки минимальной версии iOS.
+                    </div>
+                </div>
+
+                <div class="changelog-item">
+                    <span class="changelog-badge fix">Улучшение</span>
+                    <div>
+                        <strong style="color: #fff; font-weight: 600;">Прогресс-бар и поддержка</strong> — Внедрена визуальная шкала загрузки процесса скачивания манифестов и модальное окно связи со специалистом после установки.
                     </div>
                 </div>
             </div>
