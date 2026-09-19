@@ -878,14 +878,15 @@ label {
 }
 
 /* --------------------------------------------------
-   PROGRESS CONTAINER (Минимальный отступ сверху)
+   PROGRESS CONTAINER (Поднят вплотную к кнопке ТГ)
 -------------------------------------------------- */
 
 .progress-container {
     width: 100%;
     max-width: 430px;
     padding: 0 18px;
-    margin-top: 4px;
+    margin-top: -10px; /* Отрицательный отступ для поднятия вплотную к карточке */
+    margin-bottom: 10px;
     display: none; /* По умолчанию скрыт */
     flex-direction: column;
     z-index: 2;
@@ -1866,7 +1867,7 @@ function closeContactModal() {
 </div>
 
 <!-- ==================================================
-     PROGRESS BAR CONTAINER (Минимальный отступ сверху)
+     PROGRESS BAR CONTAINER (Поднят вплотную к кнопке ТГ)
 ================================================== -->
 
 <div class="progress-container" id="progressContainer">
