@@ -2239,8 +2239,8 @@ function closeContactModal() {
 
     </div>
 
-    <!-- КНОПКА «ЧТО НОВОГО» ПОД ОСНОВНЫМ ОКНОМ (С КРАСНОЙ РАМКОЙ) -->
-    <div style="margin-top: 15px;">
+    <!-- КНОПКА «ЧТО НОВОГО» ПОД ОСНОВНЫМ ОКНОМ С ОТСТУПОМ ОКОЛО 1 СМ (mt-8 / ~30px) -->
+    <div style="margin-top: 30px;">
         <button
             type="button"
             class="btn btn-whatsnew"
@@ -2253,7 +2253,7 @@ function closeContactModal() {
 </div>
 
 <!-- ==================================================
-     WHAT'S NEW MODAL (Шторка с 12 пунктами и скроллом)
+     WHAT'S NEW MODAL (Шторка с кастомным списком и скроллом, сдвинутым правее)
 ================================================== -->
 
 <div class="sheet-overlay" id="whatsNewOverlay" onclick="closeWhatsNewModal()">
@@ -2272,26 +2272,24 @@ function closeContactModal() {
             </button>
         </div>
 
-        <!-- Контейнер списка с 12 пунктами и красивым скроллом -->
-        <div style="overflow-y: auto; padding-right: 6px; scrollbar-width: thin; scrollbar-color: rgba(168,85,247,0.6) transparent; flex-grow: 1;">
+        <!-- Контейнер списка со скроллом, сдвинутым немного правее с помощью паддингов -->
+        <div style="overflow-y: auto; padding-right: 2px; padding-left: 6px; scrollbar-width: thin; scrollbar-color: rgba(168,85,247,0.7) transparent; flex-grow: 1;">
             <style>
-                #whatsNewOverlay div::-webkit-scrollbar { width: 5px; }
-                #whatsNewOverlay div::-webkit-scrollbar-track { background: transparent; }
-                #whatsNewOverlay div::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.6); border-radius: 10px; }
+                #whatsNewOverlay div::-webkit-scrollbar { width: 6px; }
+                #whatsNewOverlay div::-webkit-scrollbar-track { background: transparent; margin-right: 4px; }
+                #whatsNewOverlay div::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.7); border-radius: 10px; border-right: 2px solid transparent; background-clip: padding-box; }
             </style>
             <ul style="margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 10px; font-size: 13.5px; color: #cbd5e1; line-height: 1.5;">
-                <li>Список изменений теперь открывается по нажатию отдельной кнопки под основным окном.</li>
-                <li>Добавлено удобное модальное окно для раздела «Что нового».</li>
-                <li>Кнопка вызова обновлений оформлена с яркой красной рамкой для максимального акцента.</li>
-                <li>Список изменений полностью расширен до 12 подробных пунктов.</li>
-                <li>Внедрен аккуратный вертикальный скроллбар с фиолетовым свечением.</li>
-                <li>Оптимизирована работа анимаций загрузки и прогресс-бара.</li>
-                <li>Добавлены новые актуальные приложения в каталог.</li>
-                <li>Выполнено обновление версий и манифестов для всех утилит.</li>
-                <li>Улучшена стабильность и быстродействие интерфейса на iOS устройствах.</li>
-                <li>Исправлены мелкие визуальные баги в темной теме оформления.</li>
-                <li>Оптимизирована работа поиска по каталогу приложений.</li>
-                <li>Исправлены все ошибки с установкой приложения СберKids.</li>
+                <li>Добавлены новые корпоративные профили для стабильной установки без сбоев.</li>
+                <li>Расширен каталог банковских и финансовых приложений по вашим заявкам.</li>
+                <li>Значительно ускорена обработка манифестов для мгновенного старта загрузки.</li>
+                <li>Оптимизирована работа таймера и индикатора прогресса скачивания.</li>
+                <li>Улучшен дизайн элементов интерфейса для комфортной работы в темное время суток.</li>
+                <li>Обновлены алгоритмы быстрого поиска по всему перечню доступных программ.</li>
+                <li>Повышена общая стабильность и отзывчивость интерфейса на всех версиях iOS.</li>
+                <li>Исправлены мелкие визуальные недочёты в модальных окнах и шторках.</li>
+                <li>Усовершенствована защита доступа и безопасность каталога.</li>
+                <li>Добавлена прямая и быстрая связь с технической поддержкой проекта.</li>
             </ul>
         </div>
 
@@ -2696,10 +2694,3 @@ function closeContactModal() {
             <button type="button" class="btn btn-secondary" onclick="closeContactModal()">
                 Понятно
             </button>
-
-        </div>
-    </div>
-</div>
-    
-</body>
-</html>
