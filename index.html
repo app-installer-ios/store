@@ -368,6 +368,35 @@ body {
     line-height: 1.5;
 }
 
+/* Красивая плашка с названием приложения */
+.app-badge-box {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 10px 14px;
+    margin-top: 4px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, rgba(88, 184, 255, 0.12), rgba(168, 85, 247, 0.12));
+    border: 1px solid rgba(88, 184, 255, 0.35);
+    box-shadow: 
+        0 8px 25px rgba(0, 0, 0, 0.25),
+        0 0 20px rgba(88, 184, 255, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+.app-badge-box span {
+    font-size: 14.5px;
+    font-weight: 600 !important;
+    background: linear-gradient(135deg, #ffffff 20%, #9bd7ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 15px rgba(88, 184, 255, 0.3);
+    word-break: break-word;
+}
+
 /* --------------------------------------------------
    INPUTS
 -------------------------------------------------- */
@@ -2090,8 +2119,10 @@ function closeContactModal() {
         </div>
 
         <div class="auth-description">
-            Вы выбрали приложение: <br>
-            <span id="appAuthAppName" style="color: #58b8ff; font-weight: 600;">Не выбрано</span>
+            Вы выбрали приложение:
+            <div class="app-badge-box">
+                <span id="appAuthAppName">Не выбрано</span>
+            </div>
         </div>
 
         <input
