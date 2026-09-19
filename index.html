@@ -835,6 +835,25 @@ label {
 }
 
 /* --------------------------------------------------
+   BTN WHAT'S NEW (Стиль под цвета сайта)
+-------------------------------------------------- */
+
+.btn-whatsnew {
+    gap: 8px;
+    background: rgba(168, 85, 247, 0.08);
+    border: 1px solid rgba(168, 85, 247, 0.25);
+    color: #e2cbf8;
+    font-size: 14px;
+    box-shadow: 0 8px 25px rgba(168, 85, 247, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.btn-whatsnew:hover {
+    background: rgba(168, 85, 247, 0.15);
+    border-color: rgba(168, 85, 247, 0.45);
+    box-shadow: 0 12px 30px rgba(168, 85, 247, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* --------------------------------------------------
    PROGRESS CONTAINER (Замена тоста)
 -------------------------------------------------- */
 
@@ -1441,6 +1460,7 @@ function getSitePassword() {
 
 let selectedAppUrl = "";
 let selectedAppKey = "";
+let selectedAppName = "";
 let isInstalling = false;
 
 function switchScreen(screenId) {
@@ -1841,6 +1861,7 @@ function selectApp(
 
     selectedAppUrl = url;
     selectedAppKey = appKey;
+    selectedAppName = name;
 
     document
         .getElementById(
@@ -1894,6 +1915,12 @@ function startInstallation() {
                 "appPassInput"
             )
             .value = "";
+
+        // Отображаем выбранное приложение в окне ввода пароля
+        const targetLabel = document.getElementById("targetAppName");
+        if (targetLabel) {
+            targetLabel.textContent = selectedAppName;
+        }
 
         switchScreen(
             "appAuthApp"
@@ -2006,6 +2033,14 @@ function openContactModal() {
 function closeContactModal() {
     document.getElementById("contactOverlay").classList.remove("active");
 }
+
+function openWhatsNewModal() {
+    document.getElementById("whatsNewOverlay").classList.add("active");
+}
+
+function closeWhatsNewModal() {
+    document.getElementById("whatsNewOverlay").classList.remove("active");
+}
 </script>
 
 <!-- ==================================================
@@ -2084,7 +2119,8 @@ function closeContactModal() {
         </div>
 
         <div class="auth-description">
-            Введите пароль для этого приложения
+            Введите пароль для установки приложения:
+            <div id="targetAppName" style="color: #58b8ff; font-weight: 650; margin-top: 4px; font-size: 15px;">—</div>
         </div>
 
         <input
@@ -2186,6 +2222,15 @@ function closeContactModal() {
             >
             Канал в Telegram
         </a>
+
+        <!-- Кнопка Что нового -->
+        <button
+            type="button"
+            class="btn btn-whatsnew"
+            onclick="openWhatsNewModal()"
+        >
+            ✨ Что нового
+        </button>
 
         <div
             id="progressBox"
@@ -2595,6 +2640,43 @@ function closeContactModal() {
             <!-- Второстепенная кнопка закрытия -->
             <button type="button" class="btn btn-secondary" onclick="closeContactModal()">
                 Понятно
+            </button>
+
+        </div>
+    </div>
+</div>
+
+<!-- ==================================================
+     WHAT'S NEW MODAL
+================================================== -->
+
+<div class="sheet-overlay" id="whatsNewOverlay" onclick="closeWhatsNewModal()">
+    <div class="sheet-modal" onclick="event.stopPropagation()" style="height: auto; max-height: 85vh;">
+        
+        <div class="sheet-header">
+            <div class="sheet-title">
+                ✨ Что нового
+            </div>
+            <button type="button" class="sheet-close" onclick="closeWhatsNewModal()">
+                ✕
+            </button>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 14px; padding: 5px 0 10px; overflow-y: auto;">
+            
+            <div style="font-size: 13.5px; color: #cbd5e1; line-height: 1.5; background: rgba(255,255,255,0.03); padding: 12px 14px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.07);">
+                <div style="color: #58b8ff; font-weight: 650; margin-bottom: 4px; font-size: 14px;">🚀 Последние изменения сайта:</div>
+                <ul style="margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px;">
+                    <li>Добавлено отображение выбранного приложения в окне ввода пароля для установки.</li>
+                    <li>Добавлено новое интерактивное окно «Что нового» с историей обновлений.</li>
+                    <li>Оптимизирована работа анимаций загрузки и прогресс-бара.</li>
+                    <li>Добавлены новые приложения и обновлены версии всех приложений.</li>
+                    <li>Исправлены все ошибки с установкой приложения СберKids.</li>
+                </ul>
+            </div>
+
+            <button type="button" class="btn btn-secondary" onclick="closeWhatsNewModal()">
+                Закрыть
             </button>
 
         </div>
