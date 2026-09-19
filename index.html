@@ -100,7 +100,7 @@ body {
 }
 
 /* --------------------------------------------------
-   BACKGROUND
+   BACKGROUND (Статичный градиент без анимации)
 -------------------------------------------------- */
 
 .aurora-bg {
@@ -179,12 +179,18 @@ body {
 
 .bg-glow {
     position: fixed;
+
     width: 300px;
     height: 300px;
+
     border-radius: 50%;
+
     filter: blur(120px);
+
     opacity: .24;
+
     z-index: -5;
+
     pointer-events: none;
 }
 
@@ -207,13 +213,23 @@ body {
 .container {
     width: 100%;
     max-width: 430px;
-    padding: 0 18px max(10px, env(safe-area-inset-bottom));
+
+    padding:
+        0 18px
+        max(10px, env(safe-area-inset-bottom));
+
     z-index: 2;
+
     display: none;
+
     flex-direction: column;
+
     justify-content: center;
+
     margin: auto 0;
-    animation: screenIn .45s var(--spring);
+
+    animation:
+        screenIn .45s var(--spring);
 }
 
 .container.active-screen {
@@ -223,41 +239,68 @@ body {
 @keyframes screenIn {
     from {
         opacity: 0;
-        transform: translateY(14px) scale(.975);
+        transform:
+            translateY(14px)
+            scale(.975);
     }
+
     to {
         opacity: 1;
-        transform: translateY(0) scale(1);
+        transform:
+            translateY(0)
+            scale(1);
     }
 }
 
 /* --------------------------------------------------
-   AUTH / INFO BOX
+   AUTH / INFO BOX (UNIFIED STYLE)
 -------------------------------------------------- */
 
 .auth-box {
     position: relative;
     overflow: hidden;
-    background: linear-gradient(145deg, rgba(255,255,255,.115), rgba(255,255,255,.045));
-    backdrop-filter: blur(40px) saturate(170%);
-    -webkit-backdrop-filter: blur(40px) saturate(170%);
-    border: 1px solid rgba(255,255,255,.145);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.115),
+            rgba(255,255,255,.045)
+        );
+
+    backdrop-filter:
+        blur(40px)
+        saturate(170%);
+
+    -webkit-backdrop-filter:
+        blur(40px)
+        saturate(170%);
+
+    border:
+        1px solid rgba(255,255,255,.145);
+
     border-radius: 30px;
-    padding: 30px 21px 22px;
+
+    padding:
+        30px 21px 22px;
+
     text-align: center;
+
     box-shadow:
         0 35px 90px rgba(0,0,0,.52),
         inset 0 1px 0 rgba(255,255,255,.14),
         inset 0 -1px 0 rgba(255,255,255,.025);
+
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
 
+/* Окно защиты установки (уменьшенные отступы и обводка в стиле поиска) */
 #appAuthApp .auth-box {
     gap: 12px;
     padding-top: 26px;
     padding-bottom: 20px;
+    /* Цвет обводки и свечение как у строки поиска в шторке */
     border: 1.5px solid rgba(168, 85, 247, 0.85);
     box-shadow: 
         0 35px 90px rgba(0,0,0,.52),
@@ -269,24 +312,46 @@ body {
 
 .auth-box::before {
     content: "";
+
     position: absolute;
+
     top: 0;
     left: 20%;
     right: 20%;
+
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,.5), transparent);
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255,255,255,.5),
+            transparent
+        );
+
     opacity: .7;
 }
 
 .auth-box::after {
     content: "";
+
     position: absolute;
+
     width: 180px;
     height: 180px;
+
     top: -110px;
     right: -80px;
-    background: radial-gradient(circle, rgba(168,85,247,.22), transparent 68%);
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(168,85,247,.22),
+            transparent 68%
+        );
+
     filter: blur(20px);
+
     pointer-events: none;
 }
 
@@ -294,11 +359,22 @@ body {
     font-size: 23px;
     line-height: 1.15;
     letter-spacing: -.5px;
+
     font-weight: 650 !important;
-    background: linear-gradient(135deg, #ffffff 10%, #e1c7ff 55%, #9b8cff 100%);
+
+    background:
+        linear-gradient(
+            135deg,
+            #ffffff 10%,
+            #e1c7ff 55%,
+            #9b8cff 100%
+        );
+
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 30px rgba(168,85,247,.16);
+
+    text-shadow:
+        0 0 30px rgba(168,85,247,.16);
 }
 
 .auth-description {
@@ -307,6 +383,7 @@ body {
     line-height: 1.5;
 }
 
+/* Измененная плашка с названием выбранного приложения (максимально заметная) */
 .app-badge-box {
     display: inline-flex;
     align-items: center;
@@ -315,6 +392,7 @@ body {
     padding: 10px 14px;
     margin-top: 8px;
     border-radius: 14px;
+    /* Яркий фиолетово-розовый градиент фона с добавлением неонового свечения */
     background: linear-gradient(135deg, rgba(168, 85, 247, 0.28), rgba(217, 70, 239, 0.18));
     border: 2px solid rgba(217, 70, 239, 0.95);
     box-shadow: 
@@ -343,20 +421,40 @@ body {
 .auth-input {
     width: 100%;
     height: 52px;
+
     border-radius: 17px;
-    border: 1px solid rgba(255,255,255,.105);
+
+    border:
+        1px solid rgba(255,255,255,.105);
+
     outline: none;
-    background: rgba(0,0,0,.18);
+
+    background:
+        rgba(0,0,0,.18);
+
     color: #fff;
+
     padding: 0 15px;
+
     font-size: 15px;
+
     text-align: center;
-    backdrop-filter: blur(22px);
-    -webkit-backdrop-filter: blur(22px);
+
+    backdrop-filter:
+        blur(22px);
+
+    -webkit-backdrop-filter:
+        blur(22px);
+
     box-shadow:
         inset 0 1px 0 rgba(255,255,255,.045),
         inset 0 2px 10px rgba(0,0,0,.16);
-    transition: border .2s ease, box-shadow .25s ease, background .25s ease, transform .2s ease;
+
+    transition:
+        border .2s ease,
+        box-shadow .25s ease,
+        background .25s ease,
+        transform .2s ease;
 }
 
 .auth-input::placeholder {
@@ -364,8 +462,12 @@ body {
 }
 
 .auth-input:focus {
-    border-color: rgba(178,130,255,.52);
-    background: rgba(255,255,255,.065);
+    border-color:
+        rgba(178,130,255,.52);
+
+    background:
+        rgba(255,255,255,.065);
+
     box-shadow:
         0 0 0 3px rgba(168,85,247,.08),
         0 0 30px rgba(168,85,247,.13),
@@ -382,28 +484,49 @@ body {
 
 h1 {
     margin: 0 0 9px;
+
     text-align: center;
+
     font-size: 25px;
     line-height: 1.08;
+
     letter-spacing: -.75px;
+
     font-weight: 700 !important;
-    background: linear-gradient(135deg, #ffffff 5%, #eee5ff 35%, #c99dff 66%, #8fa5ff 100%);
+
+    background:
+        linear-gradient(
+            135deg,
+            #ffffff 5%,
+            #eee5ff 35%,
+            #c99dff 66%,
+            #8fa5ff 100%
+        );
+
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 35px rgba(168,85,247,.18);
+
+    text-shadow:
+        0 0 35px rgba(168,85,247,.18);
 }
 
 .subtitle {
     font-size: 12.5px;
+
     text-align: center;
+
     color: #929bad;
+
     line-height: 1.5;
+
     letter-spacing: .05px;
 }
 
 .subtitle span {
     color: #65c7ff !important;
-    text-shadow: 0 0 15px rgba(56,189,248,.18);
+
+    text-shadow:
+        0 0 15px rgba(56,189,248,.18);
 }
 
 /* --------------------------------------------------
@@ -413,15 +536,34 @@ h1 {
 .card {
     position: relative;
     overflow: hidden;
+
     padding: 20px;
+
     display: flex;
     flex-direction: column;
+
     gap: 13px;
+
     border-radius: 28px;
-    background: linear-gradient(145deg, rgba(255,255,255,.105), rgba(255,255,255,.035));
-    backdrop-filter: blur(38px) saturate(165%);
-    -webkit-backdrop-filter: blur(38px) saturate(165%);
-    border: 1px solid rgba(255,255,255,.14);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.105),
+            rgba(255,255,255,.035)
+        );
+
+    backdrop-filter:
+        blur(38px)
+        saturate(165%);
+
+    -webkit-backdrop-filter:
+        blur(38px)
+        saturate(165%);
+
+    border:
+        1px solid rgba(255,255,255,.14);
+
     box-shadow:
         0 28px 75px rgba(0,0,0,.45),
         inset 0 1px 0 rgba(255,255,255,.13),
@@ -430,31 +572,56 @@ h1 {
 
 .card::before {
     content: "";
+
     position: absolute;
+
     top: 0;
     left: 15%;
     right: 15%;
+
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,.48), transparent);
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255,255,255,.48),
+            transparent
+        );
+
     opacity: .65;
 }
 
 .card::after {
     content: "";
+
     position: absolute;
+
     width: 190px;
     height: 190px;
+
     right: -120px;
     top: -120px;
+
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(168,85,247,.15), transparent 70%);
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(168,85,247,.15),
+            transparent 70%
+        );
+
     filter: blur(15px);
+
     pointer-events: none;
 }
 
 label {
     font-size: 13px;
+
     color: #d9e0ea;
+
     font-weight: 600 !important;
 }
 
@@ -464,25 +631,48 @@ label {
 
 .custom-select-btn {
     position: relative;
+
     width: 100%;
+
     min-height: 52px;
+
     padding: 14px 16px;
+
     display: flex;
+
     align-items: center;
     justify-content: space-between;
+
     text-align: left;
+
     border-radius: 18px;
-    border: 1px solid rgba(255,255,255,.105);
-    background: rgba(255,255,255,.048);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
+
+    border:
+        1px solid rgba(255,255,255,.105);
+
+    background:
+        rgba(255,255,255,.048);
+
+    backdrop-filter:
+        blur(24px);
+
+    -webkit-backdrop-filter:
+        blur(24px);
+
     color: #fff;
+
     outline: none;
+
     box-shadow:
         inset 0 1px 0 rgba(255,255,255,.065),
         0 8px 25px rgba(0,0,0,.10);
+
     cursor: pointer;
-    transition: transform .2s var(--spring), border .2s ease, background .2s ease;
+
+    transition:
+        transform .2s var(--spring),
+        border .2s ease,
+        background .2s ease;
 }
 
 .custom-select-btn span {
@@ -491,23 +681,39 @@ label {
 
 .custom-select-btn::after {
     content: "›";
+
     width: 25px;
     height: 25px;
+
     display: flex;
+
     align-items: center;
     justify-content: center;
+
     border-radius: 50%;
-    background: rgba(255,255,255,.065);
+
+    background:
+        rgba(255,255,255,.065);
+
     color: #c6b0ff;
+
     font-size: 20px;
+
     line-height: 1;
+
     flex-shrink: 0;
-    transition: transform .25s var(--spring), background .2s ease;
+
+    transition:
+        transform .25s var(--spring),
+        background .2s ease;
 }
 
 .custom-select-btn:hover {
-    background: rgba(255,255,255,.07);
-    border-color: rgba(174,130,255,.35);
+    background:
+        rgba(255,255,255,.07);
+
+    border-color:
+        rgba(174,130,255,.35);
 }
 
 .custom-select-btn:hover::after {
@@ -524,44 +730,84 @@ label {
 
 .btn {
     position: relative;
+
     width: 100%;
     min-height: 50px;
+
     display: flex;
+
     align-items: center;
     justify-content: center;
+
     padding: 12px;
+
     overflow: hidden;
+
     border-radius: 16px;
-    border: 1px solid rgba(255,255,255,.18);
-    background: linear-gradient(135deg, rgba(168,85,247,.93), rgba(99,102,241,.94));
+
+    border:
+        1px solid rgba(255,255,255,.18);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(168,85,247,.93),
+            rgba(99,102,241,.94)
+        );
+
     color: #fff;
+
     font-size: 14px;
+
     font-weight: 650 !important;
+
     letter-spacing: .05px;
+
     text-decoration: none;
+
     cursor: pointer;
+
     box-shadow:
         0 15px 35px rgba(109,68,220,.28),
         inset 0 1px 0 rgba(255,255,255,.30),
         inset 0 -1px 0 rgba(0,0,0,.08);
-    transition: transform .2s var(--spring), filter .2s ease, box-shadow .2s ease;
+
+    transition:
+        transform .2s var(--spring),
+        filter .2s ease,
+        box-shadow .2s ease;
 }
 
 .btn::before {
     content: "";
+
     position: absolute;
+
     inset: 0;
-    background: linear-gradient(110deg, transparent 15%, rgba(255,255,255,.20) 48%, transparent 80%);
-    transform: translateX(-125%);
-    transition: transform .65s var(--spring);
+
+    background:
+        linear-gradient(
+            110deg,
+            transparent 15%,
+            rgba(255,255,255,.20) 48%,
+            transparent 80%
+        );
+
+    transform:
+        translateX(-125%);
+
+    transition:
+        transform .65s var(--spring);
 }
 
 .btn:hover::before {
-    transform: translateX(125%);
+    transform:
+        translateX(125%);
 }
 
 .btn:hover {
     filter: brightness(1.08);
+
     box-shadow:
         0 18px 42px rgba(109,68,220,.37),
         inset 0 1px 0 rgba(255,255,255,.34);
@@ -569,20 +815,31 @@ label {
 
 .btn:active {
     transform: scale(.975);
+
     filter: brightness(.95);
 }
 
 .btn-secondary {
     margin-top: 1px;
-    background: rgba(255,255,255,.052);
-    border: 1px solid rgba(255,255,255,.10);
+
+    background:
+        rgba(255,255,255,.052);
+
+    border:
+        1px solid rgba(255,255,255,.10);
+
     color: #cbd5e1;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.05);
 }
 
 .btn-secondary:hover {
-    background: rgba(255,255,255,.085);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.07);
+    background:
+        rgba(255,255,255,.085);
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.07);
 }
 
 /* --------------------------------------------------
@@ -591,17 +848,26 @@ label {
 
 .btn-telegram {
     gap: 8px;
-    background: rgba(56,189,248,.055);
-    border: 1px solid rgba(56,189,248,.17);
+
+    background:
+        rgba(56,189,248,.055);
+
+    border:
+        1px solid rgba(56,189,248,.17);
+
     color: #70d4ff;
+
     font-size: 14px;
+
     box-shadow:
         0 8px 25px rgba(56,189,248,.06),
         inset 0 1px 0 rgba(255,255,255,.05);
 }
 
 .btn-telegram:hover {
-    background: rgba(56,189,248,.085);
+    background:
+        rgba(56,189,248,.085);
+
     box-shadow:
         0 12px 30px rgba(56,189,248,.12),
         inset 0 1px 0 rgba(255,255,255,.07);
@@ -610,11 +876,12 @@ label {
 .telegram-icon {
     width: 17px;
     height: 17px;
+
     object-fit: contain;
 }
 
 /* --------------------------------------------------
-   PROGRESS CONTAINER
+   PROGRESS CONTAINER (Замена тоста)
 -------------------------------------------------- */
 
 .progress-box {
@@ -666,14 +933,18 @@ label {
 
 .auth-error {
     display: none;
+
     margin-top: -5px;
+
     color: #ff8585;
+
     font-size: 12px;
+
     font-weight: 600 !important;
 }
 
 /* --------------------------------------------------
-   SHEET OVERLAY & MODAL
+   SHEET OVERLAY & MODAL (Единый стиль)
 -------------------------------------------------- */
 
 .sheet-overlay {
@@ -711,6 +982,7 @@ label {
     background: linear-gradient(145deg, rgba(255,255,255,0.08), rgba(15,20,35,0.75));
     backdrop-filter: blur(40px) saturate(170%);
     -webkit-backdrop-filter: blur(40px) saturate(170%);
+    /* Неоновая рамка и свечение шторки под стиль примера */
     border: 1.5px solid rgba(130, 140, 255, 0.45);
     box-shadow: 
         0 35px 90px rgba(0,0,0,0.65), 
@@ -782,6 +1054,7 @@ label {
     transform: scale(.9);
 }
 
+/* Поиск внутри шторки (в стиле auth-input) */
 .app-search-wrap {
     position: relative;
     flex-shrink: 0;
@@ -793,6 +1066,7 @@ label {
     height: 44px;
     padding: 0 38px;
     border-radius: 14px;
+    /* Делаем изначальную рамку фиолетовой */
     border: 1.5px solid rgba(168, 85, 247, 0.85);
     outline: none;
     background: rgba(0, 0, 0, 0.3);
@@ -800,6 +1074,7 @@ label {
     font-size: 13.5px;
     backdrop-filter: blur(22px);
     -webkit-backdrop-filter: blur(22px);
+    /* Фиолетовое свечение в обычном состоянии */
     box-shadow: 
         inset 0 1px 0 rgba(255,255,255,.08),
         inset 0 2px 10px rgba(0,0,0,.2),
@@ -827,6 +1102,7 @@ label {
     left: 14px;
     top: 50%;
     transform: translateY(-50%);
+    /* Меняем цвет иконки на фиолетовый */
     color: #d946ef; 
     font-size: 15px;
     pointer-events: none;
@@ -855,7 +1131,7 @@ label {
 }
 
 /* --------------------------------------------------
-   INFO BLOCKS
+   ОДИН ИНФОРМАЦИОННЫЙ БЛОК (Статус приложений, обведен красным, размещен НАД поиском)
 -------------------------------------------------- */
 
 .info-blocks-container {
@@ -874,6 +1150,7 @@ label {
     align-items: center;
     gap: 8px;
     background: rgba(255, 255, 255, 0.04);
+    /* Обведен красным цветом по запросу */
     border: 1.5px solid rgba(255, 119, 119, 0.7);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
@@ -921,7 +1198,7 @@ label {
 }
 
 /* --------------------------------------------------
-   SHEET LIST
+   СПИСОК ПРИЛОЖЕНИЙ И СКРОЛЛ
 -------------------------------------------------- */
 
 .sheet-list {
@@ -930,8 +1207,11 @@ label {
     gap: 8px;
     overflow-y: auto;
     overflow-x: hidden;
+    
     padding-left: 2px;
     padding-right: 8px; 
+    
+    /* Зеленоватая полоска прокрутки */
     scrollbar-width: thin;
     scrollbar-color: rgba(74, 222, 128, 0.6) transparent;
 }
@@ -946,11 +1226,11 @@ label {
 }
 
 .sheet-list::-webkit-scrollbar-thumb {
+    /* Насыщенный зеленый цвет для ползунка скролла */
     background: rgba(74, 222, 128, 0.7);
     border-radius: 10px;
     box-shadow: 0 0 8px rgba(74, 222, 128, 0.4);
 }
-
 .sheet-item {
     min-height: 44px;
     padding: 8px 12px;
@@ -958,9 +1238,16 @@ label {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    
+    /* Мягкий полупрозрачный фон с бирюзовым отливом */
     background: linear-gradient(135deg, rgba(34, 211, 238, 0.05), rgba(88, 184, 255, 0.06));
+    
+    /* Бирюзовая обводка толщиной 1.5px */
     border: 1.5px solid rgba(34, 211, 238, 0.45);
+    
+    /* Легкое бирюзовое свечение */
     box-shadow: 0 0 10px rgba(34, 211, 238, 0.12);
+    
     cursor: pointer;
     flex-shrink: 0;
     transition: all 0.25s cubic-bezier(.22,1,.36,1);
@@ -995,6 +1282,7 @@ label {
     text-shadow: 0 0 10px rgba(168,85,247,0.4);
 }
 
+/* Плашка с минимальной версией iOS */
 .ios-badge {
     font-size: 11px;
     font-weight: 600;
@@ -1019,32 +1307,49 @@ label {
     padding: 20px 10px;
 }
 
+/* --------------------------------------------------
+   KEYBOARD
+-------------------------------------------------- */
+
 body.keyboard-open .sheet-overlay {
     align-items: flex-start;
+
     padding-top: 15px;
 }
 
 body.keyboard-open .sheet-modal {
     transform: none !important;
-    height: calc(100dvh - 30px);
-    max-height: calc(100dvh - 30px);
+
+    height:
+        calc(100dvh - 30px);
+
+    max-height:
+        calc(100dvh - 30px);
 }
+
+/* --------------------------------------------------
+   SMALL SCREENS
+-------------------------------------------------- */
 
 @media (max-height: 680px) {
     .container {
         transform: scale(.94);
     }
+
     .header-section {
         margin-bottom: 11px;
     }
+
     .card {
         padding: 16px;
         gap: 10px;
     }
+
     .auth-box {
         padding: 23px 18px 18px;
         gap: 12px;
     }
+
     .sheet-modal {
         height: min(86vh, 560px);
     }
@@ -1055,9 +1360,11 @@ body.keyboard-open .sheet-modal {
         padding-left: 14px;
         padding-right: 14px;
     }
+
     h1 {
         font-size: 23px;
     }
+
     .card {
         padding: 17px;
     }
@@ -1074,9 +1381,13 @@ body.keyboard-open .sheet-modal {
         align-items: flex-start;
         padding-top: 15px;
     }
+
     .sheet-modal {
-        height: calc(100dvh - 30px);
-        max-height: calc(100dvh - 30px);
+        height:
+            calc(100dvh - 30px);
+
+        max-height:
+            calc(100dvh - 30px);
     }
 }   
 </style>
@@ -1091,6 +1402,7 @@ body.keyboard-open .sheet-modal {
 <script>
 const DEFAULT_CONFIG = {
     sitePassword: "930218",
+
     appPasswords: {
         "vk": "852431",
         "max": "754526",
@@ -1117,6 +1429,7 @@ const DEFAULT_CONFIG = {
         "blum": "541740",
         "scbnotes": "185628",
         "craftersy": "385490"
+        
     }
 };
 
@@ -1124,21 +1437,43 @@ let remoteConfig = loadLocalConfig();
 
 function loadLocalConfig() {
     try {
-        const saved = localStorage.getItem("local_site_config_v3");
+        const saved =
+            localStorage.getItem("local_site_config_v3");
+
         if (!saved) {
-            return JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+            return JSON.parse(
+                JSON.stringify(DEFAULT_CONFIG)
+            );
         }
+
         const parsed = JSON.parse(saved);
+
         return {
-            sitePassword: parsed.sitePassword || DEFAULT_CONFIG.sitePassword,
+            sitePassword:
+                parsed.sitePassword ||
+                DEFAULT_CONFIG.sitePassword,
+
             appPasswords: {
-                ...JSON.parse(JSON.stringify(DEFAULT_CONFIG.appPasswords)),
+                ...JSON.parse(
+                    JSON.stringify(
+                        DEFAULT_CONFIG.appPasswords
+                    )
+                ),
+
                 ...(parsed.appPasswords || {})
             }
         };
+
     } catch (e) {
-        console.error("Ошибка загрузки локальной конфигурации:", e);
-        return JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+
+        console.error(
+            "Ошибка загрузки локальной конфигурации:",
+            e
+        );
+
+        return JSON.parse(
+            JSON.stringify(DEFAULT_CONFIG)
+        );
     }
 }
 
@@ -1155,222 +1490,512 @@ let selectedAppKey = "";
 let isInstalling = false;
 
 function switchScreen(screenId) {
-    document.querySelectorAll(".container").forEach(el => {
-        el.classList.remove("active-screen");
-    });
-    const target = document.getElementById(screenId);
+
+    document
+        .querySelectorAll(".container")
+        .forEach(el => {
+            el.classList.remove(
+                "active-screen"
+            );
+        });
+
+    const target =
+        document.getElementById(screenId);
+
     if (target) {
-        target.classList.add("active-screen");
+        target.classList.add(
+            "active-screen"
+        );
     }
 }
 
+// Функция автоматического подсчета количества приложений в шторке
 function updateAppCounter() {
     const totalApps = document.querySelectorAll('.sheet-list .sheet-item').length;
     const counterElement = document.getElementById('app-counter-text');
+    
     if (counterElement) {
         let word = 'приложений';
         const lastDigit = totalApps % 10;
         const lastTwoDigits = totalApps % 100;
+
         if (lastTwoDigits < 11 || lastTwoDigits > 14) {
             if (lastDigit === 1) word = 'приложение';
             else if (lastDigit >= 2 && lastDigit <= 4) word = 'приложения';
         }
+
         counterElement.textContent = `Все ${totalApps} ${word}`;
     }
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-    updateAppCounter();
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
 
-    if (sessionStorage.getItem("site_access") === "true") {
-        switchScreen("mainApp");
-    } else {
-        switchScreen("authApp");
-    }
+        // Запускаем автоматический подсчет приложений в шторке
+        updateAppCounter();
 
-    document.getElementById("passInput").addEventListener("keydown", e => {
-        if (e.key === "Enter") {
-            submitPassword();
+        if (
+            sessionStorage.getItem(
+                "site_access"
+            ) === "true"
+        ) {
+            switchScreen("mainApp");
+        } else {
+            switchScreen("authApp");
         }
-    });
 
-    document.getElementById("appPassInput").addEventListener("keydown", e => {
-        if (e.key === "Enter") {
-            submitAppPassword();
-        }
-    });
-
-    const searchInput = document.getElementById("appSearchInput");
-    if (searchInput) {
-        searchInput.addEventListener("input", filterApps);
-        searchInput.addEventListener("keydown", function(e) {
-            if (e.key === "Escape") {
-                clearAppSearch();
-                searchInput.blur();
-            }
-        });
-    }
-
-    if (window.visualViewport) {
-        const updateKeyboardState = () => {
-            const viewportHeight = window.visualViewport.height;
-            const screenHeight = window.screen.height;
-            const keyboardLikelyOpen = screenHeight - viewportHeight > 120;
-            document.body.classList.toggle(
-                "keyboard-open",
-                keyboardLikelyOpen && document.getElementById("sheetOverlay").classList.contains("active")
+        document
+            .getElementById("passInput")
+            .addEventListener(
+                "keydown",
+                e => {
+                    if (e.key === "Enter") {
+                        submitPassword();
+                    }
+                }
             );
-        };
-        window.visualViewport.addEventListener("resize", updateKeyboardState);
-        window.visualViewport.addEventListener("scroll", updateKeyboardState);
-    }
 
-    document.querySelectorAll("input").forEach(input => {
-        input.addEventListener("focus", () => {
-            setTimeout(() => {
-                const box = input.closest(".auth-box") || input.closest(".card") || input;
-                box.scrollIntoView({ behavior: "smooth", block: "start" });
-            }, 300);
-        });
-    });
-});
+        document
+            .getElementById("appPassInput")
+            .addEventListener(
+                "keydown",
+                e => {
+                    if (e.key === "Enter") {
+                        submitAppPassword();
+                    }
+                }
+            );
+
+        const searchInput =
+            document.getElementById(
+                "appSearchInput"
+            );
+
+        if (searchInput) {
+
+            searchInput.addEventListener(
+                "input",
+                filterApps
+            );
+
+            searchInput.addEventListener(
+                "keydown",
+                function(e) {
+
+                    if (e.key === "Escape") {
+                        clearAppSearch();
+                        searchInput.blur();
+                    }
+
+                }
+            );
+        }
+
+        if (window.visualViewport) {
+
+            const updateKeyboardState =
+                () => {
+
+                    const viewportHeight =
+                        window.visualViewport.height;
+
+                    const screenHeight =
+                        window.screen.height;
+
+                    const keyboardLikelyOpen =
+                        screenHeight -
+                        viewportHeight > 120;
+
+                    document.body.classList.toggle(
+                        "keyboard-open",
+                        keyboardLikelyOpen &&
+                        document
+                            .getElementById(
+                                "sheetOverlay"
+                            )
+                            .classList.contains(
+                                "active"
+                            )
+                    );
+                };
+
+            window.visualViewport.addEventListener(
+                "resize",
+                updateKeyboardState
+            );
+
+            window.visualViewport.addEventListener(
+                "scroll",
+                updateKeyboardState
+            );
+        }
+
+        document
+            .querySelectorAll("input")
+            .forEach(input => {
+
+                input.addEventListener(
+                    "focus",
+                    () => {
+
+                        setTimeout(
+                            () => {
+
+                                const box =
+                                    input.closest(
+                                        ".auth-box"
+                                    ) ||
+                                    input.closest(
+                                        ".card"
+                                    ) ||
+                                    input;
+
+                                box.scrollIntoView({
+                                    behavior:
+                                        "smooth",
+                                    block:
+                                        "start"
+                                });
+
+                            },
+                            300
+                        );
+                    }
+                );
+            });
+    }
+);
 
 function submitPassword() {
-    const input = document.getElementById("passInput");
-    const errorMsg = document.getElementById("authError");
 
-    if (input.value.trim() === getSitePassword()) {
-        sessionStorage.setItem("site_access", "true");
+    const input =
+        document.getElementById(
+            "passInput"
+        );
+
+    const errorMsg =
+        document.getElementById(
+            "authError"
+        );
+
+    if (
+        input.value.trim() ===
+        getSitePassword()
+    ) {
+
+        sessionStorage.setItem(
+            "site_access",
+            "true"
+        );
+
         switchScreen("mainApp");
+
         return;
     }
 
     errorMsg.style.display = "block";
+
     input.value = "";
+
     input.focus();
 }
 
 function openSheet() {
-    const searchInput = document.getElementById("appSearchInput");
+
+    const searchInput =
+        document.getElementById(
+            "appSearchInput"
+        );
+
     if (searchInput) {
+
         searchInput.value = "";
-        document.getElementById("searchClear").classList.remove("visible");
+
+        document
+            .getElementById(
+                "searchClear"
+            )
+            .classList.remove(
+                "visible"
+            );
     }
+
     filterApps();
-    document.getElementById("sheetOverlay").classList.add("active");
-    document.body.classList.remove("keyboard-open");
+
+    document
+        .getElementById(
+            "sheetOverlay"
+        )
+        .classList.add("active");
+
+    document.body.classList.remove(
+        "keyboard-open"
+    );
 }
 
 function closeSheet() {
-    const searchInput = document.getElementById("appSearchInput");
+
+    const searchInput =
+        document.getElementById(
+            "appSearchInput"
+        );
+
     if (searchInput) {
+
         searchInput.value = "";
+
         searchInput.blur();
     }
-    document.getElementById("sheetOverlay").classList.remove("active");
-    document.body.classList.remove("keyboard-open");
+
+    document
+        .getElementById(
+            "sheetOverlay"
+        )
+        .classList.remove("active");
+
+    document.body.classList.remove(
+        "keyboard-open"
+    );
+
     filterApps();
 }
 
 function filterApps() {
-    const input = document.getElementById("appSearchInput");
+
+    const input =
+        document.getElementById(
+            "appSearchInput"
+        );
+
     if (!input) return;
 
-    const query = input.value.trim().toLowerCase();
-    const clearBtn = document.getElementById("searchClear");
-    const emptyMessage = document.getElementById("searchEmpty");
+    const query =
+        input.value
+            .trim()
+            .toLowerCase();
+
+    const clearBtn =
+        document.getElementById(
+            "searchClear"
+        );
+
+    const emptyMessage =
+        document.getElementById(
+            "searchEmpty"
+        );
 
     if (query) {
-        clearBtn.classList.add("visible");
+        clearBtn.classList.add(
+            "visible"
+        );
     } else {
-        clearBtn.classList.remove("visible");
+        clearBtn.classList.remove(
+            "visible"
+        );
     }
 
     let visibleCount = 0;
 
-    document.querySelectorAll(".sheet-item").forEach(item => {
-        const appNameElement = item.querySelector(".app-name");
-        if (!appNameElement) return;
+    document
+        .querySelectorAll(".sheet-item")
+        .forEach(item => {
 
-        const name = appNameElement.textContent.toLowerCase();
-        const matches = name.includes(query);
+            const appNameElement =
+                item.querySelector(
+                    ".app-name"
+                );
 
-        if (!matches) {
-            item.style.display = "none";
-            const hr = item.nextElementSibling;
-            if (hr && hr.classList.contains("divider-hr")) {
-                hr.style.display = "none";
+            if (!appNameElement) return;
+
+            const name =
+                appNameElement
+                    .textContent
+                    .toLowerCase();
+
+            const matches =
+                name.includes(query);
+
+            if (!matches) {
+
+                item.style.display =
+                    "none";
+
+                const hr =
+                    item.nextElementSibling;
+
+                if (
+                    hr &&
+                    hr.classList.contains(
+                        "divider-hr"
+                    )
+                ) {
+                    hr.style.display =
+                        "none";
+                }
+
+                return;
             }
-            return;
-        }
 
-        item.style.display = "flex";
-        const hr = item.nextElementSibling;
-        if (hr && hr.classList.contains("divider-hr")) {
-            hr.style.display = "block";
-        }
-        visibleCount++;
-    });
+            item.style.display =
+                "flex";
 
-    emptyMessage.style.display = visibleCount === 0 ? "block" : "none";
+            const hr =
+                item.nextElementSibling;
+
+            if (
+                hr &&
+                hr.classList.contains(
+                    "divider-hr"
+                )
+            ) {
+                hr.style.display =
+                    "block";
+            }
+
+            visibleCount++;
+        });
+
+    emptyMessage.style.display =
+        visibleCount === 0
+            ? "block"
+            : "none";
 }
 
 function clearAppSearch() {
-    const input = document.getElementById("appSearchInput");
+
+    const input =
+        document.getElementById(
+            "appSearchInput"
+        );
+
     if (!input) return;
+
     input.value = "";
+
     filterApps();
+
     input.focus();
 }
 
-function selectApp(element, url, name, appKey) {
+function selectApp(
+    element,
+    url,
+    name,
+    appKey
+) {
+
     selectedAppUrl = url;
     selectedAppKey = appKey;
 
-    document.getElementById("selectedAppText").textContent = name;
-    document.getElementById("selectedAppText").style.color = "#ffffff";
+    document
+        .getElementById(
+            "selectedAppText"
+        )
+        .textContent = name;
 
+    document
+        .getElementById(
+            "selectedAppText"
+        )
+        .style.color = "#ffffff";
+
+    // Устанавливаем название выбранного приложения в окно защиты установки
     const appAuthNameEl = document.getElementById("appAuthAppName");
     if (appAuthNameEl) {
         appAuthNameEl.textContent = name;
     }
 
-    document.querySelectorAll(".sheet-item").forEach(item => {
-        item.classList.remove("selected");
-    });
+    document
+        .querySelectorAll(
+            ".sheet-item"
+        )
+        .forEach(item => {
+            item.classList.remove(
+                "selected"
+            );
+        });
 
-    element.classList.add("selected");
+    element.classList.add(
+        "selected"
+    );
+
     closeSheet();
 }
 
 function startInstallation() {
+
     if (!selectedAppUrl || isInstalling) {
         return;
     }
 
-    if (getAppPasswords()[selectedAppKey]) {
-        document.getElementById("appPassError").style.display = "none";
-        document.getElementById("appPassInput").value = "";
-        switchScreen("appAuthApp");
-        document.getElementById("appPassInput").focus();
+    if (
+        getAppPasswords()[
+            selectedAppKey
+        ]
+    ) {
+
+        document
+            .getElementById(
+                "appPassError"
+            )
+            .style.display = "none";
+
+        document
+            .getElementById(
+                "appPassInput"
+            )
+            .value = "";
+
+        switchScreen(
+            "appAuthApp"
+        );
+
+        document
+            .getElementById(
+                "appPassInput"
+            )
+            .focus();
+
         return;
     }
 
-    triggerRealDownload();
+    executeDownload();
 }
 
 function submitAppPassword() {
-    const input = document.getElementById("appPassInput");
-    const errorMsg = document.getElementById("appPassError");
 
-    if (input.value.trim() === getAppPasswords()[selectedAppKey]) {
-        switchScreen("mainApp");
-        triggerRealDownload();
+    const input =
+        document.getElementById(
+            "appPassInput"
+        );
+
+    const errorMsg =
+        document.getElementById(
+            "appPassError"
+        );
+
+    if (
+        input.value.trim() ===
+        getAppPasswords()[
+            selectedAppKey
+        ]
+    ) {
+
+        switchScreen(
+            "mainApp"
+        );
+
+        executeDownload();
+
         return;
     }
 
-    errorMsg.style.display = "block";
+    errorMsg.style.display =
+        "block";
+
     input.value = "";
+
     input.focus();
 }
 
@@ -1378,58 +2003,52 @@ function cancelAppPassword() {
     switchScreen("mainApp");
 }
 
-function triggerRealDownload() {
+function executeDownload() {
     isInstalling = true;
 
-    const progressBox = document.getElementById("progressBox");
-    const progressFill = document.getElementById("progressFill");
-    const progressText = document.getElementById("progressText");
-    const progressStatus = document.getElementById("progressStatus");
-
-    // Мгновенное отображение прогресс-бара по клику на Установить
-    progressBox.classList.add("show");
-    progressFill.style.width = "0%";
-    progressText.textContent = "0%";
-    progressStatus.textContent = "Подготовка к загрузке...";
-
-    // Системный запрос на установку iOS
-    window.location.href = selectedAppUrl;
-
-    let percent = 0;
-    const duration = 25000; 
-    const intervalTime = 150;
-    const increment = (intervalTime / duration) * 100;
-
-    const timer = setInterval(() => {
-        percent += increment;
-        
-        if (percent >= 99) {
-            percent = 99;
-            progressStatus.textContent = "Установка на устройство...";
-            clearInterval(timer);
-        }
-
-        let displayedPercent = Math.floor(percent);
-        progressFill.style.width = displayedPercent + "%";
-        progressText.textContent = displayedPercent + "%";
-
-        if (displayedPercent > 30 && displayedPercent < 70) {
-            progressStatus.textContent = "Загрузка приложения...";
-        }
-    }, intervalTime);
-
+    // Индикатор скачивания появится через 3 секунды после нажатия
     setTimeout(() => {
-        progressFill.style.width = "100%";
-        progressText.textContent = "100%";
-        progressStatus.textContent = "Установка завершена";
-        isInstalling = false;
+        const progressBox = document.getElementById("progressBox");
+        const progressFill = document.getElementById("progressFill");
+        const progressText = document.getElementById("progressText");
+        const progressStatus = document.getElementById("progressStatus");
 
-        setTimeout(() => {
-            progressBox.classList.remove("show");
-            openContactModal();
-        }, 1000);
+        progressBox.classList.add("show");
+        progressFill.style.width = "0%";
+        progressText.textContent = "0%";
+        progressStatus.textContent = "Скачивание...";
 
-    }, 28000);
+        const duration = 27000; // Оставшееся время до 30 секунд общая анимация
+        const intervalTime = 100;
+        let elapsed = 0;
+
+        const timer = setInterval(() => {
+            elapsed += intervalTime;
+            let percent = Math.min(Math.floor((elapsed / duration) * 100), 100);
+
+            progressFill.style.width = percent + "%";
+            progressText.textContent = percent + "%";
+
+            if (elapsed >= duration) {
+                clearInterval(timer);
+                progressStatus.textContent = "Установка завершена";
+                isInstalling = false;
+
+                // Скрываем индикатор через 1 секунду после достижения 100%
+                setTimeout(() => {
+                    progressBox.classList.remove("show");
+                }, 1000);
+
+                // Всплывающее окно после завершения
+                setTimeout(() => {
+                    openContactModal();
+                }, 500);
+            }
+            
+        }, intervalTime);
+    }, 1500);
+
+    window.location.href = selectedAppUrl;
 }
 
 function openContactModal() {
@@ -1446,13 +2065,18 @@ function closeContactModal() {
 ================================================== -->
 
 <div class="container" id="authApp">
+
     <div class="auth-box">
+
         <div class="auth-title">
             👋 Добро пожаловать!
         </div>
+
         <div class="auth-description">
-            Введите пароль для доступа к каталогу приложений
+            Введите пароль для доступа
+            к каталогу приложений
         </div>
+
         <input
             type="tel"
             inputmode="numeric"
@@ -1462,17 +2086,41 @@ function closeContactModal() {
             placeholder="Введите пароль"
             autocomplete="off"
         >
-        <div id="authError" class="auth-error">
+
+        <div
+            id="authError"
+            class="auth-error"
+        >
             Неверный пароль
         </div>
-        <button type="button" class="btn" onclick="submitPassword()">
+
+        <button
+            type="button"
+            class="btn"
+            onclick="submitPassword()"
+        >
             Войти
         </button>
-        <a href="https://t.me/ios_appstore01" target="_blank" rel="noopener noreferrer" class="btn btn-telegram">
-            <img src="Telegram_logo.svg" alt="Telegram" class="telegram-icon">
+
+        <a
+            href="https://t.me/ios_appstore01"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-telegram"
+        >
+
+            <img
+                src="Telegram_logo.svg"
+                alt="Telegram"
+                class="telegram-icon"
+            >
+
             Канал в Telegram
+
         </a>
+
     </div>
+
 </div>
 
 <!-- ==================================================
@@ -1480,16 +2128,20 @@ function closeContactModal() {
 ================================================== -->
 
 <div class="container" id="appAuthApp">
+
     <div class="auth-box">
+
         <div class="auth-title">
             🔒 Защита установки
         </div>
+
         <div class="auth-description">
             Вы выбрали приложение:
             <div class="app-badge-box">
                 <span id="appAuthAppName">Не выбрано</span>
             </div>
         </div>
+
         <input
             type="tel"
             inputmode="numeric"
@@ -1499,48 +2151,101 @@ function closeContactModal() {
             placeholder="Введите пароль"
             autocomplete="off"
         >
-        <div id="appPassError" class="auth-error">
+
+        <div
+            id="appPassError"
+            class="auth-error"
+        >
             Неверный пароль
         </div>
-        <button type="button" class="btn" onclick="submitAppPassword()">
+
+        <button
+            type="button"
+            class="btn"
+            onclick="submitAppPassword()"
+        >
             Подтвердить
         </button>
-        <button type="button" class="btn btn-secondary" onclick="cancelAppPassword()">
+
+        <button
+            type="button"
+            class="btn btn-secondary"
+            onclick="cancelAppPassword()"
+        >
             Назад
         </button>
+
     </div>
+
 </div>
 
 <!-- ==================================================
      MAIN SCREEN
 ================================================== -->
 
-<div class="container" id="mainApp" style="padding-bottom:30px;">
+<div
+    class="container"
+    id="mainApp"
+    style="padding-bottom:30px;"
+>
+
     <div class="header-section">
+
         <h1>
             Установка удалённых<br>
             приложений
         </h1>
+
     </div>
 
     <div class="card">
+
         <label>
             Выберите приложение
         </label>
-        <button type="button" class="custom-select-btn" onclick="openSheet()">
-            <span id="selectedAppText" style="color:#94a3b8;">
+
+        <button
+            type="button"
+            class="custom-select-btn"
+            onclick="openSheet()"
+        >
+
+            <span
+                id="selectedAppText"
+                style="color:#94a3b8;"
+            >
                 Нажмите для выбора приложения
             </span>
+
         </button>
-        <button type="button" class="btn" onclick="startInstallation()">
+
+        <button
+            type="button"
+            class="btn"
+            onclick="startInstallation()"
+        >
             Установить
         </button>
-        <a href="https://t.me/ios_appstore01" target="_blank" rel="noopener noreferrer" class="btn btn-telegram">
-            <img src="Telegram_logo.svg" alt="Telegram" class="telegram-icon">
+
+        <!-- Кнопка поддержки -->
+        <a
+            href="https://t.me/ios_appstore01"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-telegram"
+        >
+            <img
+                src="Telegram_logo.svg"
+                alt="Telegram"
+                class="telegram-icon"
+            >
             Канал в Telegram
         </a>
 
-        <div id="progressBox" class="progress-box">
+        <div
+            id="progressBox"
+            class="progress-box"
+        >
             <div class="progress-info">
                 <span id="progressStatus">Скачивание...</span>
                 <span id="progressText">0%</span>
@@ -1549,24 +2254,43 @@ function closeContactModal() {
                 <div id="progressFill" class="progress-fill"></div>
             </div>
         </div>
+
     </div>
+
 </div>
 
 <!-- ==================================================
      APP SELECTION SHEET
 ================================================== -->
 
-<div class="sheet-overlay" id="sheetOverlay" onclick="closeSheet()">
-    <div class="sheet-modal" onclick="event.stopPropagation()">
+<div
+    class="sheet-overlay"
+    id="sheetOverlay"
+    onclick="closeSheet()"
+>
+
+    <div
+        class="sheet-modal"
+        onclick="event.stopPropagation()"
+    >
+
         <div class="sheet-header">
+
             <div class="sheet-title">
                 Выбор приложения
             </div>
-            <button type="button" class="sheet-close" onclick="closeSheet()">
+
+            <button
+                type="button"
+                class="sheet-close"
+                onclick="closeSheet()"
+            >
                 ✕
             </button>
+
         </div>
 
+        <!-- ОДИН ИНФОРМАЦИОННЫЙ БЛОК (Статус доступности приложений, обведен красным, размещен НАД поиском) -->
         <div class="info-blocks-container">
             <div class="info-card app-status-card">
                 <div class="pulse-dot"></div>
@@ -1578,7 +2302,11 @@ function closeContactModal() {
         </div>
 
         <div class="app-search-wrap">
-            <span class="search-icon">⌕</span>
+
+            <span class="search-icon">
+                ⌕
+            </span>
+
             <input
                 type="search"
                 id="appSearchInput"
@@ -1589,142 +2317,305 @@ function closeContactModal() {
                 autocapitalize="none"
                 spellcheck="false"
             >
-            <button type="button" id="searchClear" class="search-clear" onclick="clearAppSearch()" aria-label="Очистить поиск">
+
+            <button
+                type="button"
+                id="searchClear"
+                class="search-clear"
+                onclick="clearAppSearch()"
+                aria-label="Очистить поиск"
+            >
                 ✕
             </button>
+
         </div>
 
-        <div id="searchEmpty" class="search-empty">
+        <div
+            id="searchEmpty"
+            class="search-empty"
+        >
             🔎 Ничего не найдено
         </div>
 
-        <div class="sheet-list">
-            <div class="sheet-item" data-key="vk" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk.plist', 'ВКонтакте', 'vk')">
-                <div class="sheet-info-box"><span class="app-name">ВКонтакте</span></div>
+  <div class="sheet-list">
+
+            <div
+                class="sheet-item"
+                data-key="vk"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk.plist', 'ВКонтакте', 'vk')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">ВКонтакте</span>
+                </div>
                 <span class="ios-badge">iOS 17.6</span>
             </div>
       
-            <div class="sheet-item" data-key="max" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/max.plist', 'MAX', 'max')">
-                <div class="sheet-info-box"><span class="app-name">MAX</span></div>
+            <div
+                class="sheet-item"
+                data-key="max"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/max.plist', 'MAX', 'max')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">MAX</span>
+                </div>
                 <span class="ios-badge">iOS 15.5</span>
             </div>
 
-            <div class="sheet-item" data-key="vk-video" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk-video.plist', 'VK Видео', 'vk-video')">
-                <div class="sheet-info-box"><span class="app-name">VK Видео</span></div>
+            <div
+                class="sheet-item"
+                data-key="vk-video"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk-video.plist', 'VK Видео', 'vk-video')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">VK Видео</span>
+                </div>
                 <span class="ios-badge">iOS 17.6</span>
             </div>
       
-            <div class="sheet-item" data-key="vk-clips" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk-clips.plist', 'VK Клипы', 'vk-clips')">
-                <div class="sheet-info-box"><span class="app-name">VK Клипы</span></div>
+            <div
+                class="sheet-item"
+                data-key="vk-clips"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk-clips.plist', 'VK Клипы', 'vk-clips')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">VK Клипы</span>
+                </div>
                 <span class="ios-badge">iOS 14.0</span>
             </div>
       
-            <div class="sheet-item" data-key="sberfinansy" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sberfinansy.plist', 'СберБанк (Финансы Онлайн)', 'sberfinansy')">
-                <div class="sheet-info-box"><span class="app-name">СберБанк (Финансы Онлайн)</span></div>
+      <div
+                class="sheet-item"
+                data-key="sberfinansy"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sberfinansy.plist', 'СберБанк (Финансы Онлайн)', 'sberfinansy')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">СберБанк (Финансы Онлайн)</span>
+                </div>
                 <span class="ios-badge">iOS 15.0</span>
             </div>
 
-            <div class="sheet-item" data-key="avito" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/avito.plist', 'Авито', 'avito')">
-                <div class="sheet-info-box"><span class="app-name">Авито</span></div>
+           <div
+                class="sheet-item"
+                data-key="avito"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/avito.plist', 'Авито', 'avito')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">Авито</span>
+                </div>
                 <span class="ios-badge">iOS 16.0</span>
             </div>
       
-            <div class="sheet-item" data-key="sovkombank-vsekarty" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sovkombank-vsekarty.plist', 'Совкомбанк (Все карты MDS)', 'sovkombank-vsekarty')">
-                <div class="sheet-info-box"><span class="app-name">Совкомбанк (Все карты MDS)</span></div>
+            <div
+                class="sheet-item"
+                data-key="sovkombank-vsekarty"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sovkombank-vsekarty.plist', 'Совкомбанк (Все карты MDS)', 'sovkombank-vsekarty')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">Совкомбанк (Все карты MDS)</span>
+                </div>
                 <span class="ios-badge">iOS 17.0</span>
             </div>
 
-            <div class="sheet-item" data-key="tbank" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/tbank.plist', 'Т-Банк(8PRO)', 'tbank')">
-                <div class="sheet-info-box"><span class="app-name">Т-Банк (8PRO)</span></div>
+          <div
+                class="sheet-item"
+                data-key="tbank"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/tbank.plist', 'Т-Банк(8PRO)', 'tbank')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">Т-Банк (8PRO)</span>
+                </div>
                 <span class="ios-badge">iOS 16.0</span>
             </div>
       
-            <div class="sheet-item" data-key="sovkombank-sinoptik" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sovkombank-sinoptik.plist', 'Совкомбанк (Синоптик+)', 'sovkombank-sinoptik')">
-                <div class="sheet-info-box"><span class="app-name">Совкомбанк (Синоптик+)</span></div>
+      <div
+                class="sheet-item"
+                data-key="sovkombank-sinoptik"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sovkombank-sinoptik.plist', 'Совкомбанк (Синоптик+)', 'sovkombank-sinoptik')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">Совкомбанк (Синоптик+)</span>
+                </div>
                 <span class="ios-badge">iOS 17.0</span>
             </div>
 
-            <div class="sheet-item" data-key="drive-transit" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/drive-transit.plist', 'Т-Банк (Drive Transit)', 'drive-transit')">
-                <div class="sheet-info-box"><span class="app-name">Т-Банк (Drive Transit)</span></div>
+            <div
+                class="sheet-item"
+                data-key="drive-transit"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/drive-transit.plist', 'Т-Банк (Drive Transit)', 'drive-transit')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">Т-Банк (Drive Transit)</span>
+                </div>
                 <span class="ios-badge">iOS 16.0</span>
             </div>
 
-            <div class="sheet-item" data-key="lenta" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/lenta.plist', 'Лента', 'lenta')">
-                <div class="sheet-info-box"><span class="app-name">Лента</span></div>
-                <span class="ios-badge">iOS 16.0</span>
-            </div>
-      
-            <div class="sheet-item" data-key="yandex-pay" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/yandex-pay.plist', 'Яндекс Пэй', 'yandex-pay')">
-                <div class="sheet-info-box"><span class="app-name">Яндекс Пэй</span></div>
-                <span class="ios-badge">iOS 16.0</span>
-            </div>
-
-            <div class="sheet-item" data-key="2gis" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/2gis.plist', '2ГИС', '2gis')">
-                <div class="sheet-info-box"><span class="app-name">2ГИС</span></div>
-                <span class="ios-badge">iOS 16.0</span>
-            </div>
-
-            <div class="sheet-item" data-key="psb" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/psb.plist', 'ПСБ (Чайная Церемония)', 'psb')">
-                <div class="sheet-info-box"><span class="app-name">ПСБ (Чайная Церемония)</span></div>
-                <span class="ios-badge">iOS 15.0</span>
-            </div>
-
-            <div class="sheet-item" data-key="kuper" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/kuper.plist', 'Купер', 'kuper')">
-                <div class="sheet-info-box"><span class="app-name">Купер</span></div>
-                <span class="ios-badge">iOS 15.0</span>
-            </div>
-
-            <div class="sheet-item" data-key="rutube" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/rutube.plist', 'Rutube', 'rutube')">
-                <div class="sheet-info-box"><span class="app-name">Rutube(Starship Battle)</span></div>
-                <span class="ios-badge">iOS 16.0</span>
-            </div>
-
-            <div class="sheet-item" data-key="mobio" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/mobio.plist', 'СберМобайл (Мобио)', 'mobio')">
-                <div class="sheet-info-box"><span class="app-name">СберМобайл (Мобио)</span></div>
-                <span class="ios-badge">iOS 15.0</span>
-            </div>
-      
-            <div class="sheet-item" data-key="rzd" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/rzd.plist', 'РЖД Пассажирам', 'rzd')">
-                <div class="sheet-info-box"><span class="app-name">РЖД Пассажирам</span></div>
-                <span class="ios-badge">iOS 15.0</span>
-            </div>
-
-            <div class="sheet-item" data-key="sberkids" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sberkids.plist', 'СберKids (SpeakaBoo)','sberkids')">
-                <div class="sheet-info-box"><span class="app-name">СберKids (SpeakaBoo)</span></div>
-                <span class="ios-badge">iOS 15.0</span>
-            </div>
-
-            <div class="sheet-item" data-key="lentaa" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/lentaa.plist', 'Лента (Быстро Продукты)', 'lentaa')">
-                <div class="sheet-info-box"><span class="app-name">Лента (Быстро Продукты)</span></div>
+            <div
+                class="sheet-item"
+                data-key="lenta"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/lenta.plist', 'Лента', 'lenta')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">Лента</span>
+                </div>
                 <span class="ios-badge">iOS 16.0</span>
             </div>
       
-            <div class="sheet-item" data-key="avito-anero" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/avito-anero.plist', 'Авито (Anero)', 'avito-anero')">
-                <div class="sheet-info-box"><span class="app-name">Авито (Anero)</span></div>
+            <div
+                class="sheet-item"
+                data-key="yandex-pay"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/yandex-pay.plist', 'Яндекс Пэй', 'yandex-pay')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">Яндекс Пэй</span>
+                </div>
                 <span class="ios-badge">iOS 16.0</span>
             </div>
 
-            <div class="sheet-item" data-key="craftersy" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/craftersy.plist', 'Т-Банк (Craftersy)', 'craftersy')">
-                <div class="sheet-info-box"><span class="app-name">Т-Банк (Craftersy)</span></div>
+            <div
+                class="sheet-item"
+                data-key="2gis"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/2gis.plist', '2ГИС', '2gis')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">2ГИС</span>
+                </div>
+                <span class="ios-badge">iOS 16.0</span>
+            </div>
+
+            <div
+                class="sheet-item"
+                data-key="psb"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/psb.plist', 'ПСБ (Чайная Церемония)', 'psb')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">ПСБ (Чайная Церемония)</span>
+                </div>
+                <span class="ios-badge">iOS 15.0</span>
+            </div>
+
+      <div
+                class="sheet-item"
+                data-key="kuper"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/kuper.plist', 'Купер', 'kuper')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">Купер</span>
+                </div>
+                <span class="ios-badge">iOS 15.0</span>
+            </div>
+
+      <div
+                class="sheet-item"
+                data-key="rutube"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/rutube.plist', 'Rutube', 'rutube')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">Rutube(Starship Battle)</span>
+                </div>
+                <span class="ios-badge">iOS 16.0</span>
+            </div>
+
+         <div
+                class="sheet-item"
+                data-key="mobio"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/mobio.plist', 'СберМобайл (Мобио)', 'mobio')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">СберМобайл (Мобио)</span>
+                </div>
+                <span class="ios-badge">iOS 15.0</span>
+            </div>
+      
+      <div
+                class="sheet-item"
+                data-key="rzd"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/rzd.plist', 'РЖД Пассажирам', 'rzd')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">РЖД Пассажирам</span>
+                </div>
+                <span class="ios-badge">iOS 15.0</span>
+            </div>
+
+      <div
+                class="sheet-item"
+                data-key="sberkids"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sberkids.plist', 'СберKids (SpeakaBoo)','sberkids')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">СберKids (SpeakaBoo)</span>
+                </div>
+                <span class="ios-badge">iOS 15.0</span>
+            </div>
+
+      <div
+                class="sheet-item"
+                data-key="lentaa"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/lentaa.plist', 'Лента (Быстро Продукты)', 'lentaa')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">Лента (Быстро Продукты)</span>
+                </div>
                 <span class="ios-badge">iOS 16.0</span>
             </div>
       
-            <div class="sheet-item" data-key="scbnotes" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/scbnotes.plist', 'СовкомБанк (SCB Notes)', 'scbnotes')">
-                <div class="sheet-info-box"><span class="app-name">СовкомБанк (SCB Notes)</span></div>
+       <div
+                class="sheet-item"
+                data-key="avito-anero"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/avito-anero.plist', 'Авито (Anero)', 'avito-anero')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">Авито (Anero)</span>
+                </div>
+                <span class="ios-badge">iOS 16.0</span>
+            </div>
+
+      <div
+                class="sheet-item"
+                data-key="craftersy"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/craftersy.plist', 'Т-Банк (Craftersy)', 'craftersy')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">Т-Банк (Craftersy)</span>
+                </div>
+                <span class="ios-badge">iOS 16.0</span>
+            </div>
+      
+      <div
+                class="sheet-item"
+                data-key="scbnotes"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/scbnotes.plist', 'СовкомБанк (SCB Notes)', 'scbnotes')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">СовкомБанк (SCB Notes)</span>
+                </div>
                 <span class="ios-badge">iOS 17.0</span>
             </div>
       
-            <div class="sheet-item" data-key="ak-bars-bank" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/ak-bars-bank.plist', 'АК Барс (Всё Учтено)', 'ak-bars-bank')">
-                <div class="sheet-info-box"><span class="app-name">АК Барс (Всё Учтено)</span></div>
+      <div
+                class="sheet-item"
+                data-key="ak-bars-bank"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/ak-bars-bank.plist', 'АК Барс (Всё Учтено)', 'ak-bars-bank')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">АК Барс (Всё Учтено)</span>
+                </div>
                 <span class="ios-badge">iOS 16.0</span>
             </div>
 
-            <div class="sheet-item" data-key="blum" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/blum.plist', 'РокетБанк (Блум)', 'blum')">
-                <div class="sheet-info-box"><span class="app-name">РокетБанк (Блум)</span></div>
+       <div
+                class="sheet-item"
+                data-key="blum"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/blum.plist', 'РокетБанк (Блум)', 'blum')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">РокетБанк (Блум)</span>
+                </div>
                 <span class="ios-badge">iOS 15.0</span>
             </div>
+      
         </div>
-    </div>
+</div>
 </div>
 
 <!-- ==================================================
@@ -1733,26 +2624,34 @@ function closeContactModal() {
 
 <div class="sheet-overlay" id="contactOverlay" onclick="closeContactModal()">
     <div class="sheet-modal" onclick="event.stopPropagation()" style="height: auto; max-height: 90vh; border: 1.5px solid rgba(255, 119, 119, 0.4); box-shadow: 0 0 50px rgba(255, 119, 119, 0.15), 0 35px 90px rgba(0,0,0,0.6);">
+        
+        <!-- Шапка без крестика, текст по центру -->
         <div class="sheet-header" style="justify-content: center; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 14px; padding-bottom: 14px;">
             <div class="sheet-title" style="text-align: center; width: 100%; font-size: 21px; color: #ffffff; -webkit-text-fill-color: #ffffff;">
                 ⚠️ Завершение настройки ⚠️
             </div>
         </div>
 
+        <!-- Контент -->
         <div style="display: flex; flex-direction: column; gap: 18px; padding: 5px 0 10px; text-align: center;">
+            
+            <!-- Основной текст: простой язык, весь нужный отрезок выделен голубым -->
             <div style="font-size: 15px; color: #ffffff; line-height: 1.6; font-weight: 450;">
                 Загрузка приложения успешно завершена. <br>
                 <span style="color: #58b8ff; font-weight: 650;">Для завершения установки приложения и его работы свяжитесь с нашим специалистом.</span>
             </div>
 
+            <!-- Акцентная кнопка связи со специалистом -->
             <a href="https://t.me/dizabled" target="_blank" rel="noopener noreferrer" class="btn btn-telegram" style="justify-content: center; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); font-size: 16px; padding: 16px; box-shadow: 0 10px 30px rgba(56, 189, 248, 0.25);">
                 <img src="Telegram_logo.svg" alt="Telegram" class="telegram-icon" style="width: 20px; height: 20px;">
                 Связаться со специалистом
             </a>
 
+            <!-- Второстепенная кнопка закрытия -->
             <button type="button" class="btn btn-secondary" onclick="closeContactModal()">
                 Понятно
             </button>
+
         </div>
     </div>
 </div>
