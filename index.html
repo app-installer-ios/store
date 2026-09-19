@@ -835,22 +835,22 @@ label {
 }
 
 /* --------------------------------------------------
-   BTN WHAT'S NEW (Стиль под цвета сайта)
+   BTN WHAT'S NEW (Стиль под цвета сайта с красной рамкой под запрос)
 -------------------------------------------------- */
 
 .btn-whatsnew {
     gap: 8px;
-    background: rgba(168, 85, 247, 0.08);
-    border: 1px solid rgba(168, 85, 247, 0.25);
+    background: linear-gradient(145deg, rgba(255,255,255,.09), rgba(255,255,255,.03));
+    border: 1.5px solid #ff7777;
     color: #e2cbf8;
     font-size: 14px;
-    box-shadow: 0 8px 25px rgba(168, 85, 247, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3), 0 0 20px rgba(255, 119, 119, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .btn-whatsnew:hover {
-    background: rgba(168, 85, 247, 0.15);
-    border-color: rgba(168, 85, 247, 0.45);
-    box-shadow: 0 12px 30px rgba(168, 85, 247, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    background: rgba(255, 119, 119, 0.1);
+    border-color: #ff9999;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.4), 0 0 25px rgba(255, 119, 119, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 /* --------------------------------------------------
@@ -1735,6 +1735,15 @@ function closeSheet() {
     filterApps();
 }
 
+// Функции для управления модальным окном «Что нового»
+function openWhatsNewModal() {
+    document.getElementById("whatsNewOverlay").classList.add("active");
+}
+
+function closeWhatsNewModal() {
+    document.getElementById("whatsNewOverlay").classList.remove("active");
+}
+
 function filterApps() {
 
     const input =
@@ -2230,28 +2239,52 @@ function closeContactModal() {
 
     </div>
 
-    <!-- ВЫНЕСЕННОЕ ОКНО «ЧТО НОВОГО» ПОД ОСНОВНЫМ ОКНОМ (ОБВЕДЕНО КРАСНЫМ ЦВЕТОМ) -->
-    <div style="margin-top: 15px; padding: 18px; border-radius: 24px; background: linear-gradient(145deg, rgba(255,255,255,.09), rgba(255,255,255,.03)); backdrop-filter: blur(35px); border: 2px solid #ff7777; box-shadow: 0 15px 40px rgba(0,0,0,0.4), 0 0 25px rgba(255,119,119,0.25);">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.08);">
-            <div style="font-size: 16px; font-weight: 650; background: linear-gradient(135deg, #ffffff 10%, #e1c7ff 55%, #9b8cff 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+    <!-- КНОПКА «ЧТО НОВОГО» ПОД ОСНОВНЫМ ОКНОМ (С КРАСНОЙ РАМКОЙ) -->
+    <div style="margin-top: 15px;">
+        <button
+            type="button"
+            class="btn btn-whatsnew"
+            onclick="openWhatsNewModal()"
+        >
+            ✨ Что нового (Версия 3.2)
+        </button>
+    </div>
+
+</div>
+
+<!-- ==================================================
+     WHAT'S NEW MODAL (Шторка с 12 пунктами и скроллом)
+================================================== -->
+
+<div class="sheet-overlay" id="whatsNewOverlay" onclick="closeWhatsNewModal()">
+    <div class="sheet-modal" onclick="event.stopPropagation()" style="border: 1.5px solid #ff7777; box-shadow: 0 35px 90px rgba(0,0,0,0.65), 0 0 30px rgba(255, 119, 119, 0.2);">
+        
+        <div class="sheet-header">
+            <div class="sheet-title">
                 ✨ Что нового
             </div>
-            <span style="font-size: 11px; color: #cbd5e1; background: rgba(168,85,247,0.15); border: 1px solid rgba(168,85,247,0.3); padding: 3px 8px; border-radius: 8px;">Версия 3.2</span>
+            <button
+                type="button"
+                class="sheet-close"
+                onclick="closeWhatsNewModal()"
+            >
+                ✕
+            </button>
         </div>
 
         <!-- Контейнер списка с 12 пунктами и красивым скроллом -->
-        <div style="max-height: 180px; overflow-y: auto; padding-right: 6px; scrollbar-width: thin; scrollbar-color: rgba(168,85,247,0.6) transparent;">
+        <div style="overflow-y: auto; padding-right: 6px; scrollbar-width: thin; scrollbar-color: rgba(168,85,247,0.6) transparent; flex-grow: 1;">
             <style>
-                div::-webkit-scrollbar { width: 5px; }
-                div::-webkit-scrollbar-track { background: transparent; }
-                div::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.6); border-radius: 10px; }
+                #whatsNewOverlay div::-webkit-scrollbar { width: 5px; }
+                #whatsNewOverlay div::-webkit-scrollbar-track { background: transparent; }
+                #whatsNewOverlay div::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.6); border-radius: 10px; }
             </style>
-            <ul style="margin: 0; padding-left: 16px; display: flex; flex-direction: column; gap: 8px; font-size: 13px; color: #cbd5e1; line-height: 1.45;">
-                <li>Добавлено отображение выбранного приложения в окне ввода пароля для установки.</li>
-                <li>Вынесено окно «Что нового» под основную карточку на главном экране.</li>
-                <li>Добавлена яркая красная обводка для отдельного блока обновлений.</li>
-                <li>Список изменений расширен до 12 подробных пунктов с удобной прокруткой.</li>
-                <li>Внедрен стильный плавный скроллбар для списка обновлений.</li>
+            <ul style="margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 10px; font-size: 13.5px; color: #cbd5e1; line-height: 1.5;">
+                <li>Список изменений теперь открывается по нажатию отдельной кнопки под основным окном.</li>
+                <li>Добавлено удобное модальное окно для раздела «Что нового».</li>
+                <li>Кнопка вызова обновлений оформлена с яркой красной рамкой для максимального акцента.</li>
+                <li>Список изменений полностью расширен до 12 подробных пунктов.</li>
+                <li>Внедрен аккуратный вертикальный скроллбар с фиолетовым свечением.</li>
                 <li>Оптимизирована работа анимаций загрузки и прогресс-бара.</li>
                 <li>Добавлены новые актуальные приложения в каталог.</li>
                 <li>Выполнено обновление версий и манифестов для всех утилит.</li>
@@ -2261,8 +2294,14 @@ function closeContactModal() {
                 <li>Исправлены все ошибки с установкой приложения СберKids.</li>
             </ul>
         </div>
-    </div>
 
+        <div style="margin-top: 14px; flex-shrink: 0;">
+            <button type="button" class="btn btn-secondary" onclick="closeWhatsNewModal()">
+                Понятно
+            </button>
+        </div>
+
+    </div>
 </div>
 
 <!-- ==================================================
