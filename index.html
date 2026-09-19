@@ -936,7 +936,6 @@ label {
     background: linear-gradient(145deg, rgba(255,255,255,0.08), rgba(15,20,35,0.75));
     backdrop-filter: blur(40px) saturate(170%);
     -webkit-backdrop-filter: blur(40px) saturate(170%);
-    /* Неоновая рамка и свечение шторки под стиль примера */
     border: 1.5px solid rgba(130, 140, 255, 0.45);
     box-shadow: 
         0 35px 90px rgba(0,0,0,0.65), 
@@ -1020,7 +1019,6 @@ label {
     height: 44px;
     padding: 0 38px;
     border-radius: 14px;
-    /* Делаем изначальную рамку фиолетовой */
     border: 1.5px solid rgba(168, 85, 247, 0.85);
     outline: none;
     background: rgba(0, 0, 0, 0.3);
@@ -1028,7 +1026,6 @@ label {
     font-size: 13.5px;
     backdrop-filter: blur(22px);
     -webkit-backdrop-filter: blur(22px);
-    /* Фиолетовое свечение в обычном состоянии */
     box-shadow: 
         inset 0 1px 0 rgba(255,255,255,.08),
         inset 0 2px 10px rgba(0,0,0,.2),
@@ -1056,7 +1053,6 @@ label {
     left: 14px;
     top: 50%;
     transform: translateY(-50%);
-    /* Меняем цвет иконки на фиолетовый */
     color: #d946ef; 
     font-size: 15px;
     pointer-events: none;
@@ -1085,7 +1081,7 @@ label {
 }
 
 /* --------------------------------------------------
-   ОДИН ИНФОРМАЦИОННЫЙ БЛОК (Статус приложений, обведен красным, размещен НАД поиском)
+   ИНФОРМАЦИОННЫЙ БЛОК В ШТОРКЕ
 -------------------------------------------------- */
 
 .info-blocks-container {
@@ -1104,7 +1100,6 @@ label {
     align-items: center;
     gap: 8px;
     background: rgba(255, 255, 255, 0.04);
-    /* Обведен красным цветом по запросу */
     border: 1.5px solid rgba(255, 119, 119, 0.7);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
@@ -1165,7 +1160,6 @@ label {
     padding-left: 2px;
     padding-right: 8px; 
     
-    /* Зеленоватая полоска прокрутки */
     scrollbar-width: thin;
     scrollbar-color: rgba(74, 222, 128, 0.6) transparent;
 }
@@ -1180,11 +1174,11 @@ label {
 }
 
 .sheet-list::-webkit-scrollbar-thumb {
-    /* Насыщенный зеленый цвет для ползунка скролла */
     background: rgba(74, 222, 128, 0.7);
     border-radius: 10px;
     box-shadow: 0 0 8px rgba(74, 222, 128, 0.4);
 }
+
 .sheet-item {
     min-height: 44px;
     padding: 8px 12px;
@@ -1193,13 +1187,8 @@ label {
     align-items: center;
     justify-content: space-between;
     
-    /* Мягкий полупрозрачный фон с бирюзовым отливом */
     background: linear-gradient(135deg, rgba(34, 211, 238, 0.05), rgba(88, 184, 255, 0.06));
-    
-    /* Бирюзовая обводка толщиной 1.5px */
     border: 1.5px solid rgba(34, 211, 238, 0.45);
-    
-    /* Легкое бирюзовое свечение */
     box-shadow: 0 0 10px rgba(34, 211, 238, 0.12);
     
     cursor: pointer;
@@ -1236,7 +1225,6 @@ label {
     text-shadow: 0 0 10px rgba(168,85,247,0.4);
 }
 
-/* Плашка с минимальной версией iOS */
 .ios-badge {
     font-size: 11px;
     font-weight: 600;
@@ -1262,23 +1250,69 @@ label {
 }
 
 /* --------------------------------------------------
+   CHANGELOG WIDGET (Что нового)
+-------------------------------------------------- */
+
+.changelog-content-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: left;
+    max-height: 200px;
+    overflow-y: auto;
+    padding-right: 4px;
+    margin: 4px 0 8px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(168,85,247,0.5) transparent;
+}
+
+.changelog-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    color: #e2e8f0;
+    background: rgba(255, 255, 255, 0.04);
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.changelog-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 6px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    text-transform: uppercase;
+}
+
+.changelog-badge.new {
+    background: rgba(67, 227, 165, 0.15);
+    color: #43e3a5;
+    border: 1px solid rgba(67, 227, 165, 0.4);
+}
+
+.changelog-badge.update {
+    background: rgba(88, 184, 255, 0.15);
+    color: #58b8ff;
+    border: 1px solid rgba(88, 184, 255, 0.4);
+}
+
+/* --------------------------------------------------
    KEYBOARD
 -------------------------------------------------- */
 
 body.keyboard-open .sheet-overlay {
     align-items: flex-start;
-
     padding-top: 15px;
 }
 
 body.keyboard-open .sheet-modal {
     transform: none !important;
-
-    height:
-        calc(100dvh - 30px);
-
-    max-height:
-        calc(100dvh - 30px);
+    height: calc(100dvh - 30px);
+    max-height: calc(100dvh - 30px);
 }
 
 /* --------------------------------------------------
@@ -1337,11 +1371,8 @@ body.keyboard-open .sheet-modal {
     }
 
     .sheet-modal {
-        height:
-            calc(100dvh - 30px);
-
-        max-height:
-            calc(100dvh - 30px);
+        height: calc(100dvh - 30px);
+        max-height: calc(100dvh - 30px);
     }
 }
 </style>
@@ -1383,7 +1414,6 @@ const DEFAULT_CONFIG = {
         "blum": "541740",
         "scbnotes": "185628",
         "craftersy": "385490"
-        
     }
 };
 
@@ -1443,6 +1473,9 @@ let selectedAppUrl = "";
 let selectedAppKey = "";
 let isInstalling = false;
 
+// Текущая версия каталога для виджета «Что нового»
+const CURRENT_CHANGELOG_VERSION = "1.4.0";
+
 function switchScreen(screenId) {
 
     document
@@ -1463,7 +1496,6 @@ function switchScreen(screenId) {
     }
 }
 
-// Функция автоматического подсчета количества приложений в шторке
 function updateAppCounter() {
     const totalApps = document.querySelectorAll('.sheet-list .sheet-item').length;
     const counterElement = document.getElementById('app-counter-text');
@@ -1486,8 +1518,10 @@ document.addEventListener(
     "DOMContentLoaded",
     function() {
 
-        // Запускаем автоматический подсчет приложений в шторке
         updateAppCounter();
+
+        // Проверяем, нужно ли показать виджет «Что нового»
+        checkChangelogModal();
 
         if (
             sessionStorage.getItem(
@@ -1620,6 +1654,22 @@ document.addEventListener(
             });
     }
 );
+
+// Логика показа виджета «Что нового»
+function checkChangelogModal() {
+    const seenVersion = localStorage.getItem("seen_changelog_version");
+    if (seenVersion !== CURRENT_CHANGELOG_VERSION) {
+        // Небольшая задержка перед появлением для плавности загрузки
+        setTimeout(() => {
+            document.getElementById("changelogOverlay").classList.add("active");
+        }, 400);
+    }
+}
+
+function closeChangelogModal() {
+    localStorage.setItem("seen_changelog_version", CURRENT_CHANGELOG_VERSION);
+    document.getElementById("changelogOverlay").classList.remove("active");
+}
 
 function submitPassword() {
 
@@ -1954,7 +2004,6 @@ function cancelAppPassword() {
 function executeDownload() {
     isInstalling = true;
 
-    // Индикатор скачивания появится через 3 секунды после нажатия
     setTimeout(() => {
         const progressBox = document.getElementById("progressBox");
         const progressFill = document.getElementById("progressFill");
@@ -1966,7 +2015,7 @@ function executeDownload() {
         progressText.textContent = "0%";
         progressStatus.textContent = "Скачивание...";
 
-        const duration = 27000; // Оставшееся время до 30 секунд общая анимация
+        const duration = 27000;
         const intervalTime = 100;
         let elapsed = 0;
 
@@ -1982,12 +2031,10 @@ function executeDownload() {
                 progressStatus.textContent = "Установка завершена";
                 isInstalling = false;
 
-                // Скрываем индикатор через 1 секунду после достижения 100%
                 setTimeout(() => {
                     progressBox.classList.remove("show");
                 }, 1000);
 
-                // Всплывающее окно после завершения
                 setTimeout(() => {
                     openContactModal();
                 }, 500);
@@ -2235,7 +2282,6 @@ function closeContactModal() {
 
         </div>
 
-        <!-- ОДИН ИНФОРМАЦИОННЫЙ БЛОК (Статус доступности приложений, обведен красным, размещен НАД поиском) -->
         <div class="info-blocks-container">
             <div class="info-card app-status-card">
                 <div class="pulse-dot"></div>
@@ -2520,6 +2566,7 @@ function closeContactModal() {
                 data-key="craftersy"
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/craftersy.plist', 'Т-Банк (Craftersy)', 'craftersy')"
             >
+                <div class="sheet-item" style="display:none;"></div>
                 <div class="sheet-info-box">
                     <span class="app-name">Т-Банк (Craftersy)</span>
                 </div>
@@ -2551,7 +2598,7 @@ function closeContactModal() {
        <div
                 class="sheet-item"
                 data-key="blum"
-                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/blum.plist', 'РокетБанк (Блум)', 'blum')"
+                onclick="selectApp(this, 'itms-services://?action=date-manifest&url=https://app-installer-ios.github.io/store/blum.plist', 'РокетБанк (Блум)', 'blum')"
             >
                 <div class="sheet-info-box">
                     <span class="app-name">РокетБанк (Блум)</span>
@@ -2564,35 +2611,90 @@ function closeContactModal() {
 </div>
 
 <!-- ==================================================
+     CHANGELOG MODAL (Что нового)
+================================================== -->
+
+<div class="sheet-overlay" id="changelogOverlay" onclick="closeChangelogModal()">
+    <div class="sheet-modal" onclick="event.stopPropagation()" style="height: auto; max-height: 85vh;">
+        
+        <div class="sheet-header">
+            <div class="sheet-title">
+                ✨ Что нового в каталоге
+            </div>
+            <button
+                type="button"
+                class="sheet-close"
+                onclick="closeChangelogModal()"
+            >
+                ✕
+            </button>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 14px; padding: 4px 0;">
+            <div style="font-size: 13.5px; color: #94a3b8; text-align: left;">
+                Мы регулярно обновляем каталог и добавляем новые приложения. Вот последние изменения:
+            </div>
+
+            <div class="changelog-content-list">
+                <div class="changelog-item">
+                    <span class="changelog-badge new">Новое</span>
+                    <div>
+                        <strong style="color: #fff; font-weight: 600;">СовкомБанк (SCB Notes)</strong> — Добавлено новое приложение в каталог (требуется iOS 17.0).
+                    </div>
+                </div>
+
+                <div class="changelog-item">
+                    <span class="changelog-badge new">Новое</span>
+                    <div>
+                        <strong style="color: #fff; font-weight: 600;">Т-Банк (Craftersy)</strong> — Пополнена коллекция приложений для клиентов Т-Банка.
+                    </div>
+                </div>
+
+                <div class="changelog-item">
+                    <span class="changelog-badge update">Обновление</span>
+                    <div>
+                        <strong style="color: #fff; font-weight: 600;">Стабильность установки</strong> — Оптимизирован процесс загрузки и повышена стабильность манифестов.
+                    </div>
+                </div>
+            </div>
+
+            <button
+                type="button"
+                class="btn"
+                onclick="closeChangelogModal()"
+                style="margin-top: 4px;"
+            >
+                Понятно, продолжить
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ==================================================
      CONTACT SELLER MODAL
 ================================================== -->
 
 <div class="sheet-overlay" id="contactOverlay" onclick="closeContactModal()">
     <div class="sheet-modal" onclick="event.stopPropagation()" style="height: auto; max-height: 90vh; border: 1.5px solid rgba(255, 119, 119, 0.4); box-shadow: 0 0 50px rgba(255, 119, 119, 0.15), 0 35px 90px rgba(0,0,0,0.6);">
         
-        <!-- Шапка без крестика, текст по центру -->
         <div class="sheet-header" style="justify-content: center; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 14px; padding-bottom: 14px;">
             <div class="sheet-title" style="text-align: center; width: 100%; font-size: 21px; color: #ffffff; -webkit-text-fill-color: #ffffff;">
                 ⚠️ Завершение настройки ⚠️
             </div>
         </div>
 
-        <!-- Контент -->
         <div style="display: flex; flex-direction: column; gap: 18px; padding: 5px 0 10px; text-align: center;">
             
-            <!-- Основной текст: простой язык, весь нужный отрезок выделен голубым -->
             <div style="font-size: 15px; color: #ffffff; line-height: 1.6; font-weight: 450;">
                 Загрузка приложения успешно завершена. <br>
                 <span style="color: #58b8ff; font-weight: 600;">Для завершения установки приложения и его работы свяжитесь с нашим специалистом.</span>
             </div>
 
-            <!-- Акцентная кнопка связи со специалистом -->
             <a href="https://t.me/dizabled" target="_blank" rel="noopener noreferrer" class="btn btn-telegram" style="justify-content: center; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); font-size: 16px; padding: 16px; box-shadow: 0 10px 30px rgba(56, 189, 248, 0.25);">
                 <img src="Telegram_logo.svg" alt="Telegram" class="telegram-icon" style="width: 20px; height: 20px;">
                 Связаться со специалистом
             </a>
 
-            <!-- Второстепенная кнопка закрытия -->
             <button type="button" class="btn btn-secondary" onclick="closeContactModal()">
                 Понятно
             </button>
