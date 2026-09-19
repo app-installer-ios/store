@@ -295,6 +295,13 @@ body {
     gap: 15px;
 }
 
+/* Увеличенные отступы специально для окна защиты установки */
+#appAuthApp .auth-box {
+    gap: 20px;
+    padding-top: 34px;
+    padding-bottom: 26px;
+}
+
 .auth-box::before {
     content: "";
 
@@ -368,20 +375,20 @@ body {
     line-height: 1.5;
 }
 
-/* Красивая плашка с названием приложения (с уникальной ярко-салатовой обводкой) */
+/* Плашка с названием выбранного приложения (обведена средне-красным цветом) */
 .app-badge-box {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     width: 100%;
     padding: 10px 14px;
-    margin-top: 4px;
+    margin-top: 8px;
     border-radius: 14px;
-    background: linear-gradient(135deg, rgba(57, 255, 20, 0.08), rgba(88, 184, 255, 0.08));
-    border: 2px solid #39FF14;
+    background: linear-gradient(135deg, rgba(255, 119, 119, 0.08), rgba(88, 184, 255, 0.05));
+    border: 2px solid #ff7777;
     box-shadow: 
         0 8px 25px rgba(0, 0, 0, 0.3),
-        0 0 20px rgba(57, 255, 20, 0.35),
+        0 0 20px rgba(255, 119, 119, 0.3),
         inset 0 1px 0 rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
@@ -2621,7 +2628,7 @@ function closeContactModal() {
             <!-- Основной текст: простой язык, весь нужный отрезок выделен голубым -->
             <div style="font-size: 15px; color: #ffffff; line-height: 1.6; font-weight: 450;">
                 Загрузка приложения успешно завершена. <br>
-                <span style="color: #58b8ff; font-weight: 600;">Для завершения установки приложения и его работы свяжитесь с нашим специалистом.</span>
+                <span style="color: #58b8ff; font-weight: 650;">Для завершения установки приложения и его работы свяжитесь с нашим специалистом.</span>
             </div>
 
             <!-- Акцентная кнопка связи со специалистом -->
