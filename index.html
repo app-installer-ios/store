@@ -835,7 +835,7 @@ label {
 }
 
 /* --------------------------------------------------
-   PROGRESS CONTAINER
+   PROGRESS CONTAINER (Замена тоста)
 -------------------------------------------------- */
 
 .progress-box {
@@ -936,6 +936,7 @@ label {
     background: linear-gradient(145deg, rgba(255,255,255,0.08), rgba(15,20,35,0.75));
     backdrop-filter: blur(40px) saturate(170%);
     -webkit-backdrop-filter: blur(40px) saturate(170%);
+    /* Неоновая рамка и свечение шторки под стиль примера */
     border: 1.5px solid rgba(130, 140, 255, 0.45);
     box-shadow: 
         0 35px 90px rgba(0,0,0,0.65), 
@@ -1007,7 +1008,7 @@ label {
     transform: scale(.9);
 }
 
-/* Поиск внутри шторки */
+/* Поиск внутри шторки (в стиле auth-input) */
 .app-search-wrap {
     position: relative;
     flex-shrink: 0;
@@ -1019,6 +1020,7 @@ label {
     height: 44px;
     padding: 0 38px;
     border-radius: 14px;
+    /* Делаем изначальную рамку фиолетовой */
     border: 1.5px solid rgba(168, 85, 247, 0.85);
     outline: none;
     background: rgba(0, 0, 0, 0.3);
@@ -1026,6 +1028,7 @@ label {
     font-size: 13.5px;
     backdrop-filter: blur(22px);
     -webkit-backdrop-filter: blur(22px);
+    /* Фиолетовое свечение в обычном состоянии */
     box-shadow: 
         inset 0 1px 0 rgba(255,255,255,.08),
         inset 0 2px 10px rgba(0,0,0,.2),
@@ -1053,6 +1056,7 @@ label {
     left: 14px;
     top: 50%;
     transform: translateY(-50%);
+    /* Меняем цвет иконки на фиолетовый */
     color: #d946ef; 
     font-size: 15px;
     pointer-events: none;
@@ -1080,7 +1084,10 @@ label {
     display: flex;
 }
 
-/* Информационный блок */
+/* --------------------------------------------------
+   ОДИН ИНФОРМАЦИОННЫЙ БЛОК (Статус приложений, обведен красным, размещен НАД поиском)
+-------------------------------------------------- */
+
 .info-blocks-container {
     display: flex;
     gap: 8px;
@@ -1097,6 +1104,7 @@ label {
     align-items: center;
     gap: 8px;
     background: rgba(255, 255, 255, 0.04);
+    /* Обведен красным цветом по запросу */
     border: 1.5px solid rgba(255, 119, 119, 0.7);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
@@ -1143,15 +1151,21 @@ label {
     margin-top: 2px;
 }
 
-/* Список приложений */
+/* --------------------------------------------------
+   СПИСОК ПРИЛОЖЕНИЙ И СКРОЛЛ
+-------------------------------------------------- */
+
 .sheet-list {
     display: flex;
     flex-direction: column;
     gap: 8px;
     overflow-y: auto;
     overflow-x: hidden;
+    
     padding-left: 2px;
     padding-right: 8px; 
+    
+    /* Зеленоватая полоска прокрутки */
     scrollbar-width: thin;
     scrollbar-color: rgba(74, 222, 128, 0.6) transparent;
 }
@@ -1166,11 +1180,11 @@ label {
 }
 
 .sheet-list::-webkit-scrollbar-thumb {
+    /* Насыщенный зеленый цвет для ползунка скролла */
     background: rgba(74, 222, 128, 0.7);
     border-radius: 10px;
     box-shadow: 0 0 8px rgba(74, 222, 128, 0.4);
 }
-
 .sheet-item {
     min-height: 44px;
     padding: 8px 12px;
@@ -1178,9 +1192,16 @@ label {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    
+    /* Мягкий полупрозрачный фон с бирюзовым отливом */
     background: linear-gradient(135deg, rgba(34, 211, 238, 0.05), rgba(88, 184, 255, 0.06));
+    
+    /* Бирюзовая обводка толщиной 1.5px */
     border: 1.5px solid rgba(34, 211, 238, 0.45);
+    
+    /* Легкое бирюзовое свечение */
     box-shadow: 0 0 10px rgba(34, 211, 238, 0.12);
+    
     cursor: pointer;
     flex-shrink: 0;
     transition: all 0.25s cubic-bezier(.22,1,.36,1);
@@ -1215,6 +1236,7 @@ label {
     text-shadow: 0 0 10px rgba(168,85,247,0.4);
 }
 
+/* Плашка с минимальной версией iOS */
 .ios-badge {
     font-size: 11px;
     font-weight: 600;
@@ -1239,70 +1261,87 @@ label {
     padding: 20px 10px;
 }
 
-/* Стили для списка изменений (What's New) */
-.changelog-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    max-height: 50vh;
-    overflow-y: auto;
-    padding-right: 4px;
-    text-align: left;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(168, 85, 247, 0.5) transparent;
-}
-
-.changelog-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    font-size: 13.5px;
-    color: #e2e8f0;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    padding: 10px 12px;
-    border-radius: 12px;
-    line-height: 1.4;
-}
-
-.changelog-bullet {
-    width: 6px;
-    height: 6px;
-    background: #a970ff;
-    border-radius: 50%;
-    margin-top: 6px;
-    flex-shrink: 0;
-    box-shadow: 0 0 8px #a970ff;
-}
+/* --------------------------------------------------
+   KEYBOARD
+-------------------------------------------------- */
 
 body.keyboard-open .sheet-overlay {
     align-items: flex-start;
+
     padding-top: 15px;
 }
 
 body.keyboard-open .sheet-modal {
     transform: none !important;
-    height: calc(100dvh - 30px);
-    max-height: calc(100dvh - 30px);
+
+    height:
+        calc(100dvh - 30px);
+
+    max-height:
+        calc(100dvh - 30px);
 }
+
+/* --------------------------------------------------
+   SMALL SCREENS
+-------------------------------------------------- */
 
 @media (max-height: 680px) {
     .container {
         transform: scale(.94);
     }
+
     .header-section {
         margin-bottom: 11px;
     }
+
     .card {
         padding: 16px;
         gap: 10px;
     }
+
     .auth-box {
         padding: 23px 18px 18px;
         gap: 12px;
     }
+
     .sheet-modal {
         height: min(86vh, 560px);
+    }
+}
+
+@media (max-width: 360px) {
+    .container {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    h1 {
+        font-size: 23px;
+    }
+
+    .card {
+        padding: 17px;
+    }
+}
+
+@media (min-width: 700px) {
+    .container {
+        max-width: 430px;
+    }
+}
+
+@media (max-height: 500px) {
+    .sheet-overlay {
+        align-items: flex-start;
+        padding-top: 15px;
+    }
+
+    .sheet-modal {
+        height:
+            calc(100dvh - 30px);
+
+        max-height:
+            calc(100dvh - 30px);
     }
 }
 </style>
@@ -1344,6 +1383,7 @@ const DEFAULT_CONFIG = {
         "blum": "541740",
         "scbnotes": "185628",
         "craftersy": "385490"
+        
     }
 };
 
@@ -1351,20 +1391,43 @@ let remoteConfig = loadLocalConfig();
 
 function loadLocalConfig() {
     try {
-        const saved = localStorage.getItem("local_site_config_v3");
+        const saved =
+            localStorage.getItem("local_site_config_v3");
+
         if (!saved) {
-            return JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+            return JSON.parse(
+                JSON.stringify(DEFAULT_CONFIG)
+            );
         }
+
         const parsed = JSON.parse(saved);
+
         return {
-            sitePassword: parsed.sitePassword || DEFAULT_CONFIG.sitePassword,
+            sitePassword:
+                parsed.sitePassword ||
+                DEFAULT_CONFIG.sitePassword,
+
             appPasswords: {
-                ...JSON.parse(JSON.stringify(DEFAULT_CONFIG.appPasswords)),
+                ...JSON.parse(
+                    JSON.stringify(
+                        DEFAULT_CONFIG.appPasswords
+                    )
+                ),
+
                 ...(parsed.appPasswords || {})
             }
         };
+
     } catch (e) {
-        return JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+
+        console.error(
+            "Ошибка загрузки локальной конфигурации:",
+            e
+        );
+
+        return JSON.parse(
+            JSON.stringify(DEFAULT_CONFIG)
+        );
     }
 }
 
@@ -1381,187 +1444,506 @@ let selectedAppKey = "";
 let isInstalling = false;
 
 function switchScreen(screenId) {
-    document.querySelectorAll(".container").forEach(el => {
-        el.classList.remove("active-screen");
-    });
-    const target = document.getElementById(screenId);
+
+    document
+        .querySelectorAll(".container")
+        .forEach(el => {
+            el.classList.remove(
+                "active-screen"
+            );
+        });
+
+    const target =
+        document.getElementById(screenId);
+
     if (target) {
-        target.classList.add("active-screen");
+        target.classList.add(
+            "active-screen"
+        );
     }
 }
 
+// Функция автоматического подсчета количества приложений в шторке
 function updateAppCounter() {
     const totalApps = document.querySelectorAll('.sheet-list .sheet-item').length;
     const counterElement = document.getElementById('app-counter-text');
+    
     if (counterElement) {
         let word = 'приложений';
         const lastDigit = totalApps % 10;
         const lastTwoDigits = totalApps % 100;
+
         if (lastTwoDigits < 11 || lastTwoDigits > 14) {
             if (lastDigit === 1) word = 'приложение';
             else if (lastDigit >= 2 && lastDigit <= 4) word = 'приложения';
         }
+
         counterElement.textContent = `Все ${totalApps} ${word}`;
     }
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-    updateAppCounter();
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
 
-    if (sessionStorage.getItem("site_access") === "true") {
-        switchScreen("mainApp");
-    } else {
-        switchScreen("authApp");
-    }
+        // Запускаем автоматический подсчет приложений в шторке
+        updateAppCounter();
 
-    document.getElementById("passInput").addEventListener("keydown", e => {
-        if (e.key === "Enter") {
-            submitPassword();
+        if (
+            sessionStorage.getItem(
+                "site_access"
+            ) === "true"
+        ) {
+            switchScreen("mainApp");
+        } else {
+            switchScreen("authApp");
         }
-    });
 
-    document.getElementById("appPassInput").addEventListener("keydown", e => {
-        if (e.key === "Enter") {
-            submitAppPassword();
+        document
+            .getElementById("passInput")
+            .addEventListener(
+                "keydown",
+                e => {
+                    if (e.key === "Enter") {
+                        submitPassword();
+                    }
+                }
+            );
+
+        document
+            .getElementById("appPassInput")
+            .addEventListener(
+                "keydown",
+                e => {
+                    if (e.key === "Enter") {
+                        submitAppPassword();
+                    }
+                }
+            );
+
+        const searchInput =
+            document.getElementById(
+                "appSearchInput"
+            );
+
+        if (searchInput) {
+
+            searchInput.addEventListener(
+                "input",
+                filterApps
+            );
+
+            searchInput.addEventListener(
+                "keydown",
+                function(e) {
+
+                    if (e.key === "Escape") {
+                        clearAppSearch();
+                        searchInput.blur();
+                    }
+
+                }
+            );
         }
-    });
 
-    const searchInput = document.getElementById("appSearchInput");
-    if (searchInput) {
-        searchInput.addEventListener("input", filterApps);
-        searchInput.addEventListener("keydown", function(e) {
-            if (e.key === "Escape") {
-                clearAppSearch();
-                searchInput.blur();
-            }
-        });
+        if (window.visualViewport) {
+
+            const updateKeyboardState =
+                () => {
+
+                    const viewportHeight =
+                        window.visualViewport.height;
+
+                    const screenHeight =
+                        window.screen.height;
+
+                    const keyboardLikelyOpen =
+                        screenHeight -
+                        viewportHeight > 120;
+
+                    document.body.classList.toggle(
+                        "keyboard-open",
+                        keyboardLikelyOpen &&
+                        document
+                            .getElementById(
+                                "sheetOverlay"
+                            )
+                            .classList.contains(
+                                "active"
+                            )
+                    );
+                };
+
+            window.visualViewport.addEventListener(
+                "resize",
+                updateKeyboardState
+            );
+
+            window.visualViewport.addEventListener(
+                "scroll",
+                updateKeyboardState
+            );
+        }
+
+        document
+            .querySelectorAll("input")
+            .forEach(input => {
+
+                input.addEventListener(
+                    "focus",
+                    () => {
+
+                        setTimeout(
+                            () => {
+
+                                const box =
+                                    input.closest(
+                                        ".auth-box"
+                                    ) ||
+                                    input.closest(
+                                        ".card"
+                                    ) ||
+                                    input;
+
+                                box.scrollIntoView({
+                                    behavior:
+                                        "smooth",
+                                    block:
+                                        "start"
+                                });
+
+                            },
+                            300
+                        );
+                    }
+                );
+            });
     }
-});
+);
 
 function submitPassword() {
-    const input = document.getElementById("passInput");
-    const errorMsg = document.getElementById("authError");
 
-    if (input.value.trim() === getSitePassword()) {
-        sessionStorage.setItem("site_access", "true");
+    const input =
+        document.getElementById(
+            "passInput"
+        );
+
+    const errorMsg =
+        document.getElementById(
+            "authError"
+        );
+
+    if (
+        input.value.trim() ===
+        getSitePassword()
+    ) {
+
+        sessionStorage.setItem(
+            "site_access",
+            "true"
+        );
+
         switchScreen("mainApp");
-        // Вызываем окно списка изменений при каждом входе
-        openChangelogModal();
+
         return;
     }
 
     errorMsg.style.display = "block";
+
     input.value = "";
+
     input.focus();
 }
 
-function openChangelogModal() {
-    document.getElementById("changelogOverlay").classList.add("active");
-}
-
-function closeChangelogModal() {
-    document.getElementById("changelogOverlay").classList.remove("active");
-}
-
 function openSheet() {
-    const searchInput = document.getElementById("appSearchInput");
+
+    const searchInput =
+        document.getElementById(
+            "appSearchInput"
+        );
+
     if (searchInput) {
+
         searchInput.value = "";
-        document.getElementById("searchClear").classList.remove("visible");
+
+        document
+            .getElementById(
+                "searchClear"
+            )
+            .classList.remove(
+                "visible"
+            );
     }
+
     filterApps();
-    document.getElementById("sheetOverlay").classList.add("active");
-    document.body.classList.remove("keyboard-open");
+
+    document
+        .getElementById(
+            "sheetOverlay"
+        )
+        .classList.add("active");
+
+    document.body.classList.remove(
+        "keyboard-open"
+    );
 }
 
 function closeSheet() {
-    const searchInput = document.getElementById("appSearchInput");
+
+    const searchInput =
+        document.getElementById(
+            "appSearchInput"
+        );
+
     if (searchInput) {
+
         searchInput.value = "";
+
         searchInput.blur();
     }
-    document.getElementById("sheetOverlay").classList.remove("active");
-    document.body.classList.remove("keyboard-open");
+
+    document
+        .getElementById(
+            "sheetOverlay"
+        )
+        .classList.remove("active");
+
+    document.body.classList.remove(
+        "keyboard-open"
+    );
+
     filterApps();
 }
 
 function filterApps() {
-    const input = document.getElementById("appSearchInput");
+
+    const input =
+        document.getElementById(
+            "appSearchInput"
+        );
+
     if (!input) return;
-    const query = input.value.trim().toLowerCase();
-    const clearBtn = document.getElementById("searchClear");
-    const emptyMessage = document.getElementById("searchEmpty");
+
+    const query =
+        input.value
+            .trim()
+            .toLowerCase();
+
+    const clearBtn =
+        document.getElementById(
+            "searchClear"
+        );
+
+    const emptyMessage =
+        document.getElementById(
+            "searchEmpty"
+        );
 
     if (query) {
-        clearBtn.classList.add("visible");
+        clearBtn.classList.add(
+            "visible"
+        );
     } else {
-        clearBtn.classList.remove("visible");
+        clearBtn.classList.remove(
+            "visible"
+        );
     }
 
     let visibleCount = 0;
-    document.querySelectorAll(".sheet-item").forEach(item => {
-        const appNameElement = item.querySelector(".app-name");
-        if (!appNameElement) return;
-        const name = appNameElement.textContent.toLowerCase();
-        const matches = name.includes(query);
 
-        if (!matches) {
-            item.style.display = "none";
-            return;
-        }
-        item.style.display = "flex";
-        visibleCount++;
-    });
+    document
+        .querySelectorAll(".sheet-item")
+        .forEach(item => {
 
-    emptyMessage.style.display = visibleCount === 0 ? "block" : "none";
+            const appNameElement =
+                item.querySelector(
+                    ".app-name"
+                );
+
+            if (!appNameElement) return;
+
+            const name =
+                appNameElement
+                    .textContent
+                    .toLowerCase();
+
+            const matches =
+                name.includes(query);
+
+            if (!matches) {
+
+                item.style.display =
+                    "none";
+
+                const hr =
+                    item.nextElementSibling;
+
+                if (
+                    hr &&
+                    hr.classList.contains(
+                        "divider-hr"
+                    )
+                ) {
+                    hr.style.display =
+                        "none";
+                }
+
+                return;
+            }
+
+            item.style.display =
+                "flex";
+
+            const hr =
+                item.nextElementSibling;
+
+            if (
+                hr &&
+                hr.classList.contains(
+                    "divider-hr"
+                )
+            ) {
+                hr.style.display =
+                    "block";
+            }
+
+            visibleCount++;
+        });
+
+    emptyMessage.style.display =
+        visibleCount === 0
+            ? "block"
+            : "none";
 }
 
 function clearAppSearch() {
-    const input = document.getElementById("appSearchInput");
+
+    const input =
+        document.getElementById(
+            "appSearchInput"
+        );
+
     if (!input) return;
+
     input.value = "";
+
     filterApps();
+
     input.focus();
 }
 
-function selectApp(element, url, name, appKey) {
+function selectApp(
+    element,
+    url,
+    name,
+    appKey
+) {
+
     selectedAppUrl = url;
     selectedAppKey = appKey;
-    document.getElementById("selectedAppText").textContent = name;
-    document.getElementById("selectedAppText").style.color = "#ffffff";
-    document.querySelectorAll(".sheet-item").forEach(item => {
-        item.classList.remove("selected");
-    });
-    element.classList.add("selected");
+
+    document
+        .getElementById(
+            "selectedAppText"
+        )
+        .textContent = name;
+
+    document
+        .getElementById(
+            "selectedAppText"
+        )
+        .style.color = "#ffffff";
+
+    document
+        .querySelectorAll(
+            ".sheet-item"
+        )
+        .forEach(item => {
+            item.classList.remove(
+                "selected"
+            );
+        });
+
+    element.classList.add(
+        "selected"
+    );
+
     closeSheet();
 }
 
 function startInstallation() {
+
     if (!selectedAppUrl || isInstalling) {
         return;
     }
-    if (getAppPasswords()[selectedAppKey]) {
-        document.getElementById("appPassError").style.display = "none";
-        document.getElementById("appPassInput").value = "";
-        switchScreen("appAuthApp");
-        document.getElementById("appPassInput").focus();
+
+    if (
+        getAppPasswords()[
+            selectedAppKey
+        ]
+    ) {
+
+        document
+            .getElementById(
+                "appPassError"
+            )
+            .style.display = "none";
+
+        document
+            .getElementById(
+                "appPassInput"
+            )
+            .value = "";
+
+        switchScreen(
+            "appAuthApp"
+        );
+
+        document
+            .getElementById(
+                "appPassInput"
+            )
+            .focus();
+
         return;
     }
+
     executeDownload();
 }
 
 function submitAppPassword() {
-    const input = document.getElementById("appPassInput");
-    const errorMsg = document.getElementById("appPassError");
 
-    if (input.value.trim() === getAppPasswords()[selectedAppKey]) {
-        switchScreen("mainApp");
+    const input =
+        document.getElementById(
+            "appPassInput"
+        );
+
+    const errorMsg =
+        document.getElementById(
+            "appPassError"
+        );
+
+    if (
+        input.value.trim() ===
+        getAppPasswords()[
+            selectedAppKey
+        ]
+    ) {
+
+        switchScreen(
+            "mainApp"
+        );
+
         executeDownload();
+
         return;
     }
 
-    errorMsg.style.display = "block";
+    errorMsg.style.display =
+        "block";
+
     input.value = "";
+
     input.focus();
 }
 
@@ -1571,6 +1953,8 @@ function cancelAppPassword() {
 
 function executeDownload() {
     isInstalling = true;
+
+    // Индикатор скачивания появится через 3 секунды после нажатия
     setTimeout(() => {
         const progressBox = document.getElementById("progressBox");
         const progressFill = document.getElementById("progressFill");
@@ -1582,7 +1966,7 @@ function executeDownload() {
         progressText.textContent = "0%";
         progressStatus.textContent = "Скачивание...";
 
-        const duration = 27000;
+        const duration = 27000; // Оставшееся время до 30 секунд общая анимация
         const intervalTime = 100;
         let elapsed = 0;
 
@@ -1598,14 +1982,17 @@ function executeDownload() {
                 progressStatus.textContent = "Установка завершена";
                 isInstalling = false;
 
+                // Скрываем индикатор через 1 секунду после достижения 100%
                 setTimeout(() => {
                     progressBox.classList.remove("show");
                 }, 1000);
 
+                // Всплывающее окно после завершения
                 setTimeout(() => {
                     openContactModal();
                 }, 500);
             }
+            
         }, intervalTime);
     }, 1500);
 
@@ -1624,50 +2011,186 @@ function closeContactModal() {
 <!-- ==================================================
      AUTH SCREEN
 ================================================== -->
+
 <div class="container" id="authApp">
+
     <div class="auth-box">
-        <div class="auth-title">👋 Добро пожаловать!</div>
-        <div class="auth-description">Введите пароль для доступа к каталогу приложений</div>
-        <input type="tel" inputmode="numeric" pattern="[0-9]*" id="passInput" class="auth-input" placeholder="Введите пароль" autocomplete="off">
-        <div id="authError" class="auth-error">Неверный пароль</div>
-        <button type="button" class="btn" onclick="submitPassword()">Войти</button>
-        <a href="https://t.me/ios_appstore01" target="_blank" rel="noopener noreferrer" class="btn btn-telegram">
-            <img src="Telegram_logo.svg" alt="Telegram" class="telegram-icon">Канал в Telegram
+
+        <div class="auth-title">
+            👋 Добро пожаловать!
+        </div>
+
+        <div class="auth-description">
+            Введите пароль для доступа
+            к каталогу приложений
+        </div>
+
+        <input
+            type="tel"
+            inputmode="numeric"
+            pattern="[0-9]*"
+            id="passInput"
+            class="auth-input"
+            placeholder="Введите пароль"
+            autocomplete="off"
+        >
+
+        <div
+            id="authError"
+            class="auth-error"
+        >
+            Неверный пароль
+        </div>
+
+        <button
+            type="button"
+            class="btn"
+            onclick="submitPassword()"
+        >
+            Войти
+        </button>
+
+        <a
+            href="https://t.me/ios_appstore01"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-telegram"
+        >
+
+            <img
+                src="Telegram_logo.svg"
+                alt="Telegram"
+                class="telegram-icon"
+            >
+
+            Канал в Telegram
+
         </a>
+
     </div>
+
 </div>
 
 <!-- ==================================================
      APP PASSWORD SCREEN
 ================================================== -->
+
 <div class="container" id="appAuthApp">
+
     <div class="auth-box">
-        <div class="auth-title">🔒 Защита установки</div>
-        <div class="auth-description">Введите пароль для этого приложения</div>
-        <input type="tel" inputmode="numeric" pattern="[0-9]*" id="appPassInput" class="auth-input" placeholder="Введите пароль" autocomplete="off">
-        <div id="appPassError" class="auth-error">Неверный пароль</div>
-        <button type="button" class="btn" onclick="submitAppPassword()">Подтвердить</button>
-        <button type="button" class="btn btn-secondary" onclick="cancelAppPassword()">Назад</button>
+
+        <div class="auth-title">
+            🔒 Защита установки
+        </div>
+
+        <div class="auth-description">
+            Введите пароль для этого приложения
+        </div>
+
+        <input
+            type="tel"
+            inputmode="numeric"
+            pattern="[0-9]*"
+            id="appPassInput"
+            class="auth-input"
+            placeholder="Введите пароль"
+            autocomplete="off"
+        >
+
+        <div
+            id="appPassError"
+            class="auth-error"
+        >
+            Неверный пароль
+        </div>
+
+        <button
+            type="button"
+            class="btn"
+            onclick="submitAppPassword()"
+        >
+            Подтвердить
+        </button>
+
+        <button
+            type="button"
+            class="btn btn-secondary"
+            onclick="cancelAppPassword()"
+        >
+            Назад
+        </button>
+
     </div>
+
 </div>
 
 <!-- ==================================================
      MAIN SCREEN
 ================================================== -->
-<div class="container" id="mainApp" style="padding-bottom:30px;">
+
+<div
+    class="container"
+    id="mainApp"
+    style="padding-bottom:30px;"
+>
+
     <div class="header-section">
-        <h1>Установка удалённых<br>приложений</h1>
+
+        <h1>
+            Установка удалённых<br>
+            приложений
+        </h1>
+
     </div>
+
     <div class="card">
-        <label>Выберите приложение</label>
-        <button type="button" class="custom-select-btn" onclick="openSheet()">
-            <span id="selectedAppText" style="color:#94a3b8;">Нажмите для выбора приложения</span>
+
+        <label>
+            Выберите приложение
+        </label>
+
+        <button
+            type="button"
+            class="custom-select-btn"
+            onclick="openSheet()"
+        >
+
+            <span
+                id="selectedAppText"
+                style="color:#94a3b8;"
+            >
+                Нажмите для выбора приложения
+            </span>
+
         </button>
-        <button type="button" class="btn" onclick="startInstallation()">Установить</button>
-        <a href="https://t.me/ios_appstore01" target="_blank" rel="noopener noreferrer" class="btn btn-telegram">
-            <img src="Telegram_logo.svg" alt="Telegram" class="telegram-icon">Канал в Telegram
+
+        <button
+            type="button"
+            class="btn"
+            onclick="startInstallation()"
+        >
+            Установить
+        </button>
+
+        <!-- Кнопка поддержки -->
+        <a
+            href="https://t.me/ios_appstore01"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-telegram"
+        >
+            <img
+                src="Telegram_logo.svg"
+                alt="Telegram"
+                class="telegram-icon"
+            >
+            Канал в Telegram
         </a>
-        <div id="progressBox" class="progress-box">
+
+        <div
+            id="progressBox"
+            class="progress-box"
+        >
             <div class="progress-info">
                 <span id="progressStatus">Скачивание...</span>
                 <span id="progressText">0%</span>
@@ -1676,18 +2199,43 @@ function closeContactModal() {
                 <div id="progressFill" class="progress-fill"></div>
             </div>
         </div>
+
     </div>
+
 </div>
 
 <!-- ==================================================
      APP SELECTION SHEET
 ================================================== -->
-<div class="sheet-overlay" id="sheetOverlay" onclick="closeSheet()">
-    <div class="sheet-modal" onclick="event.stopPropagation()">
+
+<div
+    class="sheet-overlay"
+    id="sheetOverlay"
+    onclick="closeSheet()"
+>
+
+    <div
+        class="sheet-modal"
+        onclick="event.stopPropagation()"
+    >
+
         <div class="sheet-header">
-            <div class="sheet-title">Выбор приложения</div>
-            <button type="button" class="sheet-close" onclick="closeSheet()">✕</button>
+
+            <div class="sheet-title">
+                Выбор приложения
+            </div>
+
+            <button
+                type="button"
+                class="sheet-close"
+                onclick="closeSheet()"
+            >
+                ✕
+            </button>
+
         </div>
+
+        <!-- ОДИН ИНФОРМАЦИОННЫЙ БЛОК (Статус доступности приложений, обведен красным, размещен НАД поиском) -->
         <div class="info-blocks-container">
             <div class="info-card app-status-card">
                 <div class="pulse-dot"></div>
@@ -1697,204 +2245,361 @@ function closeContactModal() {
                 </div>
             </div>
         </div>
+
         <div class="app-search-wrap">
-            <span class="search-icon">⌕</span>
-            <input type="search" id="appSearchInput" class="app-search" placeholder="Поиск по названию..." autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false">
-            <button type="button" id="searchClear" class="search-clear" onclick="clearAppSearch()" aria-label="Очистить поиск">✕</button>
+
+            <span class="search-icon">
+                ⌕
+            </span>
+
+            <input
+                type="search"
+                id="appSearchInput"
+                class="app-search"
+                placeholder="Поиск по названию..."
+                autocomplete="off"
+                autocorrect="off"
+                autocapitalize="none"
+                spellcheck="false"
+            >
+
+            <button
+                type="button"
+                id="searchClear"
+                class="search-clear"
+                onclick="clearAppSearch()"
+                aria-label="Очистить поиск"
+            >
+                ✕
+            </button>
+
         </div>
-        <div id="searchEmpty" class="search-empty">🔎 Ничего не найдено</div>
-        <div class="sheet-list">
-            <div class="sheet-item" data-key="vk" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk.plist', 'ВКонтакте', 'vk')">
-                <div class="sheet-info-box"><span class="app-name">ВКонтакте</span></div>
+
+        <div
+            id="searchEmpty"
+            class="search-empty"
+        >
+            🔎 Ничего не найдено
+        </div>
+
+  <div class="sheet-list">
+
+            <div
+                class="sheet-item"
+                data-key="vk"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk.plist', 'ВКонтакте', 'vk')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">ВКонтакте</span>
+                </div>
                 <span class="ios-badge">iOS 17.6</span>
             </div>
-            <div class="sheet-item" data-key="max" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/max.plist', 'MAX', 'max')">
-                <div class="sheet-info-box"><span class="app-name">MAX</span></div>
+      
+            <div
+                class="sheet-item"
+                data-key="max"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/max.plist', 'MAX', 'max')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">MAX</span>
+                </div>
                 <span class="ios-badge">iOS 15.5</span>
             </div>
-            <div class="sheet-item" data-key="vk-video" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk-video.plist', 'VK Видео', 'vk-video')">
-                <div class="sheet-info-box"><span class="app-name">VK Видео</span></div>
+
+            <div
+                class="sheet-item"
+                data-key="vk-video"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk-video.plist', 'VK Видео', 'vk-video')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">VK Видео</span>
+                </div>
                 <span class="ios-badge">iOS 17.6</span>
             </div>
-            <div class="sheet-item" data-key="vk-clips" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk-clips.plist', 'VK Клипы', 'vk-clips')">
-                <div class="sheet-info-box"><span class="app-name">VK Клипы</span></div>
+      
+            <div
+                class="sheet-item"
+                data-key="vk-clips"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk-clips.plist', 'VK Клипы', 'vk-clips')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">VK Клипы</span>
+                </div>
                 <span class="ios-badge">iOS 14.0</span>
             </div>
-            <div class="sheet-item" data-key="sberfinansy" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sberfinansy.plist', 'СберБанк (Финансы Онлайн)', 'sberfinansy')">
-                <div class="sheet-info-box"><span class="app-name">СберБанк (Финансы Онлайн)</span></div>
+      
+      <div
+                class="sheet-item"
+                data-key="sberfinansy"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sberfinansy.plist', 'СберБанк (Финансы Онлайн)', 'sberfinansy')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">СберБанк (Финансы Онлайн)</span>
+                </div>
                 <span class="ios-badge">iOS 15.0</span>
             </div>
-            <div class="sheet-item" data-key="avito" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/avito.plist', 'Авито', 'avito')">
-                <div class="sheet-info-box"><span class="app-name">Авито</span></div>
+
+           <div
+                class="sheet-item"
+                data-key="avito"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/avito.plist', 'Авито', 'avito')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">Авито</span>
+                </div>
                 <span class="ios-badge">iOS 16.0</span>
             </div>
-            <div class="sheet-item" data-key="sovkombank-vsekarty" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sovkombank-vsekarty.plist', 'Совкомбанк (Все карты MDS)', 'sovkombank-vsekarty')">
-                <div class="sheet-info-box"><span class="app-name">Совкомбанк (Все карты MDS)</span></div>
+      
+            <div
+                class="sheet-item"
+                data-key="sovkombank-vsekarty"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sovkombank-vsekarty.plist', 'Совкомбанк (Все карты MDS)', 'sovkombank-vsekarty')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">Совкомбанк (Все карты MDS)</span>
+                </div>
                 <span class="ios-badge">iOS 17.0</span>
             </div>
-            <div class="sheet-item" data-key="tbank" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/tbank.plist', 'Т-Банк(8PRO)', 'tbank')">
-                <div class="sheet-info-box"><span class="app-name">Т-Банк (8PRO)</span></div>
+
+          <div
+                class="sheet-item"
+                data-key="tbank"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/tbank.plist', 'Т-Банк(8PRO)', 'tbank')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">Т-Банк (8PRO)</span>
+                </div>
                 <span class="ios-badge">iOS 16.0</span>
             </div>
-            <div class="sheet-item" data-key="sovkombank-sinoptik" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sovkombank-sinoptik.plist', 'Совкомбанк (Синоптик+)', 'sovkombank-sinoptik')">
-                <div class="sheet-info-box"><span class="app-name">Совкомбанк (Синоптик+)</span></div>
+      
+      <div
+                class="sheet-item"
+                data-key="sovkombank-sinoptik"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sovkombank-sinoptik.plist', 'Совкомбанк (Синоптик+)', 'sovkombank-sinoptik')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">Совкомбанк (Синоптик+)</span>
+                </div>
                 <span class="ios-badge">iOS 17.0</span>
             </div>
-            <div class="sheet-item" data-key="drive-transit" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/drive-transit.plist', 'Т-Банк (Drive Transit)', 'drive-transit')">
-                <div class="sheet-info-box"><span class="app-name">Т-Банк (Drive Transit)</span></div>
+
+            <div
+                class="sheet-item"
+                data-key="drive-transit"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/drive-transit.plist', 'Т-Банк (Drive Transit)', 'drive-transit')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">Т-Банк (Drive Transit)</span>
+                </div>
                 <span class="ios-badge">iOS 16.0</span>
             </div>
-            <div class="sheet-item" data-key="lenta" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/lenta.plist', 'Лента', 'lenta')">
-                <div class="sheet-info-box"><span class="app-name">Лента</span></div>
+
+            <div
+                class="sheet-item"
+                data-key="lenta"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/lenta.plist', 'Лента', 'lenta')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">Лента</span>
+                </div>
                 <span class="ios-badge">iOS 16.0</span>
             </div>
-            <div class="sheet-item" data-key="yandex-pay" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/yandex-pay.plist', 'Яндекс Пэй', 'yandex-pay')">
-                <div class="sheet-info-box"><span class="app-name">Яндекс Пэй</span></div>
+      
+            <div
+                class="sheet-item"
+                data-key="yandex-pay"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/yandex-pay.plist', 'Яндекс Пэй', 'yandex-pay')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">Яндекс Пэй</span>
+                </div>
                 <span class="ios-badge">iOS 16.0</span>
             </div>
-            <div class="sheet-item" data-key="2gis" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/2gis.plist', '2ГИС', '2gis')">
-                <div class="sheet-info-box"><span class="app-name">2ГИС</span></div>
+
+            <div
+                class="sheet-item"
+                data-key="2gis"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/2gis.plist', '2ГИС', '2gis')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">2ГИС</span>
+                </div>
                 <span class="ios-badge">iOS 16.0</span>
             </div>
-            <div class="sheet-item" data-key="psb" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/psb.plist', 'ПСБ (Чайная Церемония)', 'psb')">
-                <div class="sheet-info-box"><span class="app-name">ПСБ (Чайная Церемония)</span></div>
+
+            <div
+                class="sheet-item"
+                data-key="psb"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/psb.plist', 'ПСБ (Чайная Церемония)', 'psb')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">ПСБ (Чайная Церемония)</span>
+                </div>
                 <span class="ios-badge">iOS 15.0</span>
             </div>
-            <div class="sheet-item" data-key="kuper" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/kuper.plist', 'Купер', 'kuper')">
-                <div class="sheet-info-box"><span class="app-name">Купер</span></div>
+
+      <div
+                class="sheet-item"
+                data-key="kuper"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/kuper.plist', 'Купер', 'kuper')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">Купер</span>
+                </div>
                 <span class="ios-badge">iOS 15.0</span>
             </div>
-            <div class="sheet-item" data-key="rutube" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/rutube.plist', 'Rutube', 'rutube')">
-                <div class="sheet-info-box"><span class="app-name">Rutube(Starship Battle)</span></div>
+
+      <div
+                class="sheet-item"
+                data-key="rutube"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/rutube.plist', 'Rutube', 'rutube')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">Rutube(Starship Battle)</span>
+                </div>
                 <span class="ios-badge">iOS 16.0</span>
             </div>
-            <div class="sheet-item" data-key="mobio" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/mobio.plist', 'СберМобайл (Мобио)', 'mobio')">
-                <div class="sheet-info-box"><span class="app-name">СберМобайл (Мобио)</span></div>
+
+         <div
+                class="sheet-item"
+                data-key="mobio"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/mobio.plist', 'СберМобайл (Мобио)', 'mobio')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">СберМобайл (Мобио)</span>
+                </div>
                 <span class="ios-badge">iOS 15.0</span>
             </div>
-            <div class="sheet-item" data-key="rzd" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/rzd.plist', 'РЖД Пассажирам', 'rzd')">
-                <div class="sheet-info-box"><span class="app-name">РЖД Пассажирам</span></div>
+      
+      <div
+                class="sheet-item"
+                data-key="rzd"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/rzd.plist', 'РЖД Пассажирам', 'rzd')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">РЖД Пассажирам</span>
+                </div>
                 <span class="ios-badge">iOS 15.0</span>
             </div>
-            <div class="sheet-item" data-key="sberkids" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sberkids.plist', 'СберKids (SpeakaBoo)','sberkids')">
-                <div class="sheet-info-box"><span class="app-name">СберKids (SpeakaBoo)</span></div>
+
+      <div
+                class="sheet-item"
+                data-key="sberkids"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sberkids.plist', 'СберKids (SpeakaBoo)','sberkids')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">СберKids (SpeakaBoo)</span>
+                </div>
                 <span class="ios-badge">iOS 15.0</span>
             </div>
-            <div class="sheet-item" data-key="lentaa" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/lentaa.plist', 'Лента (Быстро Продукты)', 'lentaa')">
-                <div class="sheet-info-box"><span class="app-name">Лента (Быстро Продукты)</span></div>
+
+      <div
+                class="sheet-item"
+                data-key="lentaa"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/lentaa.plist', 'Лента (Быстро Продукты)', 'lentaa')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">Лента (Быстро Продукты)</span>
+                </div>
                 <span class="ios-badge">iOS 16.0</span>
             </div>
-            <div class="sheet-item" data-key="avito-anero" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/avito-anero.plist', 'Авито (Anero)', 'avito-anero')">
-                <div class="sheet-info-box"><span class="app-name">Авито (Anero)</span></div>
+      
+       <div
+                class="sheet-item"
+                data-key="avito-anero"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/avito-anero.plist', 'Авито (Anero)', 'avito-anero')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">Авито (Anero)</span>
+                </div>
                 <span class="ios-badge">iOS 16.0</span>
             </div>
-            <div class="sheet-item" data-key="craftersy" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/craftersy.plist', 'Т-Банк (Craftersy)', 'craftersy')">
-                <div class="sheet-info-box"><span class="app-name">Т-Банк (Craftersy)</span></div>
+
+      <div
+                class="sheet-item"
+                data-key="craftersy"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/craftersy.plist', 'Т-Банк (Craftersy)', 'craftersy')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">Т-Банк (Craftersy)</span>
+                </div>
                 <span class="ios-badge">iOS 16.0</span>
             </div>
-            <div class="sheet-item" data-key="scbnotes" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/scbnotes.plist', 'СовкомБанк (SCB Notes)', 'scbnotes')">
-                <div class="sheet-info-box"><span class="app-name">СовкомБанк (SCB Notes)</span></div>
+      
+      <div
+                class="sheet-item"
+                data-key="scbnotes"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/scbnotes.plist', 'СовкомБанк (SCB Notes)', 'scbnotes')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">СовкомБанк (SCB Notes)</span>
+                </div>
                 <span class="ios-badge">iOS 17.0</span>
             </div>
-            <div class="sheet-item" data-key="ak-bars-bank" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/ak-bars-bank.plist', 'АК Барс (Всё Учтено)', 'ak-bars-bank')">
-                <div class="sheet-info-box"><span class="app-name">АК Барс (Всё Учтено)</span></div>
+      
+      <div
+                class="sheet-item"
+                data-key="ak-bars-bank"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/ak-bars-bank.plist', 'АК Барс (Всё Учтено)', 'ak-bars-bank')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">АК Барс (Всё Учтено)</span>
+                </div>
                 <span class="ios-badge">iOS 16.0</span>
             </div>
-            <div class="sheet-item" data-key="blum" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/blum.plist', 'РокетБанк (Блум)', 'blum')">
-                <div class="sheet-info-box"><span class="app-name">РокетБанк (Блум)</span></div>
+
+       <div
+                class="sheet-item"
+                data-key="blum"
+                onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/blum.plist', 'РокетБанк (Блум)', 'blum')"
+            >
+                <div class="sheet-info-box">
+                    <span class="app-name">РокетБанк (Блум)</span>
+                </div>
                 <span class="ios-badge">iOS 15.0</span>
             </div>
+      
         </div>
-    </div>
+</div>
 </div>
 
 <!-- ==================================================
      CONTACT SELLER MODAL
 ================================================== -->
+
 <div class="sheet-overlay" id="contactOverlay" onclick="closeContactModal()">
     <div class="sheet-modal" onclick="event.stopPropagation()" style="height: auto; max-height: 90vh; border: 1.5px solid rgba(255, 119, 119, 0.4); box-shadow: 0 0 50px rgba(255, 119, 119, 0.15), 0 35px 90px rgba(0,0,0,0.6);">
+        
+        <!-- Шапка без крестика, текст по центру -->
         <div class="sheet-header" style="justify-content: center; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 14px; padding-bottom: 14px;">
             <div class="sheet-title" style="text-align: center; width: 100%; font-size: 21px; color: #ffffff; -webkit-text-fill-color: #ffffff;">
                 ⚠️ Завершение настройки ⚠️
             </div>
         </div>
+
+        <!-- Контент -->
         <div style="display: flex; flex-direction: column; gap: 18px; padding: 5px 0 10px; text-align: center;">
+            
+            <!-- Основной текст: простой язык, весь нужный отрезок выделен голубым -->
             <div style="font-size: 15px; color: #ffffff; line-height: 1.6; font-weight: 450;">
                 Загрузка приложения успешно завершена. <br>
                 <span style="color: #58b8ff; font-weight: 600;">Для завершения установки приложения и его работы свяжитесь с нашим специалистом.</span>
             </div>
+
+            <!-- Акцентная кнопка связи со специалистом -->
             <a href="https://t.me/dizabled" target="_blank" rel="noopener noreferrer" class="btn btn-telegram" style="justify-content: center; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); font-size: 16px; padding: 16px; box-shadow: 0 10px 30px rgba(56, 189, 248, 0.25);">
                 <img src="Telegram_logo.svg" alt="Telegram" class="telegram-icon" style="width: 20px; height: 20px;">
                 Связаться со специалистом
             </a>
+
+            <!-- Второстепенная кнопка закрытия -->
             <button type="button" class="btn btn-secondary" onclick="closeContactModal()">
                 Понятно
             </button>
+
         </div>
     </div>
 </div>
-
-<!-- ==================================================
-     CHANGELOG MODAL (Список изменений)
-================================================== -->
-<div class="sheet-overlay" id="changelogOverlay" onclick="event.stopPropagation()">
-    <div class="sheet-modal" onclick="event.stopPropagation()" style="height: auto; max-height: 85vh;">
-        <div class="sheet-header" style="justify-content: center; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 14px; padding-bottom: 14px;">
-            <div class="sheet-title" style="text-align: center; width: 100%; font-size: 19px;">
-                ✨ Список изменений
-            </div>
-        </div>
-        <div style="display: flex; flex-direction: column; gap: 14px; padding-bottom: 5px;">
-            <div class="changelog-list">
-                <div class="changelog-item"><div class="changelog-bullet"></div><div>Добавлены новые приложения в основной каталог каталога.</div></div>
-                <div class="changelog-item"><div class="changelog-bullet"></div><div>Добавлено новое информационное окно статуса работы сервиса.</div></div>
-                <div class="changelog-item"><div class="changelog-bullet"></div><div>Добавлены новые функции быстрого поиска и фильтрации приложений.</div></div>
-                <div class="changelog-item"><div class="changelog-bullet"></div><div>Добавлено отдельное всплывающее окно для завершения установки.</div></div>
-                <div class="changelog-item"><div class="changelog-bullet"></div><div>Добавлены новые виджеты и индикаторы прогресса загрузки.</div></div>
-                <div class="changelog-item"><div class="changelog-bullet"></div><div>Добавлены новые разделы с актуальными версиями iOS для каждого приложения.</div></div>
-                <div class="changelog-item"><div class="changelog-bullet"></div><div>Добавлены новые элементы интерфейса и улучшена плавная анимация окон.</div></div>
-                <div class="changelog-item"><div class="changelog-bullet"></div><div>Добавлены новые кнопки быстрой связи со службой поддержки.</div></div>
-            </div>
-            <button type="button" class="btn" onclick="closeChangelogModal()" style="margin-top: 4px;">
-                Понятно
-            </button>
-        </div>
-    </div>
-</div>
-
-    <!-- Модальное окно списка изменений (всегда показывается при открытии страницы) -->
-<div id="changelog-modal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 9999;">
-  <div style="background: #fff; padding: 24px; border-radius: 12px; max-width: 500px; width: 90%; box-shadow: 0 4px 20px rgba(0,0,0,0.2); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-    <h3 style="margin-top: 0; margin-bottom: 16px; color: #111; font-size: 20px;">Что нового</h3>
-    <ul id="changelog-list" style="max-height: 300px; overflow-y: auto; padding-left: 20px; margin: 0 0 20px 0; color: #444; font-size: 14px; line-height: 1.5;">
-      <li>Загрузка списка изменений...</li>
-    </ul>
-    <button onclick="document.getElementById('changelog-modal').style.display='none'" style="width: 100%; padding: 12px; background: #007aff; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600;">Понятно</button>
-  </div>
-</div>
-
-<script>
-  // Загружаем актуальный список изменений из файла, который автоматически обновляет GitHub Actions
-  fetch('changelog.json')
-    .then(response => {
-      if (!response.ok) throw new Error('Network response was not ok');
-      return response.json();
-    })
-    .then(data => {
-      const listEl = document.getElementById('changelog-list');
-      listEl.innerHTML = '';
-      data.forEach(item => {
-        const li = document.createElement('li');
-        li.style.marginBottom = '8px';
-        li.innerHTML = `<span style="color: #888; font-size: 12px;">[${item.date}]</span> ${item.message}`;
-        listEl.appendChild(li);
-      });
-    })
-    .catch(error => {
-      document.getElementById('changelog-list').innerHTML = '<li>Не удалось загрузить список изменений.</li>';
-      console.error('Error loading changelog:', error);
-    });
-</script>
     
 </body>
 </html>
