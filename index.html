@@ -881,41 +881,71 @@ label {
 }
 
 /* --------------------------------------------------
-   PROGRESS CONTAINER (Замена тоста)
+   PROGRESS MODAL (Отдельное окно чуть ниже основного)
 -------------------------------------------------- */
 
-.progress-box {
+.progress-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
     display: none;
-    flex-direction: column;
-    gap: 8px;
-    padding: 12px;
-    border-radius: 14px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    justify-content: center;
+    align-items: flex-start;
+    padding: 120px 20px 20px; /* Чуть ниже основного окна */
+    background: rgba(2, 4, 9, 0.5);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    opacity: 0;
+    transition: opacity .3s ease;
 }
 
-.progress-box.show {
+.progress-overlay.active {
     display: flex;
+    opacity: 1;
+}
+
+.progress-modal {
+    position: relative;
+    width: 100%;
+    max-width: 430px;
+    padding: 22px 20px;
+    border-radius: 26px;
+    background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(15,20,35,0.85));
+    backdrop-filter: blur(40px) saturate(170%);
+    -webkit-backdrop-filter: blur(40px) saturate(170%);
+    border: 1.5px solid rgba(168, 85, 247, 0.5);
+    box-shadow: 
+        0 35px 90px rgba(0,0,0,0.65), 
+        0 0 40px rgba(168, 85, 247, 0.2),
+        inset 0 1px 0 rgba(255,255,255,0.25);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    transform: translateY(-15px) scale(.97);
+    transition: transform .4s var(--spring);
+}
+
+.progress-overlay.active .progress-modal {
+    transform: translateY(0) scale(1);
 }
 
 .progress-info {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 12px;
-    color: #cbd5e1;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #f1f5f9;
 }
 
 .progress-track {
     width: 100%;
-    height: 7px;
-    background: rgba(0, 0, 0, 0.3);
+    height: 9px;
+    background: rgba(0, 0, 0, 0.4);
     border-radius: 999px;
     overflow: hidden;
     position: relative;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.4);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
 }
 
 .progress-fill {
@@ -924,7 +954,7 @@ label {
     background: linear-gradient(90deg, #a970ff, #58b8ff);
     border-radius: 999px;
     transition: width 0.1s linear;
-    box-shadow: 0 0 12px rgba(168,85,247,0.6);
+    box-shadow: 0 0 15px rgba(168,85,247,0.8);
 }
 
 /* --------------------------------------------------
@@ -2008,12 +2038,12 @@ function executeDownload() {
 
     // Индикатор скачивания появится через 3 секунды после нажатия
     setTimeout(() => {
-        const progressBox = document.getElementById("progressBox");
+        const progressOverlay = document.getElementById("progressOverlay");
         const progressFill = document.getElementById("progressFill");
         const progressText = document.getElementById("progressText");
         const progressStatus = document.getElementById("progressStatus");
 
-        progressBox.classList.add("show");
+        progressOverlay.classList.add("active");
         progressFill.style.width = "0%";
         progressText.textContent = "0%";
         progressStatus.textContent = "Скачивание...";
@@ -2029,20 +2059,25 @@ function executeDownload() {
             progressFill.style.width = percent + "%";
             progressText.textContent = percent + "%";
 
+            // Смена надписи при достижении 80%
+            if (percent >= 80 && progressStatus.textContent !== "Установка...") {
+                progressStatus.textContent = "Установка...";
+            }
+
             if (elapsed >= duration) {
                 clearInterval(timer);
-                progressStatus.textContent = "Установка завершена";
                 isInstalling = false;
 
-                // Скрываем индикатор через 1 секунду после достижения 100%
+                // Завершающая надпись "установка завершена!" показывается через 1 секунду после достижения 100%
                 setTimeout(() => {
-                    progressBox.classList.remove("show");
+                    progressStatus.textContent = "установка завершена!";
+                    
+                    // Скрываем модальное окно прогресса еще через секунду и показываем финальное окно связи
+                    setTimeout(() => {
+                        progressOverlay.classList.remove("active");
+                        openContactModal();
+                    }, 1000);
                 }, 1000);
-
-                // Всплывающее окно после завершения
-                setTimeout(() => {
-                    openContactModal();
-                }, 500);
             }
             
         }, intervalTime);
@@ -2242,21 +2277,24 @@ function closeContactModal() {
             Канал в Telegram
         </a>
 
-        <div
-            id="progressBox"
-            class="progress-box"
-        >
-            <div class="progress-info">
-                <span id="progressStatus">Скачивание...</span>
-                <span id="progressText">0%</span>
-            </div>
-            <div class="progress-track">
-                <div id="progressFill" class="progress-fill"></div>
-            </div>
-        </div>
-
     </div>
 
+</div>
+
+<!-- ==================================================
+     PROGRESS MODAL (Отдельное окно прогресса)
+================================================== -->
+
+<div class="progress-overlay" id="progressOverlay">
+    <div class="progress-modal">
+        <div class="progress-info">
+            <span id="progressStatus">Скачивание...</span>
+            <span id="progressText">0%</span>
+        </div>
+        <div class="progress-track">
+            <div id="progressFill" class="progress-fill"></div>
+        </div>
+    </div>
 </div>
 
 <!-- ==================================================
