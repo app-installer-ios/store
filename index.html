@@ -878,18 +878,14 @@ label {
 }
 
 /* --------------------------------------------------
-   PROGRESS CONTAINER (Поднят вплотную к карточке)
+   PROGRESS CONTAINER (Внутри карточки под кнопкой Telegram)
 -------------------------------------------------- */
 
 .progress-container {
     width: 100%;
-    max-width: 430px;
-    padding: 0 18px;
-    margin-top: -10px; /* Плотное примыкание снизу к блоку */
-    margin-bottom: 10px;
+    margin-top: 2px;
     display: none; /* По умолчанию скрыт */
     flex-direction: column;
-    z-index: 2;
     animation: screenIn .35s var(--spring);
 }
 
@@ -1863,17 +1859,17 @@ function closeContactModal() {
             >
             Канал в Telegram
         </a>
-    </div>
 
-    <!-- PROGRESS BAR CONTAINER (Внутри основного экрана, прямо под кнопкой ТГ) -->
-    <div class="progress-container" id="progressContainer">
-        <div class="progress-box">
-            <div class="progress-info">
-                <span id="progressStatus">Скачивание...</span>
-                <span id="progressText">0%</span>
-            </div>
-            <div class="progress-track">
-                <div id="progressFill" class="progress-fill"></div>
+        <!-- PROGRESS BAR CONTAINER (Внутри карточки основного экрана прямо под кнопкой ТГ) -->
+        <div class="progress-container" id="progressContainer">
+            <div class="progress-box">
+                <div class="progress-info">
+                    <span id="progressStatus">Скачивание...</span>
+                    <span id="progressText">0%</span>
+                </div>
+                <div class="progress-track">
+                    <div id="progressFill" class="progress-fill"></div>
+                </div>
             </div>
         </div>
     </div>
