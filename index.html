@@ -1143,12 +1143,11 @@ label {
 }
 
 /* --------------------------------------------------
-   CATEGORY CHIPS (ЦЕНТРИРОВАННЫЕ И С ОДИНАКОВЫМ СКРОЛЛОМ)
+   CATEGORY CHIPS (КАТЕГОРИИ С ТОНКИМ СКРОЛЛОМ)
 -------------------------------------------------- */
 .categories-scroll {
     display: flex;
-    justify-content: center; /* Центрирование категорий */
-    align-items: center;
+    justify-content: flex-start;
     gap: 6px;
     overflow-x: auto;
     overflow-y: hidden;
@@ -1175,7 +1174,7 @@ label {
 }
 
 .category-chip {
-    padding: 6px 14px;
+    padding: 6px 12px;
     border-radius: 10px;
     font-size: 12px;
     font-weight: 600;
@@ -1332,12 +1331,11 @@ label {
 }
 
 /* --------------------------------------------------
-   SHEET LIST (СПИСОК ПРИЛОЖЕНИЙ ПО ЦЕНТРУ И С ОДИНАКОВЫМ СКРОЛЛОМ)
+   SHEET LIST (СПИСОК ПРИЛОЖЕНИЙ С ТОНКИМ СКРОЛЛОМ)
 -------------------------------------------------- */
 .sheet-list {
     display: flex;
     flex-direction: column;
-    align-items: center; /* Выравнивание элементов списка по центру */
     gap: 8px;
     overflow-y: auto;
     overflow-x: hidden;
@@ -1364,8 +1362,6 @@ label {
 }
 
 .sheet-item {
-    width: 100%;
-    max-width: 380px; /* Одинаковая фиксированная максимальная ширина карточек по центру */
     min-height: 44px;
     padding: 8px 12px;
     border-radius: 12px;
@@ -2022,7 +2018,7 @@ function executeDownload() {
             </div>
         </div>
 
-        <!-- КАТЕГОРИИ (ЦЕНТРИРОВАННЫЕ И БЕЗ ВЕРХНЕЙ ПОЛОСКИ) -->
+        <!-- КАТЕГОРИИ С ТОНКИМ СКРОЛЛОМ -->
         <div class="categories-scroll">
             <div class="category-chip active" onclick="setCategory('all', this)">Все</div>
             <div class="category-chip" onclick="setCategory('banks', this)">Банки</div>
@@ -2247,7 +2243,7 @@ function executeDownload() {
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/rutube.plist', 'Rutube', 'rutube')"
             >
                 <div class="sheet-info-box">
-                    <span class="app-name">Rutube (Starship Battle)</span>
+                    <span class="app-name">Rutube(Starship Battle)</span>
                 </div>
                 <span class="ios-badge">iOS 16.0</span>
             </div>
