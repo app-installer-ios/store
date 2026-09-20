@@ -1147,7 +1147,7 @@ label {
 -------------------------------------------------- */
 .categories-scroll {
     display: flex;
-    justify-content: center; /* Выравнивает категории по центру */
+    justify-content: center;
     gap: 6px;
     overflow-x: auto;
     overflow-y: hidden;
@@ -1412,15 +1412,15 @@ label {
     padding: 20px 10px;
 }
 
+/* ИЗМЕНЕНИЯ ЗДЕСЬ: фиксируем размеры модального окна при открытии клавиатуры */
 body.keyboard-open .sheet-overlay {
-    align-items: flex-start;
-    padding-top: 15px;
+    align-items: center;
 }
 
 body.keyboard-open .sheet-modal {
     transform: none !important;
-    height: calc(100dvh - 30px);
-    max-height: calc(100dvh - 30px);
+    height: min(78vh, 580px) !important;
+    max-height: calc(100dvh - 30px) !important;
 }
 
 @media (max-height: 680px) {
@@ -1475,7 +1475,7 @@ body.keyboard-open .sheet-modal {
     }
 
     .sheet-modal {
-        height: calc(100dvh - 30px);
+        height: min(78vh, 580px);
         max-height: calc(100dvh - 30px);
     }
 }   
