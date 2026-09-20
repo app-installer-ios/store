@@ -1142,6 +1142,45 @@ label {
     transform: scale(.9);
 }
 
+/* --------------------------------------------------
+   CATEGORY CHIPS (КАТЕГОРИИ)
+-------------------------------------------------- */
+.categories-scroll {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    margin-bottom: 10px;
+    flex-shrink: 0;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+}
+.categories-scroll::-webkit-scrollbar {
+    display: none;
+}
+.category-chip {
+    padding: 6px 12px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #94a3b8;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+.category-chip:hover {
+    background: rgba(255, 255, 255, 0.09);
+    color: #fff;
+}
+.category-chip.active {
+    background: linear-gradient(135deg, rgba(168,85,247,0.35), rgba(99,102,241,0.35));
+    border-color: rgba(168,85,247,0.8);
+    color: #fff;
+    box-shadow: 0 0 12px rgba(168,85,247,0.3);
+}
+
 .app-search-wrap {
     position: relative;
     flex-shrink: 0;
@@ -1363,10 +1402,6 @@ label {
     letter-spacing: 0.2px;
 }
 
-.divider-hr {
-    display: none;
-}
-
 .search-empty {
     display: none;
     text-align: center;
@@ -1517,6 +1552,7 @@ function getSitePassword() {
 let selectedAppUrl = "";
 let selectedAppKey = "";
 let isInstalling = false;
+let currentCategory = "all";
 
 function switchScreen(screenId) {
     document.querySelectorAll(".container").forEach(el => {
@@ -1635,18 +1671,22 @@ function closeSheet() {
     filterApps();
 }
 
+function setCategory(cat, element) {
+    currentCategory = cat;
+    document.querySelectorAll(".category-chip").forEach(chip => chip.classList.remove("active"));
+    element.classList.add("active");
+    filterApps();
+}
+
 function filterApps() {
     const input = document.getElementById("appSearchInput");
-    if (!input) return;
-
-    const query = input.value.trim().toLowerCase();
+    const query = input ? input.value.trim().toLowerCase() : "";
     const clearBtn = document.getElementById("searchClear");
     const emptyMessage = document.getElementById("searchEmpty");
 
-    if (query) {
-        clearBtn.classList.add("visible");
-    } else {
-        clearBtn.classList.remove("visible");
+    if (clearBtn) {
+        if (query) clearBtn.classList.add("visible");
+        else clearBtn.classList.remove("visible");
     }
 
     let visibleCount = 0;
@@ -1656,26 +1696,23 @@ function filterApps() {
         if (!appNameElement) return;
 
         const name = appNameElement.textContent.toLowerCase();
-        const matches = name.includes(query);
+        const itemCategory = item.getAttribute("data-category") || "";
+        
+        const matchesQuery = name.includes(query);
+        const matchesCategory = (currentCategory === "all" || itemCategory === currentCategory);
 
-        if (!matches) {
+        if (!matchesQuery || !matchesCategory) {
             item.style.display = "none";
-            const hr = item.nextElementSibling;
-            if (hr && hr.classList.contains("divider-hr")) {
-                hr.style.display = "none";
-            }
             return;
         }
 
         item.style.display = "flex";
-        const hr = item.nextElementSibling;
-        if (hr && hr.classList.contains("divider-hr")) {
-            hr.style.display = "block";
-        }
         visibleCount++;
     });
 
-    emptyMessage.style.display = visibleCount === 0 ? "block" : "none";
+    if (emptyMessage) {
+        emptyMessage.style.display = visibleCount === 0 ? "block" : "none";
+    }
 }
 
 function clearAppSearch() {
@@ -1964,6 +2001,15 @@ function executeDownload() {
             </div>
         </div>
 
+        <!-- КАТЕГОРИИ (ФИЛЬТРЫ) -->
+        <div class="categories-scroll">
+            <div class="category-chip active" onclick="setCategory('all', this)">Все</div>
+            <div class="category-chip" onclick="setCategory('banks', this)">Банки</div>
+            <div class="category-chip" onclick="setCategory('social', this)">Соцсети</div>
+            <div class="category-chip" onclick="setCategory('shops', this)">Покупки</div>
+            <div class="category-chip" onclick="setCategory('services', this)">Сервисы</div>
+        </div>
+
         <div class="app-search-wrap">
             <span class="search-icon">
                 ⌕
@@ -1997,6 +2043,7 @@ function executeDownload() {
             <div
                 class="sheet-item"
                 data-key="vk"
+                data-category="social"
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk.plist', 'ВКонтакте', 'vk')"
             >
                 <div class="sheet-info-box">
@@ -2008,6 +2055,7 @@ function executeDownload() {
             <div
                 class="sheet-item"
                 data-key="max"
+                data-category="services"
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/max.plist', 'MAX', 'max')"
             >
                 <div class="sheet-info-box">
@@ -2019,6 +2067,7 @@ function executeDownload() {
             <div
                 class="sheet-item"
                 data-key="vk-video"
+                data-category="social"
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk-video.plist', 'VK Видео', 'vk-video')"
             >
                 <div class="sheet-info-box">
@@ -2030,6 +2079,7 @@ function executeDownload() {
             <div
                 class="sheet-item"
                 data-key="vk-clips"
+                data-category="social"
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk-clips.plist', 'VK Клипы', 'vk-clips')"
             >
                 <div class="sheet-info-box">
@@ -2041,6 +2091,7 @@ function executeDownload() {
             <div
                 class="sheet-item"
                 data-key="sberfinansy"
+                data-category="banks"
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sberfinansy.plist', 'СберБанк (Финансы Онлайн)', 'sberfinansy')"
             >
                 <div class="sheet-info-box">
@@ -2052,6 +2103,7 @@ function executeDownload() {
             <div
                 class="sheet-item"
                 data-key="avito"
+                data-category="shops"
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/avito.plist', 'Авито', 'avito')"
             >
                 <div class="sheet-info-box">
@@ -2063,6 +2115,7 @@ function executeDownload() {
             <div
                 class="sheet-item"
                 data-key="sovkombank-vsekarty"
+                data-category="banks"
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sovkombank-vsekarty.plist', 'Совкомбанк (Все карты MDS)', 'sovkombank-vsekarty')"
             >
                 <div class="sheet-info-box">
@@ -2074,6 +2127,7 @@ function executeDownload() {
             <div
                 class="sheet-item"
                 data-key="tbank"
+                data-category="banks"
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/tbank.plist', 'Т-Банк(8PRO)', 'tbank')"
             >
                 <div class="sheet-info-box">
@@ -2085,6 +2139,7 @@ function executeDownload() {
             <div
                 class="sheet-item"
                 data-key="sovkombank-sinoptik"
+                data-category="banks"
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sovkombank-sinoptik.plist', 'Совкомбанк (Синоптик+)', 'sovkombank-sinoptik')"
             >
                 <div class="sheet-info-box">
@@ -2096,6 +2151,7 @@ function executeDownload() {
             <div
                 class="sheet-item"
                 data-key="drive-transit"
+                data-category="banks"
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/drive-transit.plist', 'Т-Банк (Drive Transit)', 'drive-transit')"
             >
                 <div class="sheet-info-box">
@@ -2107,6 +2163,7 @@ function executeDownload() {
             <div
                 class="sheet-item"
                 data-key="lenta"
+                data-category="shops"
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/lenta.plist', 'Лента', 'lenta')"
             >
                 <div class="sheet-info-box">
@@ -2118,6 +2175,7 @@ function executeDownload() {
             <div
                 class="sheet-item"
                 data-key="yandex-pay"
+                data-category="banks"
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/yandex-pay.plist', 'Яндекс Пэй', 'yandex-pay')"
             >
                 <div class="sheet-info-box">
@@ -2129,6 +2187,7 @@ function executeDownload() {
             <div
                 class="sheet-item"
                 data-key="2gis"
+                data-category="services"
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/2gis.plist', '2ГИС', '2gis')"
             >
                 <div class="sheet-info-box">
@@ -2140,6 +2199,7 @@ function executeDownload() {
             <div
                 class="sheet-item"
                 data-key="psb"
+                data-category="banks"
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/psb.plist', 'ПСБ (Чайная Церемония)', 'psb')"
             >
                 <div class="sheet-info-box">
@@ -2151,6 +2211,7 @@ function executeDownload() {
             <div
                 class="sheet-item"
                 data-key="kuper"
+                data-category="shops"
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/kuper.plist', 'Купер', 'kuper')"
             >
                 <div class="sheet-info-box">
@@ -2162,6 +2223,7 @@ function executeDownload() {
             <div
                 class="sheet-item"
                 data-key="rutube"
+                data-category="social"
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/rutube.plist', 'Rutube', 'rutube')"
             >
                 <div class="sheet-info-box">
@@ -2173,6 +2235,7 @@ function executeDownload() {
             <div
                 class="sheet-item"
                 data-key="mobio"
+                data-category="services"
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/mobio.plist', 'СберМобайл (Мобио)', 'mobio')"
             >
                 <div class="sheet-info-box">
@@ -2184,6 +2247,7 @@ function executeDownload() {
             <div
                 class="sheet-item"
                 data-key="rzd"
+                data-category="services"
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/rzd.plist', 'РЖД Пассажирам', 'rzd')"
             >
                 <div class="sheet-info-box">
@@ -2195,6 +2259,7 @@ function executeDownload() {
             <div
                 class="sheet-item"
                 data-key="sberkids"
+                data-category="banks"
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sberkids.plist', 'СберKids (SpeakaBoo)','sberkids')"
             >
                 <div class="sheet-info-box">
@@ -2206,6 +2271,7 @@ function executeDownload() {
             <div
                 class="sheet-item"
                 data-key="lentaa"
+                data-category="shops"
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/lentaa.plist', 'Лента (Быстро Продукты)', 'lentaa')"
             >
                 <div class="sheet-info-box">
@@ -2217,6 +2283,7 @@ function executeDownload() {
             <div
                 class="sheet-item"
                 data-key="avito-anero"
+                data-category="shops"
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/avito-anero.plist', 'Авито (Anero)', 'avito-anero')"
             >
                 <div class="sheet-info-box">
@@ -2228,6 +2295,7 @@ function executeDownload() {
             <div
                 class="sheet-item"
                 data-key="craftersy"
+                data-category="banks"
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/craftersy.plist', 'Т-Банк (Craftersy)', 'craftersy')"
             >
                 <div class="sheet-info-box">
@@ -2239,6 +2307,7 @@ function executeDownload() {
             <div
                 class="sheet-item"
                 data-key="scbnotes"
+                data-category="banks"
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/scbnotes.plist', 'СовкомБанк (SCB Notes)', 'scbnotes')"
             >
                 <div class="sheet-info-box">
@@ -2250,6 +2319,7 @@ function executeDownload() {
             <div
                 class="sheet-item"
                 data-key="ak-bars-bank"
+                data-category="banks"
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/ak-bars-bank.plist', 'АК Барс (Всё Учтено)', 'ak-bars-bank')"
             >
                 <div class="sheet-info-box">
@@ -2261,6 +2331,7 @@ function executeDownload() {
             <div
                 class="sheet-item"
                 data-key="blum"
+                data-category="banks"
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/blum.plist', 'РокетБанк (Блум)', 'blum')"
             >
                 <div class="sheet-info-box">
