@@ -1033,7 +1033,7 @@ label {
 }
 
 /* --------------------------------------------------
-   SHEET OVERLAY & MODAL
+   SHEET OVERLAY & MODAL (Обновлено под svh и жесткую фиксацию)
 -------------------------------------------------- */
 
 .sheet-overlay {
@@ -1043,10 +1043,10 @@ label {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 15px max(15px, env(safe-area-inset-right)) max(15px, env(safe-area-inset-bottom)) max(15px, env(safe-area-inset-left));
-    background: rgba(2, 4, 9, 0.65);
-    backdrop-filter: blur(30px) saturate(180%);
-    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    padding: 10px;
+    background: rgba(2, 4, 9, 0.7);
+    backdrop-filter: blur(25px) saturate(180%);
+    -webkit-backdrop-filter: blur(25px) saturate(180%);
     opacity: 0;
     visibility: hidden;
     transition: opacity .3s ease, visibility .3s ease;
@@ -1058,27 +1058,27 @@ label {
 }
 
 .sheet-modal {
-    position: relative;
+    position: absolute;
     width: 100%;
     max-width: 430px;
-    height: 80vh;
-    max-height: 550px;
+    height: 78svh; /* Использование стабильной высоты мобильного экрана */
+    max-height: 540px;
     display: flex;
     flex-direction: column;
     padding: 18px 16px 16px;
-    overflow: hidden; /* Важно: скрываем всё, что вылезает за рамки */
+    overflow: hidden; /* Жестко скрываем выходящие за рамки элементы */
     border-radius: 26px;
-    background: linear-gradient(145deg, rgba(255,255,255,0.08), rgba(15,20,35,0.75));
+    background: linear-gradient(145deg, rgba(255,255,255,0.09), rgba(15,20,35,0.85));
     backdrop-filter: blur(40px) saturate(170%);
     -webkit-backdrop-filter: blur(40px) saturate(170%);
     border: 1.5px solid rgba(130, 140, 255, 0.45);
     box-shadow: 
-        0 35px 90px rgba(0,0,0,.65), 
+        0 35px 90px rgba(0,0,0,.7), 
         0 0 40px rgba(88, 184, 255, 0.15),
         0 0 80px rgba(168, 85, 247, 0.12),
         inset 0 1px 0 rgba(255,255,255,.2), 
         inset 0 -1px 0 rgba(255,255,255,.03);
-    transform: translateY(20px) scale(.97);
+    transform: translateY(15px) scale(.97);
     opacity: 0;
     transition: transform .4s var(--spring), opacity .3s ease;
 }
@@ -1147,7 +1147,7 @@ label {
 -------------------------------------------------- */
 .categories-scroll {
     display: flex;
-    justify-content: center; /* Выравнивает категории по центру */
+    justify-content: center;
     gap: 6px;
     overflow-x: auto;
     overflow-y: hidden;
@@ -1321,10 +1321,10 @@ label {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    flex-grow: 1; /* Список заполняет всё доступное пространство модалки */
+    flex-grow: 1;
     overflow-y: auto;
     overflow-x: hidden;
-    -webkit-overflow-scrolling: touch; /* Плавный инерционный скролл на iOS */
+    -webkit-overflow-scrolling: touch;
     
     padding-left: 2px;
     padding-right: 8px; 
@@ -1416,71 +1416,14 @@ label {
 
 body.keyboard-open .sheet-overlay {
     align-items: flex-start;
-    padding-top: 15px;
+    padding-top: 10px;
 }
 
 body.keyboard-open .sheet-modal {
     transform: none !important;
-    height: calc(100dvh - 30px);
-    max-height: calc(100dvh - 30px);
+    height: calc(100svh - 20px);
+    max-height: calc(100svh - 20px);
 }
-
-@media (max-height: 680px) {
-    .container {
-        transform: scale(.94);
-    }
-
-    .header-section {
-        margin-bottom: 11px;
-    }
-
-    .card {
-        padding: 16px;
-        gap: 10px;
-    }
-
-    .auth-box {
-        padding: 23px 18px 18px;
-        gap: 12px;
-    }
-
-    .sheet-modal {
-        height: min(86vh, 560px);
-    }
-}
-
-@media (max-width: 360px) {
-    .container {
-        padding-left: 14px;
-        padding-right: 14px;
-    }
-
-    h1 {
-        font-size: 23px;
-    }
-
-    .card {
-        padding: 17px;
-    }
-}
-
-@media (min-width: 700px) {
-    .container {
-        max-width: 430px;
-    }
-}
-
-@media (max-height: 500px) {
-    .sheet-overlay {
-        align-items: flex-start;
-        padding-top: 15px;
-    }
-
-    .sheet-modal {
-        height: calc(100dvh - 30px);
-        max-height: calc(100dvh - 30px);
-    }
-}   
 </style>
 </head>
 
@@ -1637,7 +1580,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-    // Блокировка нежелательного скролла/резинки за пределами списка внутри модалки
+    // Строгая блокировка «резинового» скролла страницы при свайпах вне списка
     const sheetModal = document.querySelector('.sheet-modal');
     if (sheetModal) {
         sheetModal.addEventListener('touchmove', function(e) {
@@ -1967,12 +1910,10 @@ function executeDownload() {
             Установить
         </button>
 
-        <!-- ПОСТОЯННАЯ НАДПИСЬ ПОД КНОПКОЙ УСТАНОВКИ -->
         <div class="support-notice">
             После установки приложения <a href="https://t.me/dizabled" target="_blank" rel="noopener noreferrer">свяжитесь с нами!</a>
         </div>
 
-        <!-- PROGRESS BAR CONTAINER -->
         <div class="progress-container" id="progressContainer">
             <div class="progress-box">
                 <div class="progress-info">
@@ -2016,7 +1957,6 @@ function executeDownload() {
             </div>
         </div>
 
-        <!-- КАТЕГОРИИ (ФИЛЬТРЫ) - ПО ЦЕНТРУ -->
         <div class="categories-scroll">
             <div class="category-chip active" onclick="setCategory('all', this)">Все</div>
             <div class="category-chip" onclick="setCategory('banks', this)">Банки</div>
