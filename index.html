@@ -2001,13 +2001,12 @@ function executeDownload() {
             </div>
         </div>
 
-        <!-- КАТЕГОРИИ (ФИЛЬТРЫ) -->
+        <!-- КАТЕГОРИИ (ФИЛЬТРЫ) - ПОКУПКИ И СЕРВИСЫ ОБЪЕДИНЕНЫ В ДРУГИЕ -->
         <div class="categories-scroll">
             <div class="category-chip active" onclick="setCategory('all', this)">Все</div>
             <div class="category-chip" onclick="setCategory('banks', this)">Банки</div>
             <div class="category-chip" onclick="setCategory('social', this)">Соцсети</div>
-            <div class="category-chip" onclick="setCategory('shops', this)">Покупки</div>
-            <div class="category-chip" onclick="setCategory('services', this)">Сервисы</div>
+            <div class="category-chip" onclick="setCategory('other', this)">Другие</div>
         </div>
 
         <div class="app-search-wrap">
@@ -2103,7 +2102,7 @@ function executeDownload() {
             <div
                 class="sheet-item"
                 data-key="avito"
-                data-category="shops"
+                data-category="other"
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/avito.plist', 'Авито', 'avito')"
             >
                 <div class="sheet-info-box">
@@ -2163,7 +2162,7 @@ function executeDownload() {
             <div
                 class="sheet-item"
                 data-key="lenta"
-                data-category="shops"
+                data-category="other"
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/lenta.plist', 'Лента', 'lenta')"
             >
                 <div class="sheet-info-box">
@@ -2187,7 +2186,7 @@ function executeDownload() {
             <div
                 class="sheet-item"
                 data-key="2gis"
-                data-category="services"
+                data-category="other"
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/2gis.plist', '2ГИС', '2gis')"
             >
                 <div class="sheet-info-box">
@@ -2211,7 +2210,7 @@ function executeDownload() {
             <div
                 class="sheet-item"
                 data-key="kuper"
-                data-category="shops"
+                data-category="other"
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/kuper.plist', 'Купер', 'kuper')"
             >
                 <div class="sheet-info-box">
@@ -2235,7 +2234,7 @@ function executeDownload() {
             <div
                 class="sheet-item"
                 data-key="mobio"
-                data-category="services"
+                data-category="other"
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/mobio.plist', 'СберМобайл (Мобио)', 'mobio')"
             >
                 <div class="sheet-info-box">
@@ -2247,7 +2246,7 @@ function executeDownload() {
             <div
                 class="sheet-item"
                 data-key="rzd"
-                data-category="services"
+                data-category="other"
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/rzd.plist', 'РЖД Пассажирам', 'rzd')"
             >
                 <div class="sheet-info-box">
@@ -2271,7 +2270,7 @@ function executeDownload() {
             <div
                 class="sheet-item"
                 data-key="lentaa"
-                data-category="shops"
+                data-category="other"
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/lentaa.plist', 'Лента (Быстро Продукты)', 'lentaa')"
             >
                 <div class="sheet-info-box">
@@ -2283,7 +2282,7 @@ function executeDownload() {
             <div
                 class="sheet-item"
                 data-key="avito-anero"
-                data-category="shops"
+                data-category="other"
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/avito-anero.plist', 'Авито (Anero)', 'avito-anero')"
             >
                 <div class="sheet-info-box">
