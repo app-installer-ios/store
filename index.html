@@ -1700,10 +1700,11 @@ function executeDownload() {
                 setTimeout(() => {
                     progressStatus.textContent = "Установка завершена!";
                     
+                    // Плавная задержка 1.8 секунды перед открытием модального окна связи
                     setTimeout(() => {
                         progressContainer.classList.remove("active");
                         openContactModal();
-                    }, 1000);
+                    }, 1800);
                 }, 1000);
             }
             
