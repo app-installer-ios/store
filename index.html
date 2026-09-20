@@ -1061,23 +1061,23 @@ label {
     position: relative;
     width: 100%;
     max-width: 430px;
-    height: min(78vh, 580px);
-    max-height: calc(100dvh - 30px);
+    height: 80vh;
+    max-height: 550px;
     display: flex;
     flex-direction: column;
     padding: 18px 16px 16px;
-    overflow: hidden;
+    overflow: hidden; /* Важно: скрываем всё, что вылезает за рамки */
     border-radius: 26px;
     background: linear-gradient(145deg, rgba(255,255,255,0.08), rgba(15,20,35,0.75));
     backdrop-filter: blur(40px) saturate(170%);
     -webkit-backdrop-filter: blur(40px) saturate(170%);
     border: 1.5px solid rgba(130, 140, 255, 0.45);
     box-shadow: 
-        0 35px 90px rgba(0,0,0,0.65), 
+        0 35px 90px rgba(0,0,0,.65), 
         0 0 40px rgba(88, 184, 255, 0.15),
         0 0 80px rgba(168, 85, 247, 0.12),
-        inset 0 1px 0 rgba(255,255,255,0.2), 
-        inset 0 -1px 0 rgba(255,255,255,0.03);
+        inset 0 1px 0 rgba(255,255,255,.2), 
+        inset 0 -1px 0 rgba(255,255,255,.03);
     transform: translateY(20px) scale(.97);
     opacity: 0;
     transition: transform .4s var(--spring), opacity .3s ease;
@@ -1321,8 +1321,10 @@ label {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    flex-grow: 1; /* Список заполняет всё доступное пространство модалки */
     overflow-y: auto;
     overflow-x: hidden;
+    -webkit-overflow-scrolling: touch; /* Плавный инерционный скролл на iOS */
     
     padding-left: 2px;
     padding-right: 8px; 
@@ -1634,6 +1636,17 @@ document.addEventListener("DOMContentLoaded", function() {
             }, 300);
         });
     });
+
+    // Блокировка нежелательного скролла/резинки за пределами списка внутри модалки
+    const sheetModal = document.querySelector('.sheet-modal');
+    if (sheetModal) {
+        sheetModal.addEventListener('touchmove', function(e) {
+            const list = e.target.closest('.sheet-list');
+            if (!list) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+    }
 });
 
 function submitPassword() {
