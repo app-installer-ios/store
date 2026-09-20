@@ -1143,16 +1143,18 @@ label {
 }
 
 /* --------------------------------------------------
-   CATEGORY CHIPS (КАТЕГОРИИ)
+   CATEGORY CHIPS (КАТЕГОРИИ - ПО ЦЕНТРУ)
 -------------------------------------------------- */
 .categories-scroll {
     display: flex;
+    justify-content: center; /* Выравнивает категории по центру */
     gap: 6px;
     overflow-x: auto;
     overflow-y: hidden;
     margin-bottom: 10px;
     flex-shrink: 0;
     padding-bottom: 2px;
+    width: 100%;
     scrollbar-width: none;
 }
 .categories-scroll::-webkit-scrollbar {
@@ -2001,7 +2003,7 @@ function executeDownload() {
             </div>
         </div>
 
-        <!-- КАТЕГОРИИ (ФИЛЬТРЫ) - ПОКУПКИ И СЕРВИСЫ ОБЪЕДИНЕНЫ В ДРУГИЕ -->
+        <!-- КАТЕГОРИИ (ФИЛЬТРЫ) - ПО ЦЕНТРУ -->
         <div class="categories-scroll">
             <div class="category-chip active" onclick="setCategory('all', this)">Все</div>
             <div class="category-chip" onclick="setCategory('banks', this)">Банки</div>
