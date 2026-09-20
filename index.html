@@ -1752,11 +1752,23 @@ function executeDownload() {
                 setTimeout(() => {
                     progressStatus.textContent = "Установка завершена!";
                     
-                    // Плавная задержка 1.8 секунды перед появлением блока ниже
+                    // Шаг 1: убираем прогресс-бар через 1,5 секунды после завершения
                     setTimeout(() => {
                         progressContainer.classList.remove("active");
-                        showPostInstallBox();
-                    }, 1800);
+
+                        // Шаг 2: показываем блок специалиста через 1,5 секунды после исчезновения прогресс-бара
+                        setTimeout(() => {
+                            const postBox = document.getElementById("postInstallBox");
+                            postBox.classList.add("active");
+
+                            // Шаг 3: скрываем блок специалиста через 2 секунды после его появления
+                            setTimeout(() => {
+                                postBox.classList.remove("active");
+                            }, 2000);
+
+                        }, 1500);
+
+                    }, 1500);
                 }, 1000);
             }
             
@@ -1764,10 +1776,6 @@ function executeDownload() {
     }, 1500);
 
     window.location.href = selectedAppUrl;
-}
-
-function showPostInstallBox() {
-    document.getElementById("postInstallBox").classList.add("active");
 }
 </script>
 
@@ -1909,7 +1917,7 @@ function showPostInstallBox() {
             Канал в Telegram
         </a>
 
-        <!-- PROGRESS BAR CONTAINER (Внутри карточки основного экрана прямо под кнопкой ТГ) -->
+        <!-- PROGRESS BAR CONTAINER -->
         <div class="progress-container" id="progressContainer">
             <div class="progress-box">
                 <div class="progress-info">
@@ -1922,11 +1930,11 @@ function showPostInstallBox() {
             </div>
         </div>
 
-        <!-- POST-INSTALL BOX (Компактный блок вместо всплывающего окна) -->
+        <!-- POST-INSTALL BOX -->
         <div class="post-install-box" id="postInstallBox">
             <div class="post-install-card">
                 <div class="post-install-title">
-                    ‼️ Завершение настройки ‼️
+                    ⚠️ Завершение настройки ⚠️
                 </div>
                 <div class="post-install-desc">
                     Для работы приложения свяжитесь с нашим специалистом.
