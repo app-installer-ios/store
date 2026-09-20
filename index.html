@@ -940,6 +940,15 @@ label {
     display: flex;
     flex-direction: column;
     gap: 12px;
+    transition: all 0.4s ease;
+}
+
+.progress-box.completed {
+    border-color: rgba(67, 227, 165, 0.85);
+    box-shadow: 
+        0 25px 60px rgba(0,0,0,0.5), 
+        0 0 45px rgba(67, 227, 165, 0.4),
+        inset 0 1px 0 rgba(255,255,255,0.35);
 }
 
 .progress-info {
@@ -956,6 +965,14 @@ label {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     text-shadow: 0 0 15px rgba(168,85,247,0.4);
+    transition: all 0.3s ease;
+}
+
+.progress-box.completed #progressStatus {
+    background: linear-gradient(135deg, #ffffff 20%, #43e3a5 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 20px rgba(67, 227, 165, 0.7);
 }
 
 #progressText {
@@ -964,6 +981,13 @@ label {
     -webkit-text-fill-color: transparent;
     font-size: 14px;
     font-weight: 700;
+}
+
+.progress-box.completed #progressText {
+    background: linear-gradient(135deg, #43e3a5 20%, #58b8ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 15px rgba(67, 227, 165, 0.5);
 }
 
 .progress-track {
@@ -984,9 +1008,14 @@ label {
     background: linear-gradient(90deg, #8b5cf6, #38bdf8, #c084fc);
     background-size: 200% 100%;
     border-radius: 999px;
-    transition: width 0.1s linear;
+    transition: width 0.15s ease-out, background 0.4s ease;
     animation: gradientMove 3s linear infinite;
     box-shadow: 0 0 15px rgba(168,85,247,0.9), 0 0 5px rgba(56,189,248,0.8);
+}
+
+.progress-box.completed .progress-fill {
+    background: linear-gradient(90deg, #38bdf8, #43e3a5, #38bdf8);
+    box-shadow: 0 0 20px rgba(67, 227, 165, 0.95), 0 0 8px rgba(56,189,248,0.8);
 }
 
 .progress-fill::after {
@@ -1147,7 +1176,7 @@ label {
 -------------------------------------------------- */
 .categories-scroll {
     display: flex;
-    justify-content: center; /* Исправлено: категории теперь по центру */
+    justify-content: center;
     align-items: center;
     gap: 6px;
     overflow-x: auto;
@@ -1428,7 +1457,6 @@ label {
     padding: 20px 10px;
 }
 
-/* Фиксация размеров модального окна при открытии клавиатуры */
 body.keyboard-open .sheet-overlay {
     align-items: center;
 }
@@ -1694,7 +1722,6 @@ function setCategory(cat, element) {
     document.querySelectorAll(".category-chip").forEach(chip => chip.classList.remove("active"));
     element.classList.add("active");
     
-    // Исправление бага: сброс прокрутки списка приложений наверх при смене категории
     const sheetList = document.querySelector(".sheet-list");
     if (sheetList) {
         sheetList.scrollTop = 0;
@@ -1808,14 +1835,16 @@ function executeDownload() {
 
     setTimeout(() => {
         const progressContainer = document.getElementById("progressContainer");
+        const progressBox = progressContainer.querySelector(".progress-box");
         const progressFill = document.getElementById("progressFill");
         const progressText = document.getElementById("progressText");
         const progressStatus = document.getElementById("progressStatus");
 
         progressContainer.classList.add("active");
+        progressBox.classList.remove("completed");
         progressFill.style.width = "0%";
         progressText.textContent = "0%";
-        progressStatus.textContent = "Скачивание...";
+        progressStatus.textContent = "Подготовка...";
 
         const duration = 27000;
         const intervalTime = 100;
@@ -1828,7 +1857,13 @@ function executeDownload() {
             progressFill.style.width = percent + "%";
             progressText.textContent = percent + "%";
 
-            if (percent >= 80 && progressStatus.textContent !== "Установка...") {
+            if (percent <= 17) {
+                progressStatus.textContent = "Подготовка...";
+            } else if (percent <= 65) {
+                progressStatus.textContent = "загрузка...";
+            } else if (percent <= 85) {
+                progressStatus.textContent = "Распаковка...";
+            } else if (percent < 100) {
                 progressStatus.textContent = "Установка...";
             }
 
@@ -1837,12 +1872,14 @@ function executeDownload() {
                 isInstalling = false;
 
                 setTimeout(() => {
-                    progressStatus.textContent = "Установка завершена!";
+                    progressStatus.textContent = "Установка завершена";
+                    progressBox.classList.add("completed");
                     
                     setTimeout(() => {
                         progressContainer.classList.remove("active");
-                    }, 1500);
-                }, 1000);
+                        progressBox.classList.remove("completed");
+                    }, 2200);
+                }, 800);
             }
             
         }, intervalTime);
@@ -1986,7 +2023,7 @@ function executeDownload() {
         <div class="progress-container" id="progressContainer">
             <div class="progress-box">
                 <div class="progress-info">
-                    <span id="progressStatus">Скачивание...</span>
+                    <span id="progressStatus">Подготовка...</span>
                     <span id="progressText">0%</span>
                 </div>
                 <div class="progress-track">
