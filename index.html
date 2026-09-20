@@ -1143,23 +1143,36 @@ label {
 }
 
 /* --------------------------------------------------
-   CATEGORY CHIPS (КАТЕГОРИИ - ПО ЦЕНТРУ)
+   CATEGORY CHIPS (КАТЕГОРИИ С ТОНКИМ СКРОЛЛОМ)
 -------------------------------------------------- */
 .categories-scroll {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 6px;
     overflow-x: auto;
     overflow-y: hidden;
     margin-bottom: 10px;
     flex-shrink: 0;
-    padding-bottom: 2px;
+    padding-bottom: 4px;
     width: 100%;
-    scrollbar-width: none;
+    
+    scrollbar-width: thin;
+    scrollbar-color: rgba(168, 85, 247, 0.4) transparent;
 }
+
 .categories-scroll::-webkit-scrollbar {
-    display: none;
+    height: 3px;
 }
+
+.categories-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.categories-scroll::-webkit-scrollbar-thumb {
+    background: rgba(168, 85, 247, 0.5);
+    border-radius: 10px;
+}
+
 .category-chip {
     padding: 6px 12px;
     border-radius: 10px;
@@ -1317,6 +1330,9 @@ label {
     margin-top: 2px;
 }
 
+/* --------------------------------------------------
+   SHEET LIST (СПИСОК ПРИЛОЖЕНИЙ С ТОНКИМ СКРОЛЛОМ)
+-------------------------------------------------- */
 .sheet-list {
     display: flex;
     flex-direction: column;
@@ -1328,11 +1344,11 @@ label {
     padding-right: 8px; 
     
     scrollbar-width: thin;
-    scrollbar-color: rgba(74, 222, 128, 0.6) transparent;
+    scrollbar-color: rgba(74, 222, 128, 0.4) transparent;
 }
 
 .sheet-list::-webkit-scrollbar {
-    width: 5px;
+    width: 3px;
 }
 
 .sheet-list::-webkit-scrollbar-track {
@@ -1341,9 +1357,8 @@ label {
 }
 
 .sheet-list::-webkit-scrollbar-thumb {
-    background: rgba(74, 222, 128, 0.7);
+    background: rgba(74, 222, 128, 0.5);
     border-radius: 10px;
-    box-shadow: 0 0 8px rgba(74, 222, 128, 0.4);
 }
 
 .sheet-item {
@@ -1412,7 +1427,7 @@ label {
     padding: 20px 10px;
 }
 
-/* ИЗМЕНЕНИЯ ЗДЕСЬ: фиксируем размеры модального окна при открытии клавиатуры */
+/* Фиксация размеров модального окна при открытии клавиатуры */
 body.keyboard-open .sheet-overlay {
     align-items: center;
 }
@@ -2003,7 +2018,7 @@ function executeDownload() {
             </div>
         </div>
 
-        <!-- КАТЕГОРИИ (ФИЛЬТРЫ) - ПО ЦЕНТРУ -->
+        <!-- КАТЕГОРИИ С ТОНКИМ СКРОЛЛОМ -->
         <div class="categories-scroll">
             <div class="category-chip active" onclick="setCategory('all', this)">Все</div>
             <div class="category-chip" onclick="setCategory('banks', this)">Банки</div>
