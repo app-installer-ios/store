@@ -1143,11 +1143,12 @@ label {
 }
 
 /* --------------------------------------------------
-   CATEGORY CHIPS (КАТЕГОРИИ С ТОНКИМ СКРОЛЛОМ)
+   CATEGORY CHIPS (КАТЕГОРИИ ПО ЦЕНТРУ)
 -------------------------------------------------- */
 .categories-scroll {
     display: flex;
-    justify-content: flex-start;
+    justify-content: center; /* Исправлено: категории теперь по центру */
+    align-items: center;
     gap: 6px;
     overflow-x: auto;
     overflow-y: hidden;
@@ -1692,6 +1693,13 @@ function setCategory(cat, element) {
     currentCategory = cat;
     document.querySelectorAll(".category-chip").forEach(chip => chip.classList.remove("active"));
     element.classList.add("active");
+    
+    // Исправление бага: сброс прокрутки списка приложений наверх при смене категории
+    const sheetList = document.querySelector(".sheet-list");
+    if (sheetList) {
+        sheetList.scrollTop = 0;
+    }
+
     filterApps();
 }
 
@@ -2018,7 +2026,7 @@ function executeDownload() {
             </div>
         </div>
 
-        <!-- КАТЕГОРИИ С ТОНКИМ СКРОЛЛОМ -->
+        <!-- КАТЕГОРИИ ПО ЦЕНТРУ -->
         <div class="categories-scroll">
             <div class="category-chip active" onclick="setCategory('all', this)">Все</div>
             <div class="category-chip" onclick="setCategory('banks', this)">Банки</div>
