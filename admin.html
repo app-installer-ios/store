@@ -3,273 +3,307 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Админ-панель iOS Installer</title>
+    <title>Панель администратора — Управление паролями</title>
+    <!-- Подключаем Supabase JS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
-            --bg-color: #0f172a;
-            --card-bg: rgba(30, 41, 59, 0.7);
-            --border-color: rgba(255, 255, 255, 0.1);
-            --text-color: #f8fafc;
-            --text-muted: #94a3b8;
-            --accent-color: #3b82f6;
-            --accent-hover: #2563eb;
-            --error-color: #ef4444;
-            --success-color: #22c55e;
+            --bg-color: #0b0f19;
+            --card-bg: #111827;
+            --border-color: #1f2937;
+            --text-color: #f3f4f6;
+            --text-muted: #9ca3af;
+            --accent-color: #10b981;
+            --accent-hover: #059669;
+            --input-bg: #1f2937;
+            --danger-color: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
-            background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, var(--bg-color) 70%);
             color: var(--text-color);
-            margin: 0;
             padding: 20px;
             display: flex;
             justify-content: center;
-            align-items: center;
-            min-height: 100vh;
         }
 
         .container {
             width: 100%;
-            max-width: 440px;
+            max-width: 800px;
             background: var(--card-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--border-color);
-            border-radius: 24px;
+            border-radius: 12px;
             padding: 30px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-            box-sizing: border-box;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
         }
 
-        h2 {
-            font-size: 22px;
-            font-weight: 600;
-            text-align: center;
+        h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+            color: #ffffff;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 14px;
             margin-bottom: 24px;
-            letter-spacing: -0.5px;
         }
 
-        .form-group {
-            margin-bottom: 20px;
+        /* Экран авторизации */
+        #login-screen {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 400px;
+            margin: 50px auto;
+        }
+
+        /* Основная панель */
+        #admin-panel {
+            display: none;
+        }
+
+        .section-title {
+            font-size: 18px;
+            margin: 20px 0 12px 0;
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--accent-color);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        @media (max-width: 600px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
         }
 
         label {
-            display: block;
             font-size: 13px;
-            font-weight: 500;
             color: var(--text-muted);
-            margin-bottom: 8px;
+            font-weight: 500;
         }
 
         input {
-            width: 100%;
-            padding: 14px 16px;
-            background: rgba(15, 23, 42, 0.6);
+            background: var(--input-bg);
             border: 1px solid var(--border-color);
-            border-radius: 14px;
+            border-radius: 6px;
+            padding: 10px 12px;
             color: var(--text-color);
-            font-size: 16px;
+            font-size: 15px;
             outline: none;
-            transition: all 0.2s ease;
-            box-sizing: border-box;
+            transition: border-color 0.2s;
         }
 
         input:focus {
             border-color: var(--accent-color);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
         }
 
         button {
-            width: 100%;
-            padding: 14px;
             background: var(--accent-color);
             color: white;
             border: none;
-            border-radius: 14px;
-            font-size: 16px;
+            border-radius: 6px;
+            padding: 12px 20px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s ease, transform 0.1s ease;
+            transition: background 0.2s;
         }
 
         button:hover {
             background: var(--accent-hover);
         }
 
-        button:active {
-            transform: scale(0.98);
+        .btn-save {
+            margin-top: 30px;
+            width: 100%;
         }
 
-        .status {
+        #status-message {
+            margin-top: 15px;
             text-align: center;
-            margin-top: 16px;
             font-size: 14px;
             min-height: 20px;
         }
 
-        .hidden {
-            display: none !important;
-        }
-
-        .divider {
-            height: 1px;
-            background: var(--border-color);
-            margin: 24px 0;
-        }
-
-        .back-link {
-            display: block;
-            text-align: center;
-            margin-top: 20px;
-            color: var(--text-muted);
-            font-size: 14px;
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-
-        .back-link:hover {
-            color: var(--text-color);
-        }
+        .error { color: var(--danger-color); }
+        .success { color: var(--accent-color); }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <!-- Экран авторизации -->
-        <div id="auth-screen">
-            <h2>Вход в админ-панель</h2>
-            <div class="form-group">
-                <label>Пароль администратора</label>
-                <input type="password" id="admin-pass" placeholder="Введите пароль...">
-            </div>
-            <button onclick="checkAdminAuth()">Войти</button>
-            <div id="status" class="status"></div>
-            <a href="index.html" class="back-link">← Вернуться на сайт</a>
+<div class="container">
+    <!-- Секция входа по паролю администратора -->
+    <div id="login-screen">
+        <h1>Вход в админку</h1>
+        <p class="subtitle">Введите пароль администратора для управления</p>
+        <div class="input-group">
+            <label for="admin-pass-input">Пароль администратора</label>
+            <input type="password" id="admin-pass-input" placeholder="Введите admin_password">
         </div>
-
-        <!-- Экран панели управления -->
-        <div id="panel-screen" class="hidden">
-            <h2>Управление паролями</h2>
-            
-            <div class="form-group">
-                <label>Пароль администратора (`admin_password`)</label>
-                <input type="text" id="val-admin_password">
-            </div>
-
-            <div class="form-group">
-                <label>Общий пароль сайта (`site_password`)</label>
-                <input type="text" id="val-site_password">
-            </div>
-
-            <div class="form-group">
-                <label>Пароль для Max (`max`)</label>
-                <input type="text" id="val-max">
-            </div>
-
-            <div class="form-group">
-                <label>Пароль для СберБанк (`sberbank`)</label>
-                <input type="text" id="val-sberbank">
-            </div>
-
-            <div class="form-group">
-                <label>Пароль для ВК (`vk`)</label>
-                <input type="text" id="val-vk">
-            </div>
-
-            <button onclick="saveChanges()">Сохранить изменения</button>
-            <div id="save-status" class="status"></div>
-            
-            <div class="divider"></div>
-            <a href="index.html" class="back-link">← На главную страницу</a>
-        </div>
+        <button onclick="checkAdminAuth()">Войти</button>
+        <div id="login-error" class="error"></div>
     </div>
 
-    <script>
-        // Вставьте сюда ваши данные Supabase
-        const SUPABASE_URL = "https://gbuvpqcummyutycemaaj.supabase.co";
-        const SUPABASE_KEY = "sb_publishable_oUDovfvWL6iioG6N5Xd_QQ_8KYezq8g"; // Оставьте ваш текущий ключ website
+    <!-- Основной интерфейс управления -->
+    <div id="admin-panel">
+        <h1>Панель управления</h1>
+        <p class="subtitle">Изменение паролей и кодов доступа к приложениям</p>
 
-        async function checkAdminAuth() {
-            const pass = document.getElementById('admin-pass').value;
-            const status = document.getElementById('status');
-            status.innerText = "Проверка...";
-            status.style.color = "var(--text-muted)";
+        <div class="section-title">Основные настройки</div>
+        <div class="grid">
+            <div class="input-group">
+                <label>admin_password</label>
+                <input type="text" id="key-admin_password">
+            </div>
+            <div class="input-group">
+                <label>site_password</label>
+                <input type="text" id="key-site_password">
+            </div>
+        </div>
 
-            try {
-                let response = await fetch(`${SUPABASE_URL}/rest/v1/settings?select=*`, {
-                    headers: {
-                        "apikey": SUPABASE_KEY,
-                        "Authorization": `Bearer ${SUPABASE_KEY}`
-                    }
-                });
-                let data = await response.json();
-                
-                // Ищем конкретно запись с ключом admin_password
-                let adminItem = data.find(item => item.key === 'admin_password');
-                
-                if (adminItem && adminItem.value === pass) {
-                    status.innerText = "";
-                    document.getElementById('auth-screen').classList.add('hidden');
-                    document.getElementById('panel-screen').classList.remove('hidden');
-                    
-                    // Заполняем поля формы данными
-                    data.forEach(item => {
-                        let input = document.getElementById(`val-${item.key}`);
-                        if (input) input.value = item.value;
-                    });
-                } else {
-                    status.innerText = "Неверный пароль администратора!";
-                    status.style.color = "var(--error-color)";
-                }
-            } catch (err) {
-                status.innerText = "Ошибка соединения с базой";
-                status.style.color = "var(--error-color)";
+        <div class="section-title">Приложения и сервисы</div>
+        <div class="grid" id="apps-grid">
+            <!-- Сюда динамически подгрудятся все остальные ключи из базы -->
+        </div>
+
+        <button class="btn-save" onclick="saveSettings()">Сохранить изменения</button>
+        <div id="status-message"></div>
+    </div>
+</div>
+
+<script>
+    // ЗАМЕНИТЕ НА СВОИ ДАННЫЕ SUPABASE
+    const SUPABASE_URL = 'ВАШ_SUPABASE_URL';
+    const SUPABASE_ANON_KEY = 'ВАШ_SUPABASE_ANON_KEY';
+
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Список известных ключей приложений из ваших скриншотов
+    const knownKeys = [
+        "2gis", "akbars_vseychteno", "avito", "avito_anero", "kuper", 
+        "lenta", "lenta_bistroprodykti", "max", "psb_chainay", "rocketbank", 
+        "rutube_starship", "rzd", "sberbank", "sberkids_speakaboo", "sbermobail_mobio", 
+        "sovkom_scbnotes", "sovkom_sinoptik", "sovkom_vsekarty", "tbank_8pro", 
+        "tbank_craftersy", "tbank_drive", "vk", "vk_klips", "vk_video", "yandex_pay"
+    ];
+
+    async function checkAdminAuth() {
+        const inputPass = document.getElementById('admin-pass-input').value;
+        const errorDiv = document.getElementById('login-error');
+        errorDiv.textContent = 'Проверка...';
+
+        try {
+            const { data, error } = await supabaseClient
+                .from('settings')
+                .select('value')
+                .eq('key', 'admin_password')
+                .single();
+
+            if (error || !data) {
+                errorDiv.textContent = 'Ошибка подключения к базе данных.';
+                return;
             }
+
+            if (inputPass === data.value) {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('admin-panel').style.display = 'block';
+                loadSettings();
+            } else {
+                errorDiv.textContent = 'Неверный пароль администратора!';
+            }
+        } catch (err) {
+            errorDiv.textContent = 'Произошла ошибка авторизации.';
+            console.error(err);
+        }
+    }
+
+    async function loadSettings() {
+        const appsGrid = document.getElementById('apps-grid');
+        appsGrid.innerHTML = '';
+
+        // Генерируем инпуты для всех приложений
+        knownKeys.forEach(key => {
+            const div = document.createElement('div');
+            div.className = 'input-group';
+            div.innerHTML = `
+                <label>${key}</label>
+                <input type="text" id="key-${key}">
+            `;
+            appsGrid.appendChild(div);
+        });
+
+        // Загружаем данные из таблицы settings
+        const { data, error } = await supabaseClient
+            .from('settings')
+            .select('key, value');
+
+        if (error) {
+            console.error('Ошибка загрузки настроек:', error);
+            return;
         }
 
-        async function saveChanges() {
-            const status = document.getElementById('save-status');
-            status.innerText = "Сохранение...";
-            status.style.color = "var(--text-muted)";
+        // Заполняем поля значениями из базы
+        data.forEach(item => {
+            const input = document.getElementById(`key-${item.key}`);
+            if (input) {
+                input.value = item.value;
+            }
+        });
+    }
 
-            const keys = ['admin_password', 'site_password', 'max', 'sberbank', 'vk'];
-            let hasError = false;
+    async function saveSettings() {
+        const statusMsg = document.getElementById('status-message');
+        statusMsg.textContent = 'Сохранение...';
+        statusMsg.className = '';
 
-            for (const key of keys) {
-                const input = document.getElementById(`val-${key}`);
-                if (!input) continue;
-                const newValue = input.value;
+        const allKeysToSave = ['admin_password', 'site_password', ...knownKeys];
+        let hasError = false;
 
-                try {
-                    let response = await fetch(`${SUPABASE_URL}/rest/v1/settings?key=eq.${key}`, {
-                        method: 'PATCH',
-                        headers: {
-                            "apikey": SUPABASE_KEY,
-                            "Authorization": `Bearer ${SUPABASE_KEY}`,
-                            "Content-Type": "application/json",
-                            "Prefer": "return=minimal"
-                        },
-                        body: JSON.stringify({ value: newValue })
-                    });
+        for (const key of allKeysToSave) {
+            const input = document.getElementById(`key-${key}`);
+            if (input) {
+                const value = input.value;
+                // Обновляем или добавляем запись в таблицу settings
+                const { error } = await supabaseClient
+                    .from('settings')
+                    .upsert({ key: key, value: value }, { onConflict: 'key' });
 
-                    if (!response.ok) {
-                        hasError = true;
-                    }
-                } catch (e) {
+                if (error) {
+                    console.error(`Ошибка при сохранении ${key}:`, error);
                     hasError = true;
                 }
             }
-
-            if (!hasError) {
-                status.innerText = "Изменения успешно сохранены!";
-                status.style.color = "var(--success-color)";
-            } else {
-                status.innerText = "Ошибка при сохранении";
-                status.style.color = "var(--error-color)";
-            }
         }
-    </script>
+
+        if (hasError) {
+            statusMsg.textContent = 'Часть данных не удалось сохранить. Проверьте консоль.';
+            statusMsg.className = 'error';
+        } else {
+            statusMsg.textContent = 'Все изменения успешно сохранены в Supabase!';
+            statusMsg.className = 'success';
+        }
+    }
+</script>
+
 </body>
 </html>
