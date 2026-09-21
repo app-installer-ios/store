@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Панель управления — Установка приложений</title>
+    <title>Панель управления — Управление приложениями</title>
     <!-- Подключаем Supabase JS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -13,8 +13,8 @@
             --border-color: rgba(255, 255, 255, 0.08);
             --text-color: #f3f4f6;
             --text-muted: #9ca3af;
-            --accent-color: #3b82f6;
-            --accent-hover: #2563eb;
+            --accent-color: #8b5cf6;
+            --accent-hover: #7c3aed;
             --input-bg: #1f2937;
             --danger-color: #ef4444;
             --success-color: #10b981;
@@ -39,7 +39,7 @@
 
         .container {
             width: 100%;
-            max-width: 850px;
+            max-width: 900px;
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 20px;
@@ -106,8 +106,37 @@
             gap: 16px;
         }
 
+        /* Список приложений в виде пар: Название (слева) - Инпут (справа) */
+        .apps-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .app-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            padding: 12px 16px;
+            border-radius: 12px;
+            transition: border-color 0.2s;
+        }
+
+        .app-row:hover {
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+
+        .app-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
         @media (max-width: 650px) {
-            .grid {
+            .grid, .app-row {
                 grid-template-columns: 1fr;
             }
             .container {
@@ -140,7 +169,7 @@
 
         input:focus {
             border-color: var(--accent-color);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
         }
 
         button {
@@ -153,7 +182,7 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
         }
 
         button:hover {
@@ -187,24 +216,24 @@
 <div class="container">
     <!-- Секция входа -->
     <div id="login-screen">
-        <h1>Вход в систему</h1>
-        <p class="subtitle">Введите защитный ключ администратора для доступа к управлению</p>
+        <h1>Вход в админку</h1>
+        <p class="subtitle">Введите пароль для доступа к управлению</p>
         <div class="login-box">
             <div class="input-group" style="text-align: left;">
-                <label for="admin-pass-input">Пароль</label>
+                <label for="admin-pass-input">Введите пароль</label>
                 <input type="password" id="admin-pass-input" placeholder="••••••••••••">
             </div>
-            <button onclick="checkAdminAuth()">Войти в панель</button>
+            <button onclick="checkAdminAuth()">Войти</button>
         </div>
         <div id="login-error" class="error"></div>
     </div>
 
     <!-- Основной интерфейс управления -->
     <div id="admin-panel">
-        <h1>Управление доступом</h1>
-        <p class="subtitle">Настройка общих параметров безопасности и кодов для установки приложений</p>
+        <h1>Панель управления</h1>
+        <p class="subtitle">Настройка общих параметров и кодов доступа к приложениям</p>
 
-        <div class="section-title">Системные параметры</div>
+        <div class="section-title">Основные настройки</div>
         <div class="grid">
             <div class="input-group">
                 <label>Пароль администратора</label>
@@ -217,8 +246,8 @@
         </div>
 
         <div class="section-title">Коды доступа к приложениям</div>
-        <div class="grid" id="apps-grid">
-            <!-- Сюда динамически подгрудятся приложения -->
+        <div class="apps-list" id="apps-grid">
+            <!-- Сюда динамически подгрудятся приложения с красивыми названиями -->
         </div>
 
         <button class="btn-save" onclick="saveSettings()">Сохранить изменения</button>
@@ -227,19 +256,42 @@
 </div>
 
 <script>
-    // НАСТРОЙКИ SUPABASE (замените на свои актуальные данные)
+    // НАСТРОЙКИ SUPABASE
     const SUPABASE_URL = 'https://gbuvpqcummyutycemaaj.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_oUDovfvWL6iioG6N5Xd_QQ_8KYezq8g';
 
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    const knownKeys = [
-        "2gis", "akbars_vseychteno", "avito", "avito_anero", "kuper", 
-        "lenta", "lenta_bistroprodykti", "max", "psb_chainay", "rocketbank", 
-        "rutube_starship", "rzd", "sberbank", "sberkids_speakaboo", "sbermobail_mobio", 
-        "sovkom_scbnotes", "sovkom_sinoptik", "sovkom_vsekarty", "tbank_8pro", 
-        "tbank_craftersy", "tbank_drive", "vk", "vk_klips", "vk_video", "yandex_pay"
-    ];
+    // Словарь для отображения понятных названий приложений вместо системных ключей
+    const appNamesMap = {
+        "2gis": "2ГИС",
+        "akbars_vseychteno": "Ак Барс (Всё учтено)",
+        "avito": "Авито",
+        "avito_anero": "Авито (Anero)",
+        "kuper": "Купер",
+        "lenta": "Лента",
+        "lenta_bistroprodykti": "Лента (Быстропродукты)",
+        "max": "Макс",
+        "psb_chainay": "ПСБ (Чайная)",
+        "rocketbank": "Рокетбанк",
+        "rutube_starship": "RuTube (Starship)",
+        "rzd": "РЖД",
+        "sberbank": "СберБанк",
+        "sberkids_speakaboo": "СберДети",
+        "sbermobail_mobio": "СберМобайл",
+        "sovkom_scbnotes": "Совкомбанк (SCB Notes)",
+        "sovkom_sinoptik": "Совкомбанк (Синоптик)",
+        "sovkom_vsekarty": "Совкомбанк (Все Карты)",
+        "tbank_8pro": "Т-Банк (8 Pro)",
+        "tbank_craftersy": "Т-Банк (Craftersy)",
+        "tbank_drive": "Т-Банк (Drive)",
+        "vk": "ВКонтакте",
+        "vk_klips": "VK Клипы",
+        "vk_video": "VK Видео",
+        "yandex_pay": "Яндекс Пей"
+    };
+
+    const knownKeys = Object.keys(appNamesMap);
 
     async function checkAdminAuth() {
         const inputPass = document.getElementById('admin-pass-input').value;
@@ -280,13 +332,14 @@
         appsGrid.innerHTML = '';
 
         knownKeys.forEach(key => {
+            const readableName = appNamesMap[key] || key;
             const div = document.createElement('div');
-            div.className = 'input-group';
+            div.className = 'app-row';
             div.innerHTML = `
-                <label>${key}</label>
-                <input type="text" id="key-${key}">
+                <div class="app-label">${readableName}</div>
+                <input type="text" id="key-${key}" placeholder="Пароль для доступа">
             `;
-            appsGrid.appsGrid ? appsGrid.appendChild(div) : appsGrid.appendChild(div);
+            appsGrid.appendChild(div);
         });
 
         const { data, error } = await supabaseClient
