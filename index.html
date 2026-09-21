@@ -1172,60 +1172,8 @@ label {
 }
 
 /* --------------------------------------------------
-   CATEGORY CHIPS (КАТЕГОРИИ ПО ЦЕНТРУ)
+   ПОИСК И КНОПКА ФИЛЬТРА
 -------------------------------------------------- */
-.categories-scroll {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 6px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    margin-bottom: 10px;
-    flex-shrink: 0;
-    padding-bottom: 4px;
-    width: 100%;
-    
-    scrollbar-width: thin;
-    scrollbar-color: rgba(168, 85, 247, 0.4) transparent;
-}
-
-.categories-scroll::-webkit-scrollbar {
-    height: 3px;
-}
-
-.categories-scroll::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.categories-scroll::-webkit-scrollbar-thumb {
-    background: rgba(168, 85, 247, 0.5);
-    border-radius: 10px;
-}
-
-.category-chip {
-    padding: 6px 12px;
-    border-radius: 10px;
-    font-size: 12px;
-    font-weight: 600;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #94a3b8;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.2s ease;
-}
-.category-chip:hover {
-    background: rgba(255, 255, 255, 0.09);
-    color: #fff;
-}
-.category-chip.active {
-    background: linear-gradient(135deg, rgba(168,85,247,0.35), rgba(99,102,241,0.35));
-    border-color: rgba(168,85,247,0.8);
-    color: #fff;
-    box-shadow: 0 0 12px rgba(168,85,247,0.3);
-}
-
 .app-search-wrap {
     position: relative;
     flex-shrink: 0;
@@ -1235,7 +1183,7 @@ label {
 .app-search {
     width: 100%;
     height: 44px;
-    padding: 0 38px;
+    padding: 0 42px 0 38px;
     border-radius: 14px;
     border: 1.5px solid rgba(168, 85, 247, 0.85);
     outline: none;
@@ -1279,7 +1227,7 @@ label {
 
 .search-clear {
     position: absolute;
-    right: 10px;
+    right: 42px;
     top: 50%;
     transform: translateY(-50%);
     width: 26px;
@@ -1296,6 +1244,84 @@ label {
 
 .search-clear.visible {
     display: flex;
+}
+
+/* Кнопка фильтра справа в поисковой строке */
+.search-filter-btn {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(168, 85, 247, 0.4);
+    border-radius: 10px;
+    background: rgba(168, 85, 247, 0.15);
+    color: #e2d9ff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.search-filter-btn:hover {
+    background: rgba(168, 85, 247, 0.3);
+    border-color: rgba(168, 85, 247, 0.7);
+}
+
+.search-filter-btn.active {
+    background: linear-gradient(135deg, rgba(168,85,247,0.4), rgba(99,102,241,0.4));
+    border-color: rgba(168,85,247,0.9);
+    box-shadow: 0 0 12px rgba(168,85,247,0.4);
+}
+
+/* Выпадающее меню категорий */
+.filter-dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    width: 180px;
+    background: rgba(15, 20, 35, 0.95);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(168, 85, 247, 0.45);
+    border-radius: 14px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 20px rgba(168, 85, 247, 0.2);
+    padding: 6px;
+    display: none;
+    z-index: 10;
+    animation: screenIn .25s var(--spring);
+}
+
+.filter-dropdown.active {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.filter-option {
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #94a3b8;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+    background: transparent;
+    border: none;
+    width: 100%;
+}
+
+.filter-option:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+}
+
+.filter-option.active {
+    background: linear-gradient(135deg, rgba(168,85,247,0.35), rgba(99,102,241,0.35));
+    color: #fff;
+    font-weight: 600;
 }
 
 .info-blocks-container {
@@ -1656,6 +1682,17 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
+    // Закрытие выпадающего меню фильтра при клике вне его
+    document.addEventListener("click", function(e) {
+        const dropdown = document.getElementById("filterDropdown");
+        const filterBtn = document.getElementById("searchFilterBtn");
+        if (dropdown && dropdown.classList.contains("active")) {
+            if (!dropdown.contains(e.target) && !filterBtn.contains(e.target)) {
+                dropdown.classList.remove("active");
+            }
+        }
+    });
+
     if (window.visualViewport) {
         const updateKeyboardState = () => {
             const viewportHeight = window.visualViewport.height;
@@ -1712,15 +1749,32 @@ function closeSheet() {
         searchInput.value = "";
         searchInput.blur();
     }
+    document.getElementById("filterDropdown").classList.remove("active");
     document.getElementById("sheetOverlay").classList.remove("active");
     document.body.classList.remove("keyboard-open");
     filterApps();
 }
 
+function toggleFilterMenu() {
+    const dropdown = document.getElementById("filterDropdown");
+    dropdown.classList.toggle("active");
+}
+
 function setCategory(cat, element) {
     currentCategory = cat;
-    document.querySelectorAll(".category-chip").forEach(chip => chip.classList.remove("active"));
-    element.classList.add("active");
+    document.querySelectorAll(".filter-option").forEach(opt => opt.classList.remove("active"));
+    if (element) {
+        element.classList.add("active");
+    }
+
+    const filterBtn = document.getElementById("searchFilterBtn");
+    if (cat !== "all") {
+        filterBtn.classList.add("active");
+    } else {
+        filterBtn.classList.remove("active");
+    }
+
+    document.getElementById("filterDropdown").classList.remove("active");
     
     const sheetList = document.querySelector(".sheet-list");
     if (sheetList) {
@@ -2063,14 +2117,7 @@ function executeDownload() {
             </div>
         </div>
 
-        <!-- КАТЕГОРИИ ПО ЦЕНТРУ -->
-        <div class="categories-scroll">
-            <div class="category-chip active" onclick="setCategory('all', this)">Все</div>
-            <div class="category-chip" onclick="setCategory('banks', this)">Банки</div>
-            <div class="category-chip" onclick="setCategory('social', this)">Соцсети</div>
-            <div class="category-chip" onclick="setCategory('other', this)">Другие</div>
-        </div>
-
+        <!-- ПОИСК И КНОПКА ФИЛЬТРА СПРАВА -->
         <div class="app-search-wrap">
             <span class="search-icon">
                 ⌕
@@ -2094,6 +2141,23 @@ function executeDownload() {
             >
                 ✕
             </button>
+            <button
+                type="button"
+                id="searchFilterBtn"
+                class="search-filter-btn"
+                onclick="toggleFilterMenu()"
+                aria-label="Фильтр категорий"
+            >
+                ⚙
+            </button>
+
+            <!-- ВЫПАДАЮЩЕЕ МЕНЮ КАТЕГОРИЙ -->
+            <div class="filter-dropdown" id="filterDropdown">
+                <button type="button" class="filter-option active" onclick="setCategory('all', this)">Все</button>
+                <button type="button" class="filter-option" onclick="setCategory('banks', this)">Банки</button>
+                <button type="button" class="filter-option" onclick="setCategory('social', this)">Соцсети</button>
+                <button type="button" class="filter-option" onclick="setCategory('other', this)">Другие</button>
+            </div>
         </div>
 
         <div id="searchEmpty" class="search-empty">
