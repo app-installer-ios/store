@@ -1,641 +1,411 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#070910">
-    <title>Панель управления — Управление приложениями</title>
-    <!-- Подключаем Supabase JS SDK -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        :root {
-            --bg: #05060a;
-            --glass: rgba(255,255,255,.075);
-            --glass-light: rgba(255,255,255,.105);
-            --border: rgba(255,255,255,.14);
-            --text: #f8fafc;
-            --muted: #9ca3af;
-            --muted-light: #cbd5e1;
-            --accent-color: #a970ff;
-            --accent-hover: #9b8cff;
-            --danger-color: #ff7777;
-            --success-color: #43e3a5;
-            --spring: cubic-bezier(.22,1,.36,1);
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Панель управления — Установщик iOS</title>
+  <style>
+    :root {
+      --bg-gradient: radial-gradient(circle at 50% 0%, #1e1b2e 0%, #0d0b14 100%);
+      --glass-bg: rgba(25, 22, 38, 0.75);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --glass-border-focus: rgba(124, 58, 237, 0.5);
+      --accent-color: #7c3aed;
+      --accent-gradient: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+      --text-main: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.6);
+    }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-        body {
-            min-height: 100dvh;
-            background:
-                radial-gradient(circle at 18% 8%, rgba(130,70,255,.20), transparent 32%),
-                radial-gradient(circle at 88% 18%, rgba(40,150,255,.16), transparent 30%),
-                radial-gradient(circle at 75% 92%, rgba(40,210,160,.10), transparent 30%),
-                #05060a;
-            color: var(--text);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
+    body {
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 20px 16px;
+      overflow-x: hidden;
+    }
 
-        .aurora-bg {
-            position: fixed;
-            inset: -15%;
-            z-index: -10;
-            background:
-                radial-gradient(ellipse at 18% 18%, rgba(150,80,255,.24), transparent 35%),
-                radial-gradient(ellipse at 85% 20%, rgba(50,150,255,.19), transparent 35%),
-                linear-gradient(135deg, #06070d 0%, #0d1020 48%, #07100f 100%);
-            pointer-events: none;
-        }
+    /* Основная карточка */
+    .admin-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 24px;
+      width: 100%;
+      max-width: 420px;
+      padding: 24px 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      position: relative;
+      margin-top: 20px;
+    }
 
-        .container {
-            width: 100%;
-            max-width: 430px;
-            background: linear-gradient(145deg, rgba(255,255,255,.115), rgba(255,255,255,.045));
-            backdrop-filter: blur(40px) saturate(170%);
-            -webkit-backdrop-filter: blur(40px) saturate(170%);
-            border: 1px solid rgba(255,255,255,.145);
-            border-radius: 30px;
-            padding: 30px 22px;
-            box-shadow: 0 35px 90px rgba(0,0,0,.52), inset 0 1px 0 rgba(255,255,255,.14);
-            animation: screenIn .45s var(--spring);
-        }
+    /* Заголовки */
+    .title {
+      font-size: 20px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 6px;
+      letter-spacing: -0.3px;
+    }
 
-        @keyframes screenIn {
-            from { opacity: 0; transform: translateY(14px) scale(.975); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
+    .subtitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-align: center;
+      margin-bottom: 24px;
+    }
 
-        h1 {
-            font-size: 23px;
-            font-weight: 700;
-            margin-bottom: 6px;
-            text-align: center;
-            background: linear-gradient(135deg, #ffffff 10%, #e1c7ff 55%, #9b8cff 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+    /* Секции параметров */
+    .section-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
 
-        p.subtitle {
-            color: var(--muted);
-            font-size: 13px;
-            margin-bottom: 24px;
-            text-align: center;
-        }
+    /* Поля ввода (исправление мигающей полоски/каретки) */
+    .input-wrapper {
+      position: relative;
+      margin-bottom: 20px;
+    }
 
-        /* Экран авторизации */
-        #login-screen {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-        }
+    .input-field {
+      width: 100%;
+      height: 52px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      color: var(--text-main);
+      font-size: 16px;
+      text-align: center;
+      outline: none;
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: normal;
+      caret-color: var(--accent-color);
+    }
 
-        .login-box {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            margin-top: 10px;
-        }
+    .input-field:focus {
+      border-color: var(--glass-border-focus);
+      background: rgba(255, 255, 255, 0.07);
+      box-shadow: 0 0 15px rgba(124, 58, 237, 0.2);
+    }
 
-        /* Основная панель */
-        #admin-panel {
-            display: none;
-        }
+    /* Кнопки */
+    .btn {
+      width: 100%;
+      height: 48px;
+      border-radius: 14px;
+      border: none;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-        .section-title {
-            font-size: 13px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin: 20px 0 10px 0;
-            padding-bottom: 6px;
-            border-bottom: 1px solid var(--border);
-            color: var(--accent-color);
-        }
+    .btn-primary {
+      background: var(--accent-gradient);
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(124, 58, 237, 0.35);
+    }
 
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
+    .btn-primary:active {
+      transform: scale(0.98);
+    }
 
-        label {
-            font-size: 13px;
-            color: var(--muted-light);
-            font-weight: 600;
-        }
+    /* Элементы каталога приложений */
+    .app-list-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 320px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
 
-        input {
-            width: 100%;
-            height: 50px;
-            background: rgba(0,0,0,.18);
-            border: 1px solid rgba(255,255,255,.105);
-            border-radius: 16px;
-            padding: 0 15px;
-            color: #fff;
-            font-size: 15px;
-            text-align: center;
-            outline: none;
-            backdrop-filter: blur(22px);
-            -webkit-backdrop-filter: blur(22px);
-            transition: all 0.2s ease;
-        }
+    .app-item {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.2s;
+    }
 
-        input:focus {
-            border-color: rgba(178,130,255,.52);
-            background: rgba(255,255,255,.065);
-            box-shadow: 0 0 0 3px rgba(168,85,247,.08), 0 0 30px rgba(168,85,247,.13);
-        }
+    .app-item:hover {
+      background: rgba(255, 255, 255, 0.06);
+    }
 
-        button {
-            width: 100%;
-            min-height: 50px;
-            background: linear-gradient(135deg, rgba(168,85,247,.93), rgba(99,102,241,.94));
-            color: white;
-            border: 1.5px solid rgba(217, 70, 239, 0.75);
-            border-radius: 16px;
-            padding: 12px;
-            font-size: 14px;
-            font-weight: 650;
-            cursor: pointer;
-            box-shadow: 0 15px 35px rgba(109,68,220,.28), 0 0 20px rgba(168, 85, 247, 0.3);
-            transition: all 0.2s var(--spring);
-        }
+    .app-name {
+      font-size: 15px;
+      font-weight: 500;
+    }
 
-        button:hover {
-            filter: brightness(1.08);
-            transform: translateY(-1px);
-        }
+    /* Кнопка настроек вместо цифр пароля */
+    .app-settings-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-main);
+      transition: all 0.2s ease;
+    }
 
-        /* Кнопка открытия каталога */
-        .custom-select-btn {
-            width: 100%;
-            min-height: 50px;
-            padding: 12px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            text-align: left;
-            border-radius: 16px;
-            border: 1px solid rgba(255,255,255,.105);
-            background: rgba(255,255,255,.048);
-            color: #fff;
-            cursor: pointer;
-            box-shadow: none;
-        }
-        .custom-select-btn:hover {
-            border-color: rgba(174,130,255,.35);
-            background: rgba(255,255,255,.07);
-            transform: none;
-        }
+    .app-settings-btn:hover {
+      background: rgba(124, 58, 237, 0.25);
+      border-color: rgba(124, 58, 237, 0.4);
+    }
 
-        #status-message, #login-error {
-            margin-top: 14px;
-            text-align: center;
-            font-size: 13px;
-            min-height: 20px;
-            font-weight: 600;
-        }
+    /* Минималистичный крестик без кружочка */
+    .close-btn {
+      background: transparent;
+      border: none;
+      font-size: 24px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      position: absolute;
+      top: 18px;
+      right: 20px;
+      transition: color 0.2s;
+      line-height: 1;
+    }
 
-        .error { color: var(--danger-color); }
-        .success { color: var(--success-color); }
+    .close-btn:hover {
+      color: var(--text-main);
+    }
 
-        /* Модальное окно каталога */
-        .sheet-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 15px;
-            background: rgba(2, 4, 9, 0.65);
-            backdrop-filter: blur(30px) saturate(180%);
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity .3s ease, visibility .3s ease;
-        }
-        .sheet-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-        .sheet-modal {
-            position: relative;
-            width: 100%;
-            max-width: 430px;
-            height: min(78vh, 580px);
-            display: flex;
-            flex-direction: column;
-            padding: 18px 16px;
-            border-radius: 26px;
-            background: linear-gradient(145deg, rgba(255,255,255,0.08), rgba(15,20,35,0.75));
-            border: 1.5px solid rgba(130, 140, 255, 0.45);
-            box-shadow: 0 35px 90px rgba(0,0,0,0.65);
-            transform: translateY(20px) scale(.97);
-            transition: transform .4s var(--spring), opacity .3s ease;
-            opacity: 0;
-        }
-        .sheet-overlay.active .sheet-modal {
-            transform: translateY(0) scale(1);
-            opacity: 1;
-        }
-        .sheet-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding-bottom: 10px;
-            margin-bottom: 10px;
-            border-bottom: 1px solid rgba(255,255,255,.08);
-        }
-        .sheet-title {
-            font-size: 17px;
-            font-weight: 650;
-            background: linear-gradient(135deg, #ffffff 10%, #e1c7ff 55%, #9b8cff 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .sheet-close {
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.065);
-            color: #fff;
-            border: 1px solid rgba(255,255,255,0.12);
-            cursor: pointer;
-            font-size: 14px;
-            padding: 0;
-        }
-        .sheet-close:hover { background: rgba(168, 85, 247, 0.2); transform: none; }
+    /* Модальное окно */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 16px;
+    }
 
-        /* Поиск в каталоге */
-        .app-search-wrap {
-            position: relative;
-            margin-bottom: 10px;
-        }
-        .app-search {
-            width: 100%;
-            height: 44px;
-            padding: 0 16px 0 38px;
-            border-radius: 14px;
-            border: 1.5px solid rgba(168, 85, 247, 0.85);
-            background: rgba(0, 0, 0, 0.3);
-            color: #fff;
-            font-size: 13.5px;
-            outline: none;
-        }
-        .app-search:focus { border-color: rgba(168, 85, 247, 0.95); }
-        .search-icon {
-            position: absolute;
-            left: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #d946ef;
-            font-size: 15px;
-        }
+    .modal-overlay.active {
+      display: flex;
+    }
 
-        /* Список приложений в каталоге */
-        .sheet-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            overflow-y: auto;
-            padding-right: 4px;
-            scrollbar-width: thin;
-        }
-        .sheet-item {
-            min-height: 46px;
-            padding: 10px 14px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: linear-gradient(135deg, rgba(34, 211, 238, 0.05), rgba(88, 184, 255, 0.06));
-            border: 1.5px solid rgba(34, 211, 238, 0.45);
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .sheet-item:hover {
-            background: rgba(34, 211, 238, 0.12);
-            border-color: rgba(34, 211, 238, 0.75);
-        }
-        .sheet-item span.app-name {
-            color: #f1f5f9;
-            font-size: 13.5px;
-            font-weight: 550;
-        }
-        .app-pass-badge {
-            font-size: 12px;
-            color: #e1c7ff;
-            background: rgba(168, 85, 247, 0.12);
-            border: 1px solid rgba(168, 85, 247, 0.45);
-            padding: 3px 8px;
-            border-radius: 6px;
-            font-family: monospace;
-        }
+    .modal-card {
+      background: #181526;
+      border: 1px solid rgba(124, 58, 237, 0.3);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 360px;
+      padding: 24px 20px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+      animation: modalScale 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
 
-        /* Модальное окно редактирования пароля приложения */
-        .edit-modal {
-            max-width: 360px;
-            height: auto;
-            padding: 24px;
-        }
-        .edit-app-title {
-            font-size: 17px;
-            font-weight: 650;
-            color: #fff;
-            margin-bottom: 16px;
-            text-align: center;
-        }
-    </style>
+    @keyframes modalScale {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-main);
+    }
+
+    /* Всплывающая плашка (Тост) уведомлений */
+    .notification-toast {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-120px);
+      background: rgba(24, 21, 38, 0.95);
+      border: 1px solid rgba(124, 58, 237, 0.5);
+      backdrop-filter: blur(12px);
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 14px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 1000;
+      font-size: 13px;
+      font-weight: 500;
+      text-align: center;
+      max-width: 90%;
+    }
+
+    .notification-toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
 </head>
 <body>
 
-<div class="aurora-bg"></div>
+  <!-- Уведомление (плашка) -->
+  <div id="toast" class="notification-toast">Пароли успешно изменены</div>
 
-<div class="container">
-    <!-- Секция входа в админку -->
-    <div id="login-screen">
-        <h1>Вход в админку</h1>
-        <p class="subtitle">Введите цифровой пароль администратора</p>
-        <div class="login-box">
-            <div class="input-group" style="text-align: left;">
-                <label for="admin-pass-input">Пароль</label>
-                <!-- Только цифровой ввод, без точек до начала ввода -->
-                <input type="text" inputmode="numeric" pattern="[0-9]*" id="admin-pass-input" placeholder="Введите цифры" autocomplete="off">
-            </div>
-            <button onclick="checkAdminAuth()">Войти</button>
-        </div>
-        <div id="login-error" class="error"></div>
+  <!-- Главная панель управления -->
+  <div class="admin-card">
+    <button class="close-btn" onclick="closeCatalog()">×</button>
+    <div class="title">Панель управления</div>
+    <div class="subtitle">Настройка общих параметров и кодов доступа</div>
+
+    <!-- 1. Пароль администратора -->
+    <div class="section-label">1. Пароль администратора</div>
+    <div class="input-wrapper">
+      <input type="text" inputmode="numeric" pattern="[0-9]*" class="input-field" value="227654" placeholder="Введите пароль">
     </div>
 
-    <!-- Основной интерфейс управления -->
-    <div id="admin-panel">
-        <h1>Панель управления</h1>
-        <p class="subtitle">Настройка общих параметров и кодов доступа</p>
-
-        <div class="section-title">1. Пароль администратора</div>
-        <div class="input-group">
-            <input type="text" inputmode="numeric" pattern="[0-9]*" id="key-admin_password" placeholder="Цифровой пароль админки">
-        </div>
-
-        <div class="section-title">2. Общий пароль сайта</div>
-        <div class="input-group">
-            <input type="text" inputmode="numeric" pattern="[0-9]*" id="key-site_password" placeholder="Цифровой пароль сайта">
-        </div>
-
-        <div class="section-title">3. Пароли приложений</div>
-        <div class="input-group">
-            <label>Каталог приложений</label>
-            <button type="button" class="custom-select-btn" onclick="openAppsCatalogSheet()">
-                <span id="catalogButtonText" style="color: var(--muted);">Выбрать приложение...</span>
-                <span style="color: var(--accent-color); font-size: 18px;">›</span>
-            </button>
-        </div>
-
-        <button style="margin-top: 24px; width: 100%;" onclick="saveSettings()">Сохранить все изменения</button>
-        <div id="status-message"></div>
+    <!-- 2. Общий пароль сайта -->
+    <div class="section-label">2. Общий пароль сайта</div>
+    <div class="input-wrapper">
+      <input type="text" inputmode="numeric" pattern="[0-9]*" class="input-field" value="930438" placeholder="Введите пароль">
     </div>
-</div>
 
-<!-- Модальное окно каталога приложений -->
-<div class="sheet-overlay" id="appsCatalogOverlay" onclick="closeAppsCatalogSheet()">
-    <div class="sheet-modal" onclick="event.stopPropagation()">
-        <div class="sheet-header">
-            <div class="sheet-title">Каталог приложений</div>
-            <button type="button" class="sheet-close" onclick="closeAppsCatalogSheet()">✕</button>
-        </div>
-        <div class="app-search-wrap">
-            <span class="search-icon">⌕</span>
-            <input type="search" id="adminAppSearch" class="app-search" placeholder="Поиск по названию..." oninput="filterAdminApps()" autocomplete="off">
-        </div>
-        <div class="sheet-list" id="adminAppsList"></div>
+    <!-- 3. Пароли приложений -->
+    <div class="section-label">3. Пароли приложений</div>
+    <div class="app-list-container" id="appList">
+       Динамически заполняется через JS 
     </div>
-</div>
+  </div>
 
-<!-- Модальное окно редактирования пароля выбранного приложения -->
-<div class="sheet-overlay" id="editAppOverlay" onclick="closeEditAppModal()">
-    <div class="sheet-modal edit-modal" onclick="event.stopPropagation()">
-        <div class="edit-app-title" id="editModalAppTitle">Приложение</div>
-        <div class="input-group" style="margin-bottom: 16px;">
-            <label>Пароль доступа (только цифры)</label>
-            <!-- Только цифры для пароля приложения -->
-            <input type="text" inputmode="numeric" pattern="[0-9]*" id="editAppPasswordInput" placeholder="Введите новый пароль" autocomplete="off">
-        </div>
-        <div style="display: flex; gap: 10px;">
-            <button type="button" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); flex: 1;" onclick="closeEditAppModal()">Отмена</button>
-            <button type="button" style="flex: 1;" onclick="saveAppPasswordFromModal()">Сохранить</button>
-        </div>
+  <!-- Модальное окно смены пароля приложения -->
+  <div class="modal-overlay" id="passwordModal">
+    <div class="modal-card">
+      <div class="title" id="modalAppTitle">Приложение</div>
+      <div class="subtitle" style="margin-bottom: 16px;">Новый пароль доступа (только цифры)</div>
+      
+      <div class="input-wrapper" style="margin-bottom: 0;">
+        <input type="text" inputmode="numeric" pattern="[0-9]*" class="input-field" id="modalPasswordInput" placeholder="917483">
+      </div>
+
+      <div class="modal-buttons">
+        <button class="btn btn-secondary" onclick="closeModal()">Отмена</button>
+        <button class="btn btn-primary" onclick="saveAppPassword()">Сохранить</button>
+      </div>
     </div>
-</div>
+  </div>
 
-<script>
-    const SUPABASE_URL = 'https://gbuvpqcummyutycemaaj.supabase.co';
-    const SUPABASE_ANON_KEY = 'sb_publishable_oUDovfvWL6iioG6N5Xd_QQ_8KYezq8g';
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    const appConfigList = [
-        { key: "vk", name: "ВКонтакте" },
-        { key: "max", name: "MAX" },
-        { key: "vk-video", name: "VK Видео" },
-        { key: "vk-clips", name: "VK Клипы" },
-        { key: "sberfinansy", name: "СберБанк (Финансы Онлайн)" },
-        { key: "avito", name: "Авито" },
-        { key: "sovkombank-vsekarty", name: "Совкомбанк (Все карты MDS)" },
-        { key: "tbank", name: "Т-Банк (8PRO)" },
-        { key: "sovkombank-sinoptik", name: "Совкомбанк (Синоптик+)" },
-        { key: "drive-transit", name: "Т-Банк (Drive Transit)" },
-        { key: "lenta", name: "Лента" },
-        { key: "yandex-pay", name: "Яндекс Пэй" },
-        { key: "2gis", name: "2ГИС" },
-        { key: "psb", name: "ПСБ (Чайная Церемония)" },
-        { key: "kuper", name: "Купер" },
-        { key: "rutube", name: "Rutube(Starship Battle)" },
-        { key: "mobio", name: "СберМобайл (Мобио)" },
-        { key: "rzd", name: "РЖД Пассажирам" },
-        { key: "sberkids", name: "СберKids (SpeakaBoo)" },
-        { key: "lentaa", name: "Лента (Быстро Продукты)" },
-        { key: "avito-anero", name: "Авито (Anero)" },
-        { key: "craftersy", name: "Т-Банк (Craftersy)" },
-        { key: "scbnotes", name: "СовкомБанк (SCB Notes)" },
-        { key: "ak-bars-bank", name: "АК Барс (Всё Учтено)" },
-        { key: "blum", name: "РокетБанк (Блум)" }
+  <script>
+    // Список приложений с начальными паролями
+    let apps = [
+      { id: 1, name: "ВКонтакте", pass: "231756" },
+      { id: 2, name: "MAX", pass: "754526" },
+      { id: 3, name: "VK Видео", pass: "917483" },
+      { id: 4, name: "VK Клипы", pass: "332745" },
+      { id: 5, name: "СберБанк (Финансы Онлайн)", pass: "602937" },
+      { id: 6, name: "Авито", pass: "153418" },
+      { id: 7, name: "Совкомбанк", pass: "852358" },
+      { id: 8, name: "Т-Банк (8PRO)", pass: "523516" }
     ];
 
-    let appPasswordsData = {};
-    let currentEditingKey = null;
+    let currentEditingAppId = null;
+    let changedAppsList = [];
 
-    async function checkAdminAuth() {
-        const inputPass = document.getElementById('admin-pass-input').value.trim();
-        const errorDiv = document.getElementById('login-error');
-        errorDiv.textContent = 'Проверка...';
-        errorDiv.className = '';
+    // Рендер списка приложений
+    function renderAppList() {
+      const container = document.getElementById('appList');
+      container.innerHTML = '';
+      
+      apps.forEach(app => {
+        const item = document.createElement('div');
+        item.className = 'app-item';
+        item.innerHTML = `
+          <span class="app-name">${app.name}</span>
+          <button class="app-settings-btn" onclick="openModal(${app.id})" title="Изменить пароль">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06-.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+          </button>
+        `;
+        container.appendChild(item);
+      });
+    }
 
-        try {
-            const { data, error } = await supabaseClient
-                .from('settings')
-                .select('value')
-                .eq('key', 'admin_password')
-                .single();
+    // Открытие модального окна
+    function openModal(appId) {
+      currentEditingAppId = appId;
+      const app = apps.find(a => a.id === appId);
+      document.getElementById('modalAppTitle').textContent = app.name;
+      document.getElementById('modalPasswordInput').value = app.pass;
+      document.getElementById('passwordModal').classList.add('active');
+    }
 
-            if (error || !data) {
-                errorDiv.textContent = 'Ошибка подключения к базе данных.';
-                errorDiv.className = 'error';
-                return;
-            }
+    // Закрытие модального окна
+    function closeModal() {
+      document.getElementById('passwordModal').classList.remove('active');
+      currentEditingAppId = null;
+    }
 
-            if (inputPass === data.value) {
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('admin-panel').style.display = 'block';
-                loadSettings();
-            } else {
-                errorDiv.textContent = 'Неверный пароль!';
-                errorDiv.className = 'error';
-            }
-        } catch (err) {
-            errorDiv.textContent = 'Произошла ошибка авторизации.';
-            errorDiv.className = 'error';
+    // Сохранение пароля приложения
+    function saveAppPassword() {
+      const newPass = document.getElementById('modalPasswordInput').value;
+      if (currentEditingAppId !== null) {
+        const app = apps.find(a => a.id === currentEditingAppId);
+        if (app && app.pass !== newPass) {
+          app.pass = newPass;
+          if (!changedAppsList.includes(app.name)) {
+            changedAppsList.push(app.name);
+          }
         }
+      }
+      closeModal();
+      showToast();
     }
 
-    async function loadSettings() {
-        const { data, error } = await supabaseClient
-            .from('settings')
-            .select('key, value');
-
-        if (error) return;
-
-        data.forEach(item => {
-            if (item.key === 'admin_password' || item.key === 'site_password') {
-                const input = document.getElementById(`key-${item.key}`);
-                if (input) input.value = item.value;
-            } else {
-                appPasswordsData[item.key] = item.value;
-            }
-        });
-
-        renderAdminAppsList();
+    // Показ плашки с уведомлением об измененных приложениях
+    function showToast() {
+      const toast = document.getElementById('toast');
+      if (changedAppsList.length > 0) {
+        toast.textContent = `Пароли изменены для: ${changedAppsList.join(', ')}`;
+      } else {
+        toast.textContent = `Изменения успешно сохранены`;
+      }
+      
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 4000);
     }
 
-    function renderAdminAppsList() {
-        const listContainer = document.getElementById('adminAppsList');
-        listContainer.innerHTML = '';
-
-        appConfigList.forEach(app => {
-            const currentPass = appPasswordsData[app.key] || '';
-            const div = document.createElement('div');
-            div.className = 'sheet-item';
-            div.setAttribute('data-name', app.name.toLowerCase());
-            div.onclick = () => openEditAppModal(app.key, app.name);
-            div.innerHTML = `
-                <span class="app-name">${app.name}</span>
-                <span class="app-pass-badge">${currentPass ? currentPass : 'нет пароля'}</span>
-            `;
-            listContainer.appendChild(div);
-        });
+    function closeCatalog() {
+      alert('Закрытие окна каталога');
     }
 
-    function filterAdminApps() {
-        const query = document.getElementById('adminAppSearch').value.toLowerCase();
-        document.querySelectorAll('#adminAppsList .sheet-item').forEach(item => {
-            const name = item.getAttribute('data-name');
-            item.style.display = name.includes(query) ? 'flex' : 'none';
-        });
-    }
-
-    function openAppsCatalogSheet() {
-        document.getElementById('appsCatalogOverlay').classList.add('active');
-        document.getElementById('adminAppSearch').value = '';
-        filterAdminApps();
-    }
-
-    function closeAppsCatalogSheet() {
-        document.getElementById('appsCatalogOverlay').classList.remove('active');
-    }
-
-    function openEditAppModal(key, name) {
-        currentEditingKey = key;
-        document.getElementById('editModalAppTitle').textContent = name;
-        document.getElementById('editAppPasswordInput').value = appPasswordsData[key] || '';
-        document.getElementById('editAppOverlay').classList.add('active');
-        document.getElementById('editAppPasswordInput').focus();
-    }
-
-    function closeEditAppModal() {
-        document.getElementById('editAppOverlay').classList.remove('active');
-        currentEditingKey = null;
-    }
-
-    async function saveAppPasswordFromModal() {
-        if (!currentEditingKey) return;
-        const newPass = document.getElementById('editAppPasswordInput').value.trim();
-        
-        // Проверка на чисто цифровой ввод
-        if (newPass && !/^\d+$/.test(newPass)) {
-            alert('Пароль должен состоять только из цифр!');
-            return;
-        }
-
-        appPasswordsData[currentEditingKey] = newPass;
-
-        const { error } = await supabaseClient
-            .from('settings')
-            .upsert({ key: currentEditingKey, value: newPass }, { onConflict: 'key' });
-
-        if (error) {
-            alert('Ошибка при сохранении пароля приложения в базу.');
-        } else {
-            renderAdminAppsList();
-            closeEditAppModal();
-            // Возвращаем пользователя обратно в каталог приложений, не выкидывая из админки
-            openAppsCatalogSheet();
-            document.getElementById('catalogButtonText').textContent = 'Каталог приложений (настроено)';
-            document.getElementById('catalogButtonText').style.color = '#fff';
-        }
-    }
-
-    async function saveSettings() {
-        const statusMsg = document.getElementById('status-message');
-        statusMsg.textContent = 'Сохранение общих настроек...';
-        statusMsg.className = '';
-
-        const adminPass = document.getElementById('key-admin_password').value.trim();
-        const sitePass = document.getElementById('key-site_password').value.trim();
-
-        let hasError = false;
-        const keysToSave = [
-            { key: 'admin_password', value: adminPass },
-            { key: 'site_password', value: sitePass }
-        ];
-
-        for (const item of keysToSave) {
-            const { error } = await supabaseClient
-                .from('settings')
-                .upsert({ key: item.key, value: item.value }, { onConflict: 'key' });
-            if (error) hasError = true;
-        }
-
-        if (hasError) {
-            statusMsg.textContent = 'Ошибка при сохранении общих параметров.';
-            statusMsg.className = 'error';
-        } else {
-            statusMsg.textContent = 'Все изменения успешно сохранены!';
-            statusMsg.className = 'success';
-        }
-    }
-</script>
-
+    // Инициализация при загрузке
+    renderAppList();
+  </script>
 </body>
 </html>
