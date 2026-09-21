@@ -3,23 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#070910">
+    <meta name="theme-color" content="#05060a">
     <title>Панель управления — Управление приложениями</title>
-    <!-- Подключаем Supabase JS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --bg: #05060a;
             --glass: rgba(255,255,255,.075);
-            --glass-light: rgba(255,255,255,.105);
-            --border: rgba(255,255,255,.14);
+            --glass-light: rgba(255,255,255,.12);
+            --border: rgba(255,255,255,.12);
             --text: #f8fafc;
-            --muted: #9ca3af;
-            --muted-light: #cbd5e1;
-            --accent-color: #a970ff;
-            --accent-hover: #9b8cff;
-            --danger-color: #ff7777;
-            --success-color: #43e3a5;
+            --muted: #a1a1aa;
+            --accent-color: #b084ff;
+            --accent-glow: rgba(176, 132, 255, 0.4);
+            --danger-color: #ff6b6b;
+            --danger-bg: rgba(255, 107, 107, 0.15);
+            --success-color: #4ade80;
             --spring: cubic-bezier(.22,1,.36,1);
         }
 
@@ -33,184 +32,218 @@
 
         body {
             min-height: 100dvh;
-            background:
-                radial-gradient(circle at 18% 8%, rgba(130,70,255,.20), transparent 32%),
-                radial-gradient(circle at 88% 18%, rgba(40,150,255,.16), transparent 30%),
-                radial-gradient(circle at 75% 92%, rgba(40,210,160,.10), transparent 30%),
-                #05060a;
+            background: var(--bg);
             color: var(--text);
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            overflow-x: hidden;
         }
 
         .aurora-bg {
             position: fixed;
-            inset: -15%;
+            inset: -20%;
             z-index: -10;
             background:
-                radial-gradient(ellipse at 18% 18%, rgba(150,80,255,.24), transparent 35%),
-                radial-gradient(ellipse at 85% 20%, rgba(50,150,255,.19), transparent 35%),
-                linear-gradient(135deg, #06070d 0%, #0d1020 48%, #07100f 100%);
+                radial-gradient(circle at 15% 50%, rgba(130, 70, 255, 0.15), transparent 40%),
+                radial-gradient(circle at 85% 30%, rgba(40, 150, 255, 0.15), transparent 40%),
+                radial-gradient(circle at 50% 80%, rgba(40, 210, 160, 0.1), transparent 40%);
+            filter: blur(60px);
             pointer-events: none;
+            animation: pulse 10s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(1.05); opacity: 1; }
         }
 
         .container {
             width: 100%;
-            max-width: 430px;
-            background: linear-gradient(145deg, rgba(255,255,255,.115), rgba(255,255,255,.045));
-            backdrop-filter: blur(40px) saturate(170%);
-            -webkit-backdrop-filter: blur(40px) saturate(170%);
-            border: 1px solid rgba(255,255,255,.145);
-            border-radius: 30px;
-            padding: 30px 22px;
-            box-shadow: 0 35px 90px rgba(0,0,0,.52), inset 0 1px 0 rgba(255,255,255,.14);
-            animation: screenIn .45s var(--spring);
+            max-width: 420px;
+            background: linear-gradient(165deg, rgba(30, 30, 40, 0.6), rgba(15, 15, 20, 0.8));
+            backdrop-filter: blur(24px) saturate(150%);
+            -webkit-backdrop-filter: blur(24px) saturate(150%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 32px;
+            padding: 36px 28px;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+            animation: screenIn .5s var(--spring);
         }
 
         @keyframes screenIn {
-            from { opacity: 0; transform: translateY(14px) scale(.975); }
+            from { opacity: 0; transform: translateY(20px) scale(.95); }
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         h1 {
-            font-size: 23px;
+            font-size: 26px;
             font-weight: 700;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             text-align: center;
-            background: linear-gradient(135deg, #ffffff 10%, #e1c7ff 55%, #9b8cff 100%);
+            background: linear-gradient(135deg, #fff 20%, #cba5ff 80%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
         }
 
         p.subtitle {
             color: var(--muted);
-            font-size: 13px;
-            margin-bottom: 24px;
+            font-size: 14px;
+            margin-bottom: 30px;
             text-align: center;
+            line-height: 1.4;
         }
 
-        /* Экран авторизации */
-        #login-screen {
+        /* Экраны */
+        #login-screen, #admin-panel {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            text-align: center;
-        }
-
-        .login-box {
             width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            margin-top: 10px;
         }
-
-        /* Основная панель */
-        #admin-panel {
-            display: none;
-        }
-
-        .section-title {
-            font-size: 13px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin: 20px 0 10px 0;
-            padding-bottom: 6px;
-            border-bottom: 1px solid var(--border);
-            color: var(--accent-color);
-        }
+        #admin-panel { display: none; }
 
         .input-group {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 10px;
+            width: 100%;
+            margin-bottom: 20px;
         }
 
         label {
-            font-size: 13px;
-            color: var(--muted-light);
-            font-weight: 600;
+            font-size: 14px;
+            color: var(--muted);
+            font-weight: 500;
+            padding-left: 4px;
         }
 
         input {
             width: 100%;
-            height: 50px;
-            background: rgba(0,0,0,.18);
-            border: 1px solid rgba(255,255,255,.105);
-            border-radius: 16px;
-            padding: 0 15px;
+            height: 54px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 0 20px;
             color: #fff;
-            font-size: 15px;
-            text-align: center;
+            font-size: 16px;
+            text-align: left; /* Исправление выхода каретки */
+            line-height: normal; /* Исправление выхода каретки */
             outline: none;
-            backdrop-filter: blur(22px);
-            -webkit-backdrop-filter: blur(22px);
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
         }
 
         input:focus {
-            border-color: rgba(178,130,255,.52);
-            background: rgba(255,255,255,.065);
-            box-shadow: 0 0 0 3px rgba(168,85,247,.08), 0 0 30px rgba(168,85,247,.13);
+            border-color: var(--accent-color);
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 0 4px rgba(176, 132, 255, 0.15), 0 0 20px rgba(176, 132, 255, 0.2);
         }
 
-        button {
+        button.primary-btn {
             width: 100%;
-            min-height: 50px;
-            background: linear-gradient(135deg, rgba(168,85,247,.93), rgba(99,102,241,.94));
-            color: white;
-            border: 1.5px solid rgba(217, 70, 239, 0.75);
-            border-radius: 16px;
-            padding: 12px;
-            font-size: 14px;
-            font-weight: 650;
+            height: 54px;
+            background: linear-gradient(135deg, #a855f7, #6366f1);
+            color: #fff;
+            border: none;
+            border-radius: 18px;
+            font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
-            box-shadow: 0 15px 35px rgba(109,68,220,.28), 0 0 20px rgba(168, 85, 247, 0.3);
-            transition: all 0.2s var(--spring);
+            box-shadow: 0 10px 25px rgba(168, 85, 247, 0.3);
+            transition: all 0.3s var(--spring);
         }
 
-        button:hover {
-            filter: brightness(1.08);
-            transform: translateY(-1px);
+        button.primary-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(168, 85, 247, 0.4);
+            filter: brightness(1.1);
         }
 
-        /* Кнопка открытия каталога */
-        .custom-select-btn {
-            width: 100%;
-            min-height: 50px;
-            padding: 12px 16px;
+        /* Стилизация ошибки */
+        #login-error {
+            display: none;
+            margin-top: 20px;
+            padding: 14px;
+            border-radius: 14px;
+            background: var(--danger-bg);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            color: var(--danger-color);
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+            animation: fadeIn 0.3s ease;
+        }
+        #login-error.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Карточки настроек в админке */
+        .control-card {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            text-align: left;
-            border-radius: 16px;
-            border: 1px solid rgba(255,255,255,.105);
-            background: rgba(255,255,255,.048);
-            color: #fff;
-            cursor: pointer;
-            box-shadow: none;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            padding: 16px 20px;
+            border-radius: 20px;
+            margin-bottom: 14px;
+            transition: all 0.3s ease;
         }
-        .custom-select-btn:hover {
-            border-color: rgba(174,130,255,.35);
-            background: rgba(255,255,255,.07);
-            transform: none;
+        .control-card:hover {
+            background: var(--glass-light);
+            border-color: rgba(176, 132, 255, 0.4);
+            transform: translateY(-1px);
         }
-
-        #status-message, #login-error {
-            margin-top: 14px;
-            text-align: center;
-            font-size: 13px;
-            min-height: 20px;
+        .control-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .control-title {
+            font-size: 15px;
             font-weight: 600;
+            color: #fff;
+        }
+        .control-desc {
+            font-size: 12px;
+            color: var(--muted);
+        }
+        .gear-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .gear-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent-color);
+            transform: rotate(90deg) scale(1.05);
         }
 
-        .error { color: var(--danger-color); }
-        .success { color: var(--success-color); }
+        /* Кнопка приложений */
+        .apps-btn {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(99, 102, 241, 0.15));
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            cursor: pointer;
+        }
+        .apps-btn:hover {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(99, 102, 241, 0.25));
+            border-color: var(--accent-color);
+        }
 
-        /* Модальное окно каталога */
+        /* Модальные окна (Каталог и Редактирование) */
         .sheet-overlay {
             position: fixed;
             inset: 0;
@@ -218,146 +251,175 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 15px;
-            background: rgba(2, 4, 9, 0.65);
-            backdrop-filter: blur(30px) saturate(180%);
+            padding: 20px;
+            background: rgba(2, 4, 9, 0.75);
+            backdrop-filter: blur(20px);
             opacity: 0;
             visibility: hidden;
-            transition: opacity .3s ease, visibility .3s ease;
+            transition: all 0.3s ease;
         }
         .sheet-overlay.active {
             opacity: 1;
             visibility: visible;
         }
         .sheet-modal {
-            position: relative;
             width: 100%;
-            max-width: 430px;
-            height: min(78vh, 580px);
+            max-width: 400px;
+            background: linear-gradient(165deg, rgba(25, 25, 35, 0.95), rgba(15, 15, 20, 0.98));
+            border: 1px solid rgba(176, 132, 255, 0.2);
+            border-radius: 28px;
+            padding: 24px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.1);
+            transform: translateY(30px) scale(0.95);
+            transition: all 0.4s var(--spring);
             display: flex;
             flex-direction: column;
-            padding: 18px 16px;
-            border-radius: 26px;
-            background: linear-gradient(145deg, rgba(255,255,255,0.08), rgba(15,20,35,0.75));
-            border: 1.5px solid rgba(130, 140, 255, 0.45);
-            box-shadow: 0 35px 90px rgba(0,0,0,0.65);
-            transform: translateY(20px) scale(.97);
-            transition: transform .4s var(--spring), opacity .3s ease;
-            opacity: 0;
+            max-height: 85vh;
         }
         .sheet-overlay.active .sheet-modal {
             transform: translateY(0) scale(1);
-            opacity: 1;
         }
         .sheet-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding-bottom: 10px;
-            margin-bottom: 10px;
-            border-bottom: 1px solid rgba(255,255,255,.08);
+            margin-bottom: 20px;
         }
         .sheet-title {
-            font-size: 17px;
-            font-weight: 650;
-            background: linear-gradient(135deg, #ffffff 10%, #e1c7ff 55%, #9b8cff 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .sheet-close {
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.065);
+            font-size: 20px;
+            font-weight: 700;
             color: #fff;
-            border: 1px solid rgba(255,255,255,0.12);
-            cursor: pointer;
-            font-size: 14px;
-            padding: 0;
         }
-        .sheet-close:hover { background: rgba(168, 85, 247, 0.2); transform: none; }
+        /* Обычный жирный крестик вместо кружочка */
+        .sheet-close {
+            background: none;
+            border: none;
+            color: var(--muted);
+            font-size: 24px;
+            font-weight: 800;
+            cursor: pointer;
+            padding: 4px;
+            line-height: 1;
+            transition: color 0.2s ease;
+        }
+        .sheet-close:hover { color: #fff; }
 
-        /* Поиск в каталоге */
+        /* Поиск */
         .app-search-wrap {
             position: relative;
-            margin-bottom: 10px;
+            margin-bottom: 16px;
         }
         .app-search {
             width: 100%;
-            height: 44px;
-            padding: 0 16px 0 38px;
-            border-radius: 14px;
-            border: 1.5px solid rgba(168, 85, 247, 0.85);
-            background: rgba(0, 0, 0, 0.3);
+            height: 48px;
+            padding: 0 16px 0 42px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0, 0, 0, 0.4);
             color: #fff;
-            font-size: 13.5px;
+            font-size: 15px;
             outline: none;
         }
-        .app-search:focus { border-color: rgba(168, 85, 247, 0.95); }
+        .app-search:focus { border-color: var(--accent-color); }
         .search-icon {
             position: absolute;
-            left: 14px;
+            left: 16px;
             top: 50%;
             transform: translateY(-50%);
-            color: #d946ef;
-            font-size: 15px;
+            color: var(--muted);
+            font-size: 18px;
         }
 
-        /* Список приложений в каталоге */
+        /* Список в каталоге */
         .sheet-list {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
             overflow-y: auto;
-            padding-right: 4px;
-            scrollbar-width: thin;
+            padding-right: 6px;
+            scrollbar-width: none;
         }
+        .sheet-list::-webkit-scrollbar { display: none; }
+
         .sheet-item {
-            min-height: 46px;
-            padding: 10px 14px;
-            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: linear-gradient(135deg, rgba(34, 211, 238, 0.05), rgba(88, 184, 255, 0.06));
-            border: 1.5px solid rgba(34, 211, 238, 0.45);
-            cursor: pointer;
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
             transition: all 0.2s ease;
         }
         .sheet-item:hover {
-            background: rgba(34, 211, 238, 0.12);
-            border-color: rgba(34, 211, 238, 0.75);
+            background: rgba(255,255,255,0.06);
+            border-color: rgba(176, 132, 255, 0.3);
         }
-        .sheet-item span.app-name {
-            color: #f1f5f9;
-            font-size: 13.5px;
-            font-weight: 550;
-        }
-        .app-pass-badge {
-            font-size: 12px;
-            color: #e1c7ff;
-            background: rgba(168, 85, 247, 0.12);
-            border: 1px solid rgba(168, 85, 247, 0.45);
-            padding: 3px 8px;
-            border-radius: 6px;
-            font-family: monospace;
+        .app-name {
+            font-size: 15px;
+            font-weight: 500;
+            color: #fff;
         }
 
-        /* Модальное окно редактирования пароля приложения */
-        .edit-modal {
-            max-width: 360px;
-            height: auto;
-            padding: 24px;
+        /* Кнопки в модалке редактирования */
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
         }
-        .edit-app-title {
-            font-size: 17px;
-            font-weight: 650;
+        .btn-cancel {
+            flex: 1;
+            height: 50px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
             color: #fff;
-            margin-bottom: 16px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-cancel:hover { background: rgba(255,255,255,0.12); }
+        .btn-save {
+            flex: 1;
+            height: 50px;
+            background: var(--accent-color);
+            border: none;
+            border-radius: 16px;
+            color: #000;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-save:hover { filter: brightness(1.15); transform: translateY(-1px); }
+
+        /* Плашка (Toast) уведомление */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: linear-gradient(135deg, rgba(30, 215, 96, 0.15), rgba(30, 215, 96, 0.05));
+            border: 1px solid rgba(30, 215, 96, 0.4);
+            backdrop-filter: blur(12px);
+            color: #fff;
+            padding: 16px 24px;
+            border-radius: 20px;
+            font-size: 15px;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 20px rgba(30, 215, 96, 0.2);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s var(--spring);
+            z-index: 9999;
             text-align: center;
+            white-space: nowrap;
+        }
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+            visibility: visible;
         }
     </style>
 </head>
@@ -366,80 +428,82 @@
 <div class="aurora-bg"></div>
 
 <div class="container">
-    <!-- Секция входа в админку -->
+    <!-- Вход -->
     <div id="login-screen">
-        <h1>Вход в админку</h1>
-        <p class="subtitle">Введите цифровой пароль администратора</p>
-        <div class="login-box">
-            <div class="input-group" style="text-align: left;">
-                <label for="admin-pass-input">Пароль</label>
-                <!-- Только цифровой ввод, без точек до начала ввода -->
-                <input type="text" inputmode="numeric" pattern="[0-9]*" id="admin-pass-input" placeholder="Введите цифры" autocomplete="off">
-            </div>
-            <button onclick="checkAdminAuth()">Войти</button>
+        <h1>Панель управления</h1>
+        <p class="subtitle">Введите цифровой пароль для доступа</p>
+        <div class="input-group">
+            <input type="password" inputmode="numeric" pattern="[0-9]*" id="admin-pass-input" autocomplete="off">
         </div>
-        <div id="login-error" class="error"></div>
+        <button class="primary-btn" onclick="checkAdminAuth()">Войти</button>
+        <div id="login-error">Неверный пароль</div>
     </div>
 
-    <!-- Основной интерфейс управления -->
+    <!-- Основная панель -->
     <div id="admin-panel">
-        <h1>Панель управления</h1>
-        <p class="subtitle">Настройка общих параметров и кодов доступа</p>
+        <h1>Настройки</h1>
+        <p class="subtitle">Управление параметрами и доступом</p>
 
-        <div class="section-title">1. Пароль администратора</div>
-        <div class="input-group">
-            <input type="text" inputmode="numeric" pattern="[0-9]*" id="key-admin_password" placeholder="Цифровой пароль админки">
+        <div class="control-card">
+            <div class="control-info">
+                <span class="control-title">Пароль администратора</span>
+                <span class="control-desc">Доступ к панели</span>
+            </div>
+            <button class="gear-btn" onclick="openEditModal('admin_password', 'Пароль администратора', 'global')">⚙️</button>
         </div>
 
-        <div class="section-title">2. Общий пароль сайта</div>
-        <div class="input-group">
-            <input type="text" inputmode="numeric" pattern="[0-9]*" id="key-site_password" placeholder="Цифровой пароль сайта">
+        <div class="control-card">
+            <div class="control-info">
+                <span class="control-title">Пароль для сайта</span>
+                <span class="control-desc">Общий доступ</span>
+            </div>
+            <button class="gear-btn" onclick="openEditModal('site_password', 'Пароль для сайта', 'global')">⚙️</button>
         </div>
 
-        <div class="section-title">3. Пароли приложений</div>
-        <div class="input-group">
-            <label>Каталог приложений</label>
-            <button type="button" class="custom-select-btn" onclick="openAppsCatalogSheet()">
-                <span id="catalogButtonText" style="color: var(--muted);">Выбрать приложение...</span>
-                <span style="color: var(--accent-color); font-size: 18px;">›</span>
-            </button>
+        <div class="control-card apps-btn" onclick="openAppsCatalogSheet()">
+            <div class="control-info">
+                <span class="control-title">Пароли приложений</span>
+                <span class="control-desc">Индивидуальные доступы</span>
+            </div>
+            <div class="gear-btn" style="background: transparent; border: none; box-shadow: none;">⚙️</div>
         </div>
-
-        <button style="margin-top: 24px; width: 100%;" onclick="saveSettings()">Сохранить все изменения</button>
-        <div id="status-message"></div>
     </div>
 </div>
 
-<!-- Модальное окно каталога приложений -->
+<!-- Каталог приложений -->
 <div class="sheet-overlay" id="appsCatalogOverlay" onclick="closeAppsCatalogSheet()">
     <div class="sheet-modal" onclick="event.stopPropagation()">
         <div class="sheet-header">
-            <div class="sheet-title">Каталог приложений</div>
-            <button type="button" class="sheet-close" onclick="closeAppsCatalogSheet()">✕</button>
+            <div class="sheet-title">Приложения</div>
+            <button class="sheet-close" onclick="closeAppsCatalogSheet()">✕</button>
         </div>
         <div class="app-search-wrap">
             <span class="search-icon">⌕</span>
-            <input type="search" id="adminAppSearch" class="app-search" placeholder="Поиск по названию..." oninput="filterAdminApps()" autocomplete="off">
+            <input type="search" id="adminAppSearch" class="app-search" placeholder="Поиск приложения..." oninput="filterAdminApps()" autocomplete="off">
         </div>
         <div class="sheet-list" id="adminAppsList"></div>
     </div>
 </div>
 
-<!-- Модальное окно редактирования пароля выбранного приложения -->
-<div class="sheet-overlay" id="editAppOverlay" onclick="closeEditAppModal()">
-    <div class="sheet-modal edit-modal" onclick="event.stopPropagation()">
-        <div class="edit-app-title" id="editModalAppTitle">Приложение</div>
-        <div class="input-group" style="margin-bottom: 16px;">
-            <label>Пароль доступа (только цифры)</label>
-            <!-- Только цифры для пароля приложения -->
-            <input type="text" inputmode="numeric" pattern="[0-9]*" id="editAppPasswordInput" placeholder="Введите новый пароль" autocomplete="off">
+<!-- Универсальное окно редактирования -->
+<div class="sheet-overlay" id="editModalOverlay" onclick="closeEditModal()">
+    <div class="sheet-modal" style="max-width: 340px; margin: auto;" onclick="event.stopPropagation()">
+        <div class="sheet-header" style="margin-bottom: 12px; border: none;">
+            <div class="sheet-title" id="editModalTitle">Пароль</div>
         </div>
-        <div style="display: flex; gap: 10px;">
-            <button type="button" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); flex: 1;" onclick="closeEditAppModal()">Отмена</button>
-            <button type="button" style="flex: 1;" onclick="saveAppPasswordFromModal()">Сохранить</button>
+        <div class="input-group" style="margin-bottom: 0;">
+            <label style="margin-bottom: 6px;">Новый цифровой пароль</label>
+            <input type="text" inputmode="numeric" pattern="[0-9]*" id="editPasswordInput" autocomplete="off">
+        </div>
+        <div class="modal-actions">
+            <button class="btn-cancel" onclick="closeEditModal()">Отмена</button>
+            <button class="btn-save" onclick="savePassword()">Сохранить</button>
         </div>
     </div>
 </div>
+
+<!-- Плашка уведомлений -->
+<div id="toast" class="toast">Изменения сохранены</div>
 
 <script>
     const SUPABASE_URL = 'https://gbuvpqcummyutycemaaj.supabase.co';
@@ -451,37 +515,39 @@
         { key: "max", name: "MAX" },
         { key: "vk-video", name: "VK Видео" },
         { key: "vk-clips", name: "VK Клипы" },
-        { key: "sberfinansy", name: "СберБанк (Финансы Онлайн)" },
+        { key: "sberfinansy", name: "СберБанк (Финансы)" },
         { key: "avito", name: "Авито" },
-        { key: "sovkombank-vsekarty", name: "Совкомбанк (Все карты MDS)" },
+        { key: "sovkombank-vsekarty", name: "Совкомбанк (MDS)" },
         { key: "tbank", name: "Т-Банк (8PRO)" },
         { key: "sovkombank-sinoptik", name: "Совкомбанк (Синоптик+)" },
-        { key: "drive-transit", name: "Т-Банк (Drive Transit)" },
+        { key: "drive-transit", name: "Т-Банк (Transit)" },
         { key: "lenta", name: "Лента" },
         { key: "yandex-pay", name: "Яндекс Пэй" },
         { key: "2gis", name: "2ГИС" },
-        { key: "psb", name: "ПСБ (Чайная Церемония)" },
+        { key: "psb", name: "ПСБ (Церемония)" },
         { key: "kuper", name: "Купер" },
-        { key: "rutube", name: "Rutube(Starship Battle)" },
-        { key: "mobio", name: "СберМобайл (Мобио)" },
+        { key: "rutube", name: "Rutube" },
+        { key: "mobio", name: "СберМобайл" },
         { key: "rzd", name: "РЖД Пассажирам" },
-        { key: "sberkids", name: "СберKids (SpeakaBoo)" },
-        { key: "lentaa", name: "Лента (Быстро Продукты)" },
+        { key: "sberkids", name: "СберKids" },
+        { key: "lentaa", name: "Лента (Быстро)" },
         { key: "avito-anero", name: "Авито (Anero)" },
         { key: "craftersy", name: "Т-Банк (Craftersy)" },
-        { key: "scbnotes", name: "СовкомБанк (SCB Notes)" },
-        { key: "ak-bars-bank", name: "АК Барс (Всё Учтено)" },
-        { key: "blum", name: "РокетБанк (Блум)" }
+        { key: "scbnotes", name: "СовкомБанк (Notes)" },
+        { key: "ak-bars-bank", name: "АК Барс" },
+        { key: "blum", name: "Блум" }
     ];
 
+    let globalSettings = { admin_password: '', site_password: '' };
     let appPasswordsData = {};
-    let currentEditingKey = null;
+    
+    let currentEditKey = null;
+    let currentEditType = null; // 'global' или 'app'
 
     async function checkAdminAuth() {
         const inputPass = document.getElementById('admin-pass-input').value.trim();
         const errorDiv = document.getElementById('login-error');
-        errorDiv.textContent = 'Проверка...';
-        errorDiv.className = '';
+        errorDiv.classList.remove('active');
 
         try {
             const { data, error } = await supabaseClient
@@ -491,41 +557,39 @@
                 .single();
 
             if (error || !data) {
-                errorDiv.textContent = 'Ошибка подключения к базе данных.';
-                errorDiv.className = 'error';
+                showLoginError('Ошибка базы данных');
                 return;
             }
 
             if (inputPass === data.value) {
                 document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('admin-panel').style.display = 'block';
+                document.getElementById('admin-panel').style.display = 'flex';
                 loadSettings();
             } else {
-                errorDiv.textContent = 'Неверный пароль!';
-                errorDiv.className = 'error';
+                showLoginError('Неверный пароль');
             }
         } catch (err) {
-            errorDiv.textContent = 'Произошла ошибка авторизации.';
-            errorDiv.className = 'error';
+            showLoginError('Ошибка авторизации');
         }
     }
 
-    async function loadSettings() {
-        const { data, error } = await supabaseClient
-            .from('settings')
-            .select('key, value');
+    function showLoginError(msg) {
+        const err = document.getElementById('login-error');
+        err.textContent = msg;
+        err.classList.add('active');
+    }
 
+    async function loadSettings() {
+        const { data, error } = await supabaseClient.from('settings').select('key, value');
         if (error) return;
 
         data.forEach(item => {
             if (item.key === 'admin_password' || item.key === 'site_password') {
-                const input = document.getElementById(`key-${item.key}`);
-                if (input) input.value = item.value;
+                globalSettings[item.key] = item.value;
             } else {
                 appPasswordsData[item.key] = item.value;
             }
         });
-
         renderAdminAppsList();
     }
 
@@ -534,14 +598,12 @@
         listContainer.innerHTML = '';
 
         appConfigList.forEach(app => {
-            const currentPass = appPasswordsData[app.key] || '';
             const div = document.createElement('div');
             div.className = 'sheet-item';
             div.setAttribute('data-name', app.name.toLowerCase());
-            div.onclick = () => openEditAppModal(app.key, app.name);
             div.innerHTML = `
                 <span class="app-name">${app.name}</span>
-                <span class="app-pass-badge">${currentPass ? currentPass : 'нет пароля'}</span>
+                <button class="gear-btn" style="width:36px; height:36px; font-size:16px;" onclick="openEditModal('${app.key}', '${app.name}', 'app')">⚙️</button>
             `;
             listContainer.appendChild(div);
         });
@@ -565,76 +627,76 @@
         document.getElementById('appsCatalogOverlay').classList.remove('active');
     }
 
-    function openEditAppModal(key, name) {
-        currentEditingKey = key;
-        document.getElementById('editModalAppTitle').textContent = name;
-        document.getElementById('editAppPasswordInput').value = appPasswordsData[key] || '';
-        document.getElementById('editAppOverlay').classList.add('active');
-        document.getElementById('editAppPasswordInput').focus();
-    }
-
-    function closeEditAppModal() {
-        document.getElementById('editAppOverlay').classList.remove('active');
-        currentEditingKey = null;
-    }
-
-    async function saveAppPasswordFromModal() {
-        if (!currentEditingKey) return;
-        const newPass = document.getElementById('editAppPasswordInput').value.trim();
+    function openEditModal(key, title, type) {
+        currentEditKey = key;
+        currentEditType = type;
+        document.getElementById('editModalTitle').textContent = title;
         
-        // Проверка на чисто цифровой ввод
+        const currentPass = type === 'global' ? globalSettings[key] : appPasswordsData[key];
+        document.getElementById('editPasswordInput').value = currentPass || '';
+        
+        document.getElementById('editModalOverlay').classList.add('active');
+        setTimeout(() => document.getElementById('editPasswordInput').focus(), 100);
+    }
+
+    function closeEditModal() {
+        document.getElementById('editModalOverlay').classList.remove('active');
+        currentEditKey = null;
+        currentEditType = null;
+    }
+
+    async function savePassword() {
+        if (!currentEditKey) return;
+        const newPass = document.getElementById('editPasswordInput').value.trim();
+        
         if (newPass && !/^\d+$/.test(newPass)) {
             alert('Пароль должен состоять только из цифр!');
             return;
         }
 
-        appPasswordsData[currentEditingKey] = newPass;
+        const btnSave = document.querySelector('.btn-save');
+        btnSave.textContent = '...';
+        btnSave.style.pointerEvents = 'none';
 
         const { error } = await supabaseClient
             .from('settings')
-            .upsert({ key: currentEditingKey, value: newPass }, { onConflict: 'key' });
+            .upsert({ key: currentEditKey, value: newPass }, { onConflict: 'key' });
+
+        btnSave.textContent = 'Сохранить';
+        btnSave.style.pointerEvents = 'auto';
 
         if (error) {
-            alert('Ошибка при сохранении пароля приложения в базу.');
+            alert('Ошибка при сохранении пароля!');
+            return;
+        } 
+
+        let toastMsg = '';
+        if (currentEditType === 'app') {
+            appPasswordsData[currentEditKey] = newPass;
+            const appName = appConfigList.find(a => a.key === currentEditKey).name;
+            toastMsg = `Пароль для «${appName}» изменён`;
         } else {
-            renderAdminAppsList();
-            closeEditAppModal();
-            // Возвращаем пользователя обратно в каталог приложений, не выкидывая из админки
-            openAppsCatalogSheet();
-            document.getElementById('catalogButtonText').textContent = 'Каталог приложений (настроено)';
-            document.getElementById('catalogButtonText').style.color = '#fff';
+            globalSettings[currentEditKey] = newPass;
+            toastMsg = currentEditKey === 'admin_password' ? 'Пароль администратора изменён' : 'Пароль сайта изменён';
         }
+
+        closeEditModal();
+        showToast(toastMsg);
     }
 
-    async function saveSettings() {
-        const statusMsg = document.getElementById('status-message');
-        statusMsg.textContent = 'Сохранение общих настроек...';
-        statusMsg.className = '';
-
-        const adminPass = document.getElementById('key-admin_password').value.trim();
-        const sitePass = document.getElementById('key-site_password').value.trim();
-
-        let hasError = false;
-        const keysToSave = [
-            { key: 'admin_password', value: adminPass },
-            { key: 'site_password', value: sitePass }
-        ];
-
-        for (const item of keysToSave) {
-            const { error } = await supabaseClient
-                .from('settings')
-                .upsert({ key: item.key, value: item.value }, { onConflict: 'key' });
-            if (error) hasError = true;
-        }
-
-        if (hasError) {
-            statusMsg.textContent = 'Ошибка при сохранении общих параметров.';
-            statusMsg.className = 'error';
-        } else {
-            statusMsg.textContent = 'Все изменения успешно сохранены!';
-            statusMsg.className = 'success';
-        }
+    function showToast(msg) {
+        const toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.classList.add('show');
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3500);
     }
+
+    // Слушатель для Enter
+    document.getElementById('admin-pass-input').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') checkAdminAuth();
+    });
 </script>
 
 </body>
