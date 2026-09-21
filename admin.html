@@ -1,1 +1,136 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ-панель паролей</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #0f172a; color: #f8fafc; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: #1e293b; padding: 30px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); width: 100%; max-width: 400px; }
+        h2 { margin-top: 0; font-size: 22px; text-align: center; color: #38bdf8; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; font-size: 14px; margin-bottom: 5px; color: #94a3b8; }
+        input { width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #fff; font-size: 16px; box-sizing: border-box; }
+        input:focus { outline: none; border-color: #38bdf8; }
+        button { width: 100%; background: #38bdf8; color: #0f172a; border: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; transition: background 0.2s; }
+        button:hover { background: #0ea5e9; }
+        #status { margin-top: 15px; text-align: center; font-size: 14px; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
 
+    <div class="card">
+        <!-- Блок авторизации -->
+        <div id="auth-screen">
+            <h2>Вход в админку</h2>
+            <div class="input-group">
+                <label>Пароль администратора (`site_password`)</label>
+                <input type="password" id="admin-pass" placeholder="Введите пароль">
+            </div>
+            <button onclick="checkAdminAuth()">Войти</button>
+        </div>
+
+        <!-- Блок управления паролями (скрыт до входа) -->
+        <div id="panel-screen" class="hidden">
+            <h2>Управление паролями</h2>
+            <div class="input-group">
+                <label>Общий пароль сайта (`site_password`)</label>
+                <input type="text" id="val-site_password">
+            </div>
+            <div class="input-group">
+                <label>Пароль для Max (`max`)</label>
+                <input type="text" id="val-max">
+            </div>
+            <div class="input-group">
+                <label>Пароль для СберБанк (`sberbank`)</label>
+                <input type="text" id="val-sberbank">
+            </div>
+            <div class="input-group">
+                <label>Пароль для ВК (`vk`)</label>
+                <input type="text" id="val-vk">
+            </div>
+            <button onclick="savePasswords()">Сохранить изменения</button>
+        </div>
+        
+        <div id="status"></div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = "https://gbuvpqcummyutycemaaj.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_oUDovfvWL6iioG6N5Xd_QQ_8KYezq8g"; // Замените на ваш реальный ключ website
+
+        async function checkAdminAuth() {
+            const pass = document.getElementById('admin-pass').value;
+            const status = document.getElementById('status');
+            status.innerText = "Проверка...";
+
+            try {
+                let response = await fetch(`${SUPABASE_URL}/rest/v1/settings?key=eq.site_password&select=value`, {
+                    headers: {
+                        "apikey": SUPABASE_KEY,
+                        "Authorization": `Bearer ${SUPABASE_KEY}`
+                    }
+                });
+                let data = await response.json();
+                
+                if (data.length > 0 && data[0].value === pass) {
+                    status.innerText = "";
+                    document.getElementById('auth-screen').classList.add('hidden');
+                    document.getElementById('panel-screen').classList.remove('hidden');
+                    loadAllPasswords();
+                } else {
+                    status.innerText = "Неверный пароль!";
+                    status.style.color = "#ef4444";
+                }
+            } catch (err) {
+                status.innerText = "Ошибка соединения с базой";
+                status.style.color = "#ef4444";
+            }
+        }
+
+        async function loadAllPasswords() {
+            try {
+                let response = await fetch(`${SUPABASE_URL}/rest/v1/settings?select=key,value`, {
+                    headers: {
+                        "apikey": SUPABASE_KEY,
+                        "Authorization": `Bearer ${SUPABASE_KEY}`
+                    }
+                });
+                let data = await response.json();
+                data.forEach(item => {
+                    let input = document.getElementById(`val-${item.key}`);
+                    if (input) input.value = item.value;
+                });
+            } catch (err) {
+                console.error("Ошибка загрузки настроек", err);
+            }
+        }
+
+        async function savePasswords() {
+            const keys = ['site_password', 'max', 'sberbank', 'vk'];
+            const status = document.getElementById('status');
+            status.innerText = "Сохранение...";
+            status.style.color = "#38bdf8";
+
+            for (let key of keys) {
+                let val = document.getElementById(`val-${key}`).value;
+                await fetch(`${SUPABASE_URL}/rest/v1/settings?key=eq.${key}`, {
+                    method: 'PATCH',
+                    headers: {
+                        "apikey": SUPABASE_KEY,
+                        "Authorization": `Bearer ${SUPABASE_KEY}`,
+                        "Content-Type": "application/json",
+                        "Prefer": "return=minimal"
+                    },
+                    body: JSON.stringify({ value: val })
+                });
+            }
+
+            status.innerText = "Успешно сохранено!";
+            status.style.color = "#22c55e";
+            setTimeout(() => status.innerText = "", 3000);
+        }
+    </script>
+</body>
+</html>
