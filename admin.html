@@ -602,35 +602,6 @@
             opacity: 1;
             visibility: visible;
         }
-        /* Кнопка ручного выхода в шапке панели */
-.panel-header-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 8px;
-}
-.btn-logout {
-    background: rgba(239, 68, 68, 0.15);
-    border: 1px solid rgba(239, 68, 68, 0.35);
-    color: var(--danger-color);
-    padding: 6px 12px;
-    border-radius: 12px;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-.btn-logout:hover {
-    background: rgba(239, 68, 68, 0.25);
-    border-color: rgba(239, 68, 68, 0.6);
-}
-
-/* Блокировка полей при брутфорсе */
-input:disabled, button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    filter: grayscale(0.6);
-}
     </style>
 </head>
 <body>
@@ -649,13 +620,11 @@ input:disabled, button:disabled {
         <div id="login-error">Неверный пароль</div>
     </div>
 
-   <!-- Основная панель -->
-<div id="admin-panel">
-    <div class="panel-header-row">
-        <h1 style="margin: 0; text-align: left;">Настройки</h1>
-        <button class="btn-logout" onclick="logoutAdmin('Вы вышли из системы')">Выйти</button>
-    </div>
-    <p class="subtitle" style="text-align: left;">Управление параметрами и доступом</p>
+    <!-- Основная панель -->
+    <div id="admin-panel">
+        <h1>Настройки</h1>
+        <p class="subtitle">Управление параметрами и доступом</p>
+
         <!-- 1. Панель администратора -->
         <div class="control-card card-admin">
             <div class="control-info">
@@ -795,170 +764,33 @@ input:disabled, button:disabled {
     let currentEditKey = null;
     let currentEditType = null;
 
-    // Константы времени
-    const MAX_ATTEMPTS = 3;             // Количество попыток до блокировки
-    const LOCKOUT_MS = 3 * 60 * 1000;   // 3 минуты блокировки ввода (в мс)
-    const INACTIVITY_MS = 3 * 60 * 1000;// 3 минуты неактивности до логаута (в мс)
-
-    let lockoutInterval = null;
-    let inactivityTimer = null;
-
-    // --- 1. Проверка блокировки при загрузке страницы ---
-    document.addEventListener('DOMContentLoaded', () => {
-        checkLockoutStatus();
-    });
-
-    function checkLockoutStatus() {
-        const lockUntil = parseInt(localStorage.getItem('admin_lock_until') || '0', 10);
-        const now = Date.now();
-
-        if (lockUntil > now) {
-            startLockoutCountdown(lockUntil);
-        } else {
-            localStorage.removeItem('admin_lock_until');
-        }
-    }
-
-    function startLockoutCountdown(lockUntil) {
-        const passInput = document.getElementById('admin-pass-input');
-        const loginBtn = document.querySelector('#login-screen .primary-btn');
-
-        passInput.disabled = true;
-        loginBtn.disabled = true;
-
-        if (lockoutInterval) clearInterval(lockoutInterval);
-
-        const updateTimer = () => {
-            const timeLeft = lockUntil - Date.now();
-            if (timeLeft <= 0) {
-                clearInterval(lockoutInterval);
-                localStorage.removeItem('admin_lock_until');
-                localStorage.removeItem('admin_fail_attempts');
-                passInput.disabled = false;
-                loginBtn.disabled = false;
-                showLoginError('Ввод разблокирован. Попробуйте снова.');
-                return;
-            }
-
-            const minutes = Math.floor(timeLeft / 60000);
-            const seconds = Math.floor((timeLeft % 60000) / 1000);
-            const formatted = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-            showLoginError(`Превышено количество попыток входа. Повторить попытку можно через: ${formatted}`);
-        };
-
-        updateTimer();
-        lockoutInterval = setInterval(updateTimer, 1000);
-    }
-
-    // --- 2. Авторизация с безопасной RPC и счетчиком попыток ---
     async function checkAdminAuth() {
-        const lockUntil = parseInt(localStorage.getItem('admin_lock_until') || '0', 10);
-        if (lockUntil > Date.now()) return;
-
-        const passInput = document.getElementById('admin-pass-input');
-        const inputPass = passInput.value.trim();
+        const inputPass = document.getElementById('admin-pass-input').value.trim();
         const errorDiv = document.getElementById('login-error');
         errorDiv.classList.remove('active');
 
-        if (!inputPass) return;
-
         try {
-            // Вызов защищенной RPC-функции Supabase (без передачи реального пароля в браузер)
-            const { data: isValid, error } = await supabaseClient.rpc('verify_admin_password', { 
-                input_pass: inputPass 
-            });
+            const { data, error } = await supabaseClient
+                .from('settings')
+                .select('value')
+                .eq('key', 'admin_password')
+                .single();
 
-            if (error) {
-                // Если RPC еще не создана, fallback на прямое чтение:
-                const { data: directData } = await supabaseClient
-                    .from('settings')
-                    .select('value')
-                    .eq('key', 'admin_password')
-                    .single();
-                
-                if (directData && directData.value === inputPass) {
-                    onAuthSuccess();
-                    return;
-                }
-                onAuthFailure();
+            if (error || !data) {
+                showLoginError('Ошибка базы данных');
                 return;
             }
 
-            if (isValid === true) {
-                onAuthSuccess();
+            if (inputPass === data.value) {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('admin-panel').style.display = 'flex';
+                loadSettings();
             } else {
-                onAuthFailure();
+                showLoginError('Неверный пароль');
             }
         } catch (err) {
-            showLoginError('Ошибка соединения с базой');
+            showLoginError('Ошибка авторизации');
         }
-    }
-
-    function onAuthSuccess() {
-        // Сброс счетчиков
-        localStorage.removeItem('admin_fail_attempts');
-        localStorage.removeItem('admin_lock_until');
-
-        document.getElementById('login-screen').style.display = 'none';
-        document.getElementById('admin-panel').style.display = 'flex';
-        document.getElementById('admin-pass-input').value = '';
-
-        loadSettings();
-        startInactivityWatcher();
-    }
-
-    function onAuthFailure() {
-        let attempts = parseInt(localStorage.getItem('admin_fail_attempts') || '0', 10) + 1;
-        localStorage.setItem('admin_fail_attempts', attempts);
-
-        if (attempts >= MAX_ATTEMPTS) {
-            const lockUntil = Date.now() + LOCKOUT_MS;
-            localStorage.setItem('admin_lock_until', lockUntil);
-            startLockoutCountdown(lockUntil);
-        } else {
-            const remaining = MAX_ATTEMPTS - attempts;
-            showLoginError(`Неверный пароль. Осталось попыток ввода: ${remaining}`);
-        }
-    }
-
-    // --- 3. Тайм-аут неактивности (3 минуты) ---
-    function resetInactivityTimer() {
-        clearTimeout(inactivityTimer);
-        inactivityTimer = setTimeout(() => {
-            logoutAdmin('Сессия завершена из-за неактивности (3 мин)');
-        }, INACTIVITY_MS);
-    }
-
-    function startInactivityWatcher() {
-        // Отслеживаем любые действия пользователя в панели
-        const activityEvents = ['mousedown', 'mousemove', 'keydown', 'scroll', 'touchstart'];
-        activityEvents.forEach(evt => {
-            window.addEventListener(evt, resetInactivityTimer, { passive: true });
-        });
-        resetInactivityTimer();
-    }
-
-    function stopInactivityWatcher() {
-        clearTimeout(inactivityTimer);
-        const activityEvents = ['mousedown', 'mousemove', 'keydown', 'scroll', 'touchstart'];
-        activityEvents.forEach(evt => {
-            window.removeEventListener(evt, resetInactivityTimer);
-        });
-    }
-
-    // --- 4. Выход из панели ---
-    function logoutAdmin(message = 'Вы вышли из системы') {
-        stopInactivityWatcher();
-        document.getElementById('admin-panel').style.display = 'none';
-        document.getElementById('login-screen').style.display = 'flex';
-        document.getElementById('admin-pass-input').value = '';
-        
-        // Закрываем модалки, если были открыты
-        closeAppsCatalogSheet();
-        closeVisibilityCatalogSheet();
-        closeEditModal();
-
-        showToast(message);
     }
 
     function showLoginError(msg) {
