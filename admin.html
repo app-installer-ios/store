@@ -602,6 +602,35 @@
             opacity: 1;
             visibility: visible;
         }
+        /* Кнопка ручного выхода в шапке панели */
+.panel-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+.btn-logout {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    color: var(--danger-color);
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.btn-logout:hover {
+    background: rgba(239, 68, 68, 0.25);
+    border-color: rgba(239, 68, 68, 0.6);
+}
+
+/* Блокировка полей при брутфорсе */
+input:disabled, button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    filter: grayscale(0.6);
+}
     </style>
 </head>
 <body>
@@ -620,11 +649,14 @@
         <div id="login-error">Неверный пароль</div>
     </div>
 
-    <!-- Основная панель -->
-    <div id="admin-panel">
-        <h1>Настройки</h1>
-        <p class="subtitle">Управление параметрами и доступом</p>
-
+   <!-- Основная панель -->
+<div id="admin-panel">
+    <div class="panel-header-row">
+        <h1 style="margin: 0; text-align: left;">Настройки</h1>
+        <button class="btn-logout" onclick="logoutAdmin('Вы вышли из системы')">Выйти</button>
+    </div>
+    <p class="subtitle" style="text-align: left;">Управление параметрами и доступом</p>
+    ...
         <!-- 1. Панель администратора -->
         <div class="control-card card-admin">
             <div class="control-info">
