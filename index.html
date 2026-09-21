@@ -1276,7 +1276,7 @@ label {
     box-shadow: 0 0 12px rgba(168,85,247,0.4);
 }
 
-/* Выпадающее меню категорий с прокруткой для выбора */
+/* Выпадающее меню категорий */
 .filter-dropdown {
     position: absolute;
     top: calc(100% + 6px);
@@ -1405,7 +1405,7 @@ label {
 }
 
 /* --------------------------------------------------
-   SHEET LIST (СПИСОК ПРИЛОЖЕНИЙ С ТОНКИМ СКРОЛЛОМ)
+   SHEET LIST
 -------------------------------------------------- */
 .sheet-list {
     display: flex;
@@ -1581,7 +1581,7 @@ body.keyboard-open .sheet-modal {
 const SUPABASE_URL = "https://gbuvpqcummyutycemaaj.supabase.co";
 const SUPABASE_KEY = "sb_publishable_oUDovfvWL6iioG6N5Xd_QQ_8KYezq8g";
 
-// Исправленная функция запроса настроек/паролей из Supabase
+// Функция запроса настроек, паролей и видимости приложений из Supabase
 async function fetchSupabaseSettings() {
     try {
         let response = await fetch(`${SUPABASE_URL}/rest/v1/settings?select=*`, {
@@ -1595,12 +1595,16 @@ async function fetchSupabaseSettings() {
         
         let config = {
             sitePassword: "930218",
-            appPasswords: {}
+            appPasswords: {},
+            appVisibility: {}
         };
 
         data.forEach(item => {
             if (item.key === 'site_password') {
                 config.sitePassword = item.value;
+            } else if (item.key && item.key.startsWith('vis_')) {
+                const appKey = item.key.replace('vis_', '');
+                config.appVisibility[appKey] = item.value === 'true';
             } else if (item.key && item.key !== 'admin_password') {
                 config.appPasswords[item.key] = item.value;
             }
@@ -1618,14 +1622,16 @@ async function fetchSupabaseSettings() {
                 "kuper": "296481", "rutube": "810630", "rzd": "642195", "ak-bars-bank": "826514",
                 "lentaa": "587642", "mobio": "478901", "sberkids": "761397", "blum": "541740",
                 "scbnotes": "185628", "craftersy": "385490"
-            }
+            },
+            appVisibility: {}
         };
     }
 }
 
 let remoteConfig = {
     sitePassword: "930218",
-    appPasswords: {}
+    appPasswords: {},
+    appVisibility: {}
 };
 
 function getAppPasswords() {
@@ -1634,6 +1640,19 @@ function getAppPasswords() {
 
 function getSitePassword() {
     return remoteConfig.sitePassword;
+}
+
+// Применение настроек видимости приложений к DOM
+function applyAppsVisibility() {
+    document.querySelectorAll('.sheet-list .sheet-item').forEach(item => {
+        const key = item.getAttribute('data-key');
+        // Если в базе явно указано false — скрываем, иначе показываем
+        const isVisible = remoteConfig.appVisibility[key] !== false;
+        item.setAttribute('data-visible', isVisible ? 'true' : 'false');
+        if (!isVisible) {
+            item.style.display = 'none';
+        }
+    });
 }
 
 let selectedAppUrl = "";
@@ -1651,27 +1670,28 @@ function switchScreen(screenId) {
     }
 }
 
+// Счётчик считает только активные (не скрытые админом) приложения
 function updateAppCounter() {
-    const totalApps = document.querySelectorAll('.sheet-list .sheet-item').length;
+    const visibleApps = document.querySelectorAll('.sheet-list .sheet-item:not([data-visible="false"])').length;
     const counterElement = document.getElementById('app-counter-text');
     
     if (counterElement) {
         let word = 'приложений';
-        const lastDigit = totalApps % 10;
-        const lastTwoDigits = totalApps % 100;
+        const lastDigit = visibleApps % 10;
+        const lastTwoDigits = visibleApps % 100;
 
         if (lastTwoDigits < 11 || lastTwoDigits > 14) {
             if (lastDigit === 1) word = 'приложение';
             else if (lastDigit >= 2 && lastDigit <= 4) word = 'приложения';
         }
 
-        counterElement.textContent = `Все ${totalApps} ${word}`;
+        counterElement.textContent = `Все ${visibleApps} ${word}`;
     }
 }
 
 document.addEventListener("DOMContentLoaded", async function() {
     remoteConfig = await fetchSupabaseSettings();
-
+    applyAppsVisibility();
     updateAppCounter();
 
     if (sessionStorage.getItem("site_access") === "true") {
@@ -1738,6 +1758,8 @@ async function submitPassword() {
     const errorMsg = document.getElementById("authError");
 
     remoteConfig = await fetchSupabaseSettings();
+    applyAppsVisibility();
+    updateAppCounter();
 
     if (input.value.trim() === getSitePassword()) {
         sessionStorage.setItem("site_access", "true");
@@ -1750,7 +1772,12 @@ async function submitPassword() {
     input.focus();
 }
 
-function openSheet() {
+async function openSheet() {
+    // Подгружаем актуальные настройки видимости перед открытием шторки
+    remoteConfig = await fetchSupabaseSettings();
+    applyAppsVisibility();
+    updateAppCounter();
+
     const searchInput = document.getElementById("appSearchInput");
     if (searchInput) {
         searchInput.value = "";
@@ -1816,6 +1843,12 @@ function filterApps() {
     let visibleCount = 0;
 
     document.querySelectorAll(".sheet-item").forEach(item => {
+        // Если приложение отключено администратором в панели — всегда скрываем
+        if (item.getAttribute("data-visible") === "false") {
+            item.style.display = "none";
+            return;
+        }
+
         const appNameElement = item.querySelector(".app-name");
         if (!appNameElement) return;
 
@@ -1873,6 +1906,8 @@ async function startInstallation() {
     }
 
     remoteConfig = await fetchSupabaseSettings();
+    applyAppsVisibility();
+    updateAppCounter();
 
     if (getAppPasswords()[selectedAppKey]) {
         document.getElementById("appPassError").style.display = "none";
