@@ -3,70 +3,202 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Админ-панель паролей</title>
+    <title>Админ-панель iOS Installer</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #0f172a; color: #f8fafc; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .card { background: #1e293b; padding: 30px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); width: 100%; max-width: 400px; }
-        h2 { margin-top: 0; font-size: 22px; text-align: center; color: #38bdf8; }
-        .input-group { margin-bottom: 15px; }
-        label { display: block; font-size: 14px; margin-bottom: 5px; color: #94a3b8; }
-        input { width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #fff; font-size: 16px; box-sizing: border-box; }
-        input:focus { outline: none; border-color: #38bdf8; }
-        button { width: 100%; background: #38bdf8; color: #0f172a; border: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; transition: background 0.2s; }
-        button:hover { background: #0ea5e9; }
-        #status { margin-top: 15px; text-align: center; font-size: 14px; }
-        .hidden { display: none; }
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-color: #3b82f6;
+            --accent-hover: #2563eb;
+            --error-color: #ef4444;
+            --success-color: #22c55e;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, var(--bg-color) 70%);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 440px;
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            box-sizing: border-box;
+        }
+
+        h2 {
+            font-size: 22px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 24px;
+            letter-spacing: -0.5px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            color: var(--text-color);
+            font-size: 16px;
+            outline: none;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.1s ease;
+        }
+
+        button:hover {
+            background: var(--accent-hover);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .status {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 14px;
+            min-height: 20px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--border-color);
+            margin: 24px 0;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: var(--text-muted);
+            font-size: 14px;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--text-color);
+        }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <!-- Блок авторизации -->
+    <div class="container">
+        <!-- Экран авторизации -->
         <div id="auth-screen">
-            <h2>Вход в админку</h2>
-            <div class="input-group">
-                <label>Пароль администратора (`site_password`)</label>
-                <input type="password" id="admin-pass" placeholder="Введите пароль">
+            <h2>Вход в админ-панель</h2>
+            <div class="form-group">
+                <label>Пароль администратора</label>
+                <input type="password" id="admin-pass" placeholder="Введите пароль...">
             </div>
             <button onclick="checkAdminAuth()">Войти</button>
+            <div id="status" class="status"></div>
+            <a href="index.html" class="back-link">← Вернуться на сайт</a>
         </div>
 
-        <!-- Блок управления паролями (скрыт до входа) -->
+        <!-- Экран панели управления -->
         <div id="panel-screen" class="hidden">
             <h2>Управление паролями</h2>
-            <div class="input-group">
+            
+            <div class="form-group">
+                <label>Пароль администратора (`admin_password`)</label>
+                <input type="text" id="val-admin_password">
+            </div>
+
+            <div class="form-group">
                 <label>Общий пароль сайта (`site_password`)</label>
                 <input type="text" id="val-site_password">
             </div>
-            <div class="input-group">
+
+            <div class="form-group">
                 <label>Пароль для Max (`max`)</label>
                 <input type="text" id="val-max">
             </div>
-            <div class="input-group">
+
+            <div class="form-group">
                 <label>Пароль для СберБанк (`sberbank`)</label>
                 <input type="text" id="val-sberbank">
             </div>
-            <div class="input-group">
+
+            <div class="form-group">
                 <label>Пароль для ВК (`vk`)</label>
                 <input type="text" id="val-vk">
             </div>
-            <button onclick="savePasswords()">Сохранить изменения</button>
+
+            <button onclick="saveChanges()">Сохранить изменения</button>
+            <div id="save-status" class="status"></div>
+            
+            <div class="divider"></div>
+            <a href="index.html" class="back-link">← На главную страницу</a>
         </div>
-        
-        <div id="status"></div>
     </div>
 
     <script>
+        // Вставьте сюда ваши данные Supabase
         const SUPABASE_URL = "https://gbuvpqcummyutycemaaj.supabase.co";
-        const SUPABASE_KEY = "sb_publishable_oUDovfvWL6iioG6N5Xd_QQ_8KYezq8g"; // Замените на ваш реальный ключ website
+        const SUPABASE_KEY = "sb_publishable_oUDovfvWL6iioG6N5Xd_QQ_8KYezq8g"; // Оставьте ваш текущий ключ website
 
         async function checkAdminAuth() {
             const pass = document.getElementById('admin-pass').value;
             const status = document.getElementById('status');
             status.innerText = "Проверка...";
+            status.style.color = "var(--text-muted)";
 
             try {
-                let response = await fetch(`${SUPABASE_URL}/rest/v1/settings?key=eq.site_password&select=value`, {
+                let response = await fetch(`${SUPABASE_URL}/rest/v1/settings?select=*`, {
                     headers: {
                         "apikey": SUPABASE_KEY,
                         "Authorization": `Bearer ${SUPABASE_KEY}`
@@ -74,62 +206,69 @@
                 });
                 let data = await response.json();
                 
-                if (data.length > 0 && data[0].value === pass) {
+                // Ищем конкретно запись с ключом admin_password
+                let adminItem = data.find(item => item.key === 'admin_password');
+                
+                if (adminItem && adminItem.value === pass) {
                     status.innerText = "";
                     document.getElementById('auth-screen').classList.add('hidden');
                     document.getElementById('panel-screen').classList.remove('hidden');
-                    loadAllPasswords();
+                    
+                    // Заполняем поля формы данными
+                    data.forEach(item => {
+                        let input = document.getElementById(`val-${item.key}`);
+                        if (input) input.value = item.value;
+                    });
                 } else {
-                    status.innerText = "Неверный пароль!";
-                    status.style.color = "#ef4444";
+                    status.innerText = "Неверный пароль администратора!";
+                    status.style.color = "var(--error-color)";
                 }
             } catch (err) {
                 status.innerText = "Ошибка соединения с базой";
-                status.style.color = "#ef4444";
+                status.style.color = "var(--error-color)";
             }
         }
 
-        async function loadAllPasswords() {
-            try {
-                let response = await fetch(`${SUPABASE_URL}/rest/v1/settings?select=key,value`, {
-                    headers: {
-                        "apikey": SUPABASE_KEY,
-                        "Authorization": `Bearer ${SUPABASE_KEY}`
-                    }
-                });
-                let data = await response.json();
-                data.forEach(item => {
-                    let input = document.getElementById(`val-${item.key}`);
-                    if (input) input.value = item.value;
-                });
-            } catch (err) {
-                console.error("Ошибка загрузки настроек", err);
-            }
-        }
-
-        async function savePasswords() {
-            const keys = ['site_password', 'max', 'sberbank', 'vk'];
-            const status = document.getElementById('status');
+        async function saveChanges() {
+            const status = document.getElementById('save-status');
             status.innerText = "Сохранение...";
-            status.style.color = "#38bdf8";
+            status.style.color = "var(--text-muted)";
 
-            for (let key of keys) {
-                let val = document.getElementById(`val-${key}`).value;
-                await fetch(`${SUPABASE_URL}/rest/v1/settings?key=eq.${key}`, {
-                    method: 'PATCH',
-                    headers: {
-                        "apikey": SUPABASE_KEY,
-                        "Authorization": `Bearer ${SUPABASE_KEY}`,
-                        "Content-Type": "application/json",
-                        "Prefer": "return=minimal"
-                    },
-                    body: JSON.stringify({ value: val })
-                });
+            const keys = ['admin_password', 'site_password', 'max', 'sberbank', 'vk'];
+            let hasError = false;
+
+            for (const key of keys) {
+                const input = document.getElementById(`val-${key}`);
+                if (!input) continue;
+                const newValue = input.value;
+
+                try {
+                    let response = await fetch(`${SUPABASE_URL}/rest/v1/settings?key=eq.${key}`, {
+                        method: 'PATCH',
+                        headers: {
+                            "apikey": SUPABASE_KEY,
+                            "Authorization": `Bearer ${SUPABASE_KEY}`,
+                            "Content-Type": "application/json",
+                            "Prefer": "return=minimal"
+                        },
+                        body: JSON.stringify({ value: newValue })
+                    });
+
+                    if (!response.ok) {
+                        hasError = true;
+                    }
+                } catch (e) {
+                    hasError = true;
+                }
             }
 
-            status.innerText = "Успешно сохранено!";
-            status.style.color = "#22c55e";
-            setTimeout(() => status.innerText = "", 3000);
+            if (!hasError) {
+                status.innerText = "Изменения успешно сохранены!";
+                status.style.color = "var(--success-color)";
+            } else {
+                status.innerText = "Ошибка при сохранении";
+                status.style.color = "var(--error-color)";
+            }
         }
     </script>
 </body>
