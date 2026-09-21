@@ -1577,59 +1577,56 @@ body.keyboard-open .sheet-modal {
 <div class="bg-glow glow-2"></div>
 
 <script>
-const DEFAULT_CONFIG = {
-    sitePassword: "930218",
+// Данные подключения к Supabase
+const SUPABASE_URL = "https://gbuvpqcummyutycemaaj.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdidXZwcWN1bW11dHljZW1hYWoiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTczOTM2MTI5NywiZXhwIjoyMDU0OTM3Mjk3fQ.bYVvGgH2gYhYqW4bV_gH2gYhYqW4bV_gH2gYhYqW4bV"; // Укажите актуальный anon/publishable ключ, если потребуется
 
-    appPasswords: {
-        "vk": "852431",
-        "max": "754526",
-        "vk-video": "917483",
-        "vk-clips": "332745",
-        "sberfinansy": "602937",
-        "sovkombank-vsekarty": "852358",
-        "sovkombank-sinoptik": "532861",
-        "avito": "153418",
-        "tbank": "523516",
-        "drive-transit": "459172",
-        "lenta": "381046",
-        "avito-anero": "559856",
-        "yandex-pay": "187541",
-        "2gis": "148620",
-        "psb": "475820",
-        "kuper": "296481",
-        "rutube": "810630",
-        "rzd": "642195",
-        "ak-bars-bank": "826514",
-        "lentaa": "587642",
-        "mobio": "478901",
-        "sberkids": "761397",
-        "blum": "541740",
-        "scbnotes": "185628",
-        "craftersy": "385490"
-    }
-};
-
-let remoteConfig = loadLocalConfig();
-
-function loadLocalConfig() {
+// Функция запроса настроек/паролей из Supabase
+async function fetchSupabaseSettings() {
     try {
-        const saved = localStorage.getItem("local_site_config_v3");
-        if (!saved) {
-            return JSON.parse(JSON.stringify(DEFAULT_CONFIG));
-        }
-        const parsed = JSON.parse(saved);
+        let response = await fetch(`${SUPABASE_URL}/rest/v1/settings?select=*`, {
+            headers: {
+                "apikey": SUPABASE_KEY,
+                "Authorization": `Bearer ${SUPABASE_KEY}`
+            }
+        });
+        if (!response.ok) throw new Error("Ошибка загрузки из Supabase");
+        let data = await response.json();
+        
+        let config = {
+            sitePassword: "930218",
+            appPasswords: {}
+        };
+
+        data.forEach(item => {
+            if (item.key === 'site_password') {
+                config.sitePassword = item.value;
+            } else if (item.key !== 'admin_password') {
+                config.appPasswords[item.key] = item.value;
+            }
+        });
+        return config;
+    } catch (e) {
+        console.error("Не удалось загрузить настройки из Supabase, используются дефолтные:", e);
         return {
-            sitePassword: parsed.sitePassword || DEFAULT_CONFIG.sitePassword,
+            sitePassword: "930218",
             appPasswords: {
-                ...JSON.parse(JSON.stringify(DEFAULT_CONFIG.appPasswords)),
-                ...(parsed.appPasswords || {})
+                "vk": "852431", "max": "754526", "vk-video": "917483", "vk-clips": "332745",
+                "sberfinansy": "602937", "sovkombank-vsekarty": "852358", "sovkombank-sinoptik": "532861",
+                "avito": "153418", "tbank": "523516", "drive-transit": "459172", "lenta": "381046",
+                "avito-anero": "559856", "yandex-pay": "187541", "2gis": "148620", "psb": "475820",
+                "kuper": "296481", "rutube": "810630", "rzd": "642195", "ak-bars-bank": "826514",
+                "lentaa": "587642", "mobio": "478901", "sberkids": "761397", "blum": "541740",
+                "scbnotes": "185628", "craftersy": "385490"
             }
         };
-    } catch (e) {
-        console.error("Ошибка загрузки локальной конфигурации:", e);
-        return JSON.parse(JSON.stringify(DEFAULT_CONFIG));
     }
 }
+
+let remoteConfig = {
+    sitePassword: "930218",
+    appPasswords: {}
+};
 
 function getAppPasswords() {
     return remoteConfig.appPasswords;
@@ -1672,7 +1669,10 @@ function updateAppCounter() {
     }
 }
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", async function() {
+    // Подгружаем актуальные пароли из Supabase при запуске
+    remoteConfig = await fetchSupabaseSettings();
+
     updateAppCounter();
 
     if (sessionStorage.getItem("site_access") === "true") {
@@ -1700,7 +1700,6 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // Закрытие выпадающего меню фильтра при клике вне его
     document.addEventListener("click", function(e) {
         const dropdown = document.getElementById("filterDropdown");
         const filterBtn = document.getElementById("searchFilterBtn");
@@ -1735,9 +1734,12 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
-function submitPassword() {
+async function submitPassword() {
     const input = document.getElementById("passInput");
     const errorMsg = document.getElementById("authError");
+
+    // Обновляем конфигурацию на случай свежих изменений в базе
+    remoteConfig = await fetchSupabaseSettings();
 
     if (input.value.trim() === getSitePassword()) {
         sessionStorage.setItem("site_access", "true");
@@ -1867,10 +1869,13 @@ function selectApp(element, url, name, appKey) {
     closeSheet();
 }
 
-function startInstallation() {
+async function startInstallation() {
     if (!selectedAppUrl || isInstalling) {
         return;
     }
+
+    // Подтягиваем свежие пароли приложений перед проверкой
+    remoteConfig = await fetchSupabaseSettings();
 
     if (getAppPasswords()[selectedAppKey]) {
         document.getElementById("appPassError").style.display = "none";
@@ -2086,12 +2091,10 @@ function executeDownload() {
             Установить
         </button>
 
-        <!-- ПОСТОЯННАЯ НАДПИСЬ ПОД КНОПКОЙ УСТАНОВКИ -->
         <div class="support-notice">
             После установки приложения <a href="https://t.me/dizabled" target="_blank" rel="noopener noreferrer">свяжитесь с нами!</a>
         </div>
 
-        <!-- PROGRESS BAR CONTAINER -->
         <div class="progress-container" id="progressContainer">
             <div class="progress-box">
                 <div class="progress-info">
@@ -2135,7 +2138,6 @@ function executeDownload() {
             </div>
         </div>
 
-        <!-- ПОИСК И КНОПКА ФИЛЬТРА СПРАВА -->
         <div class="app-search-wrap">
             <span class="search-icon">
                 ⌕
@@ -2169,7 +2171,6 @@ function executeDownload() {
                 ⚙
             </button>
 
-            <!-- ВЫПАДАЮЩЕЕ МЕНЮ КАТЕГОРИЙ С ПРОКРУТКОЙ -->
             <div class="filter-dropdown" id="filterDropdown">
                 <button type="button" class="filter-option active" onclick="setCategory('all', this)">Все</button>
                 <button type="button" class="filter-option" onclick="setCategory('banks', this)">Банки</button>
