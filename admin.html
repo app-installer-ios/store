@@ -917,7 +917,7 @@ input:disabled, button:disabled {
             startLockoutCountdown(lockUntil);
         } else {
             const remaining = MAX_ATTEMPTS - attempts;
-            showLoginError(`Неверный пароль. Осталось попыток: ${remaining}`);
+            showLoginError(`Неверный пароль. Осталось попыток ввода: ${remaining}`  `После ввода 3 неудачных попыток доступ будет заблокирован на 3 минуты!${remaining}`);
         }
     }
 
