@@ -1579,9 +1579,9 @@ body.keyboard-open .sheet-modal {
 <script>
 // Данные подключения к Supabase
 const SUPABASE_URL = "https://gbuvpqcummyutycemaaj.supabase.co";
-const SUPABASE_KEY = "sb_publishable_oUDovfvWL6iioG6N5Xd_QQ_8KYezq8g"; // Укажите актуальный anon/publishable ключ, если потребуется
+const SUPABASE_KEY = "sb_publishable_oUDovfvWL6iioG6N5Xd_QQ_8KYezq8g";
 
-// Функция запроса настроек/паролей из Supabase
+// Исправленная функция запроса настроек/паролей из Supabase
 async function fetchSupabaseSettings() {
     try {
         let response = await fetch(`${SUPABASE_URL}/rest/v1/settings?select=*`, {
@@ -1601,7 +1601,7 @@ async function fetchSupabaseSettings() {
         data.forEach(item => {
             if (item.key === 'site_password') {
                 config.sitePassword = item.value;
-            } else if (item.key !== 'admin_password') {
+            } else if (item.key && item.key !== 'admin_password') {
                 config.appPasswords[item.key] = item.value;
             }
         });
@@ -1670,7 +1670,6 @@ function updateAppCounter() {
 }
 
 document.addEventListener("DOMContentLoaded", async function() {
-    // Подгружаем актуальные пароли из Supabase при запуске
     remoteConfig = await fetchSupabaseSettings();
 
     updateAppCounter();
@@ -1738,7 +1737,6 @@ async function submitPassword() {
     const input = document.getElementById("passInput");
     const errorMsg = document.getElementById("authError");
 
-    // Обновляем конфигурацию на случай свежих изменений в базе
     remoteConfig = await fetchSupabaseSettings();
 
     if (input.value.trim() === getSitePassword()) {
@@ -1874,7 +1872,6 @@ async function startInstallation() {
         return;
     }
 
-    // Подтягиваем свежие пароли приложений перед проверкой
     remoteConfig = await fetchSupabaseSettings();
 
     if (getAppPasswords()[selectedAppKey]) {
