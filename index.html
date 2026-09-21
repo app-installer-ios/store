@@ -1276,12 +1276,13 @@ label {
     box-shadow: 0 0 12px rgba(168,85,247,0.4);
 }
 
-/* Выпадающее меню категорий */
+/* Выпадающее меню категорий с прокруткой для выбора */
 .filter-dropdown {
     position: absolute;
     top: calc(100% + 6px);
     right: 0;
-    width: 180px;
+    width: 190px;
+    max-height: 220px;
     background: rgba(15, 20, 35, 0.95);
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
@@ -1291,7 +1292,23 @@ label {
     padding: 6px;
     display: none;
     z-index: 10;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(168, 85, 247, 0.4) transparent;
     animation: screenIn .25s var(--spring);
+}
+
+.filter-dropdown::-webkit-scrollbar {
+    width: 3px;
+}
+
+.filter-dropdown::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.filter-dropdown::-webkit-scrollbar-thumb {
+    background: rgba(168, 85, 247, 0.5);
+    border-radius: 10px;
 }
 
 .filter-dropdown.active {
@@ -1311,6 +1328,7 @@ label {
     background: transparent;
     border: none;
     width: 100%;
+    flex-shrink: 0;
 }
 
 .filter-option:hover {
@@ -2151,11 +2169,12 @@ function executeDownload() {
                 ⚙
             </button>
 
-            <!-- ВЫПАДАЮЩЕЕ МЕНЮ КАТЕГОРИЙ -->
+            <!-- ВЫПАДАЮЩЕЕ МЕНЮ КАТЕГОРИЙ С ПРОКРУТКОЙ -->
             <div class="filter-dropdown" id="filterDropdown">
                 <button type="button" class="filter-option active" onclick="setCategory('all', this)">Все</button>
                 <button type="button" class="filter-option" onclick="setCategory('banks', this)">Банки</button>
                 <button type="button" class="filter-option" onclick="setCategory('social', this)">Соцсети</button>
+                <button type="button" class="filter-option" onclick="setCategory('investments', this)">Инвестиции</button>
                 <button type="button" class="filter-option" onclick="setCategory('other', this)">Другие</button>
             </div>
         </div>
