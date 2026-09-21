@@ -3,66 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Панель администратора — Управление паролями</title>
+    <title>Панель управления — Установка приложений</title>
     <!-- Подключаем Supabase JS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --bg-color: #0b0f19;
             --card-bg: #111827;
-            --border-color: #1f2937;
+            --border-color: rgba(255, 255, 255, 0.08);
             --text-color: #f3f4f6;
             --text-muted: #9ca3af;
-            --accent-color: #10b981;
-            --accent-hover: #059669;
+            --accent-color: #3b82f6;
+            --accent-hover: #2563eb;
             --input-bg: #1f2937;
             --danger-color: #ef4444;
+            --success-color: #10b981;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
         }
 
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
-            padding: 20px;
+            min-height: 100vh;
             display: flex;
+            align-items: center;
             justify-content: center;
+            padding: 20px;
         }
 
         .container {
             width: 100%;
-            max-width: 800px;
+            max-width: 850px;
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
         }
 
         h1 {
-            font-size: 24px;
+            font-size: 26px;
+            font-weight: 700;
             margin-bottom: 8px;
             color: #ffffff;
+            letter-spacing: -0.5px;
         }
 
         p.subtitle {
             color: var(--text-muted);
             font-size: 14px;
-            margin-bottom: 24px;
+            margin-bottom: 28px;
         }
 
         /* Экран авторизации */
         #login-screen {
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            max-width: 400px;
-            margin: 50px auto;
+            align-items: center;
+            text-align: center;
+            max-width: 380px;
+            margin: 20px auto;
+        }
+
+        #login-screen h1 {
+            margin-bottom: 6px;
+        }
+
+        .login-box {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-top: 10px;
         }
 
         /* Основная панель */
@@ -71,9 +90,12 @@
         }
 
         .section-title {
-            font-size: 18px;
-            margin: 20px 0 12px 0;
-            padding-bottom: 6px;
+            font-size: 15px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 24px 0 14px 0;
+            padding-bottom: 8px;
             border-bottom: 1px solid var(--border-color);
             color: var(--accent-color);
         }
@@ -81,19 +103,22 @@
         .grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            gap: 16px;
         }
 
-        @media (max-width: 600px) {
+        @media (max-width: 650px) {
             .grid {
                 grid-template-columns: 1fr;
+            }
+            .container {
+                padding: 20px;
             }
         }
 
         .input-group {
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 6px;
         }
 
         label {
@@ -105,85 +130,95 @@
         input {
             background: var(--input-bg);
             border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 10px 12px;
+            border-radius: 10px;
+            padding: 12px 14px;
             color: var(--text-color);
             font-size: 15px;
             outline: none;
-            transition: border-color 0.2s;
+            transition: all 0.2s ease;
         }
 
         input:focus {
             border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
         }
 
         button {
             background: var(--accent-color);
             color: white;
             border: none;
-            border-radius: 6px;
-            padding: 12px 20px;
+            border-radius: 10px;
+            padding: 13px 20px;
             font-size: 15px;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
         }
 
         button:hover {
             background: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        button:active {
+            transform: translateY(0);
         }
 
         .btn-save {
-            margin-top: 30px;
+            margin-top: 32px;
             width: 100%;
         }
 
-        #status-message {
-            margin-top: 15px;
+        #status-message, #login-error {
+            margin-top: 14px;
             text-align: center;
             font-size: 14px;
             min-height: 20px;
+            font-weight: 500;
         }
 
         .error { color: var(--danger-color); }
-        .success { color: var(--accent-color); }
+        .success { color: var(--success-color); }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <!-- Секция входа по паролю администратора -->
+    <!-- Секция входа -->
     <div id="login-screen">
-        <h1>Вход в админку</h1>
-        <p class="subtitle">Введите пароль администратора для управления</p>
-        <div class="input-group">
-            <label for="admin-pass-input">Пароль администратора</label>
-            <input type="password" id="admin-pass-input" placeholder="Введите admin_password">
+        <h1>Вход в систему</h1>
+        <p class="subtitle">Введите защитный ключ администратора для доступа к управлению</p>
+        <div class="login-box">
+            <div class="input-group" style="text-align: left;">
+                <label for="admin-pass-input">Пароль</label>
+                <input type="password" id="admin-pass-input" placeholder="••••••••••••">
+            </div>
+            <button onclick="checkAdminAuth()">Войти в панель</button>
         </div>
-        <button onclick="checkAdminAuth()">Войти</button>
         <div id="login-error" class="error"></div>
     </div>
 
     <!-- Основной интерфейс управления -->
     <div id="admin-panel">
-        <h1>Панель управления</h1>
-        <p class="subtitle">Изменение паролей и кодов доступа к приложениям</p>
+        <h1>Управление доступом</h1>
+        <p class="subtitle">Настройка общих параметров безопасности и кодов для установки приложений</p>
 
-        <div class="section-title">Основные настройки</div>
+        <div class="section-title">Системные параметры</div>
         <div class="grid">
             <div class="input-group">
-                <label>admin_password</label>
+                <label>Пароль администратора</label>
                 <input type="text" id="key-admin_password">
             </div>
             <div class="input-group">
-                <label>site_password</label>
+                <label>Общий пароль сайта</label>
                 <input type="text" id="key-site_password">
             </div>
         </div>
 
-        <div class="section-title">Приложения и сервисы</div>
+        <div class="section-title">Коды доступа к приложениям</div>
         <div class="grid" id="apps-grid">
-            <!-- Сюда динамически подгрудятся все остальные ключи из базы -->
+            <!-- Сюда динамически подгрудятся приложения -->
         </div>
 
         <button class="btn-save" onclick="saveSettings()">Сохранить изменения</button>
@@ -192,13 +227,12 @@
 </div>
 
 <script>
-    // ЗАМЕНИТЕ НА СВОИ ДАННЫЕ SUPABASE
-    const SUPABASE_URL = 'ВАШ_SUPABASE_URL';
-    const SUPABASE_ANON_KEY = 'ВАШ_SUPABASE_ANON_KEY';
+    // НАСТРОЙКИ SUPABASE (замените на свои актуальные данные)
+    const SUPABASE_URL = 'https://gbuvpqcummyutycemaaj.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_oUDovfvWL6iioG6N5Xd_QQ_8KYezq8g';
 
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // Список известных ключей приложений из ваших скриншотов
     const knownKeys = [
         "2gis", "akbars_vseychteno", "avito", "avito_anero", "kuper", 
         "lenta", "lenta_bistroprodykti", "max", "psb_chainay", "rocketbank", 
@@ -211,6 +245,7 @@
         const inputPass = document.getElementById('admin-pass-input').value;
         const errorDiv = document.getElementById('login-error');
         errorDiv.textContent = 'Проверка...';
+        errorDiv.className = '';
 
         try {
             const { data, error } = await supabaseClient
@@ -221,6 +256,7 @@
 
             if (error || !data) {
                 errorDiv.textContent = 'Ошибка подключения к базе данных.';
+                errorDiv.className = 'error';
                 return;
             }
 
@@ -229,10 +265,12 @@
                 document.getElementById('admin-panel').style.display = 'block';
                 loadSettings();
             } else {
-                errorDiv.textContent = 'Неверный пароль администратора!';
+                errorDiv.textContent = 'Неверный пароль!';
+                errorDiv.className = 'error';
             }
         } catch (err) {
             errorDiv.textContent = 'Произошла ошибка авторизации.';
+            errorDiv.className = 'error';
             console.error(err);
         }
     }
@@ -241,7 +279,6 @@
         const appsGrid = document.getElementById('apps-grid');
         appsGrid.innerHTML = '';
 
-        // Генерируем инпуты для всех приложений
         knownKeys.forEach(key => {
             const div = document.createElement('div');
             div.className = 'input-group';
@@ -249,10 +286,9 @@
                 <label>${key}</label>
                 <input type="text" id="key-${key}">
             `;
-            appsGrid.appendChild(div);
+            appsGrid.appsGrid ? appsGrid.appendChild(div) : appsGrid.appendChild(div);
         });
 
-        // Загружаем данные из таблицы settings
         const { data, error } = await supabaseClient
             .from('settings')
             .select('key, value');
@@ -262,7 +298,6 @@
             return;
         }
 
-        // Заполняем поля значениями из базы
         data.forEach(item => {
             const input = document.getElementById(`key-${item.key}`);
             if (input) {
@@ -283,7 +318,6 @@
             const input = document.getElementById(`key-${key}`);
             if (input) {
                 const value = input.value;
-                // Обновляем или добавляем запись в таблицу settings
                 const { error } = await supabaseClient
                     .from('settings')
                     .upsert({ key: key, value: value }, { onConflict: 'key' });
@@ -299,7 +333,7 @@
             statusMsg.textContent = 'Часть данных не удалось сохранить. Проверьте консоль.';
             statusMsg.className = 'error';
         } else {
-            statusMsg.textContent = 'Все изменения успешно сохранены в Supabase!';
+            statusMsg.textContent = 'Изменения успешно сохранены!';
             statusMsg.className = 'success';
         }
     }
