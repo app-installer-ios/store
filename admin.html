@@ -519,10 +519,10 @@
             <input type="text" inputmode="numeric" pattern="[0-9]*" id="editPasswordInput" autocomplete="off">
         </div>
         
-        <!-- Доп кнопки для приложений -->
-        <div class="extra-actions" id="appExtraActions" style="display: none;">
-            <button class="btn-action" onclick="generateAppPassword()">Сгенерировать</button>
-            <button class="btn-action" onclick="clearAppPassword()">Без пароля</button>
+        <!-- Кнопки генерации и сброса пароля -->
+        <div class="extra-actions" id="modalExtraActions">
+            <button class="btn-action" type="button" onclick="generatePassword()">Сгенерировать</button>
+            <button class="btn-action" type="button" id="btnClearPassword" onclick="clearPassword()">Без пароля</button>
         </div>
 
         <div class="modal-actions">
@@ -665,11 +665,12 @@
         const currentPass = type === 'global' ? globalSettings[key] : appPasswordsData[key];
         document.getElementById('editPasswordInput').value = currentPass || '';
         
-        const extraActions = document.getElementById('appExtraActions');
+        const clearBtn = document.getElementById('btnClearPassword');
+        // Кнопка «Без пароля» отображается только для приложений
         if (type === 'app') {
-            extraActions.style.display = 'flex';
+            clearBtn.style.display = 'block';
         } else {
-            extraActions.style.display = 'none';
+            clearBtn.style.display = 'none';
         }
         
         document.getElementById('editModalOverlay').classList.add('active');
@@ -682,12 +683,12 @@
         currentEditType = null;
     }
 
-    function generateAppPassword() {
+    function generatePassword() {
         const newPass = Math.floor(100000 + Math.random() * 900000).toString();
         document.getElementById('editPasswordInput').value = newPass;
     }
 
-    function clearAppPassword() {
+    function clearPassword() {
         document.getElementById('editPasswordInput').value = '';
     }
 
