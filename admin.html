@@ -19,6 +19,19 @@
             --danger-color: #fca5a5;
             --danger-bg: rgba(239, 68, 68, 0.2);
             --spring: cubic-bezier(.22,1,.36,1);
+
+            /* Цвета акцентных обводок */
+            --border-admin: #f59e0b;
+            --glow-admin: rgba(245, 158, 11, 0.25);
+
+            --border-site: #06b6d4;
+            --glow-site: rgba(6, 182, 212, 0.25);
+
+            --border-apps: #d946ef;
+            --glow-apps: rgba(217, 70, 239, 0.25);
+
+            --border-vis: #10b981;
+            --glow-vis: rgba(16, 185, 129, 0.25);
         }
 
         * {
@@ -64,7 +77,7 @@
             background: linear-gradient(165deg, rgba(40, 20, 60, 0.65), rgba(20, 10, 35, 0.85));
             backdrop-filter: blur(24px) saturate(150%);
             -webkit-backdrop-filter: blur(24px) saturate(150%);
-            border: 1px solid var(--border);
+            border: 2px solid rgba(192, 132, 252, 0.4);
             border-radius: 32px;
             padding: 36px 28px;
             box-shadow: 0 20px 80px rgba(88, 28, 135, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.15);
@@ -77,7 +90,7 @@
         }
 
         h1 {
-            font-size: 26px;
+            font-size: 24px;
             font-weight: 700;
             margin-bottom: 8px;
             text-align: center;
@@ -89,8 +102,8 @@
 
         p.subtitle {
             color: var(--muted);
-            font-size: 14px;
-            margin-bottom: 30px;
+            font-size: 13.5px;
+            margin-bottom: 26px;
             text-align: center;
             line-height: 1.4;
         }
@@ -117,11 +130,12 @@
             padding-left: 4px;
         }
 
+        /* Обводка полей ввода */
         input {
             width: 100%;
             height: 54px;
-            background: rgba(15, 5, 25, 0.6);
-            border: 2px solid rgba(168, 85, 247, 0.4);
+            background: rgba(15, 5, 25, 0.7);
+            border: 2px solid rgba(192, 132, 252, 0.45);
             border-radius: 18px;
             padding: 0 20px;
             color: #fff;
@@ -129,14 +143,13 @@
             text-align: left;
             line-height: normal;
             outline: none;
-            box-shadow: 0 0 15px rgba(168, 85, 247, 0.1);
+            box-shadow: 0 0 18px rgba(168, 85, 247, 0.15);
             transition: all 0.3s ease;
         }
 
-        /* Яркая обводка при фокусе */
         input:focus {
             border-color: #d946ef;
-            background: rgba(40, 20, 60, 0.4);
+            background: rgba(40, 20, 60, 0.5);
             box-shadow: 0 0 0 4px rgba(217, 70, 239, 0.25), 0 0 25px rgba(217, 70, 239, 0.5);
         }
 
@@ -180,23 +193,60 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* Карточки управления */
         .control-card {
             display: flex;
             align-items: center;
             justify-content: space-between;
             background: var(--glass);
-            border: 1px solid var(--border);
             padding: 16px 20px;
             border-radius: 20px;
             margin-bottom: 14px;
             transition: all 0.3s ease;
         }
         .control-card:hover {
-            background: var(--glass-light);
-            border-color: var(--accent-strong);
-            box-shadow: 0 5px 20px rgba(147, 51, 234, 0.15);
-            transform: translateY(-1px);
+            transform: translateY(-2px);
         }
+
+        /* ЦВЕТНЫЕ ОБВОДКИ КАРТОЧЕК */
+        .card-admin {
+            border: 2px solid var(--border-admin);
+            box-shadow: 0 4px 20px var(--glow-admin);
+        }
+        .card-admin:hover {
+            box-shadow: 0 8px 30px rgba(245, 158, 11, 0.4);
+            background: rgba(245, 158, 11, 0.08);
+        }
+
+        .card-site {
+            border: 2px solid var(--border-site);
+            box-shadow: 0 4px 20px var(--glow-site);
+        }
+        .card-site:hover {
+            box-shadow: 0 8px 30px rgba(6, 182, 212, 0.4);
+            background: rgba(6, 182, 212, 0.08);
+        }
+
+        .card-apps-pass {
+            border: 2px solid var(--border-apps);
+            box-shadow: 0 4px 20px var(--glow-apps);
+            cursor: pointer;
+        }
+        .card-apps-pass:hover {
+            box-shadow: 0 8px 30px rgba(217, 70, 239, 0.4);
+            background: rgba(217, 70, 239, 0.08);
+        }
+
+        .card-apps-vis {
+            border: 2px solid var(--border-vis);
+            box-shadow: 0 4px 20px var(--glow-vis);
+            cursor: pointer;
+        }
+        .card-apps-vis:hover {
+            box-shadow: 0 8px 30px rgba(16, 185, 129, 0.4);
+            background: rgba(16, 185, 129, 0.08);
+        }
+
         .control-info {
             display: flex;
             flex-direction: column;
@@ -211,9 +261,8 @@
             font-size: 12px;
             color: var(--muted);
         }
+
         .gear-btn {
-            background: rgba(147, 51, 234, 0.15);
-            border: 1px solid rgba(192, 132, 252, 0.3);
             border-radius: 12px;
             width: 44px;
             height: 44px;
@@ -225,23 +274,24 @@
             transition: all 0.3s ease;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
-        .gear-btn:hover {
-            background: rgba(168, 85, 247, 0.3);
-            border-color: #d946ef;
+        .card-admin .gear-btn {
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid var(--border-admin);
+        }
+        .card-admin .gear-btn:hover {
+            background: rgba(245, 158, 11, 0.3);
             transform: rotate(90deg) scale(1.05);
-            box-shadow: 0 0 15px rgba(217, 70, 239, 0.3);
+        }
+        .card-site .gear-btn {
+            background: rgba(6, 182, 212, 0.15);
+            border: 1px solid var(--border-site);
+        }
+        .card-site .gear-btn:hover {
+            background: rgba(6, 182, 212, 0.3);
+            transform: rotate(90deg) scale(1.05);
         }
 
-        .apps-btn {
-            background: linear-gradient(135deg, rgba(147, 51, 234, 0.15), rgba(192, 132, 252, 0.1));
-            border: 1px solid rgba(192, 132, 252, 0.4);
-            cursor: pointer;
-        }
-        .apps-btn:hover {
-            background: linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(216, 180, 254, 0.15));
-            border-color: #d946ef;
-        }
-
+        /* Модальные окна */
         .sheet-overlay {
             position: fixed;
             inset: 0;
@@ -264,10 +314,9 @@
             width: 100%;
             max-width: 400px;
             background: linear-gradient(165deg, rgba(35, 15, 55, 0.95), rgba(20, 5, 30, 0.98));
-            border: 1px solid rgba(192, 132, 252, 0.3);
             border-radius: 28px;
             padding: 24px;
-            box-shadow: 0 30px 80px rgba(0,0,0,0.8), 0 0 30px rgba(147, 51, 234, 0.15), inset 0 1px 1px rgba(255,255,255,0.1);
+            box-shadow: 0 30px 80px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.1);
             transform: translateY(30px) scale(0.95);
             transition: all 0.4s var(--spring);
             display: flex;
@@ -277,6 +326,57 @@
         .sheet-overlay.active .sheet-modal {
             transform: translateY(0) scale(1);
         }
+
+        /* Обводки для больших каталогов */
+        #appsCatalogOverlay .sheet-modal {
+            border: 2px solid var(--border-apps);
+            box-shadow: 0 0 35px var(--glow-apps), 0 30px 80px rgba(0,0,0,0.8);
+        }
+        #visibilityCatalogOverlay .sheet-modal {
+            border: 2px solid var(--border-vis);
+            box-shadow: 0 0 35px var(--glow-vis), 0 30px 80px rgba(0,0,0,0.8);
+        }
+
+        /* ДИНАМИЧЕСКИЕ ОБВОДКИ МОДАЛКИ РЕДАКТИРОВАНИЯ ПАРОЛЯ */
+        .modal-theme-admin {
+            border: 2px solid var(--border-admin) !important;
+            box-shadow: 0 0 35px var(--glow-admin), 0 30px 80px rgba(0,0,0,0.8) !important;
+        }
+        .modal-theme-admin input#editPasswordInput {
+            border-color: var(--border-admin) !important;
+            box-shadow: 0 0 15px var(--glow-admin) !important;
+        }
+        .modal-theme-admin input#editPasswordInput:focus {
+            border-color: #fbbf24 !important;
+            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.25), 0 0 25px rgba(245, 158, 11, 0.5) !important;
+        }
+
+        .modal-theme-site {
+            border: 2px solid var(--border-site) !important;
+            box-shadow: 0 0 35px var(--glow-site), 0 30px 80px rgba(0,0,0,0.8) !important;
+        }
+        .modal-theme-site input#editPasswordInput {
+            border-color: var(--border-site) !important;
+            box-shadow: 0 0 15px var(--glow-site) !important;
+        }
+        .modal-theme-site input#editPasswordInput:focus {
+            border-color: #38bdf8 !important;
+            box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.25), 0 0 25px rgba(6, 182, 212, 0.5) !important;
+        }
+
+        .modal-theme-app {
+            border: 2px solid var(--border-apps) !important;
+            box-shadow: 0 0 35px var(--glow-apps), 0 30px 80px rgba(0,0,0,0.8) !important;
+        }
+        .modal-theme-app input#editPasswordInput {
+            border-color: var(--border-apps) !important;
+            box-shadow: 0 0 15px var(--glow-apps) !important;
+        }
+        .modal-theme-app input#editPasswordInput:focus {
+            border-color: #f472b6 !important;
+            box-shadow: 0 0 0 4px rgba(217, 70, 239, 0.25), 0 0 25px rgba(217, 70, 239, 0.5) !important;
+        }
+
         .sheet-header {
             display: flex;
             align-items: center;
@@ -310,7 +410,7 @@
             height: 48px;
             padding: 0 16px 0 42px;
             border-radius: 16px;
-            border: 1px solid rgba(192, 132, 252, 0.3);
+            border: 2px solid rgba(192, 132, 252, 0.3);
             background: rgba(10, 5, 20, 0.6);
             color: #fff;
             font-size: 15px;
@@ -319,7 +419,7 @@
         }
         .app-search:focus {
             border-color: #d946ef;
-            box-shadow: 0 0 15px rgba(217, 70, 239, 0.2);
+            box-shadow: 0 0 15px rgba(217, 70, 239, 0.25);
         }
         .search-icon {
             position: absolute;
@@ -346,22 +446,65 @@
             justify-content: space-between;
             padding: 12px 16px;
             background: rgba(147, 51, 234, 0.05);
-            border: 1px solid rgba(192, 132, 252, 0.15);
+            border: 1px solid rgba(192, 132, 252, 0.2);
             border-radius: 16px;
             transition: all 0.2s ease;
         }
         .sheet-item:hover {
             background: rgba(168, 85, 247, 0.15);
             border-color: rgba(216, 180, 254, 0.4);
-            box-shadow: 0 0 10px rgba(168, 85, 247, 0.1);
         }
         .app-name {
             font-size: 15px;
             font-weight: 500;
             color: #fff;
+            max-width: 230px;
+            word-break: break-word;
         }
 
-        /* Дополнительные кнопки генерации/удаления пароля */
+        /* Переключатель Показать/Скрыть (iOS Style Toggle) */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 28px;
+            flex-shrink: 0;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            inset: 0;
+            background-color: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: 0.3s var(--spring);
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: #fff;
+            transition: 0.3s var(--spring);
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+        }
+        input:checked + .slider {
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-color: #34d399;
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
+        }
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+
         .extra-actions {
             display: flex;
             gap: 10px;
@@ -423,13 +566,13 @@
             bottom: 30px;
             left: 50%;
             transform: translateX(-50%) translateY(100px);
-            background: linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(126, 34, 206, 0.2));
-            border: 1px solid rgba(192, 132, 252, 0.4);
-            backdrop-filter: blur(12px);
+            background: linear-gradient(135deg, rgba(40, 20, 60, 0.95), rgba(20, 10, 35, 0.95));
+            border: 2px solid rgba(192, 132, 252, 0.5);
+            backdrop-filter: blur(16px);
             color: #fff;
             padding: 16px 24px;
             border-radius: 20px;
-            font-size: 15px;
+            font-size: 14.5px;
             font-weight: 600;
             box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 25px rgba(168, 85, 247, 0.3);
             opacity: 0;
@@ -456,7 +599,7 @@
         <h1>ПАНЕЛЬ АДМИНИСТРАТОРА</h1>
         <p class="subtitle">Введите пароль для доступа</p>
         <div class="input-group">
-            <input type="password" inputmode="numeric" pattern="[0-9]*" id="admin-pass-input" autocomplete="off">
+            <input type="password" inputmode="numeric" pattern="[0-9]*" id="admin-pass-input" autocomplete="off" placeholder="••••••">
         </div>
         <button class="primary-btn" onclick="checkAdminAuth()">Войти</button>
         <div id="login-error">Неверный пароль</div>
@@ -467,37 +610,49 @@
         <h1>Настройки</h1>
         <p class="subtitle">Управление параметрами и доступом</p>
 
-        <div class="control-card">
+        <!-- 1. Панель администратора (Янтарная обводка) -->
+        <div class="control-card card-admin">
             <div class="control-info">
                 <span class="control-title">Панель администратора</span>
                 <span class="control-desc">Изменение пароля для панели</span>
             </div>
-            <button class="gear-btn" onclick="openEditModal('admin_password', 'Пароль администратора', 'global')">⚙️</button>
+            <button class="gear-btn" onclick="openEditModal('admin_password', 'Пароль администратора', 'admin')">⚙️</button>
         </div>
 
-        <div class="control-card">
+        <!-- 2. Сайт (Бирюзовая обводка) -->
+        <div class="control-card card-site">
             <div class="control-info">
                 <span class="control-title">Сайт</span>
                 <span class="control-desc">Изменение пароля для сайта</span>
             </div>
-            <button class="gear-btn" onclick="openEditModal('site_password', 'Пароль для сайта', 'global')">⚙️</button>
+            <button class="gear-btn" onclick="openEditModal('site_password', 'Пароль для сайта', 'site')">⚙️</button>
         </div>
 
-        <div class="control-card apps-btn" onclick="openAppsCatalogSheet()">
+        <!-- 3. Пароли приложений (Фуксия обводка) -->
+        <div class="control-card card-apps-pass" onclick="openAppsCatalogSheet()">
             <div class="control-info">
-                <span class="control-title">Приложения</span>
-                <span class="control-desc">Изменение паролей приложений</span>
+                <span class="control-title">Пароли приложений</span>
+                <span class="control-desc">Изменение паролей для приложений</span>
             </div>
             <div class="gear-btn" style="background: transparent; border: none; box-shadow: none;">⚙️</div>
+        </div>
+
+        <!-- 4. Видимость приложений (Зелёная обводка) -->
+        <div class="control-card card-apps-vis" onclick="openVisibilityCatalogSheet()">
+            <div class="control-info">
+                <span class="control-title">Отображение приложений</span>
+                <span class="control-desc">Показать или скрыть приложения</span>
+            </div>
+            <div class="gear-btn" style="background: transparent; border: none; box-shadow: none;">👁️</div>
         </div>
     </div>
 </div>
 
-<!-- Каталог приложений -->
+<!-- Каталог: Пароли приложений -->
 <div class="sheet-overlay" id="appsCatalogOverlay" onclick="closeAppsCatalogSheet()">
     <div class="sheet-modal" onclick="event.stopPropagation()">
         <div class="sheet-header">
-            <div class="sheet-title">Приложения</div>
+            <div class="sheet-title">Пароли приложений</div>
             <button class="sheet-close" onclick="closeAppsCatalogSheet()">✕</button>
         </div>
         <div class="app-search-wrap">
@@ -508,9 +663,24 @@
     </div>
 </div>
 
-<!-- Универсальное окно редактирования -->
+<!-- Каталог: Видимость приложений (Показ/Скрытие) -->
+<div class="sheet-overlay" id="visibilityCatalogOverlay" onclick="closeVisibilityCatalogSheet()">
+    <div class="sheet-modal" onclick="event.stopPropagation()">
+        <div class="sheet-header">
+            <div class="sheet-title">Видимость приложений</div>
+            <button class="sheet-close" onclick="closeVisibilityCatalogSheet()">✕</button>
+        </div>
+        <div class="app-search-wrap">
+            <span class="search-icon">⌕</span>
+            <input type="search" id="visibilityAppSearch" class="app-search" placeholder="Поиск приложения..." oninput="filterVisibilityApps()" autocomplete="off">
+        </div>
+        <div class="sheet-list" id="visibilityAppsList"></div>
+    </div>
+</div>
+
+<!-- Универсальное окно редактирования с динамической цветной обводкой -->
 <div class="sheet-overlay" id="editModalOverlay" onclick="closeEditModal()">
-    <div class="sheet-modal" style="max-width: 340px; margin: auto;" onclick="event.stopPropagation()">
+    <div class="sheet-modal" id="editModalContainer" style="max-width: 340px; margin: auto;" onclick="event.stopPropagation()">
         <div class="sheet-header" style="margin-bottom: 12px; border: none;">
             <div class="sheet-title" id="editModalTitle">Пароль</div>
         </div>
@@ -519,7 +689,7 @@
             <input type="text" inputmode="numeric" pattern="[0-9]*" id="editPasswordInput" autocomplete="off">
         </div>
         
-        <!-- Кнопки генерации и сброса пароля -->
+        <!-- Кнопки генерации и сброса -->
         <div class="extra-actions" id="modalExtraActions">
             <button class="btn-action" type="button" onclick="generatePassword()">Сгенерировать</button>
             <button class="btn-action" type="button" id="btnClearPassword" onclick="clearPassword()">Без пароля</button>
@@ -570,6 +740,7 @@
 
     let globalSettings = { admin_password: '', site_password: '' };
     let appPasswordsData = {};
+    let appVisibilityData = {};
     
     let currentEditKey = null;
     let currentEditType = null;
@@ -616,13 +787,18 @@
         data.forEach(item => {
             if (item.key === 'admin_password' || item.key === 'site_password') {
                 globalSettings[item.key] = item.value;
+            } else if (item.key.startsWith('vis_')) {
+                const appKey = item.key.replace('vis_', '');
+                appVisibilityData[appKey] = item.value === 'true';
             } else {
                 appPasswordsData[item.key] = item.value;
             }
         });
         renderAdminAppsList();
+        renderVisibilityAppsList();
     }
 
+    // Каталог 1: Пароли приложений
     function renderAdminAppsList() {
         const listContainer = document.getElementById('adminAppsList');
         listContainer.innerHTML = '';
@@ -633,7 +809,7 @@
             div.setAttribute('data-name', app.name.toLowerCase());
             div.innerHTML = `
                 <span class="app-name">${app.name}</span>
-                <button class="gear-btn" style="width:36px; height:36px; font-size:16px;" onclick="openEditModal('${app.key}', '${app.name}', 'app')">⚙️</button>
+                <button class="gear-btn" style="width:36px; height:36px; font-size:16px; background: rgba(217, 70, 239, 0.15); border: 1px solid var(--border-apps);" onclick="openEditModal('${app.key}', '${app.name}', 'app')">⚙️</button>
             `;
             listContainer.appendChild(div);
         });
@@ -657,21 +833,83 @@
         document.getElementById('appsCatalogOverlay').classList.remove('active');
     }
 
+    // Каталог 2: Видимость приложений
+    function renderVisibilityAppsList() {
+        const listContainer = document.getElementById('visibilityAppsList');
+        listContainer.innerHTML = '';
+
+        appConfigList.forEach(app => {
+            // По умолчанию приложение включено (visible = true), если не задано false
+            const isVisible = appVisibilityData[app.key] !== false;
+
+            const div = document.createElement('div');
+            div.className = 'sheet-item';
+            div.setAttribute('data-name', app.name.toLowerCase());
+            div.innerHTML = `
+                <span class="app-name">${app.name}</span>
+                <label class="switch">
+                    <input type="checkbox" ${isVisible ? 'checked' : ''} onchange="toggleAppVisibility('${app.key}', this.checked)">
+                    <span class="slider"></span>
+                </label>
+            `;
+            listContainer.appendChild(div);
+        });
+    }
+
+    function filterVisibilityApps() {
+        const query = document.getElementById('visibilityAppSearch').value.toLowerCase();
+        document.querySelectorAll('#visibilityAppsList .sheet-item').forEach(item => {
+            const name = item.getAttribute('data-name');
+            item.style.display = name.includes(query) ? 'flex' : 'none';
+        });
+    }
+
+    function openVisibilityCatalogSheet() {
+        document.getElementById('visibilityCatalogOverlay').classList.add('active');
+        document.getElementById('visibilityAppSearch').value = '';
+        renderVisibilityAppsList();
+        filterVisibilityApps();
+    }
+
+    function closeVisibilityCatalogSheet() {
+        document.getElementById('visibilityCatalogOverlay').classList.remove('active');
+    }
+
+    async function toggleAppVisibility(appKey, isVisible) {
+        appVisibilityData[appKey] = isVisible;
+        const app = appConfigList.find(a => a.key === appKey);
+        const appName = app ? app.name : appKey;
+
+        const { error } = await supabaseClient
+            .from('settings')
+            .upsert({ key: `vis_${appKey}`, value: isVisible ? 'true' : 'false' }, { onConflict: 'key' });
+
+        if (error) {
+            showToast('Ошибка при сохранении видимости');
+            return;
+        }
+
+        showToast(isVisible ? `«${appName}» показано` : `«${appName}» скрыто`);
+    }
+
+    // Окно изменения пароля с цветной обводкой в зависимости от типа
     function openEditModal(key, title, type) {
         currentEditKey = key;
         currentEditType = type;
         document.getElementById('editModalTitle').textContent = title;
         
-        const currentPass = type === 'global' ? globalSettings[key] : appPasswordsData[key];
+        const currentPass = (type === 'admin' || type === 'site') ? globalSettings[key] : appPasswordsData[key];
         document.getElementById('editPasswordInput').value = currentPass || '';
         
+        const modalContainer = document.getElementById('editModalContainer');
+        modalContainer.classList.remove('modal-theme-admin', 'modal-theme-site', 'modal-theme-app');
+        
+        if (type === 'admin') modalContainer.classList.add('modal-theme-admin');
+        else if (type === 'site') modalContainer.classList.add('modal-theme-site');
+        else modalContainer.classList.add('modal-theme-app');
+
         const clearBtn = document.getElementById('btnClearPassword');
-        // Кнопка «Без пароля» отображается только для приложений
-        if (type === 'app') {
-            clearBtn.style.display = 'block';
-        } else {
-            clearBtn.style.display = 'none';
-        }
+        clearBtn.style.display = (type === 'app') ? 'block' : 'none';
         
         document.getElementById('editModalOverlay').classList.add('active');
         setTimeout(() => document.getElementById('editPasswordInput').focus(), 100);
@@ -720,7 +958,8 @@
         let toastMsg = '';
         if (currentEditType === 'app') {
             appPasswordsData[currentEditKey] = newPass;
-            const appName = appConfigList.find(a => a.key === currentEditKey).name;
+            const app = appConfigList.find(a => a.key === currentEditKey);
+            const appName = app ? app.name : currentEditKey;
             toastMsg = newPass ? `Пароль для «${appName}» изменён` : `Пароль для «${appName}» удален`;
         } else {
             globalSettings[currentEditKey] = newPass;
@@ -737,7 +976,7 @@
         toast.classList.add('show');
         setTimeout(() => {
             toast.classList.remove('show');
-        }, 3500);
+        }, 3200);
     }
 
     document.getElementById('admin-pass-input').addEventListener('keypress', function(e) {
