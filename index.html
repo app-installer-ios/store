@@ -2013,6 +2013,100 @@ h1,
     border-color: rgba(103, 232, 249, 0.92) !important;
     box-shadow: 0 0 22px rgba(34, 211, 238, 0.18) !important;
 }
+
+/* ==================================================
+   ФИНАЛЬНАЯ НАСТРОЙКА АКЦЕНТНЫХ ОБВОДОК
+   Только визуальные изменения. Логика и расположение не меняются.
+================================================== */
+
+/* Главное общее окно экрана выбора приложений — такой же зелёный акцент, как авторизация */
+.card {
+    border: 2px solid rgba(52, 211, 153, 0.82) !important;
+    box-shadow:
+        0 0 28px rgba(52, 211, 153, 0.16),
+        0 25px 70px rgba(0,0,0,.62),
+        inset 0 1px 1px rgba(255,255,255,.08) !important;
+}
+
+/* Окно выбора приложений — заметная красно-коралловая обводка */
+.sheet-modal {
+    border: 2px solid rgba(248, 113, 113, 0.78) !important;
+    box-shadow:
+        0 0 28px rgba(248, 113, 113, 0.16),
+        0 25px 70px rgba(0,0,0,.70),
+        inset 0 1px 1px rgba(255,255,255,.08) !important;
+}
+
+/* Поле поиска — отдельная синяя обводка */
+.app-search {
+    border: 2px solid rgba(96, 165, 250, 0.82) !important;
+    box-shadow:
+        0 0 16px rgba(96, 165, 250, 0.12),
+        inset 0 1px 0 rgba(255,255,255,.08),
+        inset 0 2px 10px rgba(0,0,0,.20) !important;
+}
+
+.app-search:focus {
+    border-color: rgba(147, 197, 253, 1) !important;
+    box-shadow:
+        0 0 0 3px rgba(96, 165, 250, 0.12),
+        0 0 26px rgba(96, 165, 250, 0.24),
+        inset 0 1px 0 rgba(255,255,255,.12) !important;
+}
+
+/* Шестерёнка справа от поиска — отдельный яркий оранжево-золотой акцент */
+.search-filter-btn {
+    border: 2px solid rgba(251, 191, 36, 0.90) !important;
+    background: rgba(245, 158, 11, 0.12) !important;
+    color: #fcd34d !important;
+    box-shadow:
+        0 0 18px rgba(245, 158, 11, 0.18),
+        inset 0 1px 0 rgba(255,255,255,.08) !important;
+}
+
+.search-filter-btn:hover,
+.search-filter-btn.active {
+    border-color: rgba(253, 224, 71, 1) !important;
+    background: rgba(245, 158, 11, 0.20) !important;
+    box-shadow:
+        0 0 26px rgba(245, 158, 11, 0.30),
+        inset 0 1px 0 rgba(255,255,255,.12) !important;
+}
+
+/* Окно с текстом после установки — немного другой фон, чтобы не терялось */
+.progress-box {
+    background:
+        linear-gradient(145deg, rgba(16, 185, 129, 0.13), rgba(32, 14, 48, 0.90)) !important;
+    border: 2px solid rgba(74, 222, 128, 0.58) !important;
+    box-shadow:
+        0 0 22px rgba(74, 222, 128, 0.12),
+        0 20px 55px rgba(0,0,0,.55),
+        inset 0 1px 0 rgba(255,255,255,.09) !important;
+}
+
+/* Надпись о последнем обновлении — отдельный заметный цвет */
+.last-update {
+    color: rgba(216, 180, 254, 0.82) !important;
+    text-shadow: 0 0 12px rgba(192, 132, 252, 0.28);
+}
+
+/* Блок связи внутри главного окна — сохраняем зелёную общую стилистику */
+.support-notice {
+    border-color: rgba(52, 211, 153, 0.48) !important;
+    background: rgba(52, 211, 153, 0.045) !important;
+    box-shadow: 0 0 14px rgba(52, 211, 153, 0.08) !important;
+}
+
+.support-notice a {
+    color: #6ee7b7 !important;
+    text-shadow: 0 0 14px rgba(52, 211, 153, 0.28) !important;
+}
+
+.support-notice a:hover {
+    color: #a7f3d0 !important;
+    text-shadow: 0 0 20px rgba(52, 211, 153, 0.42) !important;
+}
+
 </style>
 </head>
 
