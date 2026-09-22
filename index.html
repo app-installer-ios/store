@@ -1181,6 +1181,16 @@ label {
 }
 
 .app-search {
+    -webkit-appearance: none;
+    appearance: none;
+    -webkit-text-size-adjust: 100%;
+    font-family: inherit;
+    font-weight: 500;
+    line-height: 44px;
+    text-align: left;
+    text-indent: 0;
+    caret-color: #58b8ff;
+
     width: 100%;
     height: 44px;
     padding: 0 42px 0 38px;
@@ -1198,6 +1208,15 @@ label {
         0 0 25px rgba(168, 85, 247, 0.35),
         0 0 45px rgba(217, 70, 239, 0.2);
     transition: border .2s ease, box-shadow .25s ease, background .25s ease;
+}
+
+.app-search::-webkit-search-decoration,
+.app-search::-webkit-search-cancel-button,
+.app-search::-webkit-search-results-button,
+.app-search::-webkit-search-results-decoration {
+    -webkit-appearance: none;
+    appearance: none;
+    display: none;
 }
 
 .app-search::placeholder {
@@ -2607,6 +2626,11 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     document.querySelectorAll("input").forEach(input => {
         input.addEventListener("focus", () => {
+            // Не запускаем отложенный scrollIntoView для поля поиска.
+            // На iOS он после появления клавиатуры меняет положение input
+            // и визуально смещает caret (мигающую вертикальную полоску).
+            if (input.id === "appSearchInput") return;
+
             setTimeout(() => {
                 const box = input.closest(".auth-box") || input.closest(".card") || input;
                 box.scrollIntoView({ behavior: "smooth", block: "start" });
