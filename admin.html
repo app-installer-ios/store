@@ -326,6 +326,14 @@
             background: rgba(217, 70, 239, 0.22);
             transform: rotate(90deg) scale(1.04);
         }
+        .card-apps-vis .gear-btn {
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid var(--border-vis);
+        }
+        .card-apps-vis .gear-btn:hover {
+            background: rgba(16, 185, 129, 0.22);
+            transform: rotate(90deg) scale(1.04);
+        }
 
         /* Модальные окна */
         .sheet-overlay {
@@ -526,6 +534,27 @@
             opacity: 0.65;
             cursor: wait;
             transform: none;
+        }
+
+        .visibility-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .visibility-action-btn {
+            flex: 1;
+            min-height: 42px;
+            border-radius: 12px;
+            border: 1px solid var(--border-vis);
+            background: rgba(16, 185, 129, 0.12);
+            color: #a7f3d0;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .visibility-action-btn:hover {
+            background: rgba(16, 185, 129, 0.22);
+            transform: translateY(-1px);
         }
 
         .app-search-wrap {
@@ -770,7 +799,7 @@
                 <span class="control-title">Отображение приложений</span>
                 <span class="control-desc">Показать или скрыть приложения</span>
             </div>
-            <div class="gear-btn" style="background: transparent; border: none; box-shadow: none;">👁️</div>
+            <div class="gear-btn">👁️</div>
         </div>
 
         <!-- 5. Кнопка «Сохранить изменения» -->
@@ -1075,6 +1104,31 @@
             `;
             listContainer.appendChild(div);
         });
+    }
+
+    async function setAllAppsVisibility(isVisible) {
+        const updates = appConfigList.map(app => ({
+            key: `vis_${app.key}`,
+            value: isVisible ? 'true' : 'false'
+        }));
+
+        appConfigList.forEach(app => {
+            appVisibilityData[app.key] = isVisible;
+        });
+
+        const { error } = await supabaseClient
+            .from('settings')
+            .upsert(updates, { onConflict: 'key' });
+
+        if (error) {
+            showToast('Ошибка при сохранении видимости');
+            return;
+        }
+
+        updateVisibilityStats();
+        renderVisibilityAppsList();
+        filterVisibilityApps();
+        showToast(isVisible ? 'Все приложения показаны' : 'Все приложения скрыты');
     }
 
     function filterVisibilityApps() {
