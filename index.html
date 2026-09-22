@@ -880,7 +880,7 @@ label {
 }
 
 /* --------------------------------------------------
-   PERMANENT SUPPORT NOTICE (Надпись под кнопкой установки)
+   PERMANENT SUPPORT NOTICE
 -------------------------------------------------- */
 
 .support-notice {
@@ -1246,7 +1246,6 @@ label {
     display: flex;
 }
 
-/* Кнопка фильтра справа в поисковой строке */
 .search-filter-btn {
     position: absolute;
     right: 8px;
@@ -1276,7 +1275,6 @@ label {
     box-shadow: 0 0 12px rgba(168,85,247,0.4);
 }
 
-/* Выпадающее меню категорий */
 .filter-dropdown {
     position: absolute;
     top: calc(100% + 6px);
@@ -1405,7 +1403,7 @@ label {
 }
 
 /* --------------------------------------------------
-   SHEET LIST
+   SHEET LIST & ICONS
 -------------------------------------------------- */
 .sheet-list {
     display: flex;
@@ -1436,8 +1434,8 @@ label {
 }
 
 .sheet-item {
-    min-height: 48px;
-    padding: 8px 12px;
+    min-height: 50px;
+    padding: 7px 12px;
     border-radius: 14px;
     display: flex;
     align-items: center;
@@ -1466,7 +1464,7 @@ label {
 .sheet-item-main {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     min-width: 0;
     flex: 1;
 }
@@ -1481,9 +1479,9 @@ label {
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.18);
     flex-shrink: 0;
+    box-shadow: 0 2px 7px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+    border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 .app-icon svg {
@@ -1675,7 +1673,6 @@ function getSitePassword() {
 function applyAppsVisibility() {
     document.querySelectorAll('.sheet-list .sheet-item').forEach(item => {
         const key = item.getAttribute('data-key');
-        // Если в базе явно указано false — скрываем, иначе показываем
         const isVisible = remoteConfig.appVisibility[key] !== false;
         item.setAttribute('data-visible', isVisible ? 'true' : 'false');
         if (!isVisible) {
@@ -1802,7 +1799,6 @@ async function submitPassword() {
 }
 
 async function openSheet() {
-    // Подгружаем актуальные настройки видимости перед открытием шторки
     remoteConfig = await fetchSupabaseSettings();
     applyAppsVisibility();
     updateAppCounter();
@@ -1872,7 +1868,6 @@ function filterApps() {
     let visibleCount = 0;
 
     document.querySelectorAll(".sheet-item").forEach(item => {
-        // Если приложение отключено администратором в панели — всегда скрываем
         if (item.getAttribute("data-visible") === "false") {
             item.style.display = "none";
             return;
@@ -2246,6 +2241,7 @@ function executeDownload() {
         </div>
 
         <div class="sheet-list">
+            <!-- ВКонтакте -->
             <div
                 class="sheet-item"
                 data-key="vk"
@@ -2254,7 +2250,7 @@ function executeDownload() {
             >
                 <div class="sheet-item-main">
                     <div class="app-icon" style="background:#0077ff;">
-                        <svg viewBox="0 0 32 32" fill="none"><path d="M17.4 22c-6.8 0-10.7-4.7-10.9-12.5h3.4c.1 5.7 2.7 8.1 4.7 8.6V9.5h3.2v4.9c2-.2 4-2.4 4.8-4.9h3.2c-.6 3.1-2.9 5.3-4.5 6.3 1.6.8 4.2 2.7 5.2 6.2h-3.6c-.8-2.6-2.9-4.5-5.6-4.8V22h-.1z" fill="#fff"/></svg>
+                        <svg viewBox="0 0 32 32"><path d="M17.6 21.5c-6.1 0-9.6-4.2-9.7-11.2h3.1c.1 5.1 2.4 7.3 4.2 7.7V10.3h2.9v4.4c1.8-.2 3.6-2.2 4.3-4.4h2.9c-.5 2.8-2.6 4.8-4 5.6 1.4.7 3.8 2.4 4.7 5.6h-3.2c-.7-2.3-2.6-4.1-4.9-4.3v4.3h-.1z" fill="#ffffff"/></svg>
                     </div>
                     <div class="sheet-info-box">
                         <span class="app-name">ВКонтакте</span>
@@ -2263,6 +2259,7 @@ function executeDownload() {
                 <span class="ios-badge">iOS 17.6</span>
             </div>
       
+            <!-- MAX -->
             <div
                 class="sheet-item"
                 data-key="max"
@@ -2270,8 +2267,13 @@ function executeDownload() {
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/max.plist', 'MAX', 'max')"
             >
                 <div class="sheet-item-main">
-                    <div class="app-icon" style="background:linear-gradient(135deg, #001e62, #0047ff);">
-                        <svg viewBox="0 0 32 32"><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" fill="#fff" font-size="11" font-weight="800">MAX</text></svg>
+                    <div class="app-icon" style="background:linear-gradient(135deg, #001e62, #0050ff);">
+                        <svg viewBox="0 0 32 32">
+                            <path d="M8 16c0-4.2 3.6-7.5 8-7.5s8 3.3 8 7.5-3.6 7.5-8 7.5c-1.3 0-2.5-.3-3.6-.8L8 23.5l.8-3C8.3 19.3 8 17.7 8 16z" fill="#ffffff"/>
+                            <circle cx="12.5" cy="16" r="1.3" fill="#0038b8"/>
+                            <circle cx="16" cy="16" r="1.3" fill="#0038b8"/>
+                            <circle cx="19.5" cy="16" r="1.3" fill="#0038b8"/>
+                        </svg>
                     </div>
                     <div class="sheet-info-box">
                         <span class="app-name">MAX</span>
@@ -2280,6 +2282,7 @@ function executeDownload() {
                 <span class="ios-badge">iOS 15.5</span>
             </div>
 
+            <!-- VK Видео -->
             <div
                 class="sheet-item"
                 data-key="vk-video"
@@ -2287,8 +2290,17 @@ function executeDownload() {
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk-video.plist', 'VK Видео', 'vk-video')"
             >
                 <div class="sheet-item-main">
-                    <div class="app-icon" style="background:linear-gradient(135deg, #ff2d55, #ff3b30);">
-                        <svg viewBox="0 0 32 32" fill="#fff"><path d="M13 11l9 5-9 5V11z"/></svg>
+                    <div class="app-icon" style="background:#14151a;">
+                        <svg viewBox="0 0 32 32">
+                            <defs>
+                                <linearGradient id="vkvg" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#0077ff"/>
+                                    <stop offset="100%" stop-color="#ff334b"/>
+                                </linearGradient>
+                            </defs>
+                            <rect x="5.5" y="5.5" width="21" height="21" rx="6" fill="url(#vkvg)"/>
+                            <path d="M13.5 11.5l7.5 4.5-7.5 4.5v-9z" fill="#ffffff"/>
+                        </svg>
                     </div>
                     <div class="sheet-info-box">
                         <span class="app-name">VK Видео</span>
@@ -2297,6 +2309,7 @@ function executeDownload() {
                 <span class="ios-badge">iOS 17.6</span>
             </div>
       
+            <!-- VK Клипы -->
             <div
                 class="sheet-item"
                 data-key="vk-clips"
@@ -2304,8 +2317,12 @@ function executeDownload() {
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk-clips.plist', 'VK Клипы', 'vk-clips')"
             >
                 <div class="sheet-item-main">
-                    <div class="app-icon" style="background:linear-gradient(135deg, #ff007a, #7928ca);">
-                        <svg viewBox="0 0 32 32" fill="#fff"><circle cx="16" cy="16" r="6"/><path d="M16 6v4m0 12v4M6 16h4m12 0h4" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+                    <div class="app-icon" style="background:linear-gradient(135deg, #ff007a, #8432f5);">
+                        <svg viewBox="0 0 32 32">
+                            <rect x="7" y="6" width="18" height="20" rx="4" fill="none" stroke="#ffffff" stroke-width="2.2"/>
+                            <path d="M7 12h18M11 6l-2 6M17 6l-2 6M23 6l-2 6" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
+                            <path d="M14 15.5l5 3-5 3v-6z" fill="#ffffff"/>
+                        </svg>
                     </div>
                     <div class="sheet-info-box">
                         <span class="app-name">VK Клипы</span>
@@ -2314,6 +2331,7 @@ function executeDownload() {
                 <span class="ios-badge">iOS 14.0</span>
             </div>
       
+            <!-- СберБанк (Финансы Онлайн) -->
             <div
                 class="sheet-item"
                 data-key="sberfinansy"
@@ -2321,8 +2339,18 @@ function executeDownload() {
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sberfinansy.plist', 'СберБанк (Финансы Онлайн)', 'sberfinansy')"
             >
                 <div class="sheet-item-main">
-                    <div class="app-icon" style="background:linear-gradient(135deg, #09a13b, #21a038);">
-                        <svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="10" stroke="#fff" stroke-width="2.5"/><path d="M12 16l3 3 6-6" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <div class="app-icon" style="background:linear-gradient(135deg, #1fa346 0%, #158234 100%);">
+                        <svg viewBox="0 0 32 32">
+                            <defs>
+                                <linearGradient id="sbrg" x1="0%" y1="100%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#147b31"/>
+                                    <stop offset="70%" stop-color="#21c255"/>
+                                    <stop offset="100%" stop-color="#ffdc33"/>
+                                </linearGradient>
+                            </defs>
+                            <circle cx="16" cy="16" r="11" fill="none" stroke="url(#sbrg)" stroke-width="2.6" stroke-dasharray="52 20" stroke-linecap="round" transform="rotate(-40 16 16)"/>
+                            <path d="M11 16l3.5 3.5 7.5-7.5" fill="none" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
                     </div>
                     <div class="sheet-info-box">
                         <span class="app-name">СберБанк (Финансы Онлайн)</span>
@@ -2331,6 +2359,7 @@ function executeDownload() {
                 <span class="ios-badge">iOS 15.0</span>
             </div>
 
+            <!-- Авито -->
             <div
                 class="sheet-item"
                 data-key="avito"
@@ -2338,8 +2367,13 @@ function executeDownload() {
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/avito.plist', 'Авито', 'avito')"
             >
                 <div class="sheet-item-main">
-                    <div class="app-icon" style="background:#00aaff;">
-                        <svg viewBox="0 0 32 32"><circle cx="12" cy="12" r="3.5" fill="#a4ec34"/><circle cx="20" cy="12" r="4.2" fill="#00aaff"/><circle cx="11" cy="20" r="4.2" fill="#ff4053"/><circle cx="19" cy="20" r="3" fill="#9050f8"/></svg>
+                    <div class="app-icon" style="background:#ffffff;">
+                        <svg viewBox="0 0 32 32">
+                            <circle cx="11.5" cy="12" r="3.7" fill="#95d600"/>
+                            <circle cx="20.5" cy="11.5" r="4.6" fill="#00aaff"/>
+                            <circle cx="11" cy="20.5" r="4.5" fill="#ff4053"/>
+                            <circle cx="19.5" cy="20.5" r="3.2" fill="#9356e8"/>
+                        </svg>
                     </div>
                     <div class="sheet-info-box">
                         <span class="app-name">Авито</span>
@@ -2348,6 +2382,7 @@ function executeDownload() {
                 <span class="ios-badge">iOS 16.0</span>
             </div>
       
+            <!-- Совкомбанк (Все карты MDS) -->
             <div
                 class="sheet-item"
                 data-key="sovkombank-vsekarty"
@@ -2355,8 +2390,11 @@ function executeDownload() {
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sovkombank-vsekarty.plist', 'Совкомбанк (Все карты MDS)', 'sovkombank-vsekarty')"
             >
                 <div class="sheet-item-main">
-                    <div class="app-icon" style="background:linear-gradient(135deg, #0c2340, #ff4c3b);">
-                        <svg viewBox="0 0 32 32" fill="#fff"><rect x="7" y="10" width="18" height="12" rx="2" fill="none" stroke="#fff" stroke-width="2"/><path d="M7 14h18" stroke="#fff" stroke-width="2"/></svg>
+                    <div class="app-icon" style="background:linear-gradient(135deg, #0a1f44 0%, #0d2857 100%);">
+                        <svg viewBox="0 0 32 32">
+                            <path d="M7 16a9 9 0 0 1 15-6.5l-3 3A5 5 0 0 0 11 16z" fill="#0066ff"/>
+                            <path d="M25 16a9 9 0 0 1-15 6.5l3-3A5 5 0 0 0 21 16z" fill="#ff4c3b"/>
+                        </svg>
                     </div>
                     <div class="sheet-info-box">
                         <span class="app-name">Совкомбанк (Все карты MDS)</span>
@@ -2365,6 +2403,7 @@ function executeDownload() {
                 <span class="ios-badge">iOS 17.0</span>
             </div>
 
+            <!-- Т-Банк (8PRO) -->
             <div
                 class="sheet-item"
                 data-key="tbank"
@@ -2373,7 +2412,10 @@ function executeDownload() {
             >
                 <div class="sheet-item-main">
                     <div class="app-icon" style="background:#ffdd2d;">
-                        <svg viewBox="0 0 32 32"><text x="50%" y="58%" dominant-baseline="middle" text-anchor="middle" fill="#000" font-size="19" font-weight="900">Т</text></svg>
+                        <svg viewBox="0 0 32 32">
+                            <path d="M8 8.5h16v6c0 6.5-5.5 10-8 11-2.5-1-8-4.5-8-11v-6z" fill="#000000"/>
+                            <path d="M11.5 12h9v2.5h-3.1v6h-2.8v-6h-3.1V12z" fill="#ffdd2d"/>
+                        </svg>
                     </div>
                     <div class="sheet-info-box">
                         <span class="app-name">Т-Банк (8PRO)</span>
@@ -2382,6 +2424,7 @@ function executeDownload() {
                 <span class="ios-badge">iOS 16.0</span>
             </div>
       
+            <!-- Совкомбанк (Синоптик+) -->
             <div
                 class="sheet-item"
                 data-key="sovkombank-sinoptik"
@@ -2389,8 +2432,11 @@ function executeDownload() {
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sovkombank-sinoptik.plist', 'Совкомбанк (Синоптик+)', 'sovkombank-sinoptik')"
             >
                 <div class="sheet-item-main">
-                    <div class="app-icon" style="background:linear-gradient(135deg, #0c2340, #ff4c3b);">
-                        <svg viewBox="0 0 32 32"><text x="50%" y="58%" dominant-baseline="middle" text-anchor="middle" fill="#fff" font-size="15" font-weight="900">С</text></svg>
+                    <div class="app-icon" style="background:linear-gradient(135deg, #0a1f44 0%, #0d2857 100%);">
+                        <svg viewBox="0 0 32 32">
+                            <path d="M7 16a9 9 0 0 1 15-6.5l-3 3A5 5 0 0 0 11 16z" fill="#0066ff"/>
+                            <path d="M25 16a9 9 0 0 1-15 6.5l3-3A5 5 0 0 0 21 16z" fill="#ff4c3b"/>
+                        </svg>
                     </div>
                     <div class="sheet-info-box">
                         <span class="app-name">Совкомбанк (Синоптик+)</span>
@@ -2399,6 +2445,7 @@ function executeDownload() {
                 <span class="ios-badge">iOS 17.0</span>
             </div>
 
+            <!-- Т-Банк (Drive Transit) -->
             <div
                 class="sheet-item"
                 data-key="drive-transit"
@@ -2407,7 +2454,10 @@ function executeDownload() {
             >
                 <div class="sheet-item-main">
                     <div class="app-icon" style="background:#ffdd2d;">
-                        <svg viewBox="0 0 32 32"><text x="50%" y="58%" dominant-baseline="middle" text-anchor="middle" fill="#000" font-size="19" font-weight="900">Т</text></svg>
+                        <svg viewBox="0 0 32 32">
+                            <path d="M8 8.5h16v6c0 6.5-5.5 10-8 11-2.5-1-8-4.5-8-11v-6z" fill="#000000"/>
+                            <path d="M11.5 12h9v2.5h-3.1v6h-2.8v-6h-3.1V12z" fill="#ffdd2d"/>
+                        </svg>
                     </div>
                     <div class="sheet-info-box">
                         <span class="app-name">Т-Банк (Drive Transit)</span>
@@ -2416,6 +2466,7 @@ function executeDownload() {
                 <span class="ios-badge">iOS 16.0</span>
             </div>
 
+            <!-- Лента -->
             <div
                 class="sheet-item"
                 data-key="lenta"
@@ -2424,7 +2475,14 @@ function executeDownload() {
             >
                 <div class="sheet-item-main">
                     <div class="app-icon" style="background:#003b95;">
-                        <svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="6" fill="#ffd500"/></svg>
+                        <svg viewBox="0 0 32 32">
+                            <circle cx="16" cy="16" r="4.2" fill="#ffd500"/>
+                            <ellipse cx="16" cy="8" rx="2" ry="4" fill="#ffd500"/>
+                            <ellipse cx="16" cy="24" rx="2" ry="4" fill="#ffd500"/>
+                            <ellipse cx="8" cy="16" rx="4" ry="2" fill="#ffd500"/>
+                            <ellipse cx="24" cy="16" rx="4" ry="2" fill="#ffd500"/>
+                            <circle cx="16" cy="16" r="2.5" fill="#003b95"/>
+                        </svg>
                     </div>
                     <div class="sheet-info-box">
                         <span class="app-name">Лента</span>
@@ -2433,6 +2491,7 @@ function executeDownload() {
                 <span class="ios-badge">iOS 16.0</span>
             </div>
       
+            <!-- Яндекс Пэй -->
             <div
                 class="sheet-item"
                 data-key="yandex-pay"
@@ -2440,8 +2499,11 @@ function executeDownload() {
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/yandex-pay.plist', 'Яндекс Пэй', 'yandex-pay')"
             >
                 <div class="sheet-item-main">
-                    <div class="app-icon" style="background:#fc3f1d;">
-                        <svg viewBox="0 0 32 32"><text x="50%" y="58%" dominant-baseline="middle" text-anchor="middle" fill="#fff" font-size="17" font-weight="900">Я</text></svg>
+                    <div class="app-icon" style="background:#ffffff;">
+                        <svg viewBox="0 0 32 32">
+                            <circle cx="16" cy="16" r="12.5" fill="#fc3f1d"/>
+                            <path d="M19.2 8h-3.2c-2.8 0-4.5 1.5-4.5 4.1 0 2.2 1.2 3.4 3 4.2L11 23h2.9l3.1-6.1h1v6.1h2.8V8h-1.6zm-1.6 6.8h-1.3c-1.2 0-2-.6-2-1.9 0-1.2.8-1.9 2-1.9h1.3v3.8z" fill="#ffffff"/>
+                        </svg>
                     </div>
                     <div class="sheet-info-box">
                         <span class="app-name">Яндекс Пэй</span>
@@ -2450,6 +2512,7 @@ function executeDownload() {
                 <span class="ios-badge">iOS 16.0</span>
             </div>
 
+            <!-- 2ГИС -->
             <div
                 class="sheet-item"
                 data-key="2gis"
@@ -2457,8 +2520,12 @@ function executeDownload() {
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/2gis.plist', '2ГИС', '2gis')"
             >
                 <div class="sheet-item-main">
-                    <div class="app-icon" style="background:#28be00;">
-                        <svg viewBox="0 0 32 32"><text x="50%" y="58%" dominant-baseline="middle" text-anchor="middle" fill="#fff" font-size="11" font-weight="900">2ГИС</text></svg>
+                    <div class="app-icon" style="background:#00b843;">
+                        <svg viewBox="0 0 32 32">
+                            <path d="M16 6c-4.4 0-8 3.5-8 7.8 0 5.4 6.8 11.4 7.4 11.9.4.3.9.3 1.3 0 .6-.5 7.3-6.5 7.3-11.9C24 9.5 20.4 6 16 6z" fill="#ffffff"/>
+                            <circle cx="16" cy="13.5" r="3.2" fill="#00b843"/>
+                            <path d="M18.8 8c1.5 1.2 2.2 2.8 2.2 4.5" stroke="#79ea00" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+                        </svg>
                     </div>
                     <div class="sheet-info-box">
                         <span class="app-name">2ГИС</span>
@@ -2467,6 +2534,7 @@ function executeDownload() {
                 <span class="ios-badge">iOS 16.0</span>
             </div>
 
+            <!-- ПСБ (Чайная Церемония) -->
             <div
                 class="sheet-item"
                 data-key="psb"
@@ -2474,8 +2542,12 @@ function executeDownload() {
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/psb.plist', 'ПСБ (Чайная Церемония)', 'psb')"
             >
                 <div class="sheet-item-main">
-                    <div class="app-icon" style="background:linear-gradient(135deg, #002b66, #ff4c00);">
-                        <svg viewBox="0 0 32 32"><text x="50%" y="58%" dominant-baseline="middle" text-anchor="middle" fill="#fff" font-size="11" font-weight="900">ПСБ</text></svg>
+                    <div class="app-icon" style="background:linear-gradient(135deg, #002244 0%, #003366 100%);">
+                        <svg viewBox="0 0 32 32">
+                            <rect x="7" y="10" width="7" height="12" rx="1.5" fill="#f36e21"/>
+                            <rect x="15" y="10" width="10" height="12" rx="1.5" fill="#0055b8"/>
+                            <circle cx="20" cy="16" r="2" fill="#ffffff"/>
+                        </svg>
                     </div>
                     <div class="sheet-info-box">
                         <span class="app-name">ПСБ (Чайная Церемония)</span>
@@ -2484,6 +2556,7 @@ function executeDownload() {
                 <span class="ios-badge">iOS 15.0</span>
             </div>
 
+            <!-- Купер -->
             <div
                 class="sheet-item"
                 data-key="kuper"
@@ -2491,8 +2564,10 @@ function executeDownload() {
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/kuper.plist', 'Купер', 'kuper')"
             >
                 <div class="sheet-item-main">
-                    <div class="app-icon" style="background:linear-gradient(135deg, #10b981, #06b6d4);">
-                        <svg viewBox="0 0 32 32"><text x="50%" y="58%" dominant-baseline="middle" text-anchor="middle" fill="#fff" font-size="17" font-weight="900">К</text></svg>
+                    <div class="app-icon" style="background:#ff5c00;">
+                        <svg viewBox="0 0 32 32">
+                            <path d="M10 8h4v6.2l5.4-6.2h5.1l-6.2 6.8 6.7 9.2h-5.2L14 16.8V24h-4V8z" fill="#ffffff"/>
+                        </svg>
                     </div>
                     <div class="sheet-info-box">
                         <span class="app-name">Купер</span>
@@ -2501,6 +2576,7 @@ function executeDownload() {
                 <span class="ios-badge">iOS 15.0</span>
             </div>
 
+            <!-- Rutube -->
             <div
                 class="sheet-item"
                 data-key="rutube"
@@ -2508,8 +2584,12 @@ function executeDownload() {
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/rutube.plist', 'Rutube', 'rutube')"
             >
                 <div class="sheet-item-main">
-                    <div class="app-icon" style="background:#0d1117;">
-                        <svg viewBox="0 0 32 32" fill="#00aaff"><path d="M12 10l10 6-10 6V10z"/></svg>
+                    <div class="app-icon" style="background:#0c0d12;">
+                        <svg viewBox="0 0 32 32">
+                            <path d="M7 9.5a2.5 2.5 0 0 1 2.5-2.5h13a2.5 2.5 0 0 1 2.5 2.5v13a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 7 22.5v-13z" fill="#1b1d24"/>
+                            <path d="M13 11.5l8 4.5-8 4.5v-9z" fill="#00aaff"/>
+                            <path d="M7 23h18" stroke="#00aaff" stroke-width="1.8"/>
+                        </svg>
                     </div>
                     <div class="sheet-info-box">
                         <span class="app-name">Rutube(Starship Battle)</span>
@@ -2518,6 +2598,7 @@ function executeDownload() {
                 <span class="ios-badge">iOS 16.0</span>
             </div>
 
+            <!-- СберМобайл (Мобио) -->
             <div
                 class="sheet-item"
                 data-key="mobio"
@@ -2525,8 +2606,12 @@ function executeDownload() {
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/mobio.plist', 'СберМобайл (Мобио)', 'mobio')"
             >
                 <div class="sheet-item-main">
-                    <div class="app-icon" style="background:linear-gradient(135deg, #09a13b, #00d2ff);">
-                        <svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="8" stroke="#fff" stroke-width="2"/><path d="M16 11v5l3 3" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+                    <div class="app-icon" style="background:linear-gradient(135deg, #1fa346 0%, #0099cc 100%);">
+                        <svg viewBox="0 0 32 32">
+                            <circle cx="16" cy="16" r="10.5" fill="none" stroke="#ffffff" stroke-width="2.2"/>
+                            <path d="M12 16a4 4 0 0 1 8 0M10 16a6 6 0 0 1 12 0" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+                            <circle cx="16" cy="16" r="1.5" fill="#ffffff"/>
+                        </svg>
                     </div>
                     <div class="sheet-info-box">
                         <span class="app-name">СберМобайл (Мобио)</span>
@@ -2535,6 +2620,7 @@ function executeDownload() {
                 <span class="ios-badge">iOS 15.0</span>
             </div>
       
+            <!-- РЖД Пассажирам -->
             <div
                 class="sheet-item"
                 data-key="rzd"
@@ -2543,7 +2629,9 @@ function executeDownload() {
             >
                 <div class="sheet-item-main">
                     <div class="app-icon" style="background:#e21a1a;">
-                        <svg viewBox="0 0 32 32"><text x="50%" y="58%" dominant-baseline="middle" text-anchor="middle" fill="#fff" font-size="11" font-weight="900">РЖД</text></svg>
+                        <svg viewBox="0 0 32 32">
+                            <path d="M7 11h7.5c2.2 0 3.8 1.4 3.8 3.5 0 1.8-1.2 3.1-2.9 3.4L19 23h-3.4l-3-4.8H9.8V23H7V11zm2.8 4.8h4.5c1 0 1.6-.6 1.6-1.4s-.6-1.4-1.6-1.4H9.8v2.8zm11-4.8H25v7.5c0 3-1.8 4.5-4.5 4.5H19v-2.5h1.5c1.4 0 2-.6 2-2V11h-1.7V11z" fill="#ffffff"/>
+                        </svg>
                     </div>
                     <div class="sheet-info-box">
                         <span class="app-name">РЖД Пассажирам</span>
@@ -2552,6 +2640,7 @@ function executeDownload() {
                 <span class="ios-badge">iOS 15.0</span>
             </div>
 
+            <!-- СберKids (SpeakaBoo) -->
             <div
                 class="sheet-item"
                 data-key="sberkids"
@@ -2559,8 +2648,11 @@ function executeDownload() {
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sberkids.plist', 'СберKids (SpeakaBoo)','sberkids')"
             >
                 <div class="sheet-item-main">
-                    <div class="app-icon" style="background:linear-gradient(135deg, #09a13b, #ffcc00);">
-                        <svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="9" stroke="#fff" stroke-width="2.5"/><path d="M13 16l2 2 4-4" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></svg>
+                    <div class="app-icon" style="background:linear-gradient(135deg, #1fa346 0%, #ffcc00 100%);">
+                        <svg viewBox="0 0 32 32">
+                            <circle cx="16" cy="16" r="11" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-dasharray="52 18"/>
+                            <path d="M11 16l3.5 3.5 7.5-7.5" fill="none" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
                     </div>
                     <div class="sheet-info-box">
                         <span class="app-name">СберKids (SpeakaBoo)</span>
@@ -2569,6 +2661,7 @@ function executeDownload() {
                 <span class="ios-badge">iOS 15.0</span>
             </div>
 
+            <!-- Лента (Быстро Продукты) -->
             <div
                 class="sheet-item"
                 data-key="lentaa"
@@ -2577,7 +2670,14 @@ function executeDownload() {
             >
                 <div class="sheet-item-main">
                     <div class="app-icon" style="background:#003b95;">
-                        <svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="6" fill="#ffd500"/></svg>
+                        <svg viewBox="0 0 32 32">
+                            <circle cx="16" cy="16" r="4.2" fill="#ffd500"/>
+                            <ellipse cx="16" cy="8" rx="2" ry="4" fill="#ffd500"/>
+                            <ellipse cx="16" cy="24" rx="2" ry="4" fill="#ffd500"/>
+                            <ellipse cx="8" cy="16" rx="4" ry="2" fill="#ffd500"/>
+                            <ellipse cx="24" cy="16" rx="4" ry="2" fill="#ffd500"/>
+                            <circle cx="16" cy="16" r="2.5" fill="#003b95"/>
+                        </svg>
                     </div>
                     <div class="sheet-info-box">
                         <span class="app-name">Лента (Быстро Продукты)</span>
@@ -2586,6 +2686,7 @@ function executeDownload() {
                 <span class="ios-badge">iOS 16.0</span>
             </div>
       
+            <!-- Авито (Anero) -->
             <div
                 class="sheet-item"
                 data-key="avito-anero"
@@ -2593,8 +2694,13 @@ function executeDownload() {
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/avito-anero.plist', 'Авито (Anero)', 'avito-anero')"
             >
                 <div class="sheet-item-main">
-                    <div class="app-icon" style="background:#00aaff;">
-                        <svg viewBox="0 0 32 32"><circle cx="12" cy="12" r="3.5" fill="#a4ec34"/><circle cx="20" cy="12" r="4.2" fill="#00aaff"/><circle cx="11" cy="20" r="4.2" fill="#ff4053"/><circle cx="19" cy="20" r="3" fill="#9050f8"/></svg>
+                    <div class="app-icon" style="background:#ffffff;">
+                        <svg viewBox="0 0 32 32">
+                            <circle cx="11.5" cy="12" r="3.7" fill="#95d600"/>
+                            <circle cx="20.5" cy="11.5" r="4.6" fill="#00aaff"/>
+                            <circle cx="11" cy="20.5" r="4.5" fill="#ff4053"/>
+                            <circle cx="19.5" cy="20.5" r="3.2" fill="#9356e8"/>
+                        </svg>
                     </div>
                     <div class="sheet-info-box">
                         <span class="app-name">Авито (Anero)</span>
@@ -2603,6 +2709,7 @@ function executeDownload() {
                 <span class="ios-badge">iOS 16.0</span>
             </div>
 
+            <!-- Т-Банк (Craftersy) -->
             <div
                 class="sheet-item"
                 data-key="craftersy"
@@ -2611,7 +2718,10 @@ function executeDownload() {
             >
                 <div class="sheet-item-main">
                     <div class="app-icon" style="background:#ffdd2d;">
-                        <svg viewBox="0 0 32 32"><text x="50%" y="58%" dominant-baseline="middle" text-anchor="middle" fill="#000" font-size="19" font-weight="900">Т</text></svg>
+                        <svg viewBox="0 0 32 32">
+                            <path d="M8 8.5h16v6c0 6.5-5.5 10-8 11-2.5-1-8-4.5-8-11v-6z" fill="#000000"/>
+                            <path d="M11.5 12h9v2.5h-3.1v6h-2.8v-6h-3.1V12z" fill="#ffdd2d"/>
+                        </svg>
                     </div>
                     <div class="sheet-info-box">
                         <span class="app-name">Т-Банк (Craftersy)</span>
@@ -2620,6 +2730,7 @@ function executeDownload() {
                 <span class="ios-badge">iOS 16.0</span>
             </div>
       
+            <!-- СовкомБанк (SCB Notes) -->
             <div
                 class="sheet-item"
                 data-key="scbnotes"
@@ -2627,8 +2738,11 @@ function executeDownload() {
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/scbnotes.plist', 'СовкомБанк (SCB Notes)', 'scbnotes')"
             >
                 <div class="sheet-item-main">
-                    <div class="app-icon" style="background:linear-gradient(135deg, #0c2340, #ff4c3b);">
-                        <svg viewBox="0 0 32 32"><text x="50%" y="58%" dominant-baseline="middle" text-anchor="middle" fill="#fff" font-size="15" font-weight="900">С</text></svg>
+                    <div class="app-icon" style="background:linear-gradient(135deg, #0a1f44 0%, #0d2857 100%);">
+                        <svg viewBox="0 0 32 32">
+                            <path d="M7 16a9 9 0 0 1 15-6.5l-3 3A5 5 0 0 0 11 16z" fill="#0066ff"/>
+                            <path d="M25 16a9 9 0 0 1-15 6.5l3-3A5 5 0 0 0 21 16z" fill="#ff4c3b"/>
+                        </svg>
                     </div>
                     <div class="sheet-info-box">
                         <span class="app-name">СовкомБанк (SCB Notes)</span>
@@ -2637,6 +2751,7 @@ function executeDownload() {
                 <span class="ios-badge">iOS 17.0</span>
             </div>
       
+            <!-- АК Барс (Всё Учтено) -->
             <div
                 class="sheet-item"
                 data-key="ak-bars-bank"
@@ -2644,8 +2759,10 @@ function executeDownload() {
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/ak-bars-bank.plist', 'АК Барс (Всё Учтено)', 'ak-bars-bank')"
             >
                 <div class="sheet-item-main">
-                    <div class="app-icon" style="background:linear-gradient(135deg, #009846, #007335);">
-                        <svg viewBox="0 0 32 32"><text x="50%" y="58%" dominant-baseline="middle" text-anchor="middle" fill="#fff" font-size="13" font-weight="900">АКБ</text></svg>
+                    <div class="app-icon" style="background:linear-gradient(135deg, #009846 0%, #006830 100%);">
+                        <svg viewBox="0 0 32 32">
+                            <path d="M8 22h3l2-5h6l2 5h3L17.5 7h-3L8 22zm5.8-7.5l2.2-5.5 2.2 5.5h-4.4z" fill="#ffffff"/>
+                        </svg>
                     </div>
                     <div class="sheet-info-box">
                         <span class="app-name">АК Барс (Всё Учтено)</span>
@@ -2654,6 +2771,7 @@ function executeDownload() {
                 <span class="ios-badge">iOS 16.0</span>
             </div>
 
+            <!-- РокетБанк (Блум) -->
             <div
                 class="sheet-item"
                 data-key="blum"
@@ -2661,8 +2779,11 @@ function executeDownload() {
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/blum.plist', 'РокетБанк (Блум)', 'blum')"
             >
                 <div class="sheet-item-main">
-                    <div class="app-icon" style="background:#ff5252;">
-                        <svg viewBox="0 0 32 32" fill="#fff"><circle cx="16" cy="16" r="6"/><path d="M16 6v4m0 12v4M6 16h4m12 0h4" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+                    <div class="app-icon" style="background:linear-gradient(135deg, #1c1c1e 0%, #000000 100%);">
+                        <svg viewBox="0 0 32 32">
+                            <circle cx="16" cy="16" r="11" fill="none" stroke="#ff5c5c" stroke-width="2.2"/>
+                            <path d="M16 8l4 6-2 1v5h-4v-5l-2-1 4-6z" fill="#ff5c5c"/>
+                        </svg>
                     </div>
                     <div class="sheet-info-box">
                         <span class="app-name">РокетБанк (Блум)</span>
