@@ -2361,6 +2361,46 @@ h1,
 }
 </style>
 
+
+<style id="final-ui-colors-v10">
+/* Окно с количеством приложений — новый цвет обводки */
+.app-status-card {
+    border: 2px solid rgba(250, 204, 21, 0.92) !important;
+    box-shadow:
+        0 0 20px rgba(250, 204, 21, 0.12),
+        inset 0 1px 0 rgba(255,255,255,.08) !important;
+}
+
+/* Категории — без индивидуальных обводок и без фона */
+.filter-option,
+.filter-option:hover,
+.filter-option.active {
+    background: transparent !important;
+    border: 0 !important;
+    outline: none !important;
+    box-shadow: none !important;
+    color: #9ca3af !important;
+    text-shadow: none !important;
+}
+
+/* Только разделение между категориями */
+.filter-option + .filter-option {
+    border-top: 1px solid rgba(156, 163, 175, 0.22) !important;
+}
+
+/* В окне категорий пока не нужна прокрутка */
+.filter-dropdown {
+    max-height: none !important;
+    overflow-y: visible !important;
+    scrollbar-width: none !important;
+}
+
+.filter-dropdown::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+}
+</style>
+
 </head>
 
 <body>
