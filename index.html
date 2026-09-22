@@ -1594,6 +1594,20 @@ body.keyboard-open .sheet-modal {
         max-height: calc(100dvh - 30px);
     }
 }   
+
+    .last-update {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: max(10px, env(safe-area-inset-bottom));
+    text-align: center;
+    font-size: 11px;
+    color: rgba(255,255,255,.42);
+    letter-spacing: .2px;
+    z-index: 20;
+    pointer-events: none;
+}
+    
 </style>
 </head>
 
@@ -2800,6 +2814,10 @@ function executeDownload() {
             </div>
         </div>
     </div>
+</div>
+
+    <div class="last-update">
+    Последнее обновление: 22 сентября 2026
 </div>
     
 </body>
