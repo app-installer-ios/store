@@ -2361,40 +2361,39 @@ h1,
 }
 </style>
 
-
-<style id="final-ui-colors-v10">
-/* Окно с количеством приложений — новый цвет обводки */
-.app-status-card {
-    border: 2px solid rgba(250, 204, 21, 0.92) !important;
+<style id="final-ui-colors-final">
+/* ОКНО «количество приложений / работают стабильно» */
+.info-blocks-container .app-status-card {
+    border: 2px solid rgba(251, 146, 60, 0.95) !important;
+    background: rgba(255, 255, 255, 0.04) !important;
     box-shadow:
-        0 0 20px rgba(250, 204, 21, 0.12),
+        0 0 18px rgba(251, 146, 60, 0.12),
         inset 0 1px 0 rgba(255,255,255,.08) !important;
 }
 
-/* Категории — без индивидуальных обводок и без фона */
-.filter-option,
-.filter-option:hover,
-.filter-option.active {
+/* КАТЕГОРИИ — полностью без фона и без обводок */
+.filter-dropdown .filter-option,
+.filter-dropdown .filter-option:hover,
+.filter-dropdown .filter-option.active {
     background: transparent !important;
-    border: 0 !important;
+    border: none !important;
     outline: none !important;
     box-shadow: none !important;
     color: #9ca3af !important;
     text-shadow: none !important;
 }
 
-/* Только разделение между категориями */
-.filter-option + .filter-option {
+/* Только разделители между названиями категорий */
+.filter-dropdown .filter-option + .filter-option {
     border-top: 1px solid rgba(156, 163, 175, 0.22) !important;
 }
 
-/* В окне категорий пока не нужна прокрутка */
+/* Без прокрутки списка категорий */
 .filter-dropdown {
     max-height: none !important;
     overflow-y: visible !important;
     scrollbar-width: none !important;
 }
-
 .filter-dropdown::-webkit-scrollbar {
     display: none !important;
     width: 0 !important;
