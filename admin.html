@@ -912,7 +912,7 @@
         if (elHidden) elHidden.textContent = hidden;
     }
 
-    async function checkAdminAuth() {
+        async function checkAdminAuth() {
         const inputPass = document.getElementById('admin-pass-input').value.trim();
         const errorDiv = document.getElementById('login-error');
         errorDiv.classList.remove('active');
@@ -932,7 +932,18 @@
             if (inputPass === data.value) {
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('admin-panel').style.display = 'flex';
+                
+                // 1. Загружаем текущие настройки
                 loadSettings();
+
+                // 2. ВСТАВЛЯЕМ СЮДА: слушаем обновления базы в реальном времени
+                supabaseClient
+                    .channel('public:settings')
+                    .on('postgres_changes', { event: '*', schema: 'public', table: 'settings' }, (payload) => {
+                        loadSettings();
+                    })
+                    .subscribe();
+
             } else {
                 showLoginError('Неверный пароль');
             }
