@@ -1181,16 +1181,6 @@ label {
 }
 
 .app-search {
-    -webkit-appearance: none;
-    appearance: none;
-    -webkit-text-size-adjust: 100%;
-    font-family: inherit;
-    font-weight: 500;
-    line-height: 44px;
-    text-align: left;
-    text-indent: 0;
-    caret-color: #58b8ff;
-
     width: 100%;
     height: 44px;
     padding: 0 42px 0 38px;
@@ -1208,15 +1198,6 @@ label {
         0 0 25px rgba(168, 85, 247, 0.35),
         0 0 45px rgba(217, 70, 239, 0.2);
     transition: border .2s ease, box-shadow .25s ease, background .25s ease;
-}
-
-.app-search::-webkit-search-decoration,
-.app-search::-webkit-search-cancel-button,
-.app-search::-webkit-search-results-button,
-.app-search::-webkit-search-results-decoration {
-    -webkit-appearance: none;
-    appearance: none;
-    display: none;
 }
 
 .app-search::placeholder {
@@ -1552,7 +1533,7 @@ body.keyboard-open .sheet-overlay {
 }
 
 body.keyboard-open .sheet-modal {
-    transform: none !important;
+    transform: translateY(0) scale(1) !important;
     height: min(78vh, 580px) !important;
     max-height: calc(100dvh - 30px) !important;
 }
@@ -2418,38 +2399,6 @@ h1,
     width: 0 !important;
 }
 </style>
-
-
-<style id="input-caret-fix-only">
-/* Только исправление позиции мигающей полоски */
-.auth-input {
-    line-height: normal !important;
-    box-sizing: border-box !important;
-    vertical-align: middle !important;
-}
-
-.app-search {
-    text-indent: 0 !important;
-    box-sizing: border-box !important;
-}
-
-.app-search-wrap .search-icon {
-    pointer-events: none !important;
-}
-</style>
-
-
-<style id="search-caret-position-fix">
-/* Только исправление позиции курсора в поле поиска приложений */
-.app-search {
-    text-indent: 0 !important;
-    padding-left: 40px !important;
-    padding-right: 40px !important;
-    line-height: normal !important;
-    box-sizing: border-box !important;
-}
-</style>
-
 </head>
 
 <body>
@@ -2621,14 +2570,10 @@ document.addEventListener("DOMContentLoaded", async function() {
             );
         };
         window.visualViewport.addEventListener("resize", updateKeyboardState);
-        window.visualViewport.addEventListener("scroll", updateKeyboardState);
     }
 
     document.querySelectorAll("input").forEach(input => {
         input.addEventListener("focus", () => {
-            // Не запускаем отложенный scrollIntoView для поля поиска.
-            // На iOS он после появления клавиатуры меняет положение input
-            // и визуально смещает caret (мигающую вертикальную полоску).
             if (input.id === "appSearchInput") return;
 
             setTimeout(() => {
@@ -3059,7 +3004,7 @@ function executeDownload() {
                 ⌕
             </span>
             <input
-                type="search"
+                type="text"
                 id="appSearchInput"
                 class="app-search"
                 placeholder="Поиск по названию..."
