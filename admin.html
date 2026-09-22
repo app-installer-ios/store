@@ -489,6 +489,36 @@
         }
         .sheet-close:hover { color: #fff; }
 
+        .btn-generate-all {
+            width: 100%;
+            min-height: 48px;
+            margin-bottom: 14px;
+            padding: 0 16px;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.22), rgba(217, 119, 6, 0.14));
+            border: 1.5px solid var(--border-admin);
+            border-radius: 16px;
+            color: #fde68a;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 18px var(--glow-admin);
+            transition: all 0.25s var(--spring);
+        }
+
+        .btn-generate-all:hover {
+            border-color: rgba(245, 158, 11, 0.95);
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.32), rgba(217, 119, 6, 0.2));
+            box-shadow: 0 8px 24px rgba(245, 158, 11, 0.25);
+            transform: translateY(-1px);
+            color: #fef3c7;
+        }
+
+        .btn-generate-all:disabled {
+            opacity: 0.65;
+            cursor: wait;
+            transform: none;
+        }
+
         .app-search-wrap {
             position: relative;
             margin-bottom: 16px;
@@ -766,6 +796,10 @@
                 </div>
             </div>
         </div>
+
+        <button class="btn-generate-all" id="btnGenerateAllPasswords" type="button" onclick="generateAndSaveAllPasswords()">
+            <span>🔐 Сгенерировать и сохранить пароли для всех</span>
+        </button>
 
         <div class="app-search-wrap">
             <span class="search-icon">⌕</span>
@@ -1122,6 +1156,58 @@
     function generatePassword() {
         const newPass = Math.floor(100000 + Math.random() * 900000).toString();
         document.getElementById('editPasswordInput').value = newPass;
+    }
+
+    async function generateAndSaveAllPasswords() {
+        const btn = document.getElementById('btnGenerateAllPasswords');
+        if (!btn) return;
+
+        const oldText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<span>⏳ Генерация и сохранение...</span>';
+
+        try {
+            // Генерируем уникальный шестизначный цифровой пароль для каждого приложения.
+            const usedPasswords = new Set();
+            const updates = [];
+
+            for (const app of appConfigList) {
+                let newPass = '';
+
+                do {
+                    const array = new Uint32Array(1);
+                    crypto.getRandomValues(array);
+                    newPass = String(100000 + (array[0] % 900000));
+                } while (usedPasswords.has(newPass));
+
+                usedPasswords.add(newPass);
+                updates.push({ key: app.key, value: newPass });
+            }
+
+            // Сохраняем все пароли одним пакетом.
+            const { error } = await supabaseClient
+                .from('settings')
+                .upsert(updates, { onConflict: 'key' });
+
+            if (error) {
+                showToast('Ошибка при сохранении паролей');
+                return;
+            }
+
+            // Обновляем локальные данные без изменения остальной логики панели.
+            updates.forEach(item => {
+                appPasswordsData[item.key] = item.value;
+            });
+
+            updatePasswordStats();
+            renderAdminAppsList();
+            showToast(`Новые пароли сохранены для всех ${updates.length} приложений`);
+        } catch (error) {
+            showToast('Ошибка при генерации паролей');
+        } finally {
+            btn.innerHTML = oldText;
+            btn.disabled = false;
+        }
     }
 
     function clearPassword() {
