@@ -2242,6 +2242,83 @@ h1,
     box-shadow: 0 0 28px rgba(217, 70, 239, 0.32), inset 0 1px 0 rgba(255,255,255,.12) !important;
 }
 </style>
+
+<style id="final-ui-colors-v7">
+/* 1. Блок «Свяжитесь с нами» — чуть заметнее, без резкого свечения */
+.support-notice {
+    border: 1.8px solid rgba(129, 140, 248, 0.68) !important;
+    border-radius: 14px !important;
+    background: rgba(99, 102, 241, 0.055) !important;
+    box-shadow:
+        0 0 18px rgba(99, 102, 241, 0.10),
+        inset 0 1px 0 rgba(255,255,255,.07) !important;
+}
+
+.support-notice a {
+    color: #67e8f9 !important;
+    text-shadow: 0 0 13px rgba(34, 211, 238, 0.28) !important;
+}
+
+.support-notice a:hover {
+    color: #a5f3fc !important;
+    text-shadow: 0 0 19px rgba(34, 211, 238, 0.42) !important;
+}
+
+/* 2. Окно с количеством приложений и их работой */
+.app-status-card {
+    border: 1.8px solid rgba(250, 204, 21, 0.72) !important;
+    background: rgba(250, 204, 21, 0.045) !important;
+    box-shadow:
+        0 0 18px rgba(250, 204, 21, 0.10),
+        inset 0 1px 0 rgba(255,255,255,.07) !important;
+}
+
+/* 3. Категории: без фона и без обводок, только заметные разделённые названия */
+.filter-dropdown {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    padding: 5px 0 !important;
+}
+
+.filter-option {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    border-radius: 10px !important;
+    margin: 2px 0 !important;
+    color: #d8b4fe !important;
+    text-shadow: 0 0 12px rgba(192, 132, 252, 0.28) !important;
+}
+
+.filter-option + .filter-option {
+    border-top: 1px solid rgba(255,255,255,.10) !important;
+    border-radius: 0 0 10px 10px !important;
+    padding-top: 10px !important;
+}
+
+.filter-option:hover,
+.filter-option.active {
+    background: transparent !important;
+    border-left: 0 !important;
+    border-right: 0 !important;
+    border-bottom: 0 !important;
+    color: #f0abfc !important;
+    text-shadow: 0 0 16px rgba(232, 121, 249, 0.42) !important;
+}
+
+/* 4. Окно защиты установки с выбранным приложением */
+#appAuthApp .auth-box {
+    border-color: rgba(96, 165, 250, 0.82) !important;
+    box-shadow:
+        0 0 24px rgba(96, 165, 250, 0.13),
+        0 25px 70px rgba(0,0,0,.65),
+        inset 0 1px 1px rgba(255,255,255,.08) !important;
+}
+</style>
+
 </head>
 
 <body>
