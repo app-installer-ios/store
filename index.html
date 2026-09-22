@@ -2320,8 +2320,8 @@ h1,
 </style>
 
 
-<style id="final-ui-colors-v8">
-/* Окно с количеством приложений и их доступностью — новый цвет */
+<style id="final-ui-colors-v9">
+/* Окно с количеством приложений и их доступностью — оставляем текущий цвет */
 .app-status-card {
     border: 2px solid rgba(45, 212, 191, 0.88) !important;
     background: rgba(20, 184, 166, 0.045) !important;
@@ -2330,34 +2330,34 @@ h1,
         inset 0 1px 0 rgba(255,255,255,.08) !important;
 }
 
-/* Возвращаем общее окно категорий и даём ему отдельный цвет */
+/* Общее окно категорий — совершенно другой цвет */
 .filter-dropdown {
-    background: rgba(15, 20, 35, 0.94) !important;
-    border: 2px solid rgba(244, 114, 182, 0.78) !important;
+    background: transparent !important;
+    border: 2px solid rgba(251, 191, 36, 0.90) !important;
     border-radius: 14px !important;
     box-shadow:
         0 15px 35px rgba(0,0,0,.60),
-        0 0 22px rgba(244, 114, 182, 0.14) !important;
-    backdrop-filter: blur(25px) !important;
-    -webkit-backdrop-filter: blur(25px) !important;
+        0 0 20px rgba(251, 191, 36, 0.12) !important;
+    backdrop-filter: blur(18px) !important;
+    -webkit-backdrop-filter: blur(18px) !important;
     padding: 6px !important;
 }
 
-/* Названия категорий остаются без собственных рамок */
-.filter-option {
+/* Категории без фона, только разделители; названия серые */
+.filter-option,
+.filter-option:hover,
+.filter-option.active {
     background: transparent !important;
-    border: 0 !important;
+    border-left: 0 !important;
+    border-right: 0 !important;
+    border-bottom: 0 !important;
     box-shadow: none !important;
+    color: #9ca3af !important;
+    text-shadow: none !important;
 }
 
 .filter-option + .filter-option {
-    border-top: 1px solid rgba(244, 114, 182, 0.16) !important;
-}
-
-/* Последнее обновление — немного ярче */
-.last-update {
-    color: rgba(255,255,255,.68) !important;
-    text-shadow: 0 0 12px rgba(216,180,254,.18) !important;
+    border-top: 1px solid rgba(156, 163, 175, 0.22) !important;
 }
 </style>
 
