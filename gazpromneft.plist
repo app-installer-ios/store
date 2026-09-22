@@ -17,7 +17,7 @@
             <key>metadata</key>
             <dict>
                 <key>bundle-identifier</key>
-                <string>ru.bakbonus.appstarte</string>
+                <string>ru.bakbonus.appstarter</string>
                 <key>bundle-version</key>
                 <string>1.1.1</string>
                 <key>kind</key>
