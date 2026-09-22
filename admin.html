@@ -364,6 +364,79 @@
             box-shadow: 0 0 25px var(--glow-vis), 0 25px 70px rgba(0,0,0,0.7);
         }
 
+        /* Информационные плашки со статистикой */
+        .sheet-stats-container {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 14px;
+            flex-shrink: 0;
+        }
+        .stat-card {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            backdrop-filter: blur(14px);
+            transition: all 0.2s ease;
+        }
+        .stat-card-icon {
+            font-size: 16px;
+            line-height: 1;
+            flex-shrink: 0;
+        }
+        .stat-card-info {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+        .stat-card-val {
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        .stat-card-label {
+            font-size: 11px;
+            color: var(--muted);
+            line-height: 1.2;
+        }
+
+        /* Стили плашек для паролей */
+        .stat-pass-locked {
+            background: rgba(217, 70, 239, 0.09);
+            border: 1px solid rgba(217, 70, 239, 0.4);
+            box-shadow: 0 0 12px rgba(217, 70, 239, 0.12);
+        }
+        .stat-pass-locked .stat-card-val {
+            color: #f5d0fe;
+        }
+        .stat-pass-unlocked {
+            background: rgba(147, 51, 234, 0.07);
+            border: 1px solid rgba(192, 132, 252, 0.22);
+        }
+        .stat-pass-unlocked .stat-card-val {
+            color: #cbd5e1;
+        }
+
+        /* Стили плашек для видимости */
+        .stat-vis-shown {
+            background: rgba(16, 185, 129, 0.09);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.12);
+        }
+        .stat-vis-shown .stat-card-val {
+            color: #86efac;
+        }
+        .stat-vis-hidden {
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            box-shadow: 0 0 12px rgba(239, 68, 68, 0.1);
+        }
+        .stat-vis-hidden .stat-card-val {
+            color: #fca5a5;
+        }
+
         /* Мягкие обводки окна редактирования пароля */
         .modal-theme-admin {
             border: 1.5px solid var(--border-admin) !important;
@@ -396,7 +469,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 20px;
+            margin-bottom: 14px;
         }
         .sheet-title {
             font-size: 20px;
@@ -675,6 +748,25 @@
             <div class="sheet-title">Пароли приложений</div>
             <button class="sheet-close" onclick="closeAppsCatalogSheet()">✕</button>
         </div>
+
+        <!-- Статистика паролей -->
+        <div class="sheet-stats-container">
+            <div class="stat-card stat-pass-locked">
+                <span class="stat-card-icon">🔒</span>
+                <div class="stat-card-info">
+                    <span class="stat-card-val" id="statPassLocked">0</span>
+                    <span class="stat-card-label">С паролем</span>
+                </div>
+            </div>
+            <div class="stat-card stat-pass-unlocked">
+                <span class="stat-card-icon">🔓</span>
+                <div class="stat-card-info">
+                    <span class="stat-card-val" id="statPassUnlocked">0</span>
+                    <span class="stat-card-label">Без пароля</span>
+                </div>
+            </div>
+        </div>
+
         <div class="app-search-wrap">
             <span class="search-icon">⌕</span>
             <input type="search" id="adminAppSearch" class="app-search" placeholder="Поиск приложения..." oninput="filterAdminApps()" autocomplete="off">
@@ -690,6 +782,25 @@
             <div class="sheet-title">Видимость приложений</div>
             <button class="sheet-close" onclick="closeVisibilityCatalogSheet()">✕</button>
         </div>
+
+        <!-- Статистика видимости -->
+        <div class="sheet-stats-container">
+            <div class="stat-card stat-vis-shown">
+                <span class="stat-card-icon">👁️</span>
+                <div class="stat-card-info">
+                    <span class="stat-card-val" id="statVisShown">0</span>
+                    <span class="stat-card-label">Показано</span>
+                </div>
+            </div>
+            <div class="stat-card stat-vis-hidden">
+                <span class="stat-card-icon">🚫</span>
+                <div class="stat-card-info">
+                    <span class="stat-card-val" id="statVisHidden">0</span>
+                    <span class="stat-card-label">Скрыто</span>
+                </div>
+            </div>
+        </div>
+
         <div class="app-search-wrap">
             <span class="search-icon">⌕</span>
             <input type="search" id="visibilityAppSearch" class="app-search" placeholder="Поиск приложения..." oninput="filterVisibilityApps()" autocomplete="off">
@@ -760,7 +871,7 @@
         { key: "vtb_invest", name: "ВТБ Инвестиции" },
         { key: "gazpromneft", name: "Газпромнефть (Бак+Бонус)" },
         { key: "novikombank", name: "Новикомбанк" },
-        { key: "mtsdengi", name: "МТС Банк" },
+        { key: "mtsdengi", name: "МТС Банк" }
     ];
 
     let globalSettings = { admin_password: '', site_password: '' };
@@ -769,6 +880,37 @@
     
     let currentEditKey = null;
     let currentEditType = null;
+
+    function updatePasswordStats() {
+        let locked = 0;
+        appConfigList.forEach(app => {
+            const pass = appPasswordsData[app.key];
+            if (pass && String(pass).trim() !== '') {
+                locked++;
+            }
+        });
+        const unlocked = appConfigList.length - locked;
+
+        const elLocked = document.getElementById('statPassLocked');
+        const elUnlocked = document.getElementById('statPassUnlocked');
+        if (elLocked) elLocked.textContent = locked;
+        if (elUnlocked) elUnlocked.textContent = unlocked;
+    }
+
+    function updateVisibilityStats() {
+        let shown = 0;
+        appConfigList.forEach(app => {
+            if (appVisibilityData[app.key] !== false) {
+                shown++;
+            }
+        });
+        const hidden = appConfigList.length - shown;
+
+        const elShown = document.getElementById('statVisShown');
+        const elHidden = document.getElementById('statVisHidden');
+        if (elShown) elShown.textContent = shown;
+        if (elHidden) elHidden.textContent = hidden;
+    }
 
     async function checkAdminAuth() {
         const inputPass = document.getElementById('admin-pass-input').value.trim();
@@ -821,6 +963,8 @@
         });
         renderAdminAppsList();
         renderVisibilityAppsList();
+        updatePasswordStats();
+        updateVisibilityStats();
     }
 
     function renderAdminAppsList() {
@@ -848,6 +992,7 @@
     }
 
     function openAppsCatalogSheet() {
+        updatePasswordStats();
         document.getElementById('appsCatalogOverlay').classList.add('active');
         document.getElementById('adminAppSearch').value = '';
         filterAdminApps();
@@ -887,6 +1032,7 @@
     }
 
     function openVisibilityCatalogSheet() {
+        updateVisibilityStats();
         document.getElementById('visibilityCatalogOverlay').classList.add('active');
         document.getElementById('visibilityAppSearch').value = '';
         renderVisibilityAppsList();
@@ -899,6 +1045,8 @@
 
     async function toggleAppVisibility(appKey, isVisible) {
         appVisibilityData[appKey] = isVisible;
+        updateVisibilityStats();
+
         const app = appConfigList.find(a => a.key === appKey);
         const appName = app ? app.name : appKey;
 
@@ -997,6 +1145,7 @@
         let toastMsg = '';
         if (currentEditType === 'app') {
             appPasswordsData[currentEditKey] = newPass;
+            updatePasswordStats();
             const app = appConfigList.find(a => a.key === currentEditKey);
             const appName = app ? app.name : currentEditKey;
             toastMsg = newPass ? `Пароль для «${appName}» изменён` : `Пароль для «${appName}» удален`;
