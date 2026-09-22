@@ -1863,6 +1863,156 @@ h1,
     color: rgba(216,180,254,.48);
 }
 
+/* ===== ДОПОЛНИТЕЛЬНОЕ ВЫДЕЛЕНИЕ ВАЖНЫХ ЭЛЕМЕНТОВ ===== */
+
+/* Приложения в списке — отдельная бирюзовая обводка */
+.sheet-item {
+    border-color: rgba(34, 211, 238, 0.55) !important;
+}
+
+.sheet-item:hover,
+.sheet-item:active {
+    border-color: rgba(34, 211, 238, 0.85) !important;
+}
+
+/* Кнопка выбора категории — отдельная янтарная обводка */
+.custom-select-btn {
+    border-color: rgba(245, 158, 11, 0.65) !important;
+}
+
+.custom-select-btn:hover,
+.custom-select-btn:active {
+    border-color: rgba(245, 158, 11, 0.90) !important;
+}
+
+/* Поле ввода пароля — отдельная зелёная обводка */
+.auth-input {
+    border-color: rgba(52, 211, 153, 0.65) !important;
+}
+
+.auth-input:focus {
+    border-color: rgba(52, 211, 153, 0.95) !important;
+    box-shadow:
+        0 0 0 3px rgba(52, 211, 153, 0.10),
+        0 0 20px rgba(52, 211, 153, 0.18),
+        inset 0 1px 0 rgba(255,255,255,.07) !important;
+}
+
+
+
+/* ==================================================
+   ДОПОЛНИТЕЛЬНОЕ ВЫДЕЛЕНИЕ ВАЖНЫХ ЭЛЕМЕНТОВ
+   Только обводки — размеры, расположение и логика не меняются.
+================================================== */
+
+/* Все основные существующие обводки делаем немного толще и ярче */
+.auth-box,
+.card,
+.custom-select-btn,
+.auth-input,
+.sheet-item,
+.btn-telegram,
+.support-notice {
+    border-width: 1.8px !important;
+}
+
+/* Главное окно авторизации — зелёная обводка */
+.auth-box {
+    border-color: rgba(52, 211, 153, 0.78) !important;
+    box-shadow:
+        0 0 24px rgba(52, 211, 153, 0.16),
+        0 25px 70px rgba(0,0,0,.62),
+        inset 0 1px 1px rgba(255,255,255,.08) !important;
+}
+
+/* Окно авторизации приложения — также отдельный зелёный акцент */
+#appAuthApp .auth-box {
+    border-color: rgba(52, 211, 153, 0.88) !important;
+    box-shadow:
+        0 0 28px rgba(52, 211, 153, 0.20),
+        0 25px 70px rgba(0,0,0,.65),
+        inset 0 1px 1px rgba(255,255,255,.08) !important;
+}
+
+/* Поля ввода пароля — яркая салатово-зелёная обводка */
+.auth-input {
+    border-color: rgba(74, 222, 128, 0.72) !important;
+    box-shadow: 0 0 14px rgba(74, 222, 128, 0.10) !important;
+}
+
+.auth-input:focus {
+    border-color: rgba(134, 239, 172, 0.98) !important;
+    box-shadow:
+        0 0 0 3px rgba(74, 222, 128, 0.10),
+        0 0 24px rgba(74, 222, 128, 0.22),
+        inset 0 1px 0 rgba(255,255,255,.08) !important;
+}
+
+/* Общее главное окно экрана выбора приложений — фиолетовая обводка */
+.card {
+    border-color: rgba(192, 132, 252, 0.62) !important;
+    box-shadow:
+        0 0 24px rgba(168, 85, 247, 0.13),
+        0 25px 70px rgba(0,0,0,.62),
+        inset 0 1px 1px rgba(255,255,255,.08) !important;
+}
+
+/* Кнопка выбора категории — золотистая обводка */
+.custom-select-btn {
+    border-color: rgba(251, 191, 36, 0.82) !important;
+    box-shadow: 0 0 15px rgba(251, 191, 36, 0.11) !important;
+}
+
+.custom-select-btn:hover,
+.custom-select-btn:active {
+    border-color: rgba(252, 211, 77, 0.98) !important;
+    box-shadow: 0 0 22px rgba(251, 191, 36, 0.18) !important;
+}
+
+/* Каждое приложение в списке — бирюзовая обводка */
+.sheet-item {
+    border-color: rgba(45, 212, 191, 0.70) !important;
+    box-shadow: 0 0 13px rgba(45, 212, 191, 0.10) !important;
+}
+
+.sheet-item:hover,
+.sheet-item:active,
+.sheet-item.selected {
+    border-color: rgba(94, 234, 212, 0.98) !important;
+    box-shadow:
+        0 0 20px rgba(45, 212, 191, 0.20),
+        inset 0 1px 0 rgba(255,255,255,.08) !important;
+}
+
+/* Ссылка «Связаться с нами» — розово-сиреневая обводка */
+.support-notice {
+    border: 1.8px solid rgba(232, 121, 249, 0.58) !important;
+    border-radius: 14px;
+    padding: 9px 12px !important;
+    background: rgba(217, 70, 239, 0.045);
+    box-shadow: 0 0 15px rgba(217, 70, 239, 0.09);
+}
+
+.support-notice a {
+    color: #f0abfc !important;
+    text-shadow: 0 0 14px rgba(232, 121, 249, 0.32) !important;
+}
+
+.support-notice a:hover {
+    color: #f5d0fe !important;
+    text-shadow: 0 0 20px rgba(232, 121, 249, 0.48) !important;
+}
+
+/* Кнопка Telegram — чуть более заметная обводка */
+.btn-telegram {
+    border-color: rgba(34, 211, 238, 0.68) !important;
+    box-shadow: 0 0 16px rgba(34, 211, 238, 0.10) !important;
+}
+
+.btn-telegram:hover {
+    border-color: rgba(103, 232, 249, 0.92) !important;
+    box-shadow: 0 0 22px rgba(34, 211, 238, 0.18) !important;
+}
 </style>
 </head>
 
