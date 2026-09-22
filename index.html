@@ -1621,7 +1621,7 @@ async function fetchSupabaseSettings() {
         let data = await response.json();
         
         let config = {
-            sitePassword: "930218",
+            sitePassword: "",
             appPasswords: {},
             appVisibility: {}
         };
@@ -1640,15 +1640,15 @@ async function fetchSupabaseSettings() {
     } catch (e) {
         console.error("Не удалось загрузить настройки из Supabase, используются дефолтные:", e);
         return {
-            sitePassword: "930218",
+            sitePassword: "",
             appPasswords: {
-                "vk": "852431", "max": "754526", "vk-video": "917483", "vk-clips": "332745",
-                "sberfinansy": "602937", "sovkombank-vsekarty": "852358", "sovkombank-sinoptik": "532861",
-                "avito": "153418", "tbank": "523516", "drive-transit": "459172", "lenta": "381046",
-                "avito-anero": "559856", "yandex-pay": "187541", "2gis": "148620", "psb": "475820",
-                "kuper": "296481", "rutube": "810630", "rzd": "642195", "ak-bars-bank": "826514",
-                "lentaa": "587642", "mobio": "478901", "sberkids": "761397", "blum": "541740",
-                "scbnotes": "185628", "craftersy": "385490"
+                "vk": "", "max": "", "vk-video": "", "vk-clips": "",
+                "sberfinansy": "", "sovkombank-vsekarty": "", "sovkombank-sinoptik": "",
+                "avito": "", "tbank": "", "drive-transit": "", "lenta": "",
+                "avito-anero": "", "yandex-pay": "", "2gis": "", "psb": "",
+                "kuper": "", "rutube": "", "rzd": "", "ak-bars-bank": "",
+                "lentaa": "", "mobio": "", "sberkids": "", "blum": "",
+                "scbnotes": "", "craftersy": ""
             },
             appVisibility: {}
         };
@@ -1656,7 +1656,7 @@ async function fetchSupabaseSettings() {
 }
 
 let remoteConfig = {
-    sitePassword: "930218",
+    sitePassword: "",
     appPasswords: {},
     appVisibility: {}
 };
