@@ -2107,6 +2107,116 @@ h1,
     text-shadow: 0 0 20px rgba(52, 211, 153, 0.42) !important;
 }
 
+
+
+/* ==================================================
+   НОВОЕ ВЫДЕЛЕНИЕ КАТАЛОГА
+   Только оформление — логика и JavaScript не изменяются.
+================================================== */
+
+/* Окно с количеством доступных приложений — красная обводка */
+.info-card.app-status-card {
+    border: 2px solid rgba(248, 113, 113, 0.88) !important;
+    background: rgba(248, 113, 113, 0.055) !important;
+    box-shadow: 0 0 16px rgba(248, 113, 113, 0.10) !important;
+}
+
+/* Шестерёнка — красная обводка вместо прежней золотой */
+.search-filter-btn {
+    border: 2px solid rgba(248, 113, 113, 0.92) !important;
+    background: rgba(248, 113, 113, 0.10) !important;
+    color: #fca5a5 !important;
+    box-shadow: 0 0 18px rgba(248, 113, 113, 0.14) !important;
+}
+
+.search-filter-btn:hover,
+.search-filter-btn.active {
+    border-color: rgba(254, 202, 202, 1) !important;
+    background: rgba(248, 113, 113, 0.18) !important;
+    color: #fecaca !important;
+    box-shadow: 0 0 24px rgba(248, 113, 113, 0.22) !important;
+}
+
+/* Маленькое окно категорий — красная обводка */
+.filter-dropdown {
+    border: 2px solid rgba(248, 113, 113, 0.88) !important;
+    background: rgba(18, 6, 26, 0.97) !important;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.60), 0 0 18px rgba(248, 113, 113, 0.12) !important;
+}
+
+/* Каждая категория — свой отдельный цвет фона */
+.filter-option {
+    border: 1px solid transparent !important;
+}
+
+.filter-option:nth-child(1) {
+    background: rgba(249, 115, 22, 0.16) !important;
+    color: #fdba74 !important;
+    border-color: rgba(249, 115, 22, 0.38) !important;
+}
+
+.filter-option:nth-child(2) {
+    background: rgba(132, 204, 22, 0.16) !important;
+    color: #bef264 !important;
+    border-color: rgba(132, 204, 22, 0.38) !important;
+}
+
+.filter-option:nth-child(3) {
+    background: rgba(236, 72, 153, 0.16) !important;
+    color: #f9a8d4 !important;
+    border-color: rgba(236, 72, 153, 0.38) !important;
+}
+
+.filter-option:nth-child(4) {
+    background: rgba(14, 165, 233, 0.16) !important;
+    color: #7dd3fc !important;
+    border-color: rgba(14, 165, 233, 0.38) !important;
+}
+
+.filter-option:nth-child(5) {
+    background: rgba(168, 85, 247, 0.16) !important;
+    color: #d8b4fe !important;
+    border-color: rgba(168, 85, 247, 0.38) !important;
+}
+
+.filter-option:nth-child(1):hover,
+.filter-option:nth-child(1).active {
+    background: rgba(249, 115, 22, 0.28) !important;
+    color: #fed7aa !important;
+}
+
+.filter-option:nth-child(2):hover,
+.filter-option:nth-child(2).active {
+    background: rgba(132, 204, 22, 0.28) !important;
+    color: #d9f99d !important;
+}
+
+.filter-option:nth-child(3):hover,
+.filter-option:nth-child(3).active {
+    background: rgba(236, 72, 153, 0.28) !important;
+    color: #fbcfe8 !important;
+}
+
+.filter-option:nth-child(4):hover,
+.filter-option:nth-child(4).active {
+    background: rgba(14, 165, 233, 0.28) !important;
+    color: #bae6fd !important;
+}
+
+.filter-option:nth-child(5):hover,
+.filter-option:nth-child(5).active {
+    background: rgba(168, 85, 247, 0.28) !important;
+    color: #e9d5ff !important;
+}
+
+/* Убираем свечение только у окна выбранного приложения в защите установки */
+#appAuthApp .app-badge-box {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
+}
+
+#appAuthApp .app-badge-box span {
+    text-shadow: none !important;
+}
 </style>
 </head>
 
