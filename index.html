@@ -2398,6 +2398,58 @@ h1,
     display: none !important;
     width: 0 !important;
 }
+
+
+/* --------------------------------------------------
+   SEARCH ICON & SELECTED CATEGORY — FINAL OVERRIDES
+-------------------------------------------------- */
+.search-icon {
+    width: 18px;
+    height: 18px;
+    left: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #d8b4fe;
+}
+
+.search-icon svg {
+    width: 17px;
+    height: 17px;
+    display: block;
+    filter: drop-shadow(0 0 6px rgba(216,180,254,.45));
+}
+
+/* Чуть более заметное состояние выбранной категории */
+.filter-option.active {
+    position: relative;
+    transform: translateX(2px) scale(1.015);
+    background: linear-gradient(135deg, rgba(168,85,247,.42), rgba(217,70,239,.28)) !important;
+    border-color: rgba(216,180,254,.72) !important;
+    color: #fff !important;
+    font-weight: 650 !important;
+    box-shadow:
+        0 0 0 1px rgba(192,132,252,.18),
+        0 5px 14px rgba(168,85,247,.18),
+        inset 0 1px 0 rgba(255,255,255,.14);
+}
+
+.filter-option.active::after {
+    content: "✓";
+    float: right;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    text-shadow: 0 0 8px rgba(255,255,255,.45);
+}
+
+.filter-option:active {
+    transform: scale(.98);
+}
+
+.filter-option.active:active {
+    transform: translateX(2px) scale(.99);
+}
 </style>
 </head>
 
@@ -3000,8 +3052,11 @@ function executeDownload() {
         </div>
 
         <div class="app-search-wrap">
-            <span class="search-icon">
-                ⌕
+            <span class="search-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="6.5"></circle>
+                    <path d="m16 16 4.2 4.2"></path>
+                </svg>
             </span>
             <input
                 type="text"
