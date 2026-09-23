@@ -2404,20 +2404,25 @@ h1,
    SEARCH ICON & SELECTED CATEGORY — FINAL OVERRIDES
 -------------------------------------------------- */
 .search-icon {
-    width: 18px;
-    height: 18px;
+    width: 19px;
+    height: 19px;
     left: 13px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #d8b4fe;
+    color: #f3e8ff;
+    opacity: 1;
 }
 
 .search-icon svg {
-    width: 17px;
-    height: 17px;
+    width: 18px;
+    height: 18px;
     display: block;
-    filter: drop-shadow(0 0 6px rgba(216,180,254,.45));
+    stroke: #f3e8ff;
+    stroke-width: 2.5;
+    filter:
+        drop-shadow(0 0 4px rgba(216,180,254,.8))
+        drop-shadow(0 0 9px rgba(168,85,247,.5));
 }
 
 /* Чуть более заметное состояние выбранной категории */
