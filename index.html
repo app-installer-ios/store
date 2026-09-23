@@ -2840,7 +2840,64 @@ function cancelAppPassword() {
     switchScreen("mainApp");
 }
 
+function detectDeviceName() {
+    const ua = navigator.userAgent || "";
+
+    if (/iPad/i.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)) {
+        return "iPad";
+    }
+
+    if (/iPhone/i.test(ua)) {
+        return "iPhone";
+    }
+
+    if (/Android/i.test(ua)) {
+        return "Android";
+    }
+
+    if (/Macintosh|Mac OS X/i.test(ua)) {
+        return "Mac";
+    }
+
+    if (/Windows/i.test(ua)) {
+        return "Windows";
+    }
+
+    if (/Linux/i.test(ua)) {
+        return "Linux";
+    }
+
+    return "Неизвестное устройство";
+}
+
+function notifyInstallation() {
+    try {
+        const appName =
+            document.getElementById("selectedAppText")?.textContent?.trim() ||
+            selectedAppKey ||
+            "Неизвестное приложение";
+
+        const device = detectDeviceName();
+
+        fetch(`${SUPABASE_URL}/functions/v1/smooth-handler`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                action: "installation",
+                app: appName,
+                device: device
+            }),
+            keepalive: true
+        }).catch(() => {});
+    } catch (e) {
+        // Ошибка уведомления не должна влиять на установку приложения
+    }
+}
+
 function executeDownload() {
+    notifyInstallation();
     isInstalling = true;
 
     setTimeout(() => {
