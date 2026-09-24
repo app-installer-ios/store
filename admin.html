@@ -15,7 +15,7 @@
             --danger-bg: rgba(239, 68, 68, 0.15);
             --spring: cubic-bezier(.22,1,.36,1);
 
-            /* Спокойные, но отчетливо различимые цветовые акценты */
+            /* Цветовые акценты */
             --border-admin: rgba(217, 119, 6, 0.45);   /* Янтарный / Оранжевый */
             --glow-admin: rgba(217, 119, 6, 0.08);
 
@@ -27,6 +27,22 @@
 
             --border-vis: rgba(13, 148, 136, 0.45);   /* Бирюзовый / Изумрудный */
             --glow-vis: rgba(13, 148, 136, 0.08);
+
+            /* Новые строгие цвета для статуса БД, истории и карточек приложений */
+            --border-db: rgba(99, 102, 241, 0.35);     /* Строгий индиго / сине-серый */
+            --glow-db: rgba(99, 102, 241, 0.06);
+
+            --border-history: rgba(148, 163, 184, 0.35); /* Сдержанный стальной */
+            --glow-history: rgba(148, 163, 184, 0.05);
+
+            --border-apps-pass: rgba(168, 85, 247, 0.4);  /* Глубокий фиолетовый для паролей приложений */
+            --glow-apps-pass: rgba(168, 85, 247, 0.06);
+
+            --border-apps-vis: rgba(20, 184, 166, 0.4);   /* Спокойный бирюзовый для видимости приложений */
+            --glow-apps-vis: rgba(20, 184, 166, 0.06);
+
+            --border-show-all: rgba(16, 185, 129, 0.45);  /* Изумрудный для "Показать все" */
+            --border-hide-all: rgba(244, 63, 94, 0.45);   /* Строгий приглушенно-красный для "Скрыть все" */
 
             /* Уникальные цвета обводок для кнопок действий в модальных окнах */
             --border-btn-gen-all: rgba(236, 72, 153, 0.5); /* Розовый */
@@ -99,8 +115,9 @@
             font-size: 11px;
             color: var(--muted);
             margin-bottom: 14px;
-            background: rgba(147, 51, 234, 0.05);
-            border: 1px solid rgba(192, 132, 252, 0.1);
+            background: rgba(99, 102, 241, 0.04);
+            border: 1px solid var(--border-db);
+            box-shadow: 0 2px 8px var(--glow-db);
             padding: 5px 10px;
             border-radius: 10px;
         }
@@ -232,14 +249,19 @@
 
         .card-admin { border: 1px solid var(--border-admin); box-shadow: 0 2px 10px var(--glow-admin); background: rgba(217, 119, 6, 0.03); }
         .card-site { border: 1px solid var(--border-site); box-shadow: 0 2px 10px var(--glow-site); background: rgba(14, 116, 144, 0.03); }
-        .card-apps-pass { border: 1px solid var(--border-apps); box-shadow: 0 2px 10px var(--glow-apps); background: rgba(147, 51, 234, 0.03); cursor: pointer; }
-        .card-apps-vis { border: 1px solid var(--border-vis); box-shadow: 0 2px 10px var(--glow-vis); background: rgba(13, 148, 136, 0.03); cursor: pointer; }
+        
+        /* Уникальные строгие рамки для карточек приложений */
+        .card-apps-pass { border: 1px solid var(--border-apps-pass); box-shadow: 0 2px 10px var(--glow-apps-pass); background: rgba(168, 85, 247, 0.03); cursor: pointer; }
+        .card-apps-vis { border: 1px solid var(--border-apps-vis); box-shadow: 0 2px 10px var(--glow-apps-vis); background: rgba(20, 184, 166, 0.03); cursor: pointer; }
+        
         .card-maintenance { border: 1px solid rgba(239, 68, 68, 0.35); box-shadow: 0 2px 10px rgba(239, 68, 68, 0.06); background: rgba(239, 68, 68, 0.03); }
 
+        /* Уникальная строгая рамка для кнопки истории действий */
         .card-history-btn {
             margin-bottom: 0;
-            border: 1px solid rgba(100, 116, 139, 0.3);
-            background: rgba(100, 116, 139, 0.04);
+            border: 1px solid var(--border-history);
+            box-shadow: 0 2px 10px var(--glow-history);
+            background: rgba(148, 163, 184, 0.03);
             cursor: pointer;
             justify-content: center;
             gap: 8px;
@@ -248,8 +270,8 @@
             color: #cbd5e1;
         }
         .card-history-btn:hover {
-            background: rgba(100, 116, 139, 0.09);
-            border-color: rgba(100, 116, 139, 0.45);
+            background: rgba(148, 163, 184, 0.07);
+            border-color: rgba(148, 163, 184, 0.5);
             color: #fff;
         }
 
@@ -270,8 +292,8 @@
         }
         .card-admin .gear-btn { background: rgba(217, 119, 6, 0.12); border: 1px solid var(--border-admin); }
         .card-site .gear-btn { background: rgba(14, 116, 144, 0.12); border: 1px solid var(--border-site); }
-        .card-apps-pass .gear-btn { background: rgba(147, 51, 234, 0.12); border: 1px solid var(--border-apps); }
-        .card-apps-vis .gear-btn { background: rgba(13, 148, 136, 0.12); border: 1px solid var(--border-vis); }
+        .card-apps-pass .gear-btn { background: rgba(168, 85, 247, 0.12); border: 1px solid var(--border-apps-pass); }
+        .card-apps-vis .gear-btn { background: rgba(20, 184, 166, 0.12); border: 1px solid var(--border-apps-vis); }
 
         .sheet-overlay {
             position: fixed;
@@ -305,7 +327,7 @@
 
         #appsCatalogOverlay .sheet-modal { border: 1px solid var(--border-apps); }
         #visibilityCatalogOverlay .sheet-modal { border: 1px solid var(--border-vis); }
-        #historyCatalogOverlay .sheet-modal { border: 1px solid rgba(100, 116, 139, 0.35); }
+        #historyCatalogOverlay .sheet-modal { border: 1px solid var(--border-history); }
         #editModalContainer { max-width: 340px; margin: auto; border: 1px solid rgba(192, 132, 252, 0.25); }
 
         .history-modal-list {
@@ -323,8 +345,8 @@
             flex-direction: column;
             gap: 2px;
             padding: 10px 14px;
-            background: rgba(100, 116, 139, 0.05);
-            border: 1px solid rgba(100, 116, 139, 0.15);
+            background: rgba(148, 163, 184, 0.04);
+            border: 1px solid rgba(148, 163, 184, 0.12);
             border-radius: 12px;
             font-size: 13px;
             color: #f8fafc;
@@ -363,7 +385,6 @@
         .sheet-title { font-size: 20px; font-weight: 700; color: #fff; }
         .sheet-close { background: none; border: none; color: var(--muted); font-size: 24px; font-weight: 800; cursor: pointer; }
 
-        /* Уникальная обводка для кнопки "Сгенерировать и сохранить пароли для всех" */
         .btn-generate-all {
             width: 100%;
             min-height: 48px;
@@ -381,15 +402,27 @@
             background: rgba(236, 72, 153, 0.2);
         }
 
+        /* Кнопки "Показать все" и "Скрыть все" с разными строгими обводками */
         .visibility-actions { display: flex; gap: 10px; margin-bottom: 12px; }
-        .visibility-action-btn {
+        
+        .visibility-action-btn-show {
             flex: 1; min-height: 42px; border-radius: 12px;
-            border: 1px solid var(--border-vis); background: rgba(13, 148, 136, 0.08);
-            color: #99f6e4; font-weight: 700; cursor: pointer;
+            border: 1px solid var(--border-show-all); background: rgba(16, 185, 129, 0.06);
+            color: #a7f3d0; font-weight: 700; cursor: pointer;
             transition: all 0.2s ease;
         }
-        .visibility-action-btn:hover {
-            background: rgba(13, 148, 136, 0.16);
+        .visibility-action-btn-show:hover {
+            background: rgba(16, 185, 129, 0.12);
+        }
+
+        .visibility-action-btn-hide {
+            flex: 1; min-height: 42px; border-radius: 12px;
+            border: 1px solid var(--border-hide-all); background: rgba(244, 63, 94, 0.06);
+            color: #fecdd3; font-weight: 700; cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .visibility-action-btn-hide:hover {
+            background: rgba(244, 63, 94, 0.12);
         }
 
         .app-search-wrap { position: relative; margin-bottom: 16px; }
@@ -429,7 +462,6 @@
 
         .extra-actions { display: flex; gap: 10px; margin-top: 14px; }
         
-        /* Уникальная обводка для кнопки "Сгенерировать" */
         .btn-action-generate {
             flex: 1; height: 42px; background: rgba(59, 130, 246, 0.08);
             border: 1px solid var(--border-btn-gen); border-radius: 14px;
@@ -440,7 +472,6 @@
             background: rgba(59, 130, 246, 0.15);
         }
 
-        /* Уникальная обводка для кнопки "Без пароля" */
         .btn-action-clear {
             flex: 1; height: 42px; background: rgba(245, 158, 11, 0.08);
             border: 1px solid var(--border-btn-clear); border-radius: 14px;
@@ -453,7 +484,6 @@
 
         .modal-actions { display: flex; gap: 12px; margin-top: 22px; }
         
-        /* Уникальная обводка для кнопки "Отмена" */
         .btn-cancel {
             flex: 1; height: 48px; background: rgba(156, 163, 175, 0.04);
             border: 1px solid var(--border-btn-cancel); border-radius: 16px;
@@ -465,7 +495,6 @@
             color: #fff;
         }
 
-        /* Уникальная обводка для кнопки "Сохранить" */
         .btn-save {
             flex: 1; height: 48px; background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(22, 163, 74, 0.15));
             border: 1px solid var(--border-btn-save); border-radius: 16px; color: #bbf7d0; font-size: 15px; font-weight: 700; cursor: pointer;
@@ -631,8 +660,8 @@
             </div>
         </div>
         <div class="visibility-actions">
-            <button class="visibility-action-btn" type="button" onclick="setAllAppsVisibility(true)">👁️ Показать все</button>
-            <button class="visibility-action-btn" type="button" onclick="setAllAppsVisibility(false)">🚫 Скрыть все</button>
+            <button class="visibility-action-btn-show" type="button" onclick="setAllAppsVisibility(true)">👁️ Показать все</button>
+            <button class="visibility-action-btn-hide" type="button" onclick="setAllAppsVisibility(false)">🚫 Скрыть все</button>
         </div>
         <div class="app-search-wrap">
             <span class="search-icon">⌕</span>
@@ -725,7 +754,6 @@
     checkConnection();
     setInterval(checkConnection, 10000);
 
-    // Автопроверка сессии при загрузке страницы
     window.addEventListener('DOMContentLoaded', () => {
         if (sessionStorage.getItem('admin_logged_in') === 'true') {
             document.getElementById('login-screen').style.display = 'none';
@@ -913,7 +941,7 @@
             div.setAttribute('data-name', app.name.toLowerCase());
             div.innerHTML = `
                 <span class="app-name">${app.name}</span>
-                <button class="gear-btn" style="width:36px; height:36px; font-size:16px; background: rgba(147, 51, 234, 0.08); border: 1px solid var(--border-apps);" onclick="openEditModal('${app.key}', '${app.name}', 'app')">⚙️</button>
+                <button class="gear-btn" style="width:36px; height:36px; font-size:16px; background: rgba(168, 85, 247, 0.08); border: 1px solid var(--border-apps-pass);" onclick="openEditModal('${app.key}', '${app.name}', 'app')">⚙️</button>
             `;
             listContainer.appendChild(div);
         });
