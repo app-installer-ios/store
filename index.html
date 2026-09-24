@@ -15,6 +15,7 @@
             --accent: #3b82f6;
             --accent-hover: #2563eb;
             --border: #334155;
+            --error-color: #ef4444;
         }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -95,6 +96,7 @@
         }
         .app-details {
             overflow: hidden;
+            text-align: left;
         }
         .app-name {
             font-size: 16px;
@@ -129,6 +131,18 @@
         .hidden {
             display: none !important;
         }
+        .error-title {
+            margin-top: 0;
+            color: var(--error-color);
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .error-desc {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 0;
+            line-height: 1.5;
+        }
     </style>
 </head>
 <body>
@@ -139,39 +153,47 @@
         <p class="subtitle">Установка выбранных приложений</p>
     </header>
 
+    <!-- Состояние загрузки -->
     <div id="loading-state" class="status-card">
         <div class="spinner"></div>
         <p style="margin: 0; color: var(--text-secondary);">Проверяем доступ...</p>
     </div>
 
+    <!-- Состояние ошибки -->
     <div id="error-state" class="status-card hidden">
-        <h3 style="margin-top: 0; color: #ef4444;">Ошибка доступа</h3>
-        <p id="error-text" style="color: var(--text-secondary); font-size: 14px; margin-bottom: 0; word-break: break-all;"></p>
+        <h3 id="error-title" class="error-title">Ссылка недействительна</h3>
+        <p id="error-text" class="error-desc">Возможно, срок действия ссылки истек или она указана неверно.</p>
     </div>
 
+    <!-- Контейнер со списком приложений -->
     <div id="apps-container" class="apps-list hidden"></div>
 </div>
 
 <script>
-    // Вставьте ваши реальные данные от Supabase
+    // ОБЯЗАТЕЛЬНО замените эти значения на ваши реальные данные из панели проекта
     const SUPABASE_URL = 'ВАШ_SUPABASE_URL';
     const SUPABASE_ANON_KEY = 'ВАШ_SUPABASE_ANON_KEY';
 
     let supabaseClient;
     try {
-        supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        if (typeof supabase !== 'undefined') {
+            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        }
     } catch (e) {
-        showError("Ошибка инициализации Supabase: проверьте правильность ключей.");
+        console.error(e);
     }
 
     async function init() {
-        if (!supabaseClient) return;
+        if (!supabaseClient) {
+            showError("Ошибка конфигурации", "Не удалось инициализировать подключение к сервису. Проверьте настройки.");
+            return;
+        }
 
         const urlParams = new URLSearchParams(window.location.search);
         const token = urlParams.get('token') || urlParams.get('invite');
 
         if (!token) {
-            showError("В ссылке отсутствует токен. Откройте корректную ссылку, полученную от бота.");
+            showError("Ссылка недействительна", "В адресной строке отсутствует токен доступа. Запросите новую ссылку у бота.");
             return;
         }
 
@@ -181,15 +203,16 @@
                 .from('invite_links')
                 .select('*')
                 .eq('token', token)
-                .maybeSingle(); // Использование maybeSingle вместо single защищает от падения, если строка не найдена
+                .maybeSingle();
 
-            if (error) {
-                showError("Ошибка базы данных: " + error.message);
+            if (error || !data) {
+                showError("Ссылка не найдена", "Такая ссылка не существует или была удалена.");
                 return;
             }
 
-            if (!data) {
-                showError("Указанный токен не найден в базе данных или устарел.");
+            // Проверка: использована ли ссылка (если у вас в таблице есть колонка used или is_used)
+            if (data.used === true || data.is_used === true) {
+                showError("Ссылка уже использована", "Эта персональная ссылка уже была активирована ранее и больше недействительна.");
                 return;
             }
 
@@ -199,7 +222,7 @@
             }
 
             if (!Array.isArray(allowedAppIds) || allowedAppIds.length === 0) {
-                showError("К этой ссылке не привязано ни одного приложения.");
+                showError("Нет доступных приложений", "К этой ссылке не привязано ни одного приложения.");
                 return;
             }
 
@@ -209,21 +232,19 @@
                 .select('*')
                 .in('id', allowedAppIds);
 
-            if (appsError) {
-                showError("Ошибка загрузки каталога: " + appsError.message);
-                return;
-            }
-
-            if (!appsData || appsData.length === 0) {
-                showError("Приложения, указанные в ссылке, не найдены в каталоге.");
+            if (appsError || !appsData || appsData.length === 0) {
+                showError("Ошибка загрузки", "Не удалось загрузить каталог выбранных приложений.");
                 return;
             }
 
             renderApps(appsData);
 
+            // Опционально: если нужно автоматически помечать ссылку как использованную при первом открытии:
+            // await supabaseClient.from('invite_links').update({ used: true }).eq('token', token);
+
         } catch (err) {
             console.error(err);
-            showError("Непредвиденная ошибка: " + err.message);
+            showError("Произошла ошибка", "Не удалось обработать запрос. Попробуйте позже.");
         }
     }
 
@@ -254,8 +275,9 @@
         container.classList.remove('hidden');
     }
 
-    function showError(message) {
+    function showError(title, message) {
         document.getElementById('loading-state').classList.add('hidden');
+        document.getElementById('error-title').textContent = title;
         document.getElementById('error-text').textContent = message;
         document.getElementById('error-state').classList.remove('hidden');
     }
