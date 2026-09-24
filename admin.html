@@ -26,9 +26,6 @@
 
             --border-vis: rgba(16, 185, 129, 0.6);
             --glow-vis: rgba(16, 185, 129, 0.12);
-
-            --border-save: rgba(34, 197, 94, 0.7);
-            --glow-save: rgba(34, 197, 94, 0.15);
         }
 
         * {
@@ -230,20 +227,6 @@
         .card-apps-pass { border: 1.5px solid var(--border-apps); box-shadow: 0 3px 14px var(--glow-apps); cursor: pointer; }
         .card-apps-vis { border: 1.5px solid var(--border-vis); box-shadow: 0 3px 14px var(--glow-vis); cursor: pointer; }
         .card-maintenance { border: 1.5px solid rgba(239, 68, 68, 0.6); box-shadow: 0 3px 14px rgba(239, 68, 68, 0.12); }
-        
-        .card-save-btn {
-            margin-top: 4px;
-            margin-bottom: 8px;
-            border: 1.5px solid var(--border-save);
-            background: linear-gradient(135deg, rgba(34, 197, 94, 0.14), rgba(16, 185, 129, 0.08));
-            box-shadow: 0 4px 18px var(--glow-save);
-            cursor: pointer;
-            justify-content: center;
-            gap: 10px;
-            font-size: 14px;
-            font-weight: 700;
-            color: #86efac;
-        }
 
         .card-history-btn {
             margin-bottom: 0;
@@ -519,10 +502,6 @@
                 <input type="checkbox" id="maintenanceToggle" onchange="toggleMaintenance(this.checked)">
                 <span class="slider"></span>
             </label>
-        </div>
-
-        <div class="control-card card-save-btn" id="btnGlobalSave" onclick="saveAllChangesManual()">
-            <span>✓ Сохранить изменения</span>
         </div>
 
         <div class="control-card card-history-btn" onclick="openHistoryModal()">
@@ -963,24 +942,6 @@
         const msg = isVisible ? `Показано: ${appName}` : `Скрыто: ${appName}`;
         await addHistory(msg);
         showToast(msg);
-    }
-
-    async function saveAllChangesManual() {
-        const btn = document.getElementById('btnGlobalSave');
-        const oldText = btn.innerHTML;
-        btn.innerHTML = '<span>Синхронизация...</span>';
-        btn.style.pointerEvents = 'none';
-
-        try {
-            await loadSettings();
-            await addHistory('Ручная синхронизация настроек с сайта');
-            showToast('Все изменения успешно сохранены!');
-        } catch (e) {
-            showToast('Ошибка при сохранении');
-        } finally {
-            btn.innerHTML = oldText;
-            btn.style.pointerEvents = 'auto';
-        }
     }
 
     function openEditModal(key, title, type) {
