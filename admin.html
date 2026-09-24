@@ -725,6 +725,16 @@
     checkConnection();
     setInterval(checkConnection, 10000);
 
+    // Автопроверка сессии при загрузке страницы
+    window.addEventListener('DOMContentLoaded', () => {
+        if (sessionStorage.getItem('admin_logged_in') === 'true') {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('admin-panel').style.display = 'flex';
+            loadSettings();
+            initRealtime();
+        }
+    });
+
     async function addHistory(actionText) {
         try {
             const now = new Date();
@@ -798,6 +808,20 @@
         document.getElementById('statVisHidden').textContent = appConfigList.length - shown;
     }
 
+    function initRealtime() {
+        supabaseClient
+            .channel('public:db_changes')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'settings' }, () => {
+                loadSettings();
+            })
+            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'history' }, () => {
+                if (document.getElementById('historyCatalogOverlay').classList.contains('active')) {
+                    loadHistory();
+                }
+            })
+            .subscribe();
+    }
+
     async function checkAdminAuth() {
         const inputPass = document.getElementById('admin-pass-input').value.trim();
         const errorDiv = document.getElementById('login-error');
@@ -816,23 +840,13 @@
             }
 
             if (inputPass === data.value) {
+                sessionStorage.setItem('admin_logged_in', 'true');
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('admin-panel').style.display = 'flex';
                 
                 loadSettings();
+                initRealtime();
                 await addHistory('Успешный вход в панель управления с сайта');
-
-                supabaseClient
-                    .channel('public:db_changes')
-                    .on('postgres_changes', { event: '*', schema: 'public', table: 'settings' }, () => {
-                        loadSettings();
-                    })
-                    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'history' }, () => {
-                        if (document.getElementById('historyCatalogOverlay').classList.contains('active')) {
-                            loadHistory();
-                        }
-                    })
-                    .subscribe();
 
             } else {
                 showLoginError('Неверный пароль');
