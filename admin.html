@@ -236,9 +236,10 @@
         .card-site { border: 1.5px solid var(--border-site); box-shadow: 0 3px 14px var(--glow-site); }
         .card-apps-pass { border: 1.5px solid var(--border-apps); box-shadow: 0 3px 14px var(--glow-apps); cursor: pointer; }
         .card-apps-vis { border: 1.5px solid var(--border-vis); box-shadow: 0 3px 14px var(--glow-vis); cursor: pointer; }
+        
         .card-save-btn {
             margin-top: 4px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             border: 1.5px solid var(--border-save);
             background: linear-gradient(135deg, rgba(34, 197, 94, 0.14), rgba(16, 185, 129, 0.08));
             box-shadow: 0 4px 18px var(--glow-save);
@@ -248,6 +249,24 @@
             font-size: 14px;
             font-weight: 700;
             color: #86efac;
+        }
+
+        /* Кнопка истории */
+        .card-history-btn {
+            margin-bottom: 0;
+            border: 1.5px solid rgba(192, 132, 252, 0.3);
+            background: rgba(147, 51, 234, 0.08);
+            cursor: pointer;
+            justify-content: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #e9d5ff;
+        }
+        .card-history-btn:hover {
+            background: rgba(168, 85, 247, 0.18);
+            border-color: rgba(217, 70, 239, 0.5);
+            color: #fff;
         }
 
         .control-info { display: flex; flex-direction: column; gap: 2px; }
@@ -270,28 +289,7 @@
         .card-apps-pass .gear-btn { background: rgba(217, 70, 239, 0.12); border: 1px solid var(--border-apps); }
         .card-apps-vis .gear-btn { background: rgba(16, 185, 129, 0.12); border: 1px solid var(--border-vis); }
 
-        .history-box {
-            background: rgba(147, 51, 234, 0.04);
-            border: 1px solid rgba(192, 132, 252, 0.15);
-            border-radius: 16px;
-            padding: 10px 14px;
-            max-height: 110px;
-            overflow-y: auto;
-            scrollbar-width: none;
-        }
-        .history-box::-webkit-scrollbar { display: none; }
-        .history-title {
-            font-size: 11.5px;
-            font-weight: 600;
-            color: var(--muted);
-            margin-bottom: 6px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .history-list { display: flex; flex-direction: column; gap: 4px; font-size: 11.5px; color: #cbd5e1; }
-        .history-item { display: flex; justify-content: space-between; gap: 8px; }
-        .history-time { color: rgba(196, 181, 253, 0.6); flex-shrink: 0; }
-
+        /* Модальные окна */
         .sheet-overlay {
             position: fixed;
             inset: 0;
@@ -324,6 +322,34 @@
 
         #appsCatalogOverlay .sheet-modal { border: 1.5px solid var(--border-apps); }
         #visibilityCatalogOverlay .sheet-modal { border: 1.5px solid var(--border-vis); }
+        #historyCatalogOverlay .sheet-modal { border: 1.5px solid rgba(192, 132, 252, 0.4); }
+
+        /* Список истории в модалке */
+        .history-modal-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            overflow-y: auto;
+            max-height: 350px;
+            padding-right: 4px;
+            scrollbar-width: none;
+        }
+        .history-modal-list::-webkit-scrollbar { display: none; }
+        .history-modal-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            padding: 10px 14px;
+            background: rgba(147, 51, 234, 0.06);
+            border: 1px solid rgba(192, 132, 252, 0.15);
+            border-radius: 12px;
+            font-size: 13px;
+            color: #f8fafc;
+        }
+        .history-modal-time {
+            font-size: 11px;
+            color: var(--muted);
+        }
 
         .sheet-stats-container { display: flex; gap: 8px; margin-bottom: 14px; flex-shrink: 0; }
         .stat-card { flex: 1; padding: 8px 12px; border-radius: 14px; display: flex; align-items: center; gap: 9px; }
@@ -436,7 +462,7 @@
         <h1>ПАНЕЛЬ АДМИНИСТРАТОРА</h1>
         <p class="subtitle">Введите пароль для доступа</p>
         <div class="input-group">
-            <input type="password" inputmode="numeric" pattern="[0-9]*" id="admin-pass-input" autocomplete="off">
+            <input type="tel" inputmode="numeric" pattern="[0-9]*" id="admin-pass-input" autocomplete="off">
         </div>
         <button class="primary-btn" onclick="checkAdminAuth()">Войти</button>
         <div id="login-error">Неверный пароль</div>
@@ -482,10 +508,23 @@
             <span>✓ Сохранить изменения</span>
         </div>
 
-        <div class="history-box">
-            <div class="history-title">Последние действия</div>
-            <div class="history-list" id="historyList">
-                <div class="history-item"><span class="history-time">--:--</span><span>Панель загружена</span></div>
+        <div class="control-card card-history-btn" onclick="openHistoryModal()">
+            <span>📜 История действий</span>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно истории действий -->
+<div class="sheet-overlay" id="historyCatalogOverlay" onclick="closeHistoryModal()">
+    <div class="sheet-modal" onclick="event.stopPropagation()">
+        <div class="sheet-header">
+            <div class="sheet-title">История действий</div>
+            <button class="sheet-close" onclick="closeHistoryModal()">✕</button>
+        </div>
+        <div class="history-modal-list" id="historyModalList">
+            <div class="history-modal-item">
+                <span>Панель загружена</span>
+                <span class="history-modal-time">--:--</span>
             </div>
         </div>
     </div>
@@ -553,7 +592,7 @@
         </div>
         <div class="input-group" style="margin-bottom: 0;">
             <label style="margin-bottom: 6px;">Новый цифровой пароль</label>
-            <input type="text" inputmode="numeric" pattern="[0-9]*" id="editPasswordInput" autocomplete="off">
+            <input type="tel" inputmode="numeric" pattern="[0-9]*" id="editPasswordInput" autocomplete="off">
         </div>
         <div class="extra-actions" id="modalExtraActions">
             <button class="btn-action" type="button" onclick="generatePassword()">Сгенерировать</button>
@@ -614,7 +653,6 @@
     let currentEditType = null;
     let actionHistory = [];
 
-    // Проверка связи с Supabase в реальном времени (при запуске и каждые 10 секунд)
     async function checkConnection() {
         const dot = document.getElementById('dbDot');
         const text = document.getElementById('dbStatusText');
@@ -632,17 +670,27 @@
     setInterval(checkConnection, 10000);
 
     function addHistory(actionText) {
-        const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        actionHistory.unshift({ time, text: actionText });
-        if (actionHistory.length > 5) actionHistory.pop();
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        const dateStr = now.toLocaleDateString();
+        actionHistory.unshift({ datetime: `${dateStr} в ${timeStr}`, text: actionText });
+        if (actionHistory.length > 20) actionHistory.pop();
 
-        const list = document.getElementById('historyList');
+        const list = document.getElementById('historyModalList');
         list.innerHTML = actionHistory.map(item => `
-            <div class="history-item">
-                <span class="history-time">${item.time}</span>
+            <div class="history-modal-item">
                 <span>${item.text}</span>
+                <span class="history-modal-time">${item.datetime}</span>
             </div>
         `).join('');
+    }
+
+    function openHistoryModal() {
+        document.getElementById('historyCatalogOverlay').classList.add('active');
+    }
+
+    function closeHistoryModal() {
+        document.getElementById('historyCatalogOverlay').classList.remove('active');
     }
 
     function updatePasswordStats() {
@@ -686,7 +734,7 @@
                 document.getElementById('admin-panel').style.display = 'flex';
                 
                 loadSettings();
-                addHistory('Успешный вход в панель');
+                addHistory('Успешный вход в панель управления');
 
                 supabaseClient
                     .channel('public:settings')
@@ -844,7 +892,7 @@
 
         try {
             await loadSettings();
-            addHistory('Синхронизация настроек');
+            addHistory('Ручная синхронизация настроек');
             showToast('Все изменения успешно сохранены!');
         } catch (e) {
             showToast('Ошибка при сохранении');
@@ -902,7 +950,7 @@
 
             updatePasswordStats();
             renderAdminAppsList();
-            addHistory('Сгенерированы пароли для всех приложений');
+            addHistory('Сгенерированы новые пароли для всех приложений');
             showToast('Новые пароли сохранены для всех приложений');
         } catch (error) {
             showToast('Ошибка при генерации паролей');
