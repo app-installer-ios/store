@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#070910">
+<meta name="theme-color" content="#0d041a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
@@ -11,27 +11,21 @@
 
 <style>
 :root {
-    --bg: #05060a;
-
-    --glass: rgba(255,255,255,.075);
-    --glass-light: rgba(255,255,255,.105);
-    --glass-heavy: rgba(255,255,255,.13);
-
-    --border: rgba(255,255,255,.14);
-    --border-soft: rgba(255,255,255,.075);
-
+    --bg: #0d041a;
+    --glass: rgba(147, 51, 234, 0.06);
+    --glass-light: rgba(168, 85, 247, 0.12);
+    --glass-heavy: rgba(168, 85, 247, 0.16);
+    --border: rgba(192, 132, 252, 0.20);
+    --border-soft: rgba(192, 132, 252, 0.10);
     --text: #f8fafc;
-    --muted: #9ca3af;
-    --muted-light: #cbd5e1;
-
-    --blue: #58b8ff;
-    --blue-light: #9bd7ff;
-
-    --purple: #a970ff;
-    --purple-light: #d0a6ff;
-
+    --muted: #c4b5fd;
+    --muted-light: #ddd6fe;
+    --blue: #22d3ee;
+    --blue-light: #67e8f9;
+    --purple: #c084fc;
+    --purple-light: #d8b4fe;
     --green: #43e3a5;
-    --red: #ff7777;
+    --red: #fca5a5;
 
     --shadow:
         0 30px 80px rgba(0,0,0,.48),
@@ -72,22 +66,10 @@ body {
     color: var(--text);
 
     background:
-        radial-gradient(
-            circle at 18% 8%,
-            rgba(130,70,255,.20),
-            transparent 32%
-        ),
-        radial-gradient(
-            circle at 88% 18%,
-            rgba(40,150,255,.16),
-            transparent 30%
-        ),
-        radial-gradient(
-            circle at 75% 92%,
-            rgba(40,210,160,.10),
-            transparent 30%
-        ),
-        #05060a;
+        radial-gradient(circle at 18% 8%, rgba(147,51,234,.20), transparent 32%),
+        radial-gradient(circle at 88% 18%, rgba(217,70,239,.13), transparent 30%),
+        radial-gradient(circle at 75% 92%, rgba(168,85,247,.11), transparent 30%),
+        #0d041a;
 
     display: flex;
     flex-direction: column;
@@ -110,27 +92,10 @@ body {
     z-index: -10;
 
     background:
-        radial-gradient(
-            ellipse at 18% 18%,
-            rgba(150,80,255,.24),
-            transparent 35%
-        ),
-        radial-gradient(
-            ellipse at 85% 20%,
-            rgba(50,150,255,.19),
-            transparent 35%
-        ),
-        radial-gradient(
-            ellipse at 70% 85%,
-            rgba(30,210,160,.13),
-            transparent 34%
-        ),
-        linear-gradient(
-            135deg,
-            #06070d 0%,
-            #0d1020 48%,
-            #07100f 100%
-        );
+        radial-gradient(ellipse at 18% 18%, rgba(147,51,234,.24), transparent 35%),
+        radial-gradient(ellipse at 85% 20%, rgba(217,70,239,.16), transparent 35%),
+        radial-gradient(ellipse at 70% 85%, rgba(168,85,247,.13), transparent 34%),
+        linear-gradient(135deg, #0d041a 0%, #180a28 48%, #10051c 100%);
 
     background-size: 160% 160%;
     background-position: 40% 50%;
@@ -144,16 +109,8 @@ body {
     inset: 0;
 
     background:
-        radial-gradient(
-            circle at 30% 25%,
-            rgba(255,255,255,.035),
-            transparent 22%
-        ),
-        radial-gradient(
-            circle at 75% 65%,
-            rgba(255,255,255,.025),
-            transparent 24%
-        );
+        radial-gradient(circle at 30% 25%, rgba(255,255,255,.035), transparent 22%),
+        radial-gradient(circle at 75% 65%, rgba(255,255,255,.025), transparent 24%);
 
     filter: blur(40px);
 }
@@ -164,47 +121,33 @@ body {
     inset: -20%;
 
     background:
-        radial-gradient(
-            circle at 30% 30%,
-            rgba(168,85,247,.14),
-            transparent 25%
-        ),
-        radial-gradient(
-            circle at 70% 70%,
-            rgba(56,189,248,.11),
-            transparent 25%
-        );
+        radial-gradient(circle at 30% 30%, rgba(168,85,247,.18), transparent 25%),
+        radial-gradient(circle at 70% 70%, rgba(217,70,239,.12), transparent 25%);
 
     filter: blur(90px);
 }
 
 .bg-glow {
     position: fixed;
-
     width: 300px;
     height: 300px;
-
     border-radius: 50%;
-
     filter: blur(120px);
-
     opacity: .24;
-
     z-index: -5;
-
     pointer-events: none;
 }
 
 .glow-1 {
     top: -120px;
     left: -110px;
-    background: #803cff;
+    background: #9333ea;
 }
 
 .glow-2 {
     right: -110px;
     bottom: -120px;
-    background: #248dff;
+    background: #d946ef;
 }
 
 /* --------------------------------------------------
@@ -214,23 +157,13 @@ body {
 .container {
     width: 100%;
     max-width: 430px;
-
-    padding:
-        0 18px
-        max(10px, env(safe-area-inset-bottom));
-
+    padding: 0 18px max(10px, env(safe-area-inset-bottom));
     z-index: 2;
-
     display: none;
-
     flex-direction: column;
-
     justify-content: center;
-
     margin: auto 0;
-
-    animation:
-        screenIn .45s var(--spring);
+    animation: screenIn .45s var(--spring);
 }
 
 .container.active-screen {
@@ -240,16 +173,11 @@ body {
 @keyframes screenIn {
     from {
         opacity: 0;
-        transform:
-            translateY(14px)
-            scale(.975);
+        transform: translateY(14px) scale(.975);
     }
-
     to {
         opacity: 1;
-        transform:
-            translateY(0)
-            scale(1);
+        transform: translateY(0) scale(1);
     }
 }
 
@@ -260,37 +188,17 @@ body {
 .auth-box {
     position: relative;
     overflow: hidden;
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(255,255,255,.115),
-            rgba(255,255,255,.045)
-        );
-
-    backdrop-filter:
-        blur(40px)
-        saturate(170%);
-
-    -webkit-backdrop-filter:
-        blur(40px)
-        saturate(170%);
-
-    border:
-        1px solid rgba(255,255,255,.145);
-
+    background: linear-gradient(165deg, rgba(32,14,48,.72), rgba(18,6,26,.82));
+    backdrop-filter: blur(40px) saturate(170%);
+    -webkit-backdrop-filter: blur(40px) saturate(170%);
+    border: 1.8px solid rgba(52, 211, 153, 0.78);
     border-radius: 30px;
-
-    padding:
-        30px 21px 22px;
-
+    padding: 30px 21px 22px;
     text-align: center;
-
     box-shadow:
-        0 35px 90px rgba(0,0,0,.52),
-        inset 0 1px 0 rgba(255,255,255,.14),
-        inset 0 -1px 0 rgba(255,255,255,.025);
-
+        0 0 24px rgba(52, 211, 153, 0.16),
+        0 25px 70px rgba(0,0,0,.62),
+        inset 0 1px 1px rgba(255,255,255,.08);
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -300,80 +208,33 @@ body {
     gap: 12px;
     padding-top: 26px;
     padding-bottom: 20px;
-    border: 1.5px solid rgba(168, 85, 247, 0.85);
+    border: 1.8px solid rgba(96, 165, 250, 0.82);
     box-shadow: 
-        0 35px 90px rgba(0,0,0,.52),
-        0 0 35px rgba(168, 85, 247, 0.3),
-        0 0 60px rgba(217, 70, 239, 0.15),
-        inset 0 1px 0 rgba(255,255,255,.14),
-        inset 0 -1px 0 rgba(255,255,255,.025);
+        0 0 24px rgba(96, 165, 250, 0.13),
+        0 25px 70px rgba(0,0,0,.65),
+        inset 0 1px 1px rgba(255,255,255,.08);
 }
 
 .auth-box::before {
     content: "";
-
     position: absolute;
-
     top: 0;
     left: 20%;
     right: 20%;
-
     height: 1px;
-
-    background:
-        linear-gradient(
-            90deg,
-            transparent,
-            rgba(255,255,255,.5),
-            transparent
-        );
-
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.5), transparent);
     opacity: .7;
-}
-
-.auth-box::after {
-    content: "";
-
-    position: absolute;
-
-    width: 180px;
-    height: 180px;
-
-    top: -110px;
-    right: -80px;
-
-    background:
-        radial-gradient(
-            circle,
-            rgba(168,85,247,.22),
-            transparent 68%
-        );
-
-    filter: blur(20px);
-
-    pointer-events: none;
 }
 
 .auth-title {
     font-size: 23px;
     line-height: 1.15;
     letter-spacing: -.5px;
-
     font-weight: 650 !important;
-
-    background:
-        linear-gradient(
-            135deg,
-            #ffffff 10%,
-            #e1c7ff 55%,
-            #9b8cff 100%
-        );
-
+    background: linear-gradient(135deg, #ffffff 10%, #e9d5ff 55%, #c084fc 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-
-    text-shadow:
-        0 0 30px rgba(168,85,247,.16);
+    text-shadow: 0 0 30px rgba(168,85,247,.16);
 }
 
 .auth-description {
@@ -392,11 +253,7 @@ body {
     border-radius: 14px;
     background: linear-gradient(135deg, rgba(168, 85, 247, 0.28), rgba(217, 70, 239, 0.18));
     border: 2px solid rgba(217, 70, 239, 0.95);
-    box-shadow: 
-        0 10px 30px rgba(0, 0, 0, 0.4),
-        0 0 30px rgba(217, 70, 239, 0.5),
-        0 0 60px rgba(168, 85, 247, 0.35),
-        inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
 }
@@ -407,7 +264,6 @@ body {
     background: linear-gradient(135deg, #ffffff 15%, #ffc8fa 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 20px rgba(217, 70, 239, 0.7);
     word-break: break-word;
 }
 
@@ -418,40 +274,21 @@ body {
 .auth-input {
     width: 100%;
     height: 52px;
-
     border-radius: 17px;
-
-    border:
-        1px solid rgba(255,255,255,.105);
-
+    border: 1.8px solid rgba(74, 222, 128, 0.72);
     outline: none;
-
-    background:
-        rgba(0,0,0,.18);
-
+    background: rgba(147,51,234,.06);
     color: #fff;
-
     padding: 0 15px;
-
     font-size: 15px;
-
     text-align: center;
-
-    backdrop-filter:
-        blur(22px);
-
-    -webkit-backdrop-filter:
-        blur(22px);
-
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
     box-shadow:
+        0 0 14px rgba(74, 222, 128, 0.10),
         inset 0 1px 0 rgba(255,255,255,.045),
         inset 0 2px 10px rgba(0,0,0,.16);
-
-    transition:
-        border .2s ease,
-        box-shadow .25s ease,
-        background .25s ease,
-        transform .2s ease;
+    transition: border .2s ease, box-shadow .25s ease, background .25s ease, transform .2s ease;
 }
 
 .auth-input::placeholder {
@@ -459,16 +296,12 @@ body {
 }
 
 .auth-input:focus {
-    border-color:
-        rgba(178,130,255,.52);
-
-    background:
-        rgba(255,255,255,.065);
-
+    border-color: rgba(134, 239, 172, 0.98);
+    background: rgba(168,85,247,.10);
     box-shadow:
-        0 0 0 3px rgba(168,85,247,.08),
-        0 0 30px rgba(168,85,247,.13),
-        inset 0 1px 0 rgba(255,255,255,.07);
+        0 0 0 3px rgba(74, 222, 128, 0.10),
+        0 0 24px rgba(74, 222, 128, 0.22),
+        inset 0 1px 0 rgba(255,255,255,.08);
 }
 
 /* --------------------------------------------------
@@ -481,49 +314,15 @@ body {
 
 h1 {
     margin: 0 0 9px;
-
     text-align: center;
-
     font-size: 25px;
     line-height: 1.08;
-
     letter-spacing: -.75px;
-
     font-weight: 700 !important;
-
-    background:
-        linear-gradient(
-            135deg,
-            #ffffff 5%,
-            #eee5ff 35%,
-            #c99dff 66%,
-            #8fa5ff 100%
-        );
-
+    background: linear-gradient(135deg, #ffffff 10%, #e9d5ff 55%, #c084fc 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-
-    text-shadow:
-        0 0 35px rgba(168,85,247,.18);
-}
-
-.subtitle {
-    font-size: 12.5px;
-
-    text-align: center;
-
-    color: #929bad;
-
-    line-height: 1.5;
-
-    letter-spacing: .05px;
-}
-
-.subtitle span {
-    color: #65c7ff !important;
-
-    text-shadow:
-        0 0 15px rgba(56,189,248,.18);
+    text-shadow: 0 0 35px rgba(168,85,247,.18);
 }
 
 /* --------------------------------------------------
@@ -533,92 +332,35 @@ h1 {
 .card {
     position: relative;
     overflow: hidden;
-
     padding: 20px;
-
     display: flex;
     flex-direction: column;
-
     gap: 13px;
-
     border-radius: 28px;
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(255,255,255,.105),
-            rgba(255,255,255,.035)
-        );
-
-    backdrop-filter:
-        blur(38px)
-        saturate(165%);
-
-    -webkit-backdrop-filter:
-        blur(38px)
-        saturate(165%);
-
-    border:
-        1px solid rgba(255,255,255,.14);
-
+    background: linear-gradient(165deg, rgba(32,14,48,.72), rgba(18,6,26,.82));
+    backdrop-filter: blur(38px) saturate(165%);
+    -webkit-backdrop-filter: blur(38px) saturate(165%);
+    border: 2px solid rgba(52, 211, 153, 0.82);
     box-shadow:
-        0 28px 75px rgba(0,0,0,.45),
-        inset 0 1px 0 rgba(255,255,255,.13),
-        inset 0 -1px 0 rgba(255,255,255,.025);
+        0 0 28px rgba(52, 211, 153, 0.16),
+        0 25px 70px rgba(0,0,0,.62),
+        inset 0 1px 1px rgba(255,255,255,.08);
 }
 
 .card::before {
     content: "";
-
     position: absolute;
-
     top: 0;
     left: 15%;
     right: 15%;
-
     height: 1px;
-
-    background:
-        linear-gradient(
-            90deg,
-            transparent,
-            rgba(255,255,255,.48),
-            transparent
-        );
-
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.48), transparent);
     opacity: .65;
-}
-
-.card::after {
-    content: "";
-
-    position: absolute;
-
-    width: 190px;
-    height: 190px;
-
-    right: -120px;
-    top: -120px;
-
-    border-radius: 50%;
-
-    background:
-        radial-gradient(
-            circle,
-            rgba(168,85,247,.15),
-            transparent 70%
-        );
-
-    filter: blur(15px);
-
-    pointer-events: none;
 }
 
 label {
     font-size: 13px;
-
     color: #d9e0ea;
-
     font-weight: 600 !important;
 }
 
@@ -628,48 +370,23 @@ label {
 
 .custom-select-btn {
     position: relative;
-
     width: 100%;
-
     min-height: 52px;
-
     padding: 14px 16px;
-
     display: flex;
-
     align-items: center;
     justify-content: space-between;
-
     text-align: left;
-
     border-radius: 18px;
-
-    border:
-        1px solid rgba(255,255,255,.105);
-
-    background:
-        rgba(255,255,255,.048);
-
-    backdrop-filter:
-        blur(24px);
-
-    -webkit-backdrop-filter:
-        blur(24px);
-
+    border: 1.8px solid rgba(251, 191, 36, 0.82);
+    background: rgba(147,51,234,.07);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
     color: #fff;
-
     outline: none;
-
-    box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.065),
-        0 8px 25px rgba(0,0,0,.10);
-
+    box-shadow: 0 0 15px rgba(251, 191, 36, 0.11), inset 0 1px 0 rgba(255,255,255,.065);
     cursor: pointer;
-
-    transition:
-        transform .2s var(--spring),
-        border .2s ease,
-        background .2s ease;
+    transition: transform .2s var(--spring), border .2s ease, background .2s ease;
 }
 
 .custom-select-btn span {
@@ -678,39 +395,24 @@ label {
 
 .custom-select-btn::after {
     content: "›";
-
     width: 25px;
     height: 25px;
-
     display: flex;
-
     align-items: center;
     justify-content: center;
-
     border-radius: 50%;
-
-    background:
-        rgba(255,255,255,.065);
-
-    color: #c6b0ff;
-
+    background: rgba(168,85,247,.12);
+    color: #d8b4fe;
     font-size: 20px;
-
     line-height: 1;
-
     flex-shrink: 0;
-
-    transition:
-        transform .25s var(--spring),
-        background .2s ease;
+    transition: transform .25s var(--spring), background .2s ease;
 }
 
 .custom-select-btn:hover {
-    background:
-        rgba(255,255,255,.07);
-
-    border-color:
-        rgba(174,130,255,.35);
+    background: rgba(168,85,247,.12);
+    border-color: rgba(252, 211, 77, 0.98);
+    box-shadow: 0 0 22px rgba(251, 191, 36, 0.18);
 }
 
 .custom-select-btn:hover::after {
@@ -727,118 +429,65 @@ label {
 
 .btn {
     position: relative;
-
     width: 100%;
     min-height: 50px;
-
     display: flex;
-
     align-items: center;
     justify-content: center;
-
     padding: 12px;
-
     overflow: hidden;
-
     border-radius: 16px;
-
-    border:
-        1.5px solid rgba(217, 70, 239, 0.75);
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(168,85,247,.93),
-            rgba(99,102,241,.94)
-        );
-
+    border: 1.8px solid rgba(192,132,252,.55);
+    background: linear-gradient(135deg, #9333ea, #c026d3);
     color: #fff;
-
     font-size: 14px;
-
     font-weight: 650 !important;
-
     letter-spacing: .05px;
-
     text-decoration: none;
-
     cursor: pointer;
-
     box-shadow:
-        0 15px 35px rgba(109,68,220,.28),
-        0 0 20px rgba(168, 85, 247, 0.3),
-        inset 0 1px 0 rgba(255,255,255,.30),
-        inset 0 -1px 0 rgba(0,0,0,.08);
-
-    transition:
-        transform .2s var(--spring),
-        filter .2s ease,
-        box-shadow .2s ease;
+        0 15px 35px rgba(88,28,135,.28),
+        0 0 20px rgba(168,85,247,.22),
+        inset 0 1px 0 rgba(255,255,255,.25);
+    transition: transform .2s var(--spring), filter .2s ease, box-shadow .2s ease;
 }
 
 .btn::before {
     content: "";
-
     position: absolute;
-
     inset: 0;
-
-    background:
-        linear-gradient(
-            110deg,
-            transparent 15%,
-            rgba(255,255,255,.20) 48%,
-            transparent 80%
-        );
-
-    transform:
-        translateX(-125%);
-
-    transition:
-        transform .65s var(--spring);
+    background: linear-gradient(110deg, transparent 15%, rgba(255,255,255,.20) 48%, transparent 80%);
+    transform: translateX(-125%);
+    transition: transform .65s var(--spring);
 }
 
 .btn:hover::before {
-    transform:
-        translateX(125%);
+    transform: translateX(125%);
 }
 
 .btn:hover {
     filter: brightness(1.08);
-
     box-shadow:
-        0 18px 42px rgba(109,68,220,.37),
-        0 0 28px rgba(168, 85, 247, 0.5),
-        inset 0 1px 0 rgba(255,255,255,.34);
+        0 18px 42px rgba(88,28,135,.35),
+        0 0 28px rgba(168,85,247,.35),
+        inset 0 1px 0 rgba(255,255,255,.30);
 }
 
 .btn:active {
     transform: scale(.975);
-
     filter: brightness(.95);
 }
 
 .btn-secondary {
     margin-top: 1px;
-
-    background:
-        rgba(255,255,255,.052);
-
-    border:
-        1px solid rgba(255,255,255,.10);
-
-    color: #cbd5e1;
-
-    box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.05);
+    background: rgba(147,51,234,.08);
+    border: 1.8px solid rgba(192,132,252,.20);
+    color: #ddd6fe;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
 }
 
 .btn-secondary:hover {
-    background:
-        rgba(255,255,255,.085);
-
-    box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.07);
+    background: rgba(168,85,247,.14);
 }
 
 /* --------------------------------------------------
@@ -847,35 +496,21 @@ label {
 
 .btn-telegram {
     gap: 8px;
-
-    background:
-        rgba(56,189,248,.055);
-
-    border:
-        1px solid rgba(56,189,248,.17);
-
-    color: #70d4ff;
-
+    background: rgba(6,182,212,.07);
+    border: 1.8px solid rgba(34, 211, 238, 0.68);
+    color: #67e8f9;
     font-size: 14px;
-
-    box-shadow:
-        0 8px 25px rgba(56,189,248,.06),
-        inset 0 1px 0 rgba(255,255,255,.05);
+    box-shadow: 0 0 16px rgba(34, 211, 238, 0.10), inset 0 1px 0 rgba(255,255,255,.05);
 }
 
 .btn-telegram:hover {
-    background:
-        rgba(56,189,248,.085);
-
-    box-shadow:
-        0 12px 30px rgba(56,189,248,.12),
-        inset 0 1px 0 rgba(255,255,255,.07);
+    border-color: rgba(103, 232, 249, 0.92);
+    box-shadow: 0 0 22px rgba(34, 211, 238, 0.18);
 }
 
 .telegram-icon {
     width: 17px;
     height: 17px;
-
     object-fit: contain;
 }
 
@@ -889,22 +524,26 @@ label {
     font-size: 13px;
     color: #cbd5e1;
     line-height: 1.45;
-    padding: 2px 0 0;
+    padding: 9px 12px;
     letter-spacing: 0.1px;
+    border: 1.8px solid rgba(52, 211, 153, 0.48);
+    border-radius: 14px;
+    background: rgba(52, 211, 153, 0.045);
+    box-shadow: 0 0 14px rgba(52, 211, 153, 0.08);
 }
 
 .support-notice a {
-    color: #58b8ff;
+    color: #6ee7b7;
     text-decoration: none;
     font-weight: 600;
     transition: color 0.2s ease, text-shadow 0.2s ease;
-    text-shadow: 0 0 12px rgba(88, 184, 255, 0.25);
+    text-shadow: 0 0 14px rgba(52, 211, 153, 0.28);
 }
 
 .support-notice a:hover {
-    color: #9bd7ff;
+    color: #a7f3d0;
     text-decoration: underline;
-    text-shadow: 0 0 18px rgba(88, 184, 255, 0.5);
+    text-shadow: 0 0 20px rgba(52, 211, 153, 0.42);
 }
 
 /* --------------------------------------------------
@@ -929,14 +568,14 @@ label {
     width: 100%;
     padding: 16px 20px;
     border-radius: 20px;
-    background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(10,14,26,0.85));
+    background: linear-gradient(145deg, rgba(16, 185, 129, 0.13), rgba(32, 14, 48, 0.90));
     backdrop-filter: blur(35px) saturate(180%);
     -webkit-backdrop-filter: blur(35px) saturate(180%);
-    border: 1.5px solid rgba(168, 85, 247, 0.6);
-    box-shadow: 
-        0 25px 60px rgba(0,0,0,0.5), 
-        0 0 35px rgba(168, 85, 247, 0.25),
-        inset 0 1px 0 rgba(255,255,255,0.25);
+    border: 2px solid rgba(74, 222, 128, 0.58);
+    box-shadow:
+        0 0 22px rgba(74, 222, 128, 0.12),
+        0 20px 55px rgba(0,0,0,.55),
+        inset 0 1px 0 rgba(255,255,255,.09);
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -1018,31 +657,10 @@ label {
     box-shadow: 0 0 20px rgba(67, 227, 165, 0.95), 0 0 8px rgba(56,189,248,0.8);
 }
 
-.progress-fill::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 255, 255, 0.4),
-        transparent
-    );
-    animation: shimmerEffect 1.5s infinite;
-}
-
 @keyframes gradientMove {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
-}
-
-@keyframes shimmerEffect {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
 }
 
 /* --------------------------------------------------
@@ -1051,13 +669,9 @@ label {
 
 .auth-error {
     display: none;
-
     margin-top: -5px;
-
     color: #ff8585;
-
     font-size: 12px;
-
     font-weight: 600 !important;
 }
 
@@ -1073,9 +687,9 @@ label {
     justify-content: center;
     align-items: center;
     padding: 15px max(15px, env(safe-area-inset-right)) max(15px, env(safe-area-inset-bottom)) max(15px, env(safe-area-inset-left));
-    background: rgba(2, 4, 9, 0.65);
-    backdrop-filter: blur(30px) saturate(180%);
-    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    background: rgba(5,2,10,.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     opacity: 0;
     visibility: hidden;
     transition: opacity .3s ease, visibility .3s ease;
@@ -1097,30 +711,17 @@ label {
     padding: 18px 16px 16px;
     overflow: hidden;
     border-radius: 26px;
-    background: linear-gradient(145deg, rgba(255,255,255,0.08), rgba(15,20,35,0.75));
+    background: linear-gradient(165deg, rgba(32,14,48,.96), rgba(18,6,26,.98));
     backdrop-filter: blur(40px) saturate(170%);
     -webkit-backdrop-filter: blur(40px) saturate(170%);
-    border: 1.5px solid rgba(130, 140, 255, 0.45);
-    box-shadow: 
-        0 35px 90px rgba(0,0,0,0.65), 
-        0 0 40px rgba(88, 184, 255, 0.15),
-        0 0 80px rgba(168, 85, 247, 0.12),
-        inset 0 1px 0 rgba(255,255,255,0.2), 
-        inset 0 -1px 0 rgba(255,255,255,0.03);
+    border: 2px solid rgba(248, 113, 113, 0.78);
+    box-shadow:
+        0 0 28px rgba(248, 113, 113, 0.16),
+        0 25px 70px rgba(0,0,0,.70),
+        inset 0 1px 1px rgba(255,255,255,.08);
     transform: translateY(20px) scale(.97);
     opacity: 0;
     transition: transform .4s var(--spring), opacity .3s ease;
-}
-
-.sheet-modal::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 20%;
-    right: 20%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,.5), transparent);
-    opacity: .7;
 }
 
 .sheet-overlay.active .sheet-modal {
@@ -1142,7 +743,7 @@ label {
     font-size: 17px;
     font-weight: 650 !important;
     letter-spacing: -.4px;
-    background: linear-gradient(135deg, #ffffff 10%, #e1c7ff 55%, #9b8cff 100%);
+    background: linear-gradient(135deg, #ffffff 10%, #e9d5ff 55%, #c084fc 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -1154,17 +755,17 @@ label {
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    background: rgba(255, 255, 255, 0.065);
-    color: #e2d9ff;
+    border: 1.8px solid rgba(192,132,252,.20);
+    background: rgba(168,85,247,.08);
+    color: #e9d5ff;
     font-size: 14px;
     cursor: pointer;
     transition: transform .2s var(--spring), background .2s ease;
 }
 
 .sheet-close:hover {
-    background: rgba(168, 85, 247, 0.2);
-    border-color: rgba(168, 85, 247, 0.4);
+    background: rgba(168,85,247,.20);
+    border-color: rgba(192,132,252,.40);
 }
 
 .sheet-close:active {
@@ -1185,18 +786,14 @@ label {
     height: 44px;
     padding: 0 42px 0 38px;
     border-radius: 14px;
-    border: 1.5px solid rgba(168, 85, 247, 0.85);
+    border: 2px solid rgba(56, 189, 248, 0.95);
     outline: none;
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(147,51,234,.08);
     color: #fff;
     font-size: 13.5px;
     backdrop-filter: blur(22px);
     -webkit-backdrop-filter: blur(22px);
-    box-shadow: 
-        inset 0 1px 0 rgba(255,255,255,.08),
-        inset 0 2px 10px rgba(0,0,0,.2),
-        0 0 25px rgba(168, 85, 247, 0.35),
-        0 0 45px rgba(217, 70, 239, 0.2);
+    box-shadow: 0 0 18px rgba(56, 189, 248, 0.16), inset 0 1px 0 rgba(255,255,255,.08), inset 0 2px 10px rgba(0,0,0,.20);
     transition: border .2s ease, box-shadow .25s ease, background .25s ease;
 }
 
@@ -1205,24 +802,36 @@ label {
 }
 
 .app-search:focus {
-    border-color: rgba(168, 85, 247, 0.95);
-    background: rgba(255, 255, 255, 0.065);
-    box-shadow: 
-        0 0 0 3px rgba(168,85,247,.15),
-        0 0 35px rgba(88, 184, 255, 0.5),
-        0 0 60px rgba(168, 85, 247, 0.35),
-        inset 0 1px 0 rgba(255,255,255,.12);
+    border-color: rgba(125, 211, 252, 1);
+    background: rgba(168,85,247,.10);
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.13), 0 0 26px rgba(56, 189, 248, 0.26), inset 0 1px 0 rgba(255,255,255,.12);
 }
 
 .search-icon {
     position: absolute;
-    left: 14px;
+    left: 13px;
     top: 50%;
     transform: translateY(-50%);
-    color: #d946ef; 
-    font-size: 15px;
-    pointer-events: none;
-    text-shadow: 0 0 10px rgba(217, 70, 239, 0.6);
+    width: 19px;
+    height: 19px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+    color: #ffffff;
+    background: rgba(168, 85, 247, 0.22);
+    border: 1px solid rgba(255,255,255,.28);
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(168,85,247,.45), inset 0 0 6px rgba(255,255,255,.12);
+}
+
+.search-icon svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+    stroke: #ffffff;
+    stroke-width: 2.5;
+    filter: drop-shadow(0 0 3px rgba(255,255,255,.9)) drop-shadow(0 0 8px rgba(168,85,247,.8));
 }
 
 .search-clear {
@@ -1256,23 +865,21 @@ label {
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid rgba(168, 85, 247, 0.4);
+    border: 2px solid rgba(248, 113, 113, 0.92);
     border-radius: 10px;
-    background: rgba(168, 85, 247, 0.15);
-    color: #e2d9ff;
+    background: rgba(248, 113, 113, 0.10);
+    color: #fca5a5;
     cursor: pointer;
+    box-shadow: 0 0 18px rgba(248, 113, 113, 0.14);
     transition: all 0.2s ease;
 }
 
-.search-filter-btn:hover {
-    background: rgba(168, 85, 247, 0.3);
-    border-color: rgba(168, 85, 247, 0.7);
-}
-
+.search-filter-btn:hover,
 .search-filter-btn.active {
-    background: linear-gradient(135deg, rgba(168,85,247,0.4), rgba(99,102,241,0.4));
-    border-color: rgba(168,85,247,0.9);
-    box-shadow: 0 0 12px rgba(168,85,247,0.4);
+    border-color: rgba(254, 202, 202, 1);
+    background: rgba(248, 113, 113, 0.18);
+    color: #fecaca;
+    box-shadow: 0 0 24px rgba(248, 113, 113, 0.22);
 }
 
 .filter-dropdown {
@@ -1280,33 +887,24 @@ label {
     top: calc(100% + 6px);
     right: 0;
     width: 190px;
-    max-height: 220px;
-    background: rgba(15, 20, 35, 0.95);
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
-    border: 1px solid rgba(168, 85, 247, 0.45);
+    background: transparent;
+    border: 2px solid rgba(251, 191, 36, 0.90);
     border-radius: 14px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 20px rgba(168, 85, 247, 0.2);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.60), 0 0 20px rgba(251, 191, 36, 0.12);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
     padding: 6px;
     display: none;
     z-index: 10;
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(168, 85, 247, 0.4) transparent;
     animation: screenIn .25s var(--spring);
+    max-height: none;
+    overflow-y: visible;
+    scrollbar-width: none;
 }
 
 .filter-dropdown::-webkit-scrollbar {
-    width: 3px;
-}
-
-.filter-dropdown::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.filter-dropdown::-webkit-scrollbar-thumb {
-    background: rgba(168, 85, 247, 0.5);
-    border-radius: 10px;
+    display: none;
+    width: 0;
 }
 
 .filter-dropdown.active {
@@ -1319,7 +917,6 @@ label {
     padding: 8px 12px;
     border-radius: 8px;
     font-size: 13px;
-    color: #94a3b8;
     cursor: pointer;
     transition: all 0.2s ease;
     text-align: left;
@@ -1327,17 +924,42 @@ label {
     border: none;
     width: 100%;
     flex-shrink: 0;
+    color: #9ca3af;
+    text-shadow: none;
 }
 
-.filter-option:hover {
-    background: rgba(255, 255, 255, 0.08);
-    color: #fff;
+.filter-option + .filter-option {
+    border-top: 1px solid rgba(156, 163, 175, 0.22);
 }
 
 .filter-option.active {
-    background: linear-gradient(135deg, rgba(168,85,247,0.35), rgba(99,102,241,0.35));
+    position: relative;
+    transform: translateX(2px) scale(1.015);
+    background: linear-gradient(135deg, rgba(168,85,247,.42), rgba(217,70,239,.28)) !important;
+    border-color: rgba(216,180,254,.72) !important;
+    color: #fff !important;
+    font-weight: 650 !important;
+    box-shadow:
+        0 0 0 1px rgba(192,132,252,.18),
+        0 5px 14px rgba(168,85,247,.18),
+        inset 0 1px 0 rgba(255,255,255,.14);
+}
+
+.filter-option.active::after {
+    content: "✓";
+    float: right;
     color: #fff;
-    font-weight: 600;
+    font-size: 12px;
+    font-weight: 700;
+    text-shadow: 0 0 8px rgba(255,255,255,.45);
+}
+
+.filter-option:active {
+    transform: scale(.98);
+}
+
+.filter-option.active:active {
+    transform: translateX(2px) scale(.99);
 }
 
 .info-blocks-container {
@@ -1355,12 +977,16 @@ label {
     display: flex;
     align-items: center;
     gap: 8px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1.5px solid rgba(255, 119, 119, 0.7);
+    background: rgba(147,51,234,.06);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    box-shadow: 0 0 12px rgba(255, 119, 119, 0.2);
     transition: all 0.25s ease;
+}
+
+.app-status-card {
+    border: 2px solid rgba(45, 212, 191, 0.88);
+    background: rgba(20, 184, 166, 0.045);
+    box-shadow: 0 0 22px rgba(45, 212, 191, 0.13), inset 0 1px 0 rgba(255,255,255,.08);
 }
 
 .pulse-dot {
@@ -1411,10 +1037,8 @@ label {
     gap: 8px;
     overflow-y: auto;
     overflow-x: hidden;
-    
     padding-left: 2px;
     padding-right: 8px; 
-    
     scrollbar-width: thin;
     scrollbar-color: rgba(74, 222, 128, 0.4) transparent;
 }
@@ -1440,25 +1064,21 @@ label {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    
-    background: linear-gradient(135deg, rgba(34, 211, 238, 0.05), rgba(88, 184, 255, 0.06));
-    border: 1.5px solid rgba(34, 211, 238, 0.45);
-    box-shadow: 0 0 10px rgba(34, 211, 238, 0.12);
-    
+    background: rgba(147,51,234,.06);
+    border: 1.8px solid rgba(45, 212, 191, 0.70);
+    box-shadow: 0 0 13px rgba(45, 212, 191, 0.10);
     cursor: pointer;
     flex-shrink: 0;
     transition: all 0.25s cubic-bezier(.22,1,.36,1);
 }
 
-.sheet-item:hover {
-    background: rgba(34, 211, 238, 0.12);
-    border-color: rgba(34, 211, 238, 0.75);
-    box-shadow: 0 0 16px rgba(34, 211, 238, 0.25);
+.sheet-item:hover,
+.sheet-item:active,
+.sheet-item.selected {
+    background: rgba(168,85,247,.13);
+    border-color: rgba(94, 234, 212, 0.98);
+    box-shadow: 0 0 20px rgba(45, 212, 191, 0.20), inset 0 1px 0 rgba(255,255,255,.08);
     transform: translateY(-1px);
-}
-
-.sheet-item:active {
-    transform: scale(.985);
 }
 
 .sheet-item-main {
@@ -1484,10 +1104,10 @@ label {
     border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
-.app-icon svg {
+.app-icon img {
     width: 100%;
     height: 100%;
-    display: block;
+    object-fit: cover;
 }
 
 .sheet-info-box {
@@ -1511,9 +1131,9 @@ label {
 .ios-badge {
     font-size: 11px;
     font-weight: 600;
-    color: #e1c7ff;
-    background: rgba(168, 85, 247, 0.12);
-    border: 1px solid rgba(168, 85, 247, 0.45);
+    color: #e9d5ff;
+    background: rgba(168,85,247,.10);
+    border: 1px solid rgba(192,132,252,.35);
     padding: 2px 7px;
     border-radius: 6px;
     flex-shrink: 0;
@@ -1523,40 +1143,40 @@ label {
 .search-empty {
     display: none;
     text-align: center;
-    color: #94a3b8;
+    color: #c4b5fd;
     font-size: 13px;
     padding: 20px 10px;
 }
 
-body.keyboard-open .sheet-overlay {
-    align-items: center;
-}
-
-body.keyboard-open .sheet-modal {
-    transform: translateY(0) scale(1) !important;
-    height: min(78vh, 580px) !important;
-    max-height: calc(100dvh - 30px) !important;
+.last-update {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: max(30px, env(safe-area-inset-bottom));
+    text-align: center;
+    font-size: 14px;
+    color: rgba(216, 180, 254, 0.82);
+    letter-spacing: .5px;
+    z-index: 20;
+    pointer-events: none;
+    text-shadow: 0 0 12px rgba(192, 132, 252, 0.28);
 }
 
 @media (max-height: 680px) {
     .container {
         transform: scale(.94);
     }
-
     .header-section {
         margin-bottom: 11px;
     }
-
     .card {
         padding: 16px;
         gap: 10px;
     }
-
     .auth-box {
         padding: 23px 18px 18px;
         gap: 12px;
     }
-
     .sheet-modal {
         height: min(86vh, 560px);
     }
@@ -1567,908 +1187,12 @@ body.keyboard-open .sheet-modal {
         padding-left: 14px;
         padding-right: 14px;
     }
-
     h1 {
         font-size: 23px;
     }
-
     .card {
         padding: 17px;
     }
-}
-
-@media (min-width: 700px) {
-    .container {
-        max-width: 430px;
-    }
-}
-
-@media (max-height: 500px) {
-    .sheet-overlay {
-        align-items: flex-start;
-        padding-top: 15px;
-    }
-
-    .sheet-modal {
-        height: min(78vh, 580px);
-        max-height: calc(100dvh - 30px);
-    }
-}   
-
-    .last-update {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: max(30px, env(safe-area-inset-bottom));
-    text-align: center;
-    font-size: 14px;
-    color: rgba(255,255,255,.42);
-    letter-spacing: .5px;
-    z-index: 20;
-    pointer-events: none;
-}
-    
-
-
-/* ==================================================
-   ADMIN STYLE — ONLY VISUAL OVERRIDES
-   Логика, HTML, ссылки и расположение не изменены.
-================================================== */
-:root {
-    --bg: #0d041a;
-    --glass: rgba(147, 51, 234, 0.06);
-    --glass-light: rgba(168, 85, 247, 0.12);
-    --glass-heavy: rgba(168, 85, 247, 0.16);
-    --border: rgba(192, 132, 252, 0.20);
-    --border-soft: rgba(192, 132, 252, 0.10);
-    --text: #f8fafc;
-    --muted: #c4b5fd;
-    --muted-light: #ddd6fe;
-    --blue: #22d3ee;
-    --blue-light: #67e8f9;
-    --purple: #c084fc;
-    --purple-light: #d8b4fe;
-    --green: #43e3a5;
-    --red: #fca5a5;
-}
-
-body {
-    background:
-        radial-gradient(circle at 18% 8%, rgba(147,51,234,.20), transparent 32%),
-        radial-gradient(circle at 88% 18%, rgba(217,70,239,.13), transparent 30%),
-        radial-gradient(circle at 75% 92%, rgba(168,85,247,.11), transparent 30%),
-        #0d041a;
-}
-
-.aurora-bg {
-    background:
-        radial-gradient(ellipse at 18% 18%, rgba(147,51,234,.24), transparent 35%),
-        radial-gradient(ellipse at 85% 20%, rgba(217,70,239,.16), transparent 35%),
-        radial-gradient(ellipse at 70% 85%, rgba(168,85,247,.13), transparent 34%),
-        linear-gradient(135deg, #0d041a 0%, #180a28 48%, #10051c 100%);
-}
-
-.aurora-bg::after {
-    background:
-        radial-gradient(circle at 30% 30%, rgba(168,85,247,.18), transparent 25%),
-        radial-gradient(circle at 70% 70%, rgba(217,70,239,.12), transparent 25%);
-}
-
-.glow-1 { background: #9333ea; }
-.glow-2 { background: #d946ef; }
-
-.auth-box,
-.card {
-    background: linear-gradient(165deg, rgba(32,14,48,.72), rgba(18,6,26,.82));
-    border-color: rgba(192,132,252,.20);
-    box-shadow:
-        0 25px 70px rgba(0,0,0,.62),
-        0 0 25px rgba(168,85,247,.10),
-        inset 0 1px 1px rgba(255,255,255,.08);
-}
-
-#appAuthApp .auth-box {
-    border-color: rgba(192,132,252,.55);
-    box-shadow:
-        0 25px 70px rgba(0,0,0,.65),
-        0 0 25px rgba(192,132,252,.16),
-        inset 0 1px 1px rgba(255,255,255,.08);
-}
-
-.auth-input {
-    background: rgba(147,51,234,.06);
-    border-color: rgba(192,132,252,.20);
-}
-
-.auth-input:focus {
-    border-color: rgba(192,132,252,.60);
-    background: rgba(168,85,247,.10);
-    box-shadow:
-        0 0 0 3px rgba(168,85,247,.10),
-        0 0 25px rgba(168,85,247,.16),
-        inset 0 1px 0 rgba(255,255,255,.07);
-}
-
-.auth-title,
-h1,
-.sheet-title {
-    background: linear-gradient(135deg, #ffffff 10%, #e9d5ff 55%, #c084fc 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.custom-select-btn {
-    background: rgba(147,51,234,.07);
-    border-color: rgba(192,132,252,.20);
-}
-
-.custom-select-btn:hover {
-    background: rgba(168,85,247,.12);
-    border-color: rgba(192,132,252,.45);
-}
-
-.custom-select-btn::after {
-    background: rgba(168,85,247,.12);
-    color: #d8b4fe;
-}
-
-.btn {
-    border-color: rgba(192,132,252,.55);
-    background: linear-gradient(135deg, #9333ea, #c026d3);
-    box-shadow:
-        0 15px 35px rgba(88,28,135,.28),
-        0 0 20px rgba(168,85,247,.22),
-        inset 0 1px 0 rgba(255,255,255,.25);
-}
-
-.btn:hover {
-    box-shadow:
-        0 18px 42px rgba(88,28,135,.35),
-        0 0 28px rgba(168,85,247,.35),
-        inset 0 1px 0 rgba(255,255,255,.30);
-}
-
-.btn-secondary {
-    background: rgba(147,51,234,.08);
-    border-color: rgba(192,132,252,.20);
-    color: #ddd6fe;
-}
-
-.btn-secondary:hover {
-    background: rgba(168,85,247,.14);
-}
-
-.btn-telegram {
-    background: rgba(6,182,212,.07);
-    border-color: rgba(6,182,212,.25);
-    color: #67e8f9;
-}
-
-.support-notice a {
-    color: #d8b4fe;
-    text-shadow: 0 0 12px rgba(192,132,252,.25);
-}
-
-.support-notice a:hover {
-    color: #f0abfc;
-    text-shadow: 0 0 18px rgba(217,70,239,.40);
-}
-
-.progress-box {
-    background: linear-gradient(165deg, rgba(32,14,48,.78), rgba(18,6,26,.88));
-    border-color: rgba(192,132,252,.45);
-    box-shadow:
-        0 25px 60px rgba(0,0,0,.55),
-        0 0 25px rgba(168,85,247,.16),
-        inset 0 1px 0 rgba(255,255,255,.10);
-}
-
-.sheet-overlay {
-    background: rgba(5,2,10,.85);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-}
-
-.sheet-modal {
-    background: linear-gradient(165deg, rgba(32,14,48,.96), rgba(18,6,26,.98));
-    border-color: rgba(192,132,252,.35);
-    box-shadow:
-        0 25px 70px rgba(0,0,0,.70),
-        0 0 25px rgba(168,85,247,.12),
-        inset 0 1px 1px rgba(255,255,255,.08);
-}
-
-.sheet-close {
-    background: rgba(168,85,247,.08);
-    border-color: rgba(192,132,252,.20);
-    color: #e9d5ff;
-}
-
-.sheet-close:hover {
-    background: rgba(168,85,247,.20);
-    border-color: rgba(192,132,252,.40);
-}
-
-.app-search {
-    background: rgba(147,51,234,.08);
-    border-color: rgba(192,132,252,.45);
-    box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.08),
-        inset 0 2px 10px rgba(0,0,0,.20),
-        0 0 20px rgba(168,85,247,.12);
-}
-
-.app-search:focus {
-    border-color: rgba(192,132,252,.75);
-    background: rgba(168,85,247,.10);
-    box-shadow:
-        0 0 0 3px rgba(168,85,247,.12),
-        0 0 30px rgba(168,85,247,.22),
-        inset 0 1px 0 rgba(255,255,255,.12);
-}
-
-.search-icon { color: #d8b4fe; }
-
-.search-filter-btn {
-    border-color: rgba(192,132,252,.35);
-    background: rgba(168,85,247,.12);
-    color: #e9d5ff;
-}
-
-.search-filter-btn:hover,
-.search-filter-btn.active {
-    background: rgba(168,85,247,.24);
-    border-color: rgba(192,132,252,.65);
-}
-
-.filter-dropdown {
-    background: rgba(18,6,26,.96);
-    border-color: rgba(192,132,252,.35);
-    box-shadow:
-        0 15px 35px rgba(0,0,0,.60),
-        0 0 20px rgba(168,85,247,.12);
-}
-
-.filter-option.active {
-    background: linear-gradient(135deg, rgba(168,85,247,.30), rgba(217,70,239,.22));
-}
-
-.info-card {
-    background: rgba(147,51,234,.06);
-    border-color: rgba(192,132,252,.35);
-    box-shadow: 0 0 12px rgba(168,85,247,.10);
-}
-
-.sheet-item {
-    background: rgba(147,51,234,.06);
-    border-color: rgba(192,132,252,.28);
-    box-shadow: 0 0 10px rgba(168,85,247,.08);
-}
-
-.sheet-item:hover {
-    background: rgba(168,85,247,.13);
-    border-color: rgba(192,132,252,.55);
-    box-shadow: 0 0 16px rgba(168,85,247,.18);
-}
-
-.ios-badge {
-    color: #e9d5ff;
-    background: rgba(168,85,247,.10);
-    border-color: rgba(192,132,252,.35);
-}
-
-.search-empty { color: #c4b5fd; }
-
-.last-update {
-    color: rgba(216,180,254,.48);
-}
-
-/* ===== ДОПОЛНИТЕЛЬНОЕ ВЫДЕЛЕНИЕ ВАЖНЫХ ЭЛЕМЕНТОВ ===== */
-
-/* Приложения в списке — отдельная бирюзовая обводка */
-.sheet-item {
-    border-color: rgba(34, 211, 238, 0.55) !important;
-}
-
-.sheet-item:hover,
-.sheet-item:active {
-    border-color: rgba(34, 211, 238, 0.85) !important;
-}
-
-/* Кнопка выбора категории — отдельная янтарная обводка */
-.custom-select-btn {
-    border-color: rgba(245, 158, 11, 0.65) !important;
-}
-
-.custom-select-btn:hover,
-.custom-select-btn:active {
-    border-color: rgba(245, 158, 11, 0.90) !important;
-}
-
-/* Поле ввода пароля — отдельная зелёная обводка */
-.auth-input {
-    border-color: rgba(52, 211, 153, 0.65) !important;
-}
-
-.auth-input:focus {
-    border-color: rgba(52, 211, 153, 0.95) !important;
-    box-shadow:
-        0 0 0 3px rgba(52, 211, 153, 0.10),
-        0 0 20px rgba(52, 211, 153, 0.18),
-        inset 0 1px 0 rgba(255,255,255,.07) !important;
-}
-
-
-
-/* ==================================================
-   ДОПОЛНИТЕЛЬНОЕ ВЫДЕЛЕНИЕ ВАЖНЫХ ЭЛЕМЕНТОВ
-   Только обводки — размеры, расположение и логика не меняются.
-================================================== */
-
-/* Все основные существующие обводки делаем немного толще и ярче */
-.auth-box,
-.card,
-.custom-select-btn,
-.auth-input,
-.sheet-item,
-.btn-telegram,
-.support-notice {
-    border-width: 1.8px !important;
-}
-
-/* Главное окно авторизации — зелёная обводка */
-.auth-box {
-    border-color: rgba(52, 211, 153, 0.78) !important;
-    box-shadow:
-        0 0 24px rgba(52, 211, 153, 0.16),
-        0 25px 70px rgba(0,0,0,.62),
-        inset 0 1px 1px rgba(255,255,255,.08) !important;
-}
-
-/* Окно авторизации приложения — также отдельный зелёный акцент */
-#appAuthApp .auth-box {
-    border-color: rgba(52, 211, 153, 0.88) !important;
-    box-shadow:
-        0 0 28px rgba(52, 211, 153, 0.20),
-        0 25px 70px rgba(0,0,0,.65),
-        inset 0 1px 1px rgba(255,255,255,.08) !important;
-}
-
-/* Поля ввода пароля — яркая салатово-зелёная обводка */
-.auth-input {
-    border-color: rgba(74, 222, 128, 0.72) !important;
-    box-shadow: 0 0 14px rgba(74, 222, 128, 0.10) !important;
-}
-
-.auth-input:focus {
-    border-color: rgba(134, 239, 172, 0.98) !important;
-    box-shadow:
-        0 0 0 3px rgba(74, 222, 128, 0.10),
-        0 0 24px rgba(74, 222, 128, 0.22),
-        inset 0 1px 0 rgba(255,255,255,.08) !important;
-}
-
-/* Общее главное окно экрана выбора приложений — фиолетовая обводка */
-.card {
-    border-color: rgba(192, 132, 252, 0.62) !important;
-    box-shadow:
-        0 0 24px rgba(168, 85, 247, 0.13),
-        0 25px 70px rgba(0,0,0,.62),
-        inset 0 1px 1px rgba(255,255,255,.08) !important;
-}
-
-/* Кнопка выбора категории — золотистая обводка */
-.custom-select-btn {
-    border-color: rgba(251, 191, 36, 0.82) !important;
-    box-shadow: 0 0 15px rgba(251, 191, 36, 0.11) !important;
-}
-
-.custom-select-btn:hover,
-.custom-select-btn:active {
-    border-color: rgba(252, 211, 77, 0.98) !important;
-    box-shadow: 0 0 22px rgba(251, 191, 36, 0.18) !important;
-}
-
-/* Каждое приложение в списке — бирюзовая обводка */
-.sheet-item {
-    border-color: rgba(45, 212, 191, 0.70) !important;
-    box-shadow: 0 0 13px rgba(45, 212, 191, 0.10) !important;
-}
-
-.sheet-item:hover,
-.sheet-item:active,
-.sheet-item.selected {
-    border-color: rgba(94, 234, 212, 0.98) !important;
-    box-shadow:
-        0 0 20px rgba(45, 212, 191, 0.20),
-        inset 0 1px 0 rgba(255,255,255,.08) !important;
-}
-
-/* Ссылка «Связаться с нами» — розово-сиреневая обводка */
-.support-notice {
-    border: 1.8px solid rgba(232, 121, 249, 0.58) !important;
-    border-radius: 14px;
-    padding: 9px 12px !important;
-    background: rgba(217, 70, 239, 0.045);
-    box-shadow: 0 0 15px rgba(217, 70, 239, 0.09);
-}
-
-.support-notice a {
-    color: #f0abfc !important;
-    text-shadow: 0 0 14px rgba(232, 121, 249, 0.32) !important;
-}
-
-.support-notice a:hover {
-    color: #f5d0fe !important;
-    text-shadow: 0 0 20px rgba(232, 121, 249, 0.48) !important;
-}
-
-/* Кнопка Telegram — чуть более заметная обводка */
-.btn-telegram {
-    border-color: rgba(34, 211, 238, 0.68) !important;
-    box-shadow: 0 0 16px rgba(34, 211, 238, 0.10) !important;
-}
-
-.btn-telegram:hover {
-    border-color: rgba(103, 232, 249, 0.92) !important;
-    box-shadow: 0 0 22px rgba(34, 211, 238, 0.18) !important;
-}
-
-/* ==================================================
-   ФИНАЛЬНАЯ НАСТРОЙКА АКЦЕНТНЫХ ОБВОДОК
-   Только визуальные изменения. Логика и расположение не меняются.
-================================================== */
-
-/* Главное общее окно экрана выбора приложений — такой же зелёный акцент, как авторизация */
-.card {
-    border: 2px solid rgba(52, 211, 153, 0.82) !important;
-    box-shadow:
-        0 0 28px rgba(52, 211, 153, 0.16),
-        0 25px 70px rgba(0,0,0,.62),
-        inset 0 1px 1px rgba(255,255,255,.08) !important;
-}
-
-/* Окно выбора приложений — заметная красно-коралловая обводка */
-.sheet-modal {
-    border: 2px solid rgba(248, 113, 113, 0.78) !important;
-    box-shadow:
-        0 0 28px rgba(248, 113, 113, 0.16),
-        0 25px 70px rgba(0,0,0,.70),
-        inset 0 1px 1px rgba(255,255,255,.08) !important;
-}
-
-/* Поле поиска — отдельная синяя обводка */
-.app-search {
-    border: 2px solid rgba(96, 165, 250, 0.82) !important;
-    box-shadow:
-        0 0 16px rgba(96, 165, 250, 0.12),
-        inset 0 1px 0 rgba(255,255,255,.08),
-        inset 0 2px 10px rgba(0,0,0,.20) !important;
-}
-
-.app-search:focus {
-    border-color: rgba(147, 197, 253, 1) !important;
-    box-shadow:
-        0 0 0 3px rgba(96, 165, 250, 0.12),
-        0 0 26px rgba(96, 165, 250, 0.24),
-        inset 0 1px 0 rgba(255,255,255,.12) !important;
-}
-
-/* Шестерёнка справа от поиска — отдельный яркий оранжево-золотой акцент */
-.search-filter-btn {
-    border: 2px solid rgba(251, 191, 36, 0.90) !important;
-    background: rgba(245, 158, 11, 0.12) !important;
-    color: #fcd34d !important;
-    box-shadow:
-        0 0 18px rgba(245, 158, 11, 0.18),
-        inset 0 1px 0 rgba(255,255,255,.08) !important;
-}
-
-.search-filter-btn:hover,
-.search-filter-btn.active {
-    border-color: rgba(253, 224, 71, 1) !important;
-    background: rgba(245, 158, 11, 0.20) !important;
-    box-shadow:
-        0 0 26px rgba(245, 158, 11, 0.30),
-        inset 0 1px 0 rgba(255,255,255,.12) !important;
-}
-
-/* Окно с текстом после установки — немного другой фон, чтобы не терялось */
-.progress-box {
-    background:
-        linear-gradient(145deg, rgba(16, 185, 129, 0.13), rgba(32, 14, 48, 0.90)) !important;
-    border: 2px solid rgba(74, 222, 128, 0.58) !important;
-    box-shadow:
-        0 0 22px rgba(74, 222, 128, 0.12),
-        0 20px 55px rgba(0,0,0,.55),
-        inset 0 1px 0 rgba(255,255,255,.09) !important;
-}
-
-/* Надпись о последнем обновлении — отдельный заметный цвет */
-.last-update {
-    color: rgba(216, 180, 254, 0.82) !important;
-    text-shadow: 0 0 12px rgba(192, 132, 252, 0.28);
-}
-
-/* Блок связи внутри главного окна — сохраняем зелёную общую стилистику */
-.support-notice {
-    border-color: rgba(52, 211, 153, 0.48) !important;
-    background: rgba(52, 211, 153, 0.045) !important;
-    box-shadow: 0 0 14px rgba(52, 211, 153, 0.08) !important;
-}
-
-.support-notice a {
-    color: #6ee7b7 !important;
-    text-shadow: 0 0 14px rgba(52, 211, 153, 0.28) !important;
-}
-
-.support-notice a:hover {
-    color: #a7f3d0 !important;
-    text-shadow: 0 0 20px rgba(52, 211, 153, 0.42) !important;
-}
-
-
-
-/* ==================================================
-   НОВОЕ ВЫДЕЛЕНИЕ КАТАЛОГА
-   Только оформление — логика и JavaScript не изменяются.
-================================================== */
-
-/* Окно с количеством доступных приложений — красная обводка */
-.info-card.app-status-card {
-    border: 2px solid rgba(248, 113, 113, 0.88) !important;
-    background: rgba(248, 113, 113, 0.055) !important;
-    box-shadow: 0 0 16px rgba(248, 113, 113, 0.10) !important;
-}
-
-/* Шестерёнка — красная обводка вместо прежней золотой */
-.search-filter-btn {
-    border: 2px solid rgba(248, 113, 113, 0.92) !important;
-    background: rgba(248, 113, 113, 0.10) !important;
-    color: #fca5a5 !important;
-    box-shadow: 0 0 18px rgba(248, 113, 113, 0.14) !important;
-}
-
-.search-filter-btn:hover,
-.search-filter-btn.active {
-    border-color: rgba(254, 202, 202, 1) !important;
-    background: rgba(248, 113, 113, 0.18) !important;
-    color: #fecaca !important;
-    box-shadow: 0 0 24px rgba(248, 113, 113, 0.22) !important;
-}
-
-/* Маленькое окно категорий — красная обводка */
-.filter-dropdown {
-    border: 2px solid rgba(248, 113, 113, 0.88) !important;
-    background: rgba(18, 6, 26, 0.97) !important;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.60), 0 0 18px rgba(248, 113, 113, 0.12) !important;
-}
-
-/* Каждая категория — свой отдельный цвет фона */
-.filter-option {
-    border: 1px solid transparent !important;
-}
-
-.filter-option:nth-child(1) {
-    background: rgba(249, 115, 22, 0.16) !important;
-    color: #fdba74 !important;
-    border-color: rgba(249, 115, 22, 0.38) !important;
-}
-
-.filter-option:nth-child(2) {
-    background: rgba(132, 204, 22, 0.16) !important;
-    color: #bef264 !important;
-    border-color: rgba(132, 204, 22, 0.38) !important;
-}
-
-.filter-option:nth-child(3) {
-    background: rgba(236, 72, 153, 0.16) !important;
-    color: #f9a8d4 !important;
-    border-color: rgba(236, 72, 153, 0.38) !important;
-}
-
-.filter-option:nth-child(4) {
-    background: rgba(14, 165, 233, 0.16) !important;
-    color: #7dd3fc !important;
-    border-color: rgba(14, 165, 233, 0.38) !important;
-}
-
-.filter-option:nth-child(5) {
-    background: rgba(168, 85, 247, 0.16) !important;
-    color: #d8b4fe !important;
-    border-color: rgba(168, 85, 247, 0.38) !important;
-}
-
-.filter-option:nth-child(1):hover,
-.filter-option:nth-child(1).active {
-    background: rgba(249, 115, 22, 0.28) !important;
-    color: #fed7aa !important;
-}
-
-.filter-option:nth-child(2):hover,
-.filter-option:nth-child(2).active {
-    background: rgba(132, 204, 22, 0.28) !important;
-    color: #d9f99d !important;
-}
-
-.filter-option:nth-child(3):hover,
-.filter-option:nth-child(3).active {
-    background: rgba(236, 72, 153, 0.28) !important;
-    color: #fbcfe8 !important;
-}
-
-.filter-option:nth-child(4):hover,
-.filter-option:nth-child(4).active {
-    background: rgba(14, 165, 233, 0.28) !important;
-    color: #bae6fd !important;
-}
-
-.filter-option:nth-child(5):hover,
-.filter-option:nth-child(5).active {
-    background: rgba(168, 85, 247, 0.28) !important;
-    color: #e9d5ff !important;
-}
-
-/* Убираем свечение только у окна выбранного приложения в защите установки */
-#appAuthApp .app-badge-box {
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
-}
-
-#appAuthApp .app-badge-box span {
-    text-shadow: none !important;
-}
-</style>
-
-<style id="search-gear-final-colors">
-/* Только изменение цвета обводки поиска и шестерёнки */
-.app-search {
-    border-color: rgba(56, 189, 248, 0.95) !important;
-    box-shadow: 0 0 18px rgba(56, 189, 248, 0.16), inset 0 1px 0 rgba(255,255,255,.08), inset 0 2px 10px rgba(0,0,0,.20) !important;
-}
-.app-search:focus {
-    border-color: rgba(125, 211, 252, 1) !important;
-    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.13), 0 0 26px rgba(56, 189, 248, 0.26), inset 0 1px 0 rgba(255,255,255,.12) !important;
-}
-.search-filter-btn {
-    border: 2px solid rgba(217, 70, 239, 0.95) !important;
-    background: rgba(217, 70, 239, 0.13) !important;
-    color: #f0abfc !important;
-    box-shadow: 0 0 18px rgba(217, 70, 239, 0.20), inset 0 1px 0 rgba(255,255,255,.08) !important;
-}
-.search-filter-btn:hover,
-.search-filter-btn.active {
-    border-color: rgba(232, 121, 249, 1) !important;
-    background: rgba(217, 70, 239, 0.22) !important;
-    box-shadow: 0 0 28px rgba(217, 70, 239, 0.32), inset 0 1px 0 rgba(255,255,255,.12) !important;
-}
-</style>
-
-<style id="final-ui-colors-v7">
-/* 1. Блок «Свяжитесь с нами» — чуть заметнее, без резкого свечения */
-.support-notice {
-    border: 1.8px solid rgba(129, 140, 248, 0.68) !important;
-    border-radius: 14px !important;
-    background: rgba(99, 102, 241, 0.055) !important;
-    box-shadow:
-        0 0 18px rgba(99, 102, 241, 0.10),
-        inset 0 1px 0 rgba(255,255,255,.07) !important;
-}
-
-.support-notice a {
-    color: #67e8f9 !important;
-    text-shadow: 0 0 13px rgba(34, 211, 238, 0.28) !important;
-}
-
-.support-notice a:hover {
-    color: #a5f3fc !important;
-    text-shadow: 0 0 19px rgba(34, 211, 238, 0.42) !important;
-}
-
-/* 2. Окно с количеством приложений и их работой */
-.app-status-card {
-    border: 1.8px solid rgba(250, 204, 21, 0.72) !important;
-    background: rgba(250, 204, 21, 0.045) !important;
-    box-shadow:
-        0 0 18px rgba(250, 204, 21, 0.10),
-        inset 0 1px 0 rgba(255,255,255,.07) !important;
-}
-
-/* 3. Категории: без фона и без обводок, только заметные разделённые названия */
-.filter-dropdown {
-    background: transparent !important;
-    border: 0 !important;
-    box-shadow: none !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    padding: 5px 0 !important;
-}
-
-.filter-option {
-    background: transparent !important;
-    border: 0 !important;
-    box-shadow: none !important;
-    border-radius: 10px !important;
-    margin: 2px 0 !important;
-    color: #d8b4fe !important;
-    text-shadow: 0 0 12px rgba(192, 132, 252, 0.28) !important;
-}
-
-.filter-option + .filter-option {
-    border-top: 1px solid rgba(255,255,255,.10) !important;
-    border-radius: 0 0 10px 10px !important;
-    padding-top: 10px !important;
-}
-
-.filter-option:hover,
-.filter-option.active {
-    background: transparent !important;
-    border-left: 0 !important;
-    border-right: 0 !important;
-    border-bottom: 0 !important;
-    color: #f0abfc !important;
-    text-shadow: 0 0 16px rgba(232, 121, 249, 0.42) !important;
-}
-
-/* 4. Окно защиты установки с выбранным приложением */
-#appAuthApp .auth-box {
-    border-color: rgba(96, 165, 250, 0.82) !important;
-    box-shadow:
-        0 0 24px rgba(96, 165, 250, 0.13),
-        0 25px 70px rgba(0,0,0,.65),
-        inset 0 1px 1px rgba(255,255,255,.08) !important;
-}
-</style>
-
-
-<style id="final-ui-colors-v9">
-/* Окно с количеством приложений и их доступностью — оставляем текущий цвет */
-.app-status-card {
-    border: 2px solid rgba(45, 212, 191, 0.88) !important;
-    background: rgba(20, 184, 166, 0.045) !important;
-    box-shadow:
-        0 0 22px rgba(45, 212, 191, 0.13),
-        inset 0 1px 0 rgba(255,255,255,.08) !important;
-}
-
-/* Общее окно категорий — совершенно другой цвет */
-.filter-dropdown {
-    background: transparent !important;
-    border: 2px solid rgba(251, 191, 36, 0.90) !important;
-    border-radius: 14px !important;
-    box-shadow:
-        0 15px 35px rgba(0,0,0,.60),
-        0 0 20px rgba(251, 191, 36, 0.12) !important;
-    backdrop-filter: blur(18px) !important;
-    -webkit-backdrop-filter: blur(18px) !important;
-    padding: 6px !important;
-}
-
-/* Категории без фона, только разделители; названия серые */
-.filter-option,
-.filter-option:hover,
-.filter-option.active {
-    background: transparent !important;
-    border-left: 0 !important;
-    border-right: 0 !important;
-    border-bottom: 0 !important;
-    box-shadow: none !important;
-    color: #9ca3af !important;
-    text-shadow: none !important;
-}
-
-.filter-option + .filter-option {
-    border-top: 1px solid rgba(156, 163, 175, 0.22) !important;
-}
-</style>
-
-<style id="final-ui-colors-final">
-/* ОКНО «количество приложений / работают стабильно» */
-.info-blocks-container .app-status-card {
-    border: 2px solid rgba(251, 146, 60, 0.95) !important;
-    background: rgba(255, 255, 255, 0.04) !important;
-    box-shadow:
-        0 0 18px rgba(251, 146, 60, 0.12),
-        inset 0 1px 0 rgba(255,255,255,.08) !important;
-}
-
-/* КАТЕГОРИИ — полностью без фона и без обводок */
-.filter-dropdown .filter-option,
-.filter-dropdown .filter-option:hover,
-.filter-dropdown .filter-option.active {
-    background: transparent !important;
-    border: none !important;
-    outline: none !important;
-    box-shadow: none !important;
-    color: #9ca3af !important;
-    text-shadow: none !important;
-}
-
-/* Только разделители между названиями категорий */
-.filter-dropdown .filter-option + .filter-option {
-    border-top: 1px solid rgba(156, 163, 175, 0.22) !important;
-}
-
-/* Без прокрутки списка категорий */
-.filter-dropdown {
-    max-height: none !important;
-    overflow-y: visible !important;
-    scrollbar-width: none !important;
-}
-.filter-dropdown::-webkit-scrollbar {
-    display: none !important;
-    width: 0 !important;
-}
-
-
-/* --------------------------------------------------
-   SEARCH ICON & SELECTED CATEGORY — FINAL OVERRIDES
--------------------------------------------------- */
-.search-icon {
-    width: 19px;
-    height: 19px;
-    left: 13px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #f3e8ff;
-    opacity: 1;
-}
-
-.search-icon svg {
-    width: 18px;
-    height: 18px;
-    display: block;
-    stroke: #f3e8ff;
-    stroke-width: 2.5;
-    filter:
-        drop-shadow(0 0 4px rgba(216,180,254,.8))
-        drop-shadow(0 0 9px rgba(168,85,247,.5));
-}
-
-.search-icon {
-    z-index: 3;
-    color: #ffffff !important;
-    background: rgba(168, 85, 247, 0.22);
-    border: 1px solid rgba(255,255,255,.28);
-    border-radius: 50%;
-    box-shadow: 0 0 10px rgba(168,85,247,.45), inset 0 0 6px rgba(255,255,255,.12);
-}
-
-.search-icon svg {
-    stroke: #ffffff !important;
-    filter: drop-shadow(0 0 3px rgba(255,255,255,.9))
-            drop-shadow(0 0 8px rgba(168,85,247,.8));
-}
-
-/* Чуть более заметное состояние выбранной категории */
-.filter-option.active {
-    position: relative;
-    transform: translateX(2px) scale(1.015);
-    background: linear-gradient(135deg, rgba(168,85,247,.42), rgba(217,70,239,.28)) !important;
-    border-color: rgba(216,180,254,.72) !important;
-    color: #fff !important;
-    font-weight: 650 !important;
-    box-shadow:
-        0 0 0 1px rgba(192,132,252,.18),
-        0 5px 14px rgba(168,85,247,.18),
-        inset 0 1px 0 rgba(255,255,255,.14);
-}
-
-.filter-option.active::after {
-    content: "✓";
-    float: right;
-    color: #fff;
-    font-size: 12px;
-    font-weight: 700;
-    text-shadow: 0 0 8px rgba(255,255,255,.45);
-}
-
-.filter-option:active {
-    transform: scale(.98);
-}
-
-.filter-option.active:active {
-    transform: translateX(2px) scale(.99);
 }
 </style>
 </head>
@@ -2524,7 +1248,9 @@ async function fetchSupabaseSettings() {
                 "avito-anero": "", "yandex-pay": "", "2gis": "", "psb": "",
                 "kuper": "", "rutube": "", "rzd": "", "ak-bars-bank": "",
                 "lentaa": "", "mobio": "", "sberkids": "", "blum": "",
-                "scbnotes": "", "craftersy": ""
+                "scbnotes": "", "craftersy": "", "happ_proxy": "",
+                "sber_invest": "", "vtb_invest": "", "gazpromneft": "",
+                "novikombank": "", "mtsdengi": ""
             },
             appVisibility: {}
         };
@@ -2631,23 +1357,9 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
     });
 
-    if (window.visualViewport) {
-        const updateKeyboardState = () => {
-            const viewportHeight = window.visualViewport.height;
-            const screenHeight = window.screen.height;
-            const keyboardLikelyOpen = screenHeight - viewportHeight > 120;
-            document.body.classList.toggle(
-                "keyboard-open",
-                keyboardLikelyOpen && document.getElementById("sheetOverlay").classList.contains("active")
-            );
-        };
-        window.visualViewport.addEventListener("resize", updateKeyboardState);
-    }
-
     document.querySelectorAll("input").forEach(input => {
         input.addEventListener("focus", () => {
             if (input.id === "appSearchInput") return;
-
             setTimeout(() => {
                 const box = input.closest(".auth-box") || input.closest(".card") || input;
                 box.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -2687,7 +1399,6 @@ async function openSheet() {
     }
     filterApps();
     document.getElementById("sheetOverlay").classList.add("active");
-    document.body.classList.remove("keyboard-open");
 }
 
 function closeSheet() {
@@ -2698,7 +1409,6 @@ function closeSheet() {
     }
     document.getElementById("filterDropdown").classList.remove("active");
     document.getElementById("sheetOverlay").classList.remove("active");
-    document.body.classList.remove("keyboard-open");
     filterApps();
 }
 
@@ -2909,8 +1619,7 @@ function executeDownload() {
             👋 Добро пожаловать!
         </div>
         <div class="auth-description">
-            Введите пароль для доступа
-            к каталогу приложений
+            Введите пароль для доступа<br>к каталогу приложений
         </div>
         <input
             type="tel"
@@ -3130,7 +1839,7 @@ function executeDownload() {
             >
                 <div class="sheet-item-main">
                      <div class="app-icon">
-                <img src="https://i.pinimg.com/736x/92/a9/dc/92a9dc918ad00d529922958f603ede6d.jpg" alt="ВК" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="https://i.pinimg.com/736x/92/a9/dc/92a9dc918ad00d529922958f603ede6d.jpg" alt="ВК">
                 </div>
                     <div class="sheet-info-box">
                         <span class="app-name">ВКонтакте</span>
@@ -3148,7 +1857,7 @@ function executeDownload() {
             >
                 <div class="sheet-item-main">
                      <div class="app-icon">
-                <img src="https://mari-el.gov.ru/upload/iblock/ff2/wiu6p92d5b9r5t9cr4tvv8dwbt3iwiej.png" alt="Макс" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="https://mari-el.gov.ru/upload/iblock/ff2/wiu6p92d5b9r5t9cr4tvv8dwbt3iwiej.png" alt="Макс">
                 </div>
                     <div class="sheet-info-box">
                         <span class="app-name">MAX</span>
@@ -3166,7 +1875,7 @@ function executeDownload() {
             >
                 <div class="sheet-item-main">
                     <div class="app-icon">
-                <img src="https://termo-wood.ru/local/templates/main/components/bitrix/news.list/index_youtube/images/vk-video-sign-logo2.png" alt="VK Видео" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="https://termo-wood.ru/local/templates/main/components/bitrix/news.list/index_youtube/images/vk-video-sign-logo2.png" alt="VK Видео">
                 </div>
                     <div class="sheet-info-box">
                         <span class="app-name">VK Видео</span>
@@ -3184,7 +1893,7 @@ function executeDownload() {
             >
                 <div class="sheet-item-main">
                    <div class="app-icon">
-                <img src="https://freesoft.ru/storage/images/759/7588/758713/758713_normal.png" alt="VK Клипы" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="https://freesoft.ru/storage/images/759/7588/758713/758713_normal.png" alt="VK Клипы">
                 </div>
                     <div class="sheet-info-box">
                         <span class="app-name">VK Клипы</span>
@@ -3202,7 +1911,7 @@ function executeDownload() {
             >
                 <div class="sheet-item-main">
                     <div class="app-icon">
-                <img src="https://avatars.mds.yandex.net/i?id=eb4ffd4cce20ff26621f4d2e1302d559_l-3510839-images-thumbs&n=13" alt="Сбербанк" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="https://avatars.mds.yandex.net/i?id=eb4ffd4cce20ff26621f4d2e1302d559_l-3510839-images-thumbs&n=13" alt="Сбербанк">
                 </div>
                     <div class="sheet-info-box">
                         <span class="app-name">СберБанк (Финансы Онлайн)</span>
@@ -3220,7 +1929,7 @@ function executeDownload() {
             >
                 <div class="sheet-item-main">
                      <div class="app-icon">
-                <img src="https://images.meme-arsenal.com/831d76849c248c4785c163219dda744b.jpg" alt="Авито" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="https://images.meme-arsenal.com/831d76849c248c4785c163219dda744b.jpg" alt="Авито">
                 </div>
                     <div class="sheet-info-box">
                         <span class="app-name">Авито</span>
@@ -3238,7 +1947,7 @@ function executeDownload() {
             >
                 <div class="sheet-item-main">
                     <div class="app-icon">
-                <img src="https://i.pinimg.com/originals/ca/e1/21/cae1210d8c914afea22adc94dcdd0eee.jpg" alt="Все Карты MDS" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="https://i.pinimg.com/originals/ca/e1/21/cae1210d8c914afea22adc94dcdd0eee.jpg" alt="Все Карты MDS">
                 </div>
                     <div class="sheet-info-box">
                         <span class="app-name">Совкомбанк (Все карты MDS)</span>
@@ -3256,7 +1965,7 @@ function executeDownload() {
             >
                 <div class="sheet-item-main">
                    <div class="app-icon">
-                <img src="https://avatars.mds.yandex.net/i?id=1e5b5c8153fd68c3ad7b66b0cd19fefa_l-5016868-images-thumbs&n=13" alt="Т-Банк (8PRO)" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="https://avatars.mds.yandex.net/i?id=1e5b5c8153fd68c3ad7b66b0cd19fefa_l-5016868-images-thumbs&n=13" alt="Т-Банк (8PRO)">
                 </div>
                     <div class="sheet-info-box">
                         <span class="app-name">Т-Банк (8PRO)</span>
@@ -3274,7 +1983,7 @@ function executeDownload() {
             >
                 <div class="sheet-item-main">
                     <div class="app-icon">
-                <img src="https://i.pinimg.com/originals/ca/e1/21/cae1210d8c914afea22adc94dcdd0eee.jpg" alt="Синоптик+" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="https://i.pinimg.com/originals/ca/e1/21/cae1210d8c914afea22adc94dcdd0eee.jpg" alt="Синоптик+">
                 </div>
                     <div class="sheet-info-box">
                         <span class="app-name">Совкомбанк (Синоптик+)</span>
@@ -3292,7 +2001,7 @@ function executeDownload() {
             >
                 <div class="sheet-item-main">
                    <div class="app-icon">
-                <img src="https://avatars.mds.yandex.net/i?id=1e5b5c8153fd68c3ad7b66b0cd19fefa_l-5016868-images-thumbs&n=13" alt="Т-Банк (Drive Transit)" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="https://avatars.mds.yandex.net/i?id=1e5b5c8153fd68c3ad7b66b0cd19fefa_l-5016868-images-thumbs&n=13" alt="Т-Банк (Drive Transit)">
                 </div>
                     <div class="sheet-info-box">
                         <span class="app-name">Т-Банк (Drive Transit)</span>
@@ -3310,7 +2019,7 @@ function executeDownload() {
             >
                 <div class="sheet-item-main">
                    <div class="app-icon">
-                <img src="https://i.taplink.st/a/1/4/7/e/15bb4a.jpg?139" alt="Лента" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="https://i.taplink.st/a/1/4/7/e/15bb4a.jpg?139" alt="Лента">
                 </div>
                     <div class="sheet-info-box">
                         <span class="app-name">Лента</span>
@@ -3328,7 +2037,7 @@ function executeDownload() {
             >
                 <div class="sheet-item-main">
                     <div class="app-icon">
-                <img src="https://avatars.mds.yandex.net/get-altay/16329243/2a0000019bc0e7a55b0eaa0dcc6b77eca410/XL" alt="yandex pay" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="https://avatars.mds.yandex.net/get-altay/16329243/2a0000019bc0e7a55b0eaa0dcc6b77eca410/XL" alt="yandex pay">
                 </div>
                     <div class="sheet-info-box">
                         <span class="app-name">Яндекс Пэй</span>
@@ -3346,7 +2055,7 @@ function executeDownload() {
             >
                 <div class="sheet-item-main">
                     <div class="app-icon">
-                <img src="https://avatars.mds.yandex.net/i?id=55fe61e4c88acc4ce04bdd4b010fe649cecd5944-5233671-images-thumbs&n=13" alt="2gis" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="https://avatars.mds.yandex.net/i?id=55fe61e4c88acc4ce04bdd4b010fe649cecd5944-5233671-images-thumbs&n=13" alt="2gis">
                 </div>
                     <div class="sheet-info-box">
                         <span class="app-name">2ГИС</span>
@@ -3364,7 +2073,7 @@ function executeDownload() {
             >
                 <div class="sheet-item-main">
                      <div class="app-icon">
-                <img src="https://avatars.mds.yandex.net/i?id=8ee36645ffa71da6eb92a8fe9278eca3_l-5358567-images-thumbs&n=13" alt="psb" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="https://avatars.mds.yandex.net/i?id=8ee36645ffa71da6eb92a8fe9278eca3_l-5358567-images-thumbs&n=13" alt="psb">
                 </div>
                     <div class="sheet-info-box">
                         <span class="app-name">ПСБ (Чайная Церемония)</span>
@@ -3382,7 +2091,7 @@ function executeDownload() {
             >
                 <div class="sheet-item-main">
                    <div class="app-icon">
-                <img src="https://cdn1-media.rabota.ru/processor/logo/original/2024/09/05/kuper-5063ae9603f8b65c8279335b06828795.png" alt="Купер" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="https://cdn1-media.rabota.ru/processor/logo/original/2024/09/05/kuper-5063ae9603f8b65c8279335b06828795.png" alt="Купер">
                 </div>
                     <div class="sheet-info-box">
                         <span class="app-name">Купер</span>
@@ -3400,7 +2109,7 @@ function executeDownload() {
             >
                 <div class="sheet-item-main">
                     <div class="app-icon">
-                <img src="https://azecsuwvwypwnkgobujn.supabase.co/storage/v1/object/public/avatars/company-logos/b341fde4-0bb0-4361-8104-81c7a384f66f.png" alt="Rutube" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="https://azecsuwvwypwnkgobujn.supabase.co/storage/v1/object/public/avatars/company-logos/b341fde4-0bb0-4361-8104-81c7a384f66f.png" alt="Rutube">
                 </div>
                     <div class="sheet-info-box">
                         <span class="app-name">Rutube(Starship Battle)</span>
@@ -3418,7 +2127,7 @@ function executeDownload() {
             >
                 <div class="sheet-item-main">
                      <div class="app-icon">
-                <img src="https://tulapressa.ru/wp-content/uploads/2024/08/20/fb7a303a916e6d96-840x520.jpg" alt="СберМобайл" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="https://tulapressa.ru/wp-content/uploads/2024/08/20/fb7a303a916e6d96-840x520.jpg" alt="СберМобайл">
                 </div>
                     <div class="sheet-info-box">
                         <span class="app-name">СберМобайл (Мобио)</span>
@@ -3436,7 +2145,7 @@ function executeDownload() {
             >
                 <div class="sheet-item-main">
                    <div class="app-icon">
-                <img src="https://workspace.ru/upload/articles/1fa/z7iixhu9jizu22hfpll8avumy9f30ubh.png" alt="РЖД Пассажирам" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="https://workspace.ru/upload/articles/1fa/z7iixhu9jizu22hfpll8avumy9f30ubh.png" alt="РЖД Пассажирам">
                 </div>
                     <div class="sheet-info-box">
                         <span class="app-name">РЖД Пассажирам</span>
@@ -3454,7 +2163,7 @@ function executeDownload() {
             >
                 <div class="sheet-item-main">
                     <div class="app-icon">
-                <img src="https://lh3.googleusercontent.com/6yVLZ4nvDll9uZGm71IpcQIQ4lJwxjXV5VdYerGW7tDEnMCZx9r440DzJKOVPdkni7jJ" alt="СберKids" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="https://lh3.googleusercontent.com/6yVLZ4nvDll9uZGm71IpcQIQ4lJwxjXV5VdYerGW7tDEnMCZx9r440DzJKOVPdkni7jJ" alt="СберKids">
                 </div>
                     <div class="sheet-info-box">
                         <span class="app-name">СберKids (SpeakaBoo)</span>
@@ -3472,7 +2181,7 @@ function executeDownload() {
             >
                 <div class="sheet-item-main">
                  <div class="app-icon">
-                <img src="https://i.taplink.st/a/1/4/7/e/15bb4a.jpg?139" alt="Быстро Продукты" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="https://i.taplink.st/a/1/4/7/e/15bb4a.jpg?139" alt="Быстро Продукты">
                 </div>
                     <div class="sheet-info-box">
                         <span class="app-name">Лента (Быстро Продукты)</span>
@@ -3490,7 +2199,7 @@ function executeDownload() {
             >
                 <div class="sheet-item-main">
                     <div class="app-icon">
-                <img src="https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/7e/28/f6/7e28f600-04c2-5f88-51ea-5f0a866da9f6/AppIcon-0-0-1x_U007epad-0-1-85-220.png/1200x1200bb.png" alt="Anero" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/7e/28/f6/7e28f600-04c2-5f88-51ea-5f0a866da9f6/AppIcon-0-0-1x_U007epad-0-1-85-220.png/1200x1200bb.png" alt="Anero">
                 </div>
                     <div class="sheet-info-box">
                         <span class="app-name">Авито (Anero)</span>
@@ -3508,7 +2217,7 @@ function executeDownload() {
             >
                 <div class="sheet-item-main">
                      <div class="app-icon">
-                <img src="https://avatars.mds.yandex.net/i?id=1e5b5c8153fd68c3ad7b66b0cd19fefa_l-5016868-images-thumbs&n=13" alt="Т-Банк (Craftersy)" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="https://avatars.mds.yandex.net/i?id=1e5b5c8153fd68c3ad7b66b0cd19fefa_l-5016868-images-thumbs&n=13" alt="Т-Банк (Craftersy)">
                 </div>
                     <div class="sheet-info-box">
                         <span class="app-name">Т-Банк (Craftersy)</span>
@@ -3526,7 +2235,7 @@ function executeDownload() {
             >
                 <div class="sheet-item-main">
                     <div class="app-icon">
-                <img src="https://i.pinimg.com/originals/ca/e1/21/cae1210d8c914afea22adc94dcdd0eee.jpg" alt="СовкомБанк" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="https://i.pinimg.com/originals/ca/e1/21/cae1210d8c914afea22adc94dcdd0eee.jpg" alt="СовкомБанк">
                 </div>
                     <div class="sheet-info-box">
                         <span class="app-name">СовкомБанк (SCB Notes)</span>
@@ -3544,7 +2253,7 @@ function executeDownload() {
             >
                 <div class="sheet-item-main">
                     <div class="app-icon">
-                <img src="https://static.tildacdn.com/tild6335-3234-4462-b262-303937366262/__.jpg" alt="АКБарс Банк" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="https://static.tildacdn.com/tild6335-3234-4462-b262-303937366262/__.jpg" alt="АКБарс Банк">
                 </div>
                     <div class="sheet-info-box">
                         <span class="app-name">АК Барс (Всё Учтено)</span>
@@ -3562,7 +2271,7 @@ function executeDownload() {
             >
                 <div class="sheet-item-main">
                     <div class="app-icon">
-                <img src="https://smart-lab.ru/uploads/articles/00/50/58/thumbnail.webp" alt="РокетБанк" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="https://smart-lab.ru/uploads/articles/00/50/58/thumbnail.webp" alt="РокетБанк">
                 </div>
                     <div class="sheet-info-box">
                         <span class="app-name">РокетБанк (Блум)</span>
@@ -3580,7 +2289,7 @@ function executeDownload() {
             >
                 <div class="sheet-item-main">
                     <div class="app-icon">
-                <img src="https://www.anti-malware.ru/files/images/source/happisback-news.png" alt="Happ Proxy" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="https://www.anti-malware.ru/files/images/source/happisback-news.png" alt="Happ Proxy">
                 </div>
                     <div class="sheet-info-box">
                         <span class="app-name">Happ Proxy</span>
@@ -3598,7 +2307,7 @@ function executeDownload() {
             >
                 <div class="sheet-item-main">
                     <div class="app-icon">
-                <img src="https://play-lh.googleusercontent.com/0Ze_YXs4dsMKylkIIOvmEEvZ0ENVvw1IkDgjQu8hW_0_bR4r8VgBFdoZ26R5omZ3WOp0A8eXXi_k7HiP5_Eq" alt="СберИнвестиции" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="https://play-lh.googleusercontent.com/0Ze_YXs4dsMKylkIIOvmEEvZ0ENVvw1IkDgjQu8hW_0_bR4r8VgBFdoZ26R5omZ3WOp0A8eXXi_k7HiP5_Eq" alt="СберИнвестиции">
                 </div>
                     <div class="sheet-info-box">
                         <span class="app-name">СберИнвестиции</span>
@@ -3616,7 +2325,7 @@ function executeDownload() {
             >
                 <div class="sheet-item-main">
                     <div class="app-icon">
-                <img src="https://avatars.mds.yandex.net/i?id=dad679c9a9151f179f35c091b379f63ddde52982-4575475-images-thumbs&n=13" alt="ВТБ Инвестиции" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="https://avatars.mds.yandex.net/i?id=dad679c9a9151f179f35c091b379f63ddde52982-4575475-images-thumbs&n=13" alt="ВТБ Инвестиции">
                 </div>
                     <div class="sheet-info-box">
                         <span class="app-name">ВТБ Инвестиции</span>
@@ -3634,7 +2343,7 @@ function executeDownload() {
             >
                 <div class="sheet-item-main">
                     <div class="app-icon">
-                <img src="https://avatars.mds.yandex.net/i?id=f5b78015f371133a357d570c8857c46db5324c27-8343045-images-thumbs&n=13" alt="Газпромнефть" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="https://avatars.mds.yandex.net/i?id=f5b78015f371133a357d570c8857c46db5324c27-8343045-images-thumbs&n=13" alt="Газпромнефть">
                 </div>
                     <div class="sheet-info-box">
                         <span class="app-name">Газпромнефть</span>
@@ -3643,7 +2352,7 @@ function executeDownload() {
                 <span class="ios-badge">iOS 15.0+</span>
             </div>
 
-              <!-- Новикомбанк -->
+            <!-- Новикомбанк -->
             <div
                 class="sheet-item"
                 data-key="novikombank"
@@ -3652,7 +2361,7 @@ function executeDownload() {
             >
                 <div class="sheet-item-main">
                    <div class="app-icon">
-                <img src="https://adindex.ru/assets/seo/2024_05/facebook_322651.jpg?ts=1715940689" alt="Лента" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="https://adindex.ru/assets/seo/2024_05/facebook_322651.jpg?ts=1715940689" alt="Новикомбанк">
                 </div>
                     <div class="sheet-info-box">
                         <span class="app-name">Новикомбанк</span>
@@ -3661,7 +2370,7 @@ function executeDownload() {
                 <span class="ios-badge">iOS 12.0+</span>
             </div>
 
-             <!-- МТС Банк -->
+            <!-- МТС Банк -->
             <div
                 class="sheet-item"
                 data-key="mtsdengi"
@@ -3670,7 +2379,7 @@ function executeDownload() {
             >
                 <div class="sheet-item-main">
                     <div class="app-icon">
-                <img src="https://mybroker.storage.bcs.ru/FinInstrumentLogo/RU000A0JRH43.png" alt="МТС Банк" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="https://mybroker.storage.bcs.ru/FinInstrumentLogo/RU000A0JRH43.png" alt="МТС Банк">
                 </div>
                     <div class="sheet-info-box">
                         <span class="app-name">МТС Банк</span>
@@ -3682,9 +2391,9 @@ function executeDownload() {
     </div>
 </div>
 
-    <div class="last-update">
+<div class="last-update">
     Последнее обновление: 22 сентября 2026
 </div>
-    
+
 </body>
 </html>
