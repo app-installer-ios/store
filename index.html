@@ -695,6 +695,44 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 
 .search-empty { display: none; text-align: center; color: #94a3b8; font-size: 13px; padding: 20px 10px; }
 
+/* Стили для модального окна инструкции */
+.guide-modal { height: min(82vh, 620px); }
+.guide-content { display: flex; flex-direction: column; gap: 14px; }
+.guide-step {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 14px;
+    background: rgba(30, 41, 59, 0.35);
+    border: 1.8px solid rgba(110, 160, 135, 0.3);
+    border-radius: 16px;
+    flex-shrink: 0;
+}
+.guide-step-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    background: linear-gradient(135deg, #0f766e, #1e3a8a);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    border-radius: 50%;
+}
+.guide-step-text { font-size: 13.5px; color: #e2e8f0; line-height: 1.45; }
+.guide-step-text strong { color: #ffffff; }
+.guide-screenshot {
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(15, 23, 42, 0.6);
+    display: flex;
+    justify-content: center;
+}
+.guide-screenshot img { width: 100%; height: auto; object-fit: cover; display: block; max-height: 200px; }
+
 .last-update {
     position: fixed;
     left: 0;
@@ -877,6 +915,15 @@ function closeSheet() {
     document.getElementById("filterDropdown").classList.remove("active");
     document.getElementById("sheetOverlay").classList.remove("active");
     filterApps();
+}
+
+/* Управление модальным окном инструкции */
+function openGuideSheet() {
+    document.getElementById("guideOverlay").classList.add("active");
+}
+
+function closeGuideSheet() {
+    document.getElementById("guideOverlay").classList.remove("active");
 }
 
 function toggleFilterMenu() {
@@ -1113,6 +1160,11 @@ function executeDownload() {
             <span id="selectedAppText" style="color:#94a3b8;">Нажмите для выбора приложения</span>
         </button>
         <button type="button" class="btn" onclick="startInstallation()">Установить</button>
+        
+        <!-- КНОПКА «Как это работает?» -->
+        <button type="button" class="btn btn-secondary" onclick="openGuideSheet()" style="margin-top: 8px;">
+            ❓ Как это работает?
+        </button>
 
         <div class="support-notice">
             После установки приложения <a href="https://t.me/dizabled" target="_blank" rel="noopener noreferrer">свяжитесь с нами!</a>
@@ -1419,6 +1471,59 @@ function executeDownload() {
                     <div class="sheet-info-box"><span class="app-name">МТС Банк</span></div>
                 </div>
                 <span class="ios-badge">iOS 14.0+</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- GUIDE SHEET / MODAL -->
+<div class="sheet-overlay" id="guideOverlay" onclick="closeGuideSheet()">
+    <div class="sheet-modal guide-modal" onclick="event.stopPropagation()">
+        <div class="sheet-header">
+            <div class="sheet-title">Как это работает?</div>
+            <button type="button" class="sheet-close" onclick="closeGuideSheet()">✕</button>
+        </div>
+
+        <div class="guide-content sheet-list">
+            <div class="guide-step">
+                <div class="guide-step-number">1</div>
+                <div class="guide-step-text">
+                    <strong>Выберите нужное приложение</strong> в списке, нажав на поле выбора, и нажмите кнопку <strong>«Установить»</strong>.
+                </div>
+                <div class="guide-screenshot">
+                    <img src="https://via.placeholder.com/350x180/1e293b/94a3b8?text=Step+1+Select+App" alt="Шаг 1">
+                </div>
+            </div>
+
+            <div class="guide-step">
+                <div class="guide-step-number">2</div>
+                <div class="guide-step-text">
+                    Подтвердите установку в появившемся системном окне iOS. Дождитесь окончания процесса загрузки на экране.
+                </div>
+                <div class="guide-screenshot">
+                    <img src="https://via.placeholder.com/350x180/1e293b/94a3b8?text=Step+2+Install" alt="Шаг 2">
+                </div>
+            </div>
+
+            <div class="guide-step">
+                <div class="guide-step-number">3</div>
+                <div class="guide-step-text">
+                    Если при открытии приложения появляется сообщение о <strong>«Ненадёжном корпоративном разработчике»</strong>, перейдите в 
+                    <em>Настройки ➔ Основные ➔ VPN и управление устройством</em>.
+                </div>
+                <div class="guide-screenshot">
+                    <img src="https://via.placeholder.com/350x180/1e293b/94a3b8?text=Step+3+Settings" alt="Шаг 3">
+                </div>
+            </div>
+
+            <div class="guide-step">
+                <div class="guide-step-number">4</div>
+                <div class="guide-step-text">
+                    Выберите профиль разработчика и нажмите <strong>«Доверить»</strong>. После этого приложение будет полностью готово к работе!
+                </div>
+                <div class="guide-screenshot">
+                    <img src="https://via.placeholder.com/350x180/1e293b/94a3b8?text=Step+4+Trust" alt="Шаг 4">
+                </div>
             </div>
         </div>
     </div>
