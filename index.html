@@ -695,36 +695,71 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 
 .search-empty { display: none; text-align: center; color: #94a3b8; font-size: 13px; padding: 20px 10px; }
 
-/* Стили для модального окна инструкции */
-.guide-modal { height: min(85vh, 650px); }
-.guide-content { display: flex; flex-direction: column; gap: 12px; }
+/* Улучшенный премиальный стиль инструкции в духе Apple */
+.guide-modal { 
+    height: min(88vh, 680px); 
+    background: linear-gradient(165deg, rgba(20, 26, 40, 0.98), rgba(10, 14, 22, 0.99));
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.guide-content { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 10px; 
+    padding-top: 4px;
+}
+
 .guide-step {
     display: flex;
     align-items: flex-start;
-    gap: 12px;
-    padding: 13px 14px;
-    background: rgba(30, 41, 59, 0.35);
-    border: 1.8px solid rgba(110, 160, 135, 0.3);
-    border-radius: 16px;
+    gap: 14px;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 20px;
     flex-shrink: 0;
+    transition: background 0.2s ease, border-color 0.2s ease;
 }
+
+.guide-step:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
 .guide-step-number {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 28px;
-    height: 28px;
-    min-width: 28px;
-    background: linear-gradient(135deg, #0f766e, #1e3a8a);
-    color: #fff;
-    font-size: 13px;
+    width: 26px;
+    height: 26px;
+    min-width: 26px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #38bdf8;
+    font-size: 12px;
     font-weight: 700;
     border-radius: 50%;
-    margin-top: 1px;
+    margin-top: 2px;
+    border: 1px solid rgba(56, 189, 248, 0.2);
 }
-.guide-step-text { font-size: 13px; color: #e2e8f0; line-height: 1.5; }
-.guide-step-text strong { color: #ffffff; }
-.guide-step-text em { color: #5eead4; font-style: normal; font-weight: 600; }
+
+.guide-step-text { 
+    font-size: 13.5px; 
+    color: #cbd5e1; 
+    line-height: 1.55; 
+    letter-spacing: -0.1px;
+}
+
+.guide-step-text strong { 
+    color: #ffffff; 
+    font-weight: 600; 
+}
+
+.guide-step-text em { 
+    color: #38bdf8; 
+    font-style: normal; 
+    font-weight: 600; 
+}
 
 .last-update {
     position: fixed;
@@ -1156,7 +1191,7 @@ function executeDownload() {
         
         <!-- КНОПКА «Как это работает?» -->
         <button type="button" class="btn btn-secondary" onclick="openGuideSheet()" style="margin-top: 8px;">
-            <span style="color: #fca5a5; font-weight: 700; margin-right: 4px;">•</span> Как это работает?
+            <span style="color: #38bdf8; font-weight: 700; margin-right: 4px;">•</span> Как это работает?
         </button>
 
         <div class="support-notice">
@@ -1481,35 +1516,35 @@ function executeDownload() {
             <div class="guide-step">
                 <div class="guide-step-number">1</div>
                 <div class="guide-step-text">
-                    <strong>Выберите нужное приложение</strong> в списке, нажав на поле выбора, и нажмите кнопку <strong>«Установить»</strong>.
+                    Выберите нужное приложение в списке, нажав на поле выбора, и нажмите кнопку <strong>«Установить»</strong>. После этого подтвердите установку в системном окне iOS и <strong>введите пароль вашего Apple ID</strong> для запуска процесса загрузки приложения на устройство.
                 </div>
             </div>
 
             <div class="guide-step">
                 <div class="guide-step-number">2</div>
                 <div class="guide-step-text">
-                    Подтвердите установку в появившемся системном окне iOS и дождитесь окончания загрузки приложения на экране.
+                    Дождитесь окончания загрузки и появления иконки приложения на экране «Домой».
                 </div>
             </div>
 
             <div class="guide-step">
                 <div class="guide-step-number">3</div>
                 <div class="guide-step-text">
-                    Если после установки при открытии приложения оно вылетает, <strong>обратитесь к администратору</strong> для получения аккаунта.
+                    Если при открытии приложения происходит вылет (краш), <strong>обратитесь к администратору</strong> для получения временного аккаунта.
                 </div>
             </div>
 
             <div class="guide-step">
                 <div class="guide-step-number">4</div>
                 <div class="guide-step-text">
-                    Зайдите в <em>Настройки</em> — нажмите <em>свое имя (Apple ID)</em> — выберите пункт <em>«Контент и покупки»</em> (если у вас старая версия iOS, то <em>iTunes Store и App Store</em>) и авторизуйтесь под выданным администратором аккаунтом. При необходимости введите код подтверждения, который пришлет администратор! <strong>Ни в коем случае не вводите данные вверху в «iCloud»!</strong>
+                    Перейдите в <em>Настройки</em> — тапните <em>по вашему имени (Apple ID)</em> — выберите <em>«Контент и покупки»</em> (на старых версиях iOS — <em>iTunes Store и App Store</em>) и авторизуйтесь подданными администратором данными. Если потребуется код подтверждения, запросите его у администратора. <em>Ни в коем случае не вводите данные вверху в разделе «iCloud»!</em>
                 </div>
             </div>
 
             <div class="guide-step">
                 <div class="guide-step-number">5</div>
                 <div class="guide-step-text">
-                    После входа в аккаунт можно открывать приложение, и оно начнет работать. После того как приложение заработало, из аккаунта в разделе <strong>Контент и покупки</strong> нужно выйти.
+                    После успешного входа запустите приложение — оно заработает. Как только приложение откроется, обязательно выйдите из аккаунта в разделе <strong>Контент и покупки</strong>.
                 </div>
             </div>
         </div>
