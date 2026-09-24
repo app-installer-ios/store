@@ -81,7 +81,7 @@
             -webkit-backdrop-filter: blur(24px) saturate(140%);
             border: 1.5px solid rgba(192, 132, 252, 0.25);
             border-radius: 32px;
-            padding: 34px 26px;
+            padding: 30px 24px;
             box-shadow: 0 20px 80px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1);
             animation: screenIn .5s var(--spring);
         }
@@ -91,10 +91,37 @@
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
+        /* Индикатор соединения с Supabase */
+        .db-status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 11px;
+            color: var(--muted);
+            margin-bottom: 14px;
+            background: rgba(147, 51, 234, 0.08);
+            border: 1px solid rgba(192, 132, 252, 0.15);
+            padding: 5px 10px;
+            border-radius: 10px;
+        }
+        .db-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background-color: #fca5a5;
+            box-shadow: 0 0 6px #fca5a5;
+            transition: all 0.3s ease;
+        }
+        .db-dot.online {
+            background-color: #4ade80;
+            box-shadow: 0 0 8px #4ade80;
+        }
+
         h1 {
             font-size: 24px;
             font-weight: 700;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             text-align: center;
             background: linear-gradient(135deg, #ffffff 10%, #e9d5ff 50%, #c084fc 100%);
             -webkit-background-clip: text;
@@ -104,8 +131,8 @@
 
         p.subtitle {
             color: var(--muted);
-            font-size: 13.5px;
-            margin-bottom: 24px;
+            font-size: 13px;
+            margin-bottom: 20px;
             text-align: center;
             line-height: 1.4;
         }
@@ -141,8 +168,6 @@
             padding: 0 18px;
             color: #fff;
             font-size: 16px;
-            text-align: left;
-            line-height: normal;
             outline: none;
             box-shadow: 0 0 10px rgba(168, 85, 247, 0.08);
             transition: all 0.3s ease;
@@ -199,9 +224,9 @@
             align-items: center;
             justify-content: space-between;
             background: var(--glass);
-            padding: 15px 18px;
-            border-radius: 20px;
-            margin-bottom: 12px;
+            padding: 14px 16px;
+            border-radius: 18px;
+            margin-bottom: 10px;
             transition: all 0.25s ease;
         }
         .control-card:hover {
@@ -212,123 +237,102 @@
             border: 1.5px solid var(--border-admin);
             box-shadow: 0 3px 14px var(--glow-admin);
         }
-        .card-admin:hover {
-            border-color: rgba(245, 158, 11, 0.85);
-            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.25);
-            background: rgba(245, 158, 11, 0.06);
-        }
-
         .card-site {
             border: 1.5px solid var(--border-site);
             box-shadow: 0 3px 14px var(--glow-site);
         }
-        .card-site:hover {
-            border-color: rgba(6, 182, 212, 0.85);
-            box-shadow: 0 6px 20px rgba(6, 182, 212, 0.25);
-            background: rgba(6, 182, 212, 0.06);
-        }
-
         .card-apps-pass {
             border: 1.5px solid var(--border-apps);
             box-shadow: 0 3px 14px var(--glow-apps);
             cursor: pointer;
         }
-        .card-apps-pass:hover {
-            border-color: rgba(217, 70, 239, 0.85);
-            box-shadow: 0 6px 20px rgba(217, 70, 239, 0.25);
-            background: rgba(217, 70, 239, 0.06);
-        }
-
         .card-apps-vis {
             border: 1.5px solid var(--border-vis);
             box-shadow: 0 3px 14px var(--glow-vis);
             cursor: pointer;
         }
-        .card-apps-vis:hover {
-            border-color: rgba(16, 185, 129, 0.85);
-            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.25);
-            background: rgba(16, 185, 129, 0.06);
-        }
-
         .card-save-btn {
-            margin-top: 6px;
-            margin-bottom: 0;
+            margin-top: 4px;
+            margin-bottom: 10px;
             border: 1.5px solid var(--border-save);
             background: linear-gradient(135deg, rgba(34, 197, 94, 0.14), rgba(16, 185, 129, 0.08));
             box-shadow: 0 4px 18px var(--glow-save);
             cursor: pointer;
             justify-content: center;
             gap: 10px;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 700;
             color: #86efac;
-        }
-        .card-save-btn:hover {
-            border-color: rgba(34, 197, 94, 0.95);
-            background: linear-gradient(135deg, rgba(34, 197, 94, 0.24), rgba(16, 185, 129, 0.14));
-            box-shadow: 0 8px 24px rgba(34, 197, 94, 0.3);
-            color: #bbf7d0;
         }
 
         .control-info {
             display: flex;
             flex-direction: column;
-            gap: 3px;
+            gap: 2px;
         }
         .control-title {
-            font-size: 15px;
+            font-size: 14.5px;
             font-weight: 600;
             color: #fff;
         }
         .control-desc {
-            font-size: 12px;
+            font-size: 11.5px;
             color: var(--muted);
         }
 
         .gear-btn {
             border-radius: 12px;
-            width: 42px;
-            height: 42px;
+            width: 38px;
+            height: 38px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 19px;
+            font-size: 17px;
             cursor: pointer;
             transition: all 0.25s ease;
         }
-        .card-admin .gear-btn {
-            background: rgba(245, 158, 11, 0.12);
-            border: 1px solid var(--border-admin);
+        .card-admin .gear-btn { background: rgba(245, 158, 11, 0.12); border: 1px solid var(--border-admin); }
+        .card-site .gear-btn { background: rgba(6, 182, 212, 0.12); border: 1px solid var(--border-site); }
+        .card-apps-pass .gear-btn { background: rgba(217, 70, 239, 0.12); border: 1px solid var(--border-apps); }
+        .card-apps-vis .gear-btn { background: rgba(16, 185, 129, 0.12); border: 1px solid var(--border-vis); }
+
+        /* Блок истории (Лог действий) */
+        .history-box {
+            background: rgba(147, 51, 234, 0.04);
+            border: 1px solid rgba(192, 132, 252, 0.15);
+            border-radius: 16px;
+            padding: 10px 14px;
+            max-height: 110px;
+            overflow-y: auto;
+            scrollbar-width: none;
         }
-        .card-admin .gear-btn:hover {
-            background: rgba(245, 158, 11, 0.22);
-            transform: rotate(90deg) scale(1.04);
+        .history-box::-webkit-scrollbar { display: none; }
+        .history-title {
+            font-size: 11.5px;
+            font-weight: 600;
+            color: var(--muted);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-        .card-site .gear-btn {
-            background: rgba(6, 182, 212, 0.12);
-            border: 1px solid var(--border-site);
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 11.5px;
+            color: #cbd5e1;
         }
-        .card-site .gear-btn:hover {
-            background: rgba(6, 182, 212, 0.22);
-            transform: rotate(90deg) scale(1.04);
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
         }
-        .card-apps-pass .gear-btn {
-            background: rgba(217, 70, 239, 0.12);
-            border: 1px solid var(--border-apps);
-        }
-        .card-apps-pass .gear-btn:hover {
-            background: rgba(217, 70, 239, 0.22);
-            transform: rotate(90deg) scale(1.04);
-        }
-        .card-apps-vis .gear-btn {
-            background: rgba(16, 185, 129, 0.12);
-            border: 1px solid var(--border-vis);
-        }
-        .card-apps-vis .gear-btn:hover {
-            background: rgba(16, 185, 129, 0.22);
-            transform: rotate(90deg) scale(1.04);
+        .history-time {
+            color: rgba(196, 181, 253, 0.6);
+            flex-shrink: 0;
         }
 
+        /* Модальные окна */
         .sheet-overlay {
             position: fixed;
             inset: 0;
@@ -360,18 +364,10 @@
             flex-direction: column;
             max-height: 85vh;
         }
-        .sheet-overlay.active .sheet-modal {
-            transform: translateY(0) scale(1);
-        }
+        .sheet-overlay.active .sheet-modal { transform: translateY(0) scale(1); }
 
-        #appsCatalogOverlay .sheet-modal {
-            border: 1.5px solid var(--border-apps);
-            box-shadow: 0 0 25px var(--glow-apps), 0 25px 70px rgba(0,0,0,0.7);
-        }
-        #visibilityCatalogOverlay .sheet-modal {
-            border: 1.5px solid var(--border-vis);
-            box-shadow: 0 0 25px var(--glow-vis), 0 25px 70px rgba(0,0,0,0.7);
-        }
+        #appsCatalogOverlay .sheet-modal { border: 1.5px solid var(--border-apps); }
+        #visibilityCatalogOverlay .sheet-modal { border: 1.5px solid var(--border-vis); }
 
         .sheet-stats-container {
             display: flex;
@@ -386,81 +382,17 @@
             display: flex;
             align-items: center;
             gap: 9px;
-            backdrop-filter: blur(14px);
-            transition: all 0.2s ease;
         }
-        .stat-card-icon {
-            font-size: 16px;
-            line-height: 1;
-            flex-shrink: 0;
-        }
-        .stat-card-info {
-            display: flex;
-            flex-direction: column;
-            min-width: 0;
-        }
-        .stat-card-val {
-            font-size: 14px;
-            font-weight: 700;
-            line-height: 1.2;
-        }
-        .stat-card-label {
-            font-size: 11px;
-            color: var(--muted);
-            line-height: 1.2;
-        }
-
-        .stat-pass-locked {
-            background: rgba(217, 70, 239, 0.09);
-            border: 1px solid rgba(217, 70, 239, 0.4);
-            box-shadow: 0 0 12px rgba(217, 70, 239, 0.12);
-        }
+        .stat-card-val { font-size: 14px; font-weight: 700; line-height: 1.2; }
+        .stat-card-label { font-size: 11px; color: var(--muted); line-height: 1.2; }
+        .stat-pass-locked { background: rgba(217, 70, 239, 0.09); border: 1px solid rgba(217, 70, 239, 0.4); }
         .stat-pass-locked .stat-card-val { color: #f5d0fe; }
-        .stat-pass-unlocked {
-            background: rgba(147, 51, 234, 0.07);
-            border: 1px solid rgba(192, 132, 252, 0.22);
-        }
+        .stat-pass-unlocked { background: rgba(147, 51, 234, 0.07); border: 1px solid rgba(192, 132, 252, 0.22); }
         .stat-pass-unlocked .stat-card-val { color: #cbd5e1; }
-
-        .stat-vis-shown {
-            background: rgba(16, 185, 129, 0.09);
-            border: 1px solid rgba(16, 185, 129, 0.4);
-            box-shadow: 0 0 12px rgba(16, 185, 129, 0.12);
-        }
+        .stat-vis-shown { background: rgba(16, 185, 129, 0.09); border: 1px solid rgba(16, 185, 129, 0.4); }
         .stat-vis-shown .stat-card-val { color: #86efac; }
-        .stat-vis-hidden {
-            background: rgba(239, 68, 68, 0.08);
-            border: 1px solid rgba(239, 68, 68, 0.35);
-            box-shadow: 0 0 12px rgba(239, 68, 68, 0.1);
-        }
+        .stat-vis-hidden { background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.35); }
         .stat-vis-hidden .stat-card-val { color: #fca5a5; }
-
-        .modal-theme-admin {
-            border: 1.5px solid var(--border-admin) !important;
-            box-shadow: 0 0 25px var(--glow-admin), 0 25px 70px rgba(0,0,0,0.7) !important;
-        }
-        .modal-theme-admin input#editPasswordInput {
-            border-color: var(--border-admin) !important;
-            box-shadow: 0 0 10px var(--glow-admin) !important;
-        }
-
-        .modal-theme-site {
-            border: 1.5px solid var(--border-site) !important;
-            box-shadow: 0 0 25px var(--glow-site), 0 25px 70px rgba(0,0,0,0.7) !important;
-        }
-        .modal-theme-site input#editPasswordInput {
-            border-color: var(--border-site) !important;
-            box-shadow: 0 0 10px var(--glow-site) !important;
-        }
-
-        .modal-theme-app {
-            border: 1.5px solid var(--border-apps) !important;
-            box-shadow: 0 0 25px var(--glow-apps), 0 25px 70px rgba(0,0,0,0.7) !important;
-        }
-        .modal-theme-app input#editPasswordInput {
-            border-color: var(--border-apps) !important;
-            box-shadow: 0 0 10px var(--glow-apps) !important;
-        }
 
         .sheet-header {
             display: flex;
@@ -468,29 +400,13 @@
             justify-content: space-between;
             margin-bottom: 14px;
         }
-        .sheet-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: #fff;
-        }
-        .sheet-close {
-            background: none;
-            border: none;
-            color: var(--muted);
-            font-size: 24px;
-            font-weight: 800;
-            cursor: pointer;
-            padding: 4px;
-            line-height: 1;
-            transition: color 0.2s ease;
-        }
-        .sheet-close:hover { color: #fff; }
+        .sheet-title { font-size: 20px; font-weight: 700; color: #fff; }
+        .sheet-close { background: none; border: none; color: var(--muted); font-size: 24px; font-weight: 800; cursor: pointer; }
 
         .btn-generate-all {
             width: 100%;
             min-height: 48px;
             margin-bottom: 14px;
-            padding: 0 16px;
             background: linear-gradient(135deg, rgba(245, 158, 11, 0.22), rgba(217, 119, 6, 0.14));
             border: 1.5px solid var(--border-admin);
             border-radius: 16px;
@@ -498,20 +414,6 @@
             font-size: 13px;
             font-weight: 700;
             cursor: pointer;
-            box-shadow: 0 4px 18px var(--glow-admin);
-            transition: all 0.25s var(--spring);
-        }
-        .btn-generate-all:hover {
-            border-color: rgba(245, 158, 11, 0.95);
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.32), rgba(217, 119, 6, 0.2));
-            box-shadow: 0 8px 24px rgba(245, 158, 11, 0.25);
-            transform: translateY(-1px);
-            color: #fef3c7;
-        }
-        .btn-generate-all:disabled {
-            opacity: 0.65;
-            cursor: wait;
-            transform: none;
         }
 
         .visibility-actions {
@@ -528,17 +430,9 @@
             color: #a7f3d0;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .visibility-action-btn:hover {
-            background: rgba(16, 185, 129, 0.22);
-            transform: translateY(-1px);
         }
 
-        .app-search-wrap {
-            position: relative;
-            margin-bottom: 16px;
-        }
+        .app-search-wrap { position: relative; margin-bottom: 16px; }
         .app-search {
             width: 100%;
             height: 46px;
@@ -549,20 +443,8 @@
             color: #fff;
             font-size: 15px;
             outline: none;
-            transition: all 0.2s;
         }
-        .app-search:focus {
-            border-color: rgba(217, 70, 239, 0.65);
-            box-shadow: 0 0 12px rgba(217, 70, 239, 0.18);
-        }
-        .search-icon {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--muted);
-            font-size: 18px;
-        }
+        .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 18px; }
 
         .sheet-list {
             display: flex;
@@ -582,144 +464,49 @@
             background: rgba(147, 51, 234, 0.05);
             border: 1px solid rgba(192, 132, 252, 0.16);
             border-radius: 16px;
-            transition: all 0.2s ease;
         }
-        .sheet-item:hover {
-            background: rgba(168, 85, 247, 0.12);
-            border-color: rgba(216, 180, 254, 0.3);
-        }
-        .app-name {
-            font-size: 15px;
-            font-weight: 500;
-            color: #fff;
-            max-width: 230px;
-            word-break: break-word;
-        }
+        .app-name { font-size: 15px; font-weight: 500; color: #fff; max-width: 230px; word-break: break-word; }
 
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 48px;
-            height: 28px;
-            flex-shrink: 0;
-        }
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
+        .switch { position: relative; display: inline-block; width: 48px; height: 28px; flex-shrink: 0; }
+        .switch input { opacity: 0; width: 0; height: 0; }
         .slider {
-            position: absolute;
-            cursor: pointer;
-            inset: 0;
+            position: absolute; cursor: pointer; inset: 0;
             background-color: rgba(255, 255, 255, 0.12);
             border: 1px solid rgba(255, 255, 255, 0.16);
-            transition: 0.3s var(--spring);
-            border-radius: 34px;
+            transition: 0.3s var(--spring); border-radius: 34px;
         }
         .slider:before {
-            position: absolute;
-            content: "";
-            height: 20px;
-            width: 20px;
-            left: 3px;
-            bottom: 3px;
-            background-color: #fff;
-            transition: 0.3s var(--spring);
-            border-radius: 50%;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+            position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px;
+            background-color: #fff; transition: 0.3s var(--spring); border-radius: 50%;
         }
-        input:checked + .slider {
-            background: linear-gradient(135deg, #10b981, #059669);
-            border-color: rgba(52, 211, 153, 0.6);
-            box-shadow: 0 0 10px rgba(16, 185, 129, 0.35);
-        }
-        input:checked + .slider:before {
-            transform: translateX(20px);
-        }
+        input:checked + .slider { background: linear-gradient(135deg, #10b981, #059669); border-color: rgba(52, 211, 153, 0.6); }
+        input:checked + .slider:before { transform: translateX(20px); }
 
-        .extra-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 14px;
-        }
+        .extra-actions { display: flex; gap: 10px; margin-top: 14px; }
         .btn-action {
-            flex: 1;
-            height: 42px;
-            background: rgba(147, 51, 234, 0.12);
-            border: 1px solid rgba(192, 132, 252, 0.25);
-            border-radius: 14px;
-            color: #e9d5ff;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
+            flex: 1; height: 42px; background: rgba(147, 51, 234, 0.12);
+            border: 1px solid rgba(192, 132, 252, 0.25); border-radius: 14px;
+            color: #e9d5ff; font-size: 13px; font-weight: 600; cursor: pointer;
         }
-        .btn-action:hover {
-            background: rgba(168, 85, 247, 0.22);
-            border-color: rgba(217, 70, 239, 0.6);
-            color: #fff;
-        }
-
-        .modal-actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 22px;
-        }
+        .modal-actions { display: flex; gap: 12px; margin-top: 22px; }
         .btn-cancel {
-            flex: 1;
-            height: 48px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 16px;
-            color: #fff;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
+            flex: 1; height: 48px; background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 16px;
+            color: #fff; font-size: 15px; font-weight: 600; cursor: pointer;
         }
-        .btn-cancel:hover { background: rgba(255,255,255,0.1); }
         .btn-save {
-            flex: 1;
-            height: 48px;
-            background: linear-gradient(135deg, #d8b4fe, #c084fc);
-            border: none;
-            border-radius: 16px;
-            color: #2e1065;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 4px 14px rgba(192, 132, 252, 0.25);
+            flex: 1; height: 48px; background: linear-gradient(135deg, #d8b4fe, #c084fc);
+            border: none; border-radius: 16px; color: #2e1065; font-size: 15px; font-weight: 700; cursor: pointer;
         }
-        .btn-save:hover { filter: brightness(1.08); transform: translateY(-1px); }
 
         .toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
             background: linear-gradient(135deg, rgba(35, 15, 52, 0.96), rgba(18, 7, 30, 0.96));
-            border: 1.5px solid rgba(192, 132, 252, 0.35);
-            backdrop-filter: blur(16px);
-            color: #fff;
-            padding: 15px 22px;
-            border-radius: 18px;
-            font-size: 14px;
-            font-weight: 600;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 20px rgba(168, 85, 247, 0.2);
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.4s var(--spring);
-            z-index: 9999;
-            text-align: center;
-            white-space: nowrap;
+            border: 1.5px solid rgba(192, 132, 252, 0.35); backdrop-filter: blur(16px);
+            color: #fff; padding: 15px 22px; border-radius: 18px; font-size: 14px; font-weight: 600;
+            opacity: 0; visibility: hidden; transition: all 0.4s var(--spring); z-index: 9999; text-align: center;
         }
-        .toast.show {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
-            visibility: visible;
-        }
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; visibility: visible; }
     </style>
 </head>
 <body>
@@ -727,6 +514,12 @@
 <div class="aurora-bg"></div>
 
 <div class="container">
+    <!-- Индикатор соединения с базой -->
+    <div class="db-status-bar" id="dbStatusBar">
+        <div class="db-dot" id="dbDot"></div>
+        <span id="dbStatusText">Подключение к Supabase...</span>
+    </div>
+
     <!-- Вход -->
     <div id="login-screen">
         <h1>ПАНЕЛЬ АДМИНИСТРАТОРА</h1>
@@ -778,6 +571,14 @@
         <div class="control-card card-save-btn" id="btnGlobalSave" onclick="saveAllChangesManual()">
             <span>✓ Сохранить изменения</span>
         </div>
+
+        <!-- Блок истории изменений -->
+        <div class="history-box">
+            <div class="history-title">Последние действия</div>
+            <div class="history-list" id="historyList">
+                <div class="history-item"><span class="history-time">--:--</span><span>Панель загружена</span></div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -788,28 +589,19 @@
             <div class="sheet-title">Пароли приложений</div>
             <button class="sheet-close" onclick="closeAppsCatalogSheet()">✕</button>
         </div>
-
         <div class="sheet-stats-container">
             <div class="stat-card stat-pass-locked">
                 <span class="stat-card-icon">🔒</span>
-                <div class="stat-card-info">
-                    <span class="stat-card-val" id="statPassLocked">0</span>
-                    <span class="stat-card-label">С паролем</span>
-                </div>
+                <div class="stat-card-info"><span class="stat-card-val" id="statPassLocked">0</span><span class="stat-card-label">С паролем</span></div>
             </div>
             <div class="stat-card stat-pass-unlocked">
                 <span class="stat-card-icon">🔓</span>
-                <div class="stat-card-info">
-                    <span class="stat-card-val" id="statPassUnlocked">0</span>
-                    <span class="stat-card-label">Без пароля</span>
-                </div>
+                <div class="stat-card-info"><span class="stat-card-val" id="statPassUnlocked">0</span><span class="stat-card-label">Без пароля</span></div>
             </div>
         </div>
-
         <button class="btn-generate-all" id="btnGenerateAllPasswords" type="button" onclick="generateAndSaveAllPasswords()">
-            <span>🔐 Сгенерировать и сохранить пароли для всех приложений</span>
+            <span>🔐 Сгенерировать и сохранить пароли для всех</span>
         </button>
-
         <div class="app-search-wrap">
             <span class="search-icon">⌕</span>
             <input type="search" id="adminAppSearch" class="app-search" placeholder="Поиск приложения..." oninput="filterAdminApps()" autocomplete="off">
@@ -825,33 +617,20 @@
             <div class="sheet-title">Видимость приложений</div>
             <button class="sheet-close" onclick="closeVisibilityCatalogSheet()">✕</button>
         </div>
-
         <div class="sheet-stats-container">
             <div class="stat-card stat-vis-shown">
                 <span class="stat-card-icon">👁️</span>
-                <div class="stat-card-info">
-                    <span class="stat-card-val" id="statVisShown">0</span>
-                    <span class="stat-card-label">Показано</span>
-                </div>
+                <div class="stat-card-info"><span class="stat-card-val" id="statVisShown">0</span><span class="stat-card-label">Показано</span></div>
             </div>
             <div class="stat-card stat-vis-hidden">
                 <span class="stat-card-icon">🚫</span>
-                <div class="stat-card-info">
-                    <span class="stat-card-val" id="statVisHidden">0</span>
-                    <span class="stat-card-label">Скрыто</span>
-                </div>
+                <div class="stat-card-info"><span class="stat-card-val" id="statVisHidden">0</span><span class="stat-card-label">Скрыто</span></div>
             </div>
         </div>
-
         <div class="visibility-actions">
-            <button class="visibility-action-btn" type="button" onclick="setAllAppsVisibility(true)">
-                👁️ Показать все
-            </button>
-            <button class="visibility-action-btn" type="button" onclick="setAllAppsVisibility(false)">
-                🚫 Скрыть все
-            </button>
+            <button class="visibility-action-btn" type="button" onclick="setAllAppsVisibility(true)">👁️ Показать все</button>
+            <button class="visibility-action-btn" type="button" onclick="setAllAppsVisibility(false)">🚫 Скрыть все</button>
         </div>
-
         <div class="app-search-wrap">
             <span class="search-icon">⌕</span>
             <input type="search" id="visibilityAppSearch" class="app-search" placeholder="Поиск приложения..." oninput="filterVisibilityApps()" autocomplete="off">
@@ -860,7 +639,7 @@
     </div>
 </div>
 
-<!-- Окно изменения пароля (клик по фону больше не закрывает случайно) -->
+<!-- Окно изменения пароля -->
 <div class="sheet-overlay" id="editModalOverlay">
     <div class="sheet-modal modal-theme-app" id="editModalContainer" style="max-width: 340px; margin: auto;" onclick="event.stopPropagation()">
         <div class="sheet-header" style="margin-bottom: 12px; border: none;">
@@ -870,12 +649,10 @@
             <label style="margin-bottom: 6px;">Новый цифровой пароль</label>
             <input type="text" inputmode="numeric" pattern="[0-9]*" id="editPasswordInput" autocomplete="off">
         </div>
-        
         <div class="extra-actions" id="modalExtraActions">
             <button class="btn-action" type="button" onclick="generatePassword()">Сгенерировать</button>
             <button class="btn-action" type="button" id="btnClearPassword" onclick="clearPassword()">Без пароля</button>
         </div>
-
         <div class="modal-actions">
             <button class="btn-cancel" onclick="closeEditModal()">Отмена</button>
             <button class="btn-save" onclick="savePassword()">Сохранить</button>
@@ -890,7 +667,6 @@
     const SUPABASE_ANON_KEY = 'sb_publishable_oUDovfvWL6iioG6N5Xd_QQ_8KYezq8g';
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // Полный синхронизированный список приложений с index.html
     const appConfigList = [
         { key: "vk", name: "ВКонтакте" },
         { key: "max", name: "MAX" },
@@ -928,39 +704,57 @@
     let globalSettings = { admin_password: '', site_password: '' };
     let appPasswordsData = {};
     let appVisibilityData = {};
-    
     let currentEditKey = null;
     let currentEditType = null;
+    let actionHistory = [];
+
+    // Проверка связи с Supabase при запуске
+    async function checkConnection() {
+        const dot = document.getElementById('dbDot');
+        const text = document.getElementById('dbStatusText');
+        try {
+            const { error } = await supabaseClient.from('settings').select('key').limit(1);
+            if (error) throw error;
+            dot.classList.add('online');
+            text.textContent = 'База данных на связи';
+        } catch (e) {
+            dot.classList.remove('online');
+            text.textContent = 'Нет связи с Supabase';
+        }
+    }
+    checkConnection();
+
+    function addHistory(actionText) {
+        const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        actionHistory.unshift({ time, text: actionText });
+        if (actionHistory.length > 5) actionHistory.pop();
+
+        const list = document.getElementById('historyList');
+        list.innerHTML = actionHistory.map(item => `
+            <div class="history-item">
+                <span class="history-time">${item.time}</span>
+                <span>${item.text}</span>
+            </div>
+        `).join('');
+    }
 
     function updatePasswordStats() {
         let locked = 0;
         appConfigList.forEach(app => {
             const pass = appPasswordsData[app.key];
-            if (pass && String(pass).trim() !== '') {
-                locked++;
-            }
+            if (pass && String(pass).trim() !== '') locked++;
         });
-        const unlocked = appConfigList.length - locked;
-
-        const elLocked = document.getElementById('statPassLocked');
-        const elUnlocked = document.getElementById('statPassUnlocked');
-        if (elLocked) elLocked.textContent = locked;
-        if (elUnlocked) elUnlocked.textContent = unlocked;
+        document.getElementById('statPassLocked').textContent = locked;
+        document.getElementById('statPassUnlocked').textContent = appConfigList.length - locked;
     }
 
     function updateVisibilityStats() {
         let shown = 0;
         appConfigList.forEach(app => {
-            if (appVisibilityData[app.key] !== false) {
-                shown++;
-            }
+            if (appVisibilityData[app.key] !== false) shown++;
         });
-        const hidden = appConfigList.length - shown;
-
-        const elShown = document.getElementById('statVisShown');
-        const elHidden = document.getElementById('statVisHidden');
-        if (elShown) elShown.textContent = shown;
-        if (elHidden) elHidden.textContent = hidden;
+        document.getElementById('statVisShown').textContent = shown;
+        document.getElementById('statVisHidden').textContent = appConfigList.length - shown;
     }
 
     async function checkAdminAuth() {
@@ -985,6 +779,7 @@
                 document.getElementById('admin-panel').style.display = 'flex';
                 
                 loadSettings();
+                addHistory('Успешный вход в панель');
 
                 supabaseClient
                     .channel('public:settings')
@@ -1033,7 +828,6 @@
     function renderAdminAppsList() {
         const listContainer = document.getElementById('adminAppsList');
         listContainer.innerHTML = '';
-
         appConfigList.forEach(app => {
             const div = document.createElement('div');
             div.className = 'sheet-item';
@@ -1068,10 +862,8 @@
     function renderVisibilityAppsList() {
         const listContainer = document.getElementById('visibilityAppsList');
         listContainer.innerHTML = '';
-
         appConfigList.forEach(app => {
             const isVisible = appVisibilityData[app.key] !== false;
-
             const div = document.createElement('div');
             div.className = 'sheet-item';
             div.setAttribute('data-name', app.name.toLowerCase());
@@ -1091,24 +883,17 @@
             key: `vis_${app.key}`,
             value: isVisible ? 'true' : 'false'
         }));
+        appConfigList.forEach(app => { appVisibilityData[app.key] = isVisible; });
 
-        appConfigList.forEach(app => {
-            appVisibilityData[app.key] = isVisible;
-        });
-
-        const { error } = await supabaseClient
-            .from('settings')
-            .upsert(updates, { onConflict: 'key' });
-
-        if (error) {
-            showToast('Ошибка при сохранении видимости');
-            return;
-        }
+        const { error } = await supabaseClient.from('settings').upsert(updates, { onConflict: 'key' });
+        if (error) { showToast('Ошибка сохранения'); return; }
 
         updateVisibilityStats();
         renderVisibilityAppsList();
         filterVisibilityApps();
-        showToast(isVisible ? 'Все приложения показаны' : 'Все приложения скрыты');
+        const msg = isVisible ? 'Все приложения показаны' : 'Все приложения скрыты';
+        addHistory(msg);
+        showToast(msg);
     }
 
     function filterVisibilityApps() {
@@ -1138,16 +923,10 @@
         const app = appConfigList.find(a => a.key === appKey);
         const appName = app ? app.name : appKey;
 
-        const { error } = await supabaseClient
-            .from('settings')
-            .upsert({ key: `vis_${appKey}`, value: isVisible ? 'true' : 'false' }, { onConflict: 'key' });
-
-        if (error) {
-            showToast('Ошибка при сохранении видимости');
-            return;
-        }
-
-        showToast(isVisible ? `«${appName}» показано` : `«${appName}» скрыто`);
+        await supabaseClient.from('settings').upsert({ key: `vis_${appKey}`, value: isVisible ? 'true' : 'false' }, { onConflict: 'key' });
+        const msg = isVisible ? `Показано: ${appName}` : `Скрыто: ${appName}`;
+        addHistory(msg);
+        showToast(msg);
     }
 
     async function saveAllChangesManual() {
@@ -1158,6 +937,7 @@
 
         try {
             await loadSettings();
+            addHistory('Синхронизация настроек');
             showToast('Все изменения успешно сохранены!');
         } catch (e) {
             showToast('Ошибка при сохранении');
@@ -1171,19 +951,8 @@
         currentEditKey = key;
         currentEditType = type;
         document.getElementById('editModalTitle').textContent = title;
-        
         const currentPass = (type === 'admin' || type === 'site') ? globalSettings[key] : appPasswordsData[key];
         document.getElementById('editPasswordInput').value = currentPass || '';
-        
-        const modalContainer = document.getElementById('editModalContainer');
-        modalContainer.classList.remove('modal-theme-admin', 'modal-theme-site', 'modal-theme-app');
-        
-        if (type === 'admin') modalContainer.classList.add('modal-theme-admin');
-        else if (type === 'site') modalContainer.classList.add('modal-theme-site');
-        else modalContainer.classList.add('modal-theme-app');
-
-        const clearBtn = document.getElementById('btnClearPassword');
-        clearBtn.style.display = (type === 'app') ? 'block' : 'none';
         
         document.getElementById('editModalOverlay').classList.add('active');
         setTimeout(() => document.getElementById('editPasswordInput').focus(), 100);
@@ -1203,15 +972,13 @@
     async function generateAndSaveAllPasswords() {
         const btn = document.getElementById('btnGenerateAllPasswords');
         if (!btn) return;
-
         const oldText = btn.innerHTML;
         btn.disabled = true;
-        btn.innerHTML = '<span>⏳ Генерация и сохранение...</span>';
+        btn.innerHTML = '<span>⏳ Генерация...</span>';
 
         try {
             const usedPasswords = new Set();
             const updates = [];
-
             for (const app of appConfigList) {
                 let newPass = '';
                 do {
@@ -1219,27 +986,17 @@
                     crypto.getRandomValues(array);
                     newPass = String(100000 + (array[0] % 900000));
                 } while (usedPasswords.has(newPass));
-
                 usedPasswords.add(newPass);
                 updates.push({ key: app.key, value: newPass });
             }
 
-            const { error } = await supabaseClient
-                .from('settings')
-                .upsert(updates, { onConflict: 'key' });
-
-            if (error) {
-                showToast('Ошибка при сохранении паролей');
-                return;
-            }
-
-            updates.forEach(item => {
-                appPasswordsData[item.key] = item.value;
-            });
+            await supabaseClient.from('settings').upsert(updates, { onConflict: 'key' });
+            updates.forEach(item => { appPasswordsData[item.key] = item.value; });
 
             updatePasswordStats();
             renderAdminAppsList();
-            showToast(`Новые пароли сохранены для всех ${updates.length} приложений`);
+            addHistory('Сгенерированы пароли для всех приложений');
+            showToast('Новые пароли сохранены для всех приложений');
         } catch (error) {
             showToast('Ошибка при генерации паролей');
         } finally {
@@ -1265,17 +1022,10 @@
         btnSave.textContent = '...';
         btnSave.style.pointerEvents = 'none';
 
-        const { error } = await supabaseClient
-            .from('settings')
-            .upsert({ key: currentEditKey, value: newPass }, { onConflict: 'key' });
+        await supabaseClient.from('settings').upsert({ key: currentEditKey, value: newPass }, { onConflict: 'key' });
 
         btnSave.textContent = 'Сохранить';
         btnSave.style.pointerEvents = 'auto';
-
-        if (error) {
-            alert('Ошибка при сохранении пароля!');
-            return;
-        } 
 
         let toastMsg = '';
         if (currentEditType === 'app') {
@@ -1286,9 +1036,10 @@
             toastMsg = newPass ? `Пароль для «${appName}» изменён` : `Пароль для «${appName}» удален`;
         } else {
             globalSettings[currentEditKey] = newPass;
-            toastMsg = currentEditKey === 'admin_password' ? 'Пароль администратора изменён' : 'Пароль сайта изменён';
+            toastMsg = currentEditKey === 'admin_password' ? 'Пароль админ-панели изменён' : 'Пароль сайта изменён';
         }
 
+        addHistory(toastMsg);
         closeEditModal();
         showToast(toastMsg);
     }
@@ -1297,15 +1048,12 @@
         const toast = document.getElementById('toast');
         toast.textContent = msg;
         toast.classList.add('show');
-        setTimeout(() => {
-            toast.classList.remove('show');
-        }, 3200);
+        setTimeout(() => { toast.classList.remove('show'); }, 3200);
     }
 
     document.getElementById('admin-pass-input').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') checkAdminAuth();
     });
-    
     document.getElementById('editPasswordInput').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') savePassword();
     });
