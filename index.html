@@ -156,13 +156,13 @@
 <body>
 
 <div class="container">
-    <!-- Состояние загрузки -->
+    <!-- Состояние загрузки (строго по центру) -->
     <div id="loading-state" class="status-card">
         <div class="spinner"></div>
         <p style="margin: 0; color: var(--text-secondary);">Подготавливаем ваши приложения...</p>
     </div>
 
-    <!-- Состояние ошибки -->
+    <!-- Состояние ошибки (строго по центру, понятный текст) -->
     <div id="error-state" class="status-card hidden">
         <h3 id="error-title" class="error-title">Ссылка недействительна</h3>
         <p id="error-text" class="error-desc">Пожалуйста, сгенерируйте новую ссылку в боте.</p>
@@ -179,22 +179,23 @@
 </div>
 
 <script>
-    // Вставьте ваши данные из Supabase (используйте anon key)
+    // 1. Вставьте ваши реальные данные из Supabase (используйте anon key)
     const SUPABASE_URL = 'ВАШ_SUPABASE_URL';
     const SUPABASE_ANON_KEY = 'ВАШ_SUPABASE_ANON_KEY';
 
-    let supabaseClient;
+    let supabaseClient = null;
+
     try {
         if (typeof supabase !== 'undefined') {
             supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         }
     } catch (e) {
-        console.error(e);
+        console.error("Ошибка инициализации:", e);
     }
 
     async function init() {
         if (!supabaseClient) {
-            showError("Сервис временно недоступен", "Настройки подключения указаны неверно. Пожалуйста, обратитесь в поддержку.");
+            showError("Ошибка подключения", "Не удалось подключиться к серверу. Проверьте правильность настроек ключей.");
             return;
         }
 
@@ -202,72 +203,70 @@
         let token = urlParams.get('token') || urlParams.get('invite');
 
         if (!token) {
-            showError("Недействительная ссылка", "В ссылке отсутствует токен доступа. Пожалуйста, запросите новую персональную ссылку у бота.");
+            showError("Ссылка не найдена", "В адресной строке отсутствует токен доступа. Запросите свежую ссылку у бота.");
             return;
         }
 
         token = token.trim();
 
         try {
-            // Ищем токен в таблице invite_links
+            // Делаем запрос в таблицу invite_links (используем точные имена колонок: token, apps, used)
             const { data, error } = await supabaseClient
                 .from('invite_links')
-                .select('*')
-                .ilike('token', token)
+                .select('token, apps, used')
+                .eq('token', token)
                 .maybeSingle();
 
             if (error) {
-                console.error("Ошибка при поиске токена:", error);
-                showError("Ошибка доступа", "Не удалось проверить ссылку. Попробуйте получить новую ссылку в боте.");
+                console.error("Ошибка БД:", error);
+                showError("Ошибка доступа", "Не удалось проверить ссылку. Пожалуйста, обратитесь к боту за новой ссылкой.");
                 return;
             }
 
             if (!data) {
-                showError("Ссылка не найдена", "Срок действия этой ссылки истек или она не существует. Запросите свежую ссылку у бота.");
+                showError("Ссылка не существует", "Такая ссылка не найдена или была удалена. Запросите новую ссылку в боте.");
                 return;
             }
 
-            // Проверка на статус "уже использована"
-            if (data.used === true || data.is_used === true) {
-                showError("Ссылка уже использована", "Эта персональная ссылка была активирована ранее. Пожалуйста, сгенерируйте новую ссылку в боте.");
+            // Проверяем поле used (если ссылка уже использовалась)
+            if (data.used === true) {
+                showError("Ссылка уже использована", "Эта персональная ссылка уже была активирована ранее и больше недоступна. Пожалуйста, получите новую ссылку в боте.");
                 return;
             }
 
-            let appsList = data.apps;
-            if (typeof appsList === 'string') {
-                try { appsList = JSON.parse(appsList); } catch(e){}
+            let allowedAppIds = data.apps; // Это массив, например: ["vk-video", "vk-clips"]
+
+            if (typeof allowedAppIds === 'string') {
+                try { allowedAppIds = JSON.parse(allowedAppIds); } catch(e){}
             }
 
-            if (!Array.isArray(appsList) || appsList.length === 0) {
-                showError("Нет доступных приложений", "К вашей ссылке не было привязано ни одного приложения. Выберите приложения в боте и создайте новую ссылку.");
+            if (!Array.isArray(allowedAppIds) || allowedAppIds.length === 0) {
+                showError("Нет доступных приложений", "К этой ссылке не привязано ни одного приложения. Выберите их в боте при создании ссылки.");
                 return;
             }
 
-            // Если список содержит просто ID или названия приложений (строки)
-            if (typeof appsList[0] === 'string') {
-                const { data: appsData, error: appsError } = await supabaseClient
-                    .from('apps_catalog')
-                    .select('*')
-                    .in('id', appsList);
+            // Загружаем подробную информацию по этим приложениям из таблицы с каталогом 
+            // (предполагаем, что таблица каталога называется apps_catalog, а её поле идентификатора — id или slug)
+            const { data: appsData, error: appsError } = await supabaseClient
+                .from('apps_catalog')
+                .select('*')
+                .in('id', allowedAppIds);
 
-                if (!appsError && appsData && appsData.length > 0) {
-                    renderApps(appsData);
-                    return;
-                }
-            } else if (typeof appsList[0] === 'object') {
-                // Если бот записал готовые объекты приложений прямо в массив
-                renderApps(appsList);
+            if (appsError || !appsData || appsData.length === 0) {
+                // Запасной вариант: если каталог устроен иначе, выводим базовые блоки по идентификаторам
+                renderFallbackApps(allowedAppIds);
                 return;
             }
 
-            showError("Приложения не найдены", "Не удалось загрузить данные выбранных приложений. Попробуйте повторить запрос в боте.");
+            renderApps(appsData);
 
         } catch (err) {
             console.error(err);
-            showError("Произошла ошибка", "Что-то пошло не так. Попробуйте открыть ссылку повторно через несколько минут.");
+            showError("Произошла ошибка", "Не удалось загрузить данные. Попробуйте обновить страницу.");
         }
     }
 
+    // Рендер приложений, если они найдены в таблице каталога
     function renderApps(apps) {
         const container = document.getElementById('apps-container');
         container.innerHTML = '';
@@ -276,8 +275,7 @@
             const item = document.createElement('div');
             item.className = 'app-item';
 
-            // Если plist_url относительный или полный
-            const plistUrl = app.plist_url || (app.plist ? app.plist : '');
+            const plistUrl = app.plist_url || app.plist || '';
             const installLink = `itms-services://?action=download-manifest&url=${encodeURIComponent(plistUrl)}`;
 
             item.innerHTML = `
@@ -289,6 +287,32 @@
                     </div>
                 </div>
                 <a href="${installLink}" class="install-btn">Установить</a>
+            `;
+            container.appendChild(item);
+        });
+
+        document.getElementById('loading-state').classList.add('hidden');
+        document.getElementById('apps-content').classList.remove('hidden');
+    }
+
+    // Запасной рендер, если каталог не подключен, но ID приложений есть в массиве
+    function renderFallbackApps(appIds) {
+        const container = document.getElementById('apps-container');
+        container.innerHTML = '';
+
+        appIds.forEach(appId => {
+            const item = document.createElement('div');
+            item.className = 'app-item';
+
+            item.innerHTML = `
+                <div class="app-info">
+                    <div class="app-icon" style="display:flex;align-items:center;justify-content:center;font-weight:bold;color:var(--text-secondary);">📱</div>
+                    <div class="app-details">
+                        <h3 class="app-name">${appId}</h3>
+                        <p class="app-version">Готово к установке</p>
+                    </div>
+                </div>
+                <span class="install-btn" style="background:var(--border); cursor:default;">Доступно</span>
             `;
             container.appendChild(item);
         });
