@@ -1318,15 +1318,17 @@ function updateAppCounter() {
 }
 
 document.addEventListener("DOMContentLoaded", async function() {
-    remoteConfig = await fetchSupabaseSettings();
-    applyAppsVisibility();
-    updateAppCounter();
-
+    // 1. Мгновенно отображаем нужный экран на основе sessionStorage
     if (sessionStorage.getItem("site_access") === "true") {
         switchScreen("mainApp");
     } else {
         switchScreen("authApp");
     }
+
+    // 2. В фоновом режиме загружаем данные из Supabase
+    remoteConfig = await fetchSupabaseSettings();
+    applyAppsVisibility();
+    updateAppCounter();
 
     document.getElementById("passInput").addEventListener("keydown", e => {
         if (e.key === "Enter") submitPassword();
@@ -2392,7 +2394,7 @@ function executeDownload() {
 </div>
 
 <div class="last-update">
-    Последнее обновление: 22 сентября 2026
+    Последнее обновление: 24 сентября 2026
 </div>
 
 </body>
