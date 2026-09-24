@@ -460,8 +460,28 @@
 
         #maintenanceToggle:checked + .slider { background: linear-gradient(135deg, #dc2626, #b91c1c); border-color: rgba(248, 113, 113, 0.4); }
 
-        .extra-actions { display: flex; gap: 8px; margin-top: 14px; }
-        
+        /* Новая компоновка кнопок в модальном окне редактирования */
+        .extra-actions-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        .btn-action-copy {
+            width: 100%; height: 42px; background: rgba(168, 85, 247, 0.08);
+            border: 1px solid var(--border-btn-copy); border-radius: 14px;
+            color: #e9d5ff; font-size: 12.5px; font-weight: 600; cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-action-copy:hover { background: rgba(168, 85, 247, 0.15); }
+
+        .extra-actions-row {
+            display: flex;
+            gap: 8px;
+            width: 100%;
+        }
+
         .btn-action-generate {
             flex: 1; height: 42px; background: rgba(59, 130, 246, 0.08);
             border: 1px solid var(--border-btn-gen); border-radius: 14px;
@@ -469,14 +489,6 @@
             transition: all 0.2s ease;
         }
         .btn-action-generate:hover { background: rgba(59, 130, 246, 0.15); }
-
-        .btn-action-copy {
-            flex: 1; height: 42px; background: rgba(168, 85, 247, 0.08);
-            border: 1px solid var(--border-btn-copy); border-radius: 14px;
-            color: #e9d5ff; font-size: 12.5px; font-weight: 600; cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .btn-action-copy:hover { background: rgba(168, 85, 247, 0.15); }
 
         .btn-action-clear {
             flex: 1; height: 42px; background: rgba(245, 158, 11, 0.08);
@@ -703,10 +715,12 @@
             <label>Новый цифровой пароль</label>
             <input type="tel" inputmode="numeric" pattern="[0-9]*" id="editPasswordInput" autocomplete="off">
         </div>
-        <div class="extra-actions">
-            <button class="btn-action-generate" type="button" onclick="generatePassword()">Сгенерировать</button>
+        <div class="extra-actions-container">
             <button class="btn-action-copy" type="button" onclick="copyCurrentModalPassword()">Копировать</button>
-            <button class="btn-action-clear" type="button" id="btnClearPassword" onclick="clearPassword()">Без пароля</button>
+            <div class="extra-actions-row">
+                <button class="btn-action-generate" type="button" onclick="generatePassword()">Сгенерировать</button>
+                <button class="btn-action-clear" type="button" id="btnClearPassword" onclick="clearPassword()">Без пароля</button>
+            </div>
         </div>
         <div class="modal-actions">
             <button class="btn-cancel" onclick="closeEditModal()">Отмена</button>
