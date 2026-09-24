@@ -100,6 +100,10 @@
             object-fit: cover;
             background-color: var(--border);
             flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
         }
         .app-details {
             overflow: hidden;
@@ -156,13 +160,13 @@
 <body>
 
 <div class="container">
-    <!-- Состояние загрузки (строго по центру) -->
+    <!-- Состояние загрузки -->
     <div id="loading-state" class="status-card">
         <div class="spinner"></div>
         <p style="margin: 0; color: var(--text-secondary);">Подготавливаем ваши приложения...</p>
     </div>
 
-    <!-- Состояние ошибки (строго по центру, понятный текст) -->
+    <!-- Состояние ошибки -->
     <div id="error-state" class="status-card hidden">
         <h3 id="error-title" class="error-title">Ссылка недействительна</h3>
         <p id="error-text" class="error-desc">Пожалуйста, сгенерируйте новую ссылку в боте.</p>
@@ -179,9 +183,44 @@
 </div>
 
 <script>
-    // 1. Вставьте ваши реальные данные из Supabase (используйте anon key)
-    const SUPABASE_URL = 'https://gbuvpqcummyutycemaaj.supabase.co/functions/v1/smooth-handler';
+    // Базовый URL вашего Supabase проекта (уберите /functions/v1/... для клиентского SDK)
+    const SUPABASE_URL = 'https://gbuvpqcummyutycemaaj.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_oUDovfvWL6iioG6N5Xd_QQ_8KYezq8g';
+
+    // Полный справочник приложений с ключами, совпадающими с ботом
+    const APPS_CATALOG = {
+        "vk": { name: "ВКонтакте", plist: "plist/vk.plist" },
+        "max": { name: "MAX", plist: "plist/max.plist" },
+        "vk_video": { name: "VK Видео", plist: "plist/vk_video.plist" },
+        "vk_clips": { name: "VK Клипы", plist: "plist/vk_clips.plist" },
+        "sberbank": { name: "СберБанк (Финансы Онлайн)", plist: "plist/sberbank.plist" },
+        "avito": { name: "Авито", plist: "plist/avito.plist" },
+        "sovcombank_mds": { name: "Совкомбанк (Все карты MDS)", plist: "plist/sovcombank_mds.plist" },
+        "tbank_8pro": { name: "Т-Банк (8PRO)", plist: "plist/tbank_8pro.plist" },
+        "sovcombank_synoptik": { name: "Совкомбанк (Синоптик+)", plist: "plist/sovcombank_synoptik.plist" },
+        "tbank_drive": { name: "Т-Банк (Drive Transit)", plist: "plist/tbank_drive.plist" },
+        "lenta": { name: "Лента", plist: "plist/lenta.plist" },
+        "yandex_pay": { name: "Яндекс Пэй", plist: "plist/yandex_pay.plist" },
+        "2gis": { name: "2ГИС", plist: "plist/2gis.plist" },
+        "psb_tea": { name: "ПСБ (Чайная Церемония)", plist: "plist/psb_tea.plist" },
+        "kuper": { name: "Купер", plist: "plist/kuper.plist" },
+        "rutube_starship": { name: "Rutube (Starship Battle)", plist: "plist/rutube.plist" },
+        "sber_mobio": { name: "СберМобайл (Мобио)", plist: "plist/sber_mobio.plist" },
+        "rzd": { name: "РЖД Пассажирам", plist: "plist/rzd.plist" },
+        "sberkids_speakaboo": { name: "СберKids (Speakaboo)", plist: "plist/sberkids.plist" },
+        "lenta_product": { name: "Лента (Быстро Продукты)", plist: "plist/lenta_prod.plist" },
+        "avito_anero": { name: "Авито (Алего)", plist: "plist/avito_anero.plist" },
+        "tbank_craftersy": { name: "Т-Банк (Craftersy)", plist: "plist/tbank_craftersy.plist" },
+        "sovcombank_schnotes": { name: "Совкомбанк (SCB Notes)", plist: "plist/sovcombank_notes.plist" },
+        "akbars_vse_uchтено": { name: "АК Барс (Всё Учтено)", plist: "plist/akbars.plist" },
+        "rosbank_blyum": { name: "Ростбанк (Блум)", plist: "plist/rosbank.plist" },
+        "happ_proxy": { name: "Happ Proxy", plist: "plist/happ.plist" },
+        "sberinvest": { name: "СберИнвестиции", plist: "plist/sberinvest.plist" },
+        "vtb_invest": { name: "ВТБ Инвестиции", plist: "plist/vtb_invest.plist" },
+        "gazpromneft": { name: "Газпромнефть", plist: "plist/gazprom.plist" },
+        "novikombank": { name: "Новикомбанк", plist: "plist/novikom.plist" },
+        "mts_bank": { name: "МТС Банк", plist: "plist/mts.plist" }
+    };
 
     let supabaseClient = null;
 
@@ -195,7 +234,7 @@
 
     async function init() {
         if (!supabaseClient) {
-            showError("Ошибка подключения", "Не удалось подключиться к серверу. Проверьте правильность настроек ключей.");
+            showError("Ошибка подключения", "Не удалось подключиться к серверу. Проверьте правильность настроек.");
             return;
         }
 
@@ -210,16 +249,16 @@
         token = token.trim();
 
         try {
-            // Делаем запрос в таблицу invite_links (используем точные имена колонок: token, apps, used)
+            // Делаем запрос в новую таблицу invite-selection
             const { data, error } = await supabaseClient
-                .from('invite_links')
+                .from('invite-selection')
                 .select('token, apps, used')
                 .eq('token', token)
                 .maybeSingle();
 
             if (error) {
                 console.error("Ошибка БД:", error);
-                showError("Ошибка доступа", "Не удалось проверить ссылку. Пожалуйста, обратитесь к боту за новой ссылкой.");
+                showError("Ошибка доступа", "Не удалось проверить ссылку. Пожалуйста, обратитесь ко мне за новой ссылкой.");
                 return;
             }
 
@@ -228,37 +267,23 @@
                 return;
             }
 
-            // Проверяем поле used (если ссылка уже использовалась)
             if (data.used === true) {
-                showError("Ссылка уже использована", "Эта персональная ссылка уже была активирована ранее и больше недоступна. Пожалуйста, получите новую ссылку в боте.");
+                showError("Ссылка уже использована", "Эта персональная ссылка уже была активирована ранее и больше недоступна.");
                 return;
             }
 
-            let allowedAppIds = data.apps; // Это массив, например: ["vk-video", "vk-clips"]
+            let allowedAppIds = data.apps; // Массив ключей приложений, выбранных пользователем
 
             if (typeof allowedAppIds === 'string') {
                 try { allowedAppIds = JSON.parse(allowedAppIds); } catch(e){}
             }
 
             if (!Array.isArray(allowedAppIds) || allowedAppIds.length === 0) {
-                showError("Нет доступных приложений", "К этой ссылке не привязано ни одного приложения. Выберите их в боте при создании ссылки.");
+                showError("Нет доступных приложений", "К этой ссылке не привязано ни одного приложения.");
                 return;
             }
 
-            // Загружаем подробную информацию по этим приложениям из таблицы с каталогом 
-            // (предполагаем, что таблица каталога называется apps_catalog, а её поле идентификатора — id или slug)
-            const { data: appsData, error: appsError } = await supabaseClient
-                .from('apps_catalog')
-                .select('*')
-                .in('id', allowedAppIds);
-
-            if (appsError || !appsData || appsData.length === 0) {
-                // Запасной вариант: если каталог устроен иначе, выводим базовые блоки по идентификаторам
-                renderFallbackApps(allowedAppIds);
-                return;
-            }
-
-            renderApps(appsData);
+            renderApps(allowedAppIds);
 
         } catch (err) {
             console.error(err);
@@ -266,53 +291,32 @@
         }
     }
 
-    // Рендер приложений, если они найдены в таблице каталога
-    function renderApps(apps) {
-        const container = document.getElementById('apps-container');
-        container.innerHTML = '';
-
-        apps.forEach(app => {
-            const item = document.createElement('div');
-            item.className = 'app-item';
-
-            const plistUrl = app.plist_url || app.plist || '';
-            const installLink = `itms-services://?action=download-manifest&url=${encodeURIComponent(plistUrl)}`;
-
-            item.innerHTML = `
-                <div class="app-info">
-                    <img src="${app.icon_url || app.icon || 'https://via.placeholder.com/52'}" alt="${app.name}" class="app-icon">
-                    <div class="app-details">
-                        <h3 class="app-name">${app.name || 'Приложение'}</h3>
-                        <p class="app-version">Версия: ${app.version || '1.0'}</p>
-                    </div>
-                </div>
-                <a href="${installLink}" class="install-btn">Установить</a>
-            `;
-            container.appendChild(item);
-        });
-
-        document.getElementById('loading-state').classList.add('hidden');
-        document.getElementById('apps-content').classList.remove('hidden');
-    }
-
-    // Запасной рендер, если каталог не подключен, но ID приложений есть в массиве
-    function renderFallbackApps(appIds) {
+    // Рендер выбранных приложений на основе локального каталога
+    function renderApps(appIds) {
         const container = document.getElementById('apps-container');
         container.innerHTML = '';
 
         appIds.forEach(appId => {
+            const appInfo = APPS_CATALOG[appId];
+            const appName = appInfo ? appInfo.name : appId;
+            const plistUrl = appInfo ? appInfo.plist : '';
+            
+            const installLink = plistUrl 
+                ? `itms-services://?action=download-manifest&url=${encodeURIComponent(window.location.origin + '/' + plistUrl)}` 
+                : '#';
+
             const item = document.createElement('div');
             item.className = 'app-item';
 
             item.innerHTML = `
                 <div class="app-info">
-                    <div class="app-icon" style="display:flex;align-items:center;justify-content:center;font-weight:bold;color:var(--text-secondary);">📱</div>
+                    <div class="app-icon">📱</div>
                     <div class="app-details">
-                        <h3 class="app-name">${appId}</h3>
+                        <h3 class="app-name">${appName}</h3>
                         <p class="app-version">Готово к установке</p>
                     </div>
                 </div>
-                <span class="install-btn" style="background:var(--border); cursor:default;">Доступно</span>
+                <a href="${installLink}" class="install-btn">Установить</a>
             `;
             container.appendChild(item);
         });
