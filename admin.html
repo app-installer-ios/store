@@ -686,7 +686,7 @@
     checkConnection();
     setInterval(checkConnection, 10000);
 
-    // Функция сохранения действия в таблицу history в Supabase
+    // Функция сохранения действия с отладкой ошибок
     async function addHistory(actionText) {
         try {
             const now = new Date();
@@ -695,15 +695,19 @@
                 hour: '2-digit', minute: '2-digit', second: '2-digit'
             });
 
-            await supabaseClient.from('history').insert([
+            const { error } = await supabaseClient.from('history').insert([
                 { text: actionText, datetime: datetimeStr, created_at: new Date() }
             ]);
+
+            if (error) {
+                console.error('Ошибка Supabase при записи истории:', error);
+                alert('Ошибка записи истории: ' + error.message);
+            }
         } catch (e) {
-            console.error('Ошибка записи истории:', e);
+            console.error('Сетевая ошибка истории:', e);
         }
     }
 
-    // Загрузка истории из базы данных
     async function loadHistory() {
         try {
             const { data, error } = await supabaseClient
@@ -781,16 +785,14 @@
                 document.getElementById('admin-panel').style.display = 'flex';
                 
                 loadSettings();
-                addHistory('Успешный вход в панель управления с сайта');
+                await addHistory('Успешный вход в панель управления с сайта');
 
-                // Подписка на изменения настроек и истории в реальном времени (от сайта и Telegram бота)
                 supabaseClient
                     .channel('public:db_changes')
                     .on('postgres_changes', { event: '*', schema: 'public', table: 'settings' }, () => {
                         loadSettings();
                     })
-                    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'history' }, (payload) => {
-                        // Если открыто модальное окно истории, сразу обновляем список
+                    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'history' }, () => {
                         if (document.getElementById('historyCatalogOverlay').classList.contains('active')) {
                             loadHistory();
                         }
@@ -901,7 +903,7 @@
         renderVisibilityAppsList();
         filterVisibilityApps();
         const msg = isVisible ? 'Все приложения показаны' : 'Все приложения скрыты';
-        addHistory(msg);
+        await addHistory(msg);
         showToast(msg);
     }
 
@@ -934,7 +936,7 @@
 
         await supabaseClient.from('settings').upsert({ key: `vis_${appKey}`, value: isVisible ? 'true' : 'false' }, { onConflict: 'key' });
         const msg = isVisible ? `Показано: ${appName}` : `Скрыто: ${appName}`;
-        addHistory(msg);
+        await addHistory(msg);
         showToast(msg);
     }
 
@@ -946,7 +948,7 @@
 
         try {
             await loadSettings();
-            addHistory('Ручная синхронизация настроек с сайта');
+            await addHistory('Ручная синхронизация настроек с сайта');
             showToast('Все изменения успешно сохранены!');
         } catch (e) {
             showToast('Ошибка при сохранении');
@@ -1004,7 +1006,7 @@
 
             updatePasswordStats();
             renderAdminAppsList();
-            addHistory('Сгенерированы новые пароли для всех приложений');
+            await addHistory('Сгенерированы новые пароли для всех приложений');
             showToast('Новые пароли сохранены для всех приложений');
         } catch (error) {
             showToast('Ошибка при генерации паролей');
@@ -1048,7 +1050,7 @@
             toastMsg = currentEditKey === 'admin_password' ? 'Пароль админ-панели изменён' : 'Пароль сайта изменён';
         }
 
-        addHistory(toastMsg);
+        await addHistory(toastMsg);
         closeEditModal();
         showToast(toastMsg);
     }
