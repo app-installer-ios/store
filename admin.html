@@ -15,17 +15,18 @@
             --danger-bg: rgba(239, 68, 68, 0.15);
             --spring: cubic-bezier(.22,1,.36,1);
 
-            --border-admin: rgba(217, 119, 6, 0.35);
-            --glow-admin: rgba(217, 119, 6, 0.06);
+            /* Спокойные, но отчетливо различимые цветовые акценты */
+            --border-admin: rgba(217, 119, 6, 0.45);   /* Янтарный / Оранжевый */
+            --glow-admin: rgba(217, 119, 6, 0.08);
 
-            --border-site: rgba(14, 116, 144, 0.35);
-            --glow-site: rgba(14, 116, 144, 0.06);
+            --border-site: rgba(14, 116, 144, 0.45);   /* Спокойный синий / Циан */
+            --glow-site: rgba(14, 116, 144, 0.08);
 
-            --border-apps: rgba(147, 51, 234, 0.35);
-            --glow-apps: rgba(147, 51, 234, 0.06);
+            --border-apps: rgba(147, 51, 234, 0.45);  /* Фиолетовый */
+            --glow-apps: rgba(147, 51, 234, 0.08);
 
-            --border-vis: rgba(5, 150, 105, 0.35);
-            --glow-vis: rgba(5, 150, 105, 0.06);
+            --border-vis: rgba(13, 148, 136, 0.45);   /* Бирюзовый / Изумрудный */
+            --glow-vis: rgba(13, 148, 136, 0.08);
         }
 
         * {
@@ -222,26 +223,26 @@
         }
         .control-card:hover { transform: translateY(-2px); }
 
-        .card-admin { border: 1px solid var(--border-admin); box-shadow: 0 2px 10px var(--glow-admin); }
-        .card-site { border: 1px solid var(--border-site); box-shadow: 0 2px 10px var(--glow-site); }
-        .card-apps-pass { border: 1px solid var(--border-apps); box-shadow: 0 2px 10px var(--glow-apps); cursor: pointer; }
-        .card-apps-vis { border: 1px solid var(--border-vis); box-shadow: 0 2px 10px var(--glow-vis); cursor: pointer; }
-        .card-maintenance { border: 1px solid rgba(239, 68, 68, 0.35); box-shadow: 0 2px 10px rgba(239, 68, 68, 0.06); }
+        .card-admin { border: 1px solid var(--border-admin); box-shadow: 0 2px 10px var(--glow-admin); background: rgba(217, 119, 6, 0.03); }
+        .card-site { border: 1px solid var(--border-site); box-shadow: 0 2px 10px var(--glow-site); background: rgba(14, 116, 144, 0.03); }
+        .card-apps-pass { border: 1px solid var(--border-apps); box-shadow: 0 2px 10px var(--glow-apps); background: rgba(147, 51, 234, 0.03); cursor: pointer; }
+        .card-apps-vis { border: 1px solid var(--border-vis); box-shadow: 0 2px 10px var(--glow-vis); background: rgba(13, 148, 136, 0.03); cursor: pointer; }
+        .card-maintenance { border: 1px solid rgba(239, 68, 68, 0.35); box-shadow: 0 2px 10px rgba(239, 68, 68, 0.06); background: rgba(239, 68, 68, 0.03); }
 
         .card-history-btn {
             margin-bottom: 0;
-            border: 1px solid rgba(192, 132, 252, 0.2);
-            background: rgba(147, 51, 234, 0.04);
+            border: 1px solid rgba(100, 116, 139, 0.3);
+            background: rgba(100, 116, 139, 0.04);
             cursor: pointer;
             justify-content: center;
             gap: 8px;
             font-size: 14px;
             font-weight: 600;
-            color: #e2e8f0;
+            color: #cbd5e1;
         }
         .card-history-btn:hover {
-            background: rgba(147, 51, 234, 0.08);
-            border-color: rgba(192, 132, 252, 0.35);
+            background: rgba(100, 116, 139, 0.09);
+            border-color: rgba(100, 116, 139, 0.45);
             color: #fff;
         }
 
@@ -260,10 +261,10 @@
             cursor: pointer;
             transition: all 0.25s ease;
         }
-        .card-admin .gear-btn { background: rgba(217, 119, 6, 0.08); border: 1px solid var(--border-admin); }
-        .card-site .gear-btn { background: rgba(14, 116, 144, 0.08); border: 1px solid var(--border-site); }
-        .card-apps-pass .gear-btn { background: rgba(147, 51, 234, 0.08); border: 1px solid var(--border-apps); }
-        .card-apps-vis .gear-btn { background: rgba(5, 150, 105, 0.08); border: 1px solid var(--border-vis); }
+        .card-admin .gear-btn { background: rgba(217, 119, 6, 0.12); border: 1px solid var(--border-admin); }
+        .card-site .gear-btn { background: rgba(14, 116, 144, 0.12); border: 1px solid var(--border-site); }
+        .card-apps-pass .gear-btn { background: rgba(147, 51, 234, 0.12); border: 1px solid var(--border-apps); }
+        .card-apps-vis .gear-btn { background: rgba(13, 148, 136, 0.12); border: 1px solid var(--border-vis); }
 
         .sheet-overlay {
             position: fixed;
@@ -297,7 +298,7 @@
 
         #appsCatalogOverlay .sheet-modal { border: 1px solid var(--border-apps); }
         #visibilityCatalogOverlay .sheet-modal { border: 1px solid var(--border-vis); }
-        #historyCatalogOverlay .sheet-modal { border: 1px solid rgba(192, 132, 252, 0.3); }
+        #historyCatalogOverlay .sheet-modal { border: 1px solid rgba(100, 116, 139, 0.35); }
         #editModalContainer { max-width: 340px; margin: auto; border: 1px solid rgba(192, 132, 252, 0.25); }
 
         .history-modal-list {
@@ -315,8 +316,8 @@
             flex-direction: column;
             gap: 2px;
             padding: 10px 14px;
-            background: rgba(147, 51, 234, 0.04);
-            border: 1px solid rgba(192, 132, 252, 0.1);
+            background: rgba(100, 116, 139, 0.05);
+            border: 1px solid rgba(100, 116, 139, 0.15);
             border-radius: 12px;
             font-size: 13px;
             color: #f8fafc;
@@ -346,8 +347,8 @@
         .stat-pass-locked .stat-card-val { color: #d8b4fe; }
         .stat-pass-unlocked { background: rgba(100, 116, 139, 0.06); border: 1px solid rgba(100, 116, 139, 0.2); }
         .stat-pass-unlocked .stat-card-val { color: #cbd5e1; }
-        .stat-vis-shown { background: rgba(5, 150, 105, 0.06); border: 1px solid rgba(5, 150, 105, 0.25); }
-        .stat-vis-shown .stat-card-val { color: #6ee7b7; }
+        .stat-vis-shown { background: rgba(13, 148, 136, 0.06); border: 1px solid rgba(13, 148, 136, 0.25); }
+        .stat-vis-shown .stat-card-val { color: #5eead4; }
         .stat-vis-hidden { background: rgba(239, 68, 68, 0.06); border: 1px solid rgba(239, 68, 68, 0.25); }
         .stat-vis-hidden .stat-card-val { color: #fca5a5; }
 
@@ -375,12 +376,12 @@
         .visibility-actions { display: flex; gap: 10px; margin-bottom: 12px; }
         .visibility-action-btn {
             flex: 1; min-height: 42px; border-radius: 12px;
-            border: 1px solid var(--border-vis); background: rgba(5, 150, 105, 0.08);
-            color: #a7f3d0; font-weight: 700; cursor: pointer;
+            border: 1px solid var(--border-vis); background: rgba(13, 148, 136, 0.08);
+            color: #99f6e4; font-weight: 700; cursor: pointer;
             transition: all 0.2s ease;
         }
         .visibility-action-btn:hover {
-            background: rgba(5, 150, 105, 0.15);
+            background: rgba(13, 148, 136, 0.16);
         }
 
         .app-search-wrap { position: relative; margin-bottom: 16px; }
@@ -413,7 +414,7 @@
             position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px;
             background-color: #cbd5e1; transition: 0.3s var(--spring); border-radius: 50%;
         }
-        input:checked + .slider { background: linear-gradient(135deg, #059669, #047857); border-color: rgba(52, 211, 153, 0.4); }
+        input:checked + .slider { background: linear-gradient(135deg, #0d9488, #0f766e); border-color: rgba(45, 212, 191, 0.4); }
         input:checked + .slider:before { transform: translateX(20px); background-color: #fff; }
 
         #maintenanceToggle:checked + .slider { background: linear-gradient(135deg, #dc2626, #b91c1c); border-color: rgba(248, 113, 113, 0.4); }
