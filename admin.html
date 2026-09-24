@@ -250,13 +250,11 @@
         .card-admin { border: 1px solid var(--border-admin); box-shadow: 0 2px 10px var(--glow-admin); background: rgba(217, 119, 6, 0.03); }
         .card-site { border: 1px solid var(--border-site); box-shadow: 0 2px 10px var(--glow-site); background: rgba(14, 116, 144, 0.03); }
         
-        /* Уникальные строгие рамки для карточек приложений */
         .card-apps-pass { border: 1px solid var(--border-apps-pass); box-shadow: 0 2px 10px var(--glow-apps-pass); background: rgba(168, 85, 247, 0.03); cursor: pointer; }
         .card-apps-vis { border: 1px solid var(--border-apps-vis); box-shadow: 0 2px 10px var(--glow-apps-vis); background: rgba(20, 184, 166, 0.03); cursor: pointer; }
         
         .card-maintenance { border: 1px solid rgba(239, 68, 68, 0.35); box-shadow: 0 2px 10px rgba(239, 68, 68, 0.06); background: rgba(239, 68, 68, 0.03); }
 
-        /* Уникальная строгая рамка для кнопки истории действий */
         .card-history-btn {
             margin-bottom: 0;
             border: 1px solid var(--border-history);
@@ -402,7 +400,6 @@
             background: rgba(236, 72, 153, 0.2);
         }
 
-        /* Кнопки "Показать все" и "Скрыть все" с разными строгими обводками */
         .visibility-actions { display: flex; gap: 10px; margin-bottom: 12px; }
         
         .visibility-action-btn-show {
@@ -411,9 +408,7 @@
             color: #a7f3d0; font-weight: 700; cursor: pointer;
             transition: all 0.2s ease;
         }
-        .visibility-action-btn-show:hover {
-            background: rgba(16, 185, 129, 0.12);
-        }
+        .visibility-action-btn-show:hover { background: rgba(16, 185, 129, 0.12); }
 
         .visibility-action-btn-hide {
             flex: 1; min-height: 42px; border-radius: 12px;
@@ -421,9 +416,7 @@
             color: #fecdd3; font-weight: 700; cursor: pointer;
             transition: all 0.2s ease;
         }
-        .visibility-action-btn-hide:hover {
-            background: rgba(244, 63, 94, 0.12);
-        }
+        .visibility-action-btn-hide:hover { background: rgba(244, 63, 94, 0.12); }
 
         .app-search-wrap { position: relative; margin-bottom: 16px; }
         .app-search {
@@ -468,9 +461,7 @@
             color: #93c5fd; font-size: 13px; font-weight: 600; cursor: pointer;
             transition: all 0.2s ease;
         }
-        .btn-action-generate:hover {
-            background: rgba(59, 130, 246, 0.15);
-        }
+        .btn-action-generate:hover { background: rgba(59, 130, 246, 0.15); }
 
         .btn-action-clear {
             flex: 1; height: 42px; background: rgba(245, 158, 11, 0.08);
@@ -478,9 +469,7 @@
             color: #fde68a; font-size: 13px; font-weight: 600; cursor: pointer;
             transition: all 0.2s ease;
         }
-        .btn-action-clear:hover {
-            background: rgba(245, 158, 11, 0.15);
-        }
+        .btn-action-clear:hover { background: rgba(245, 158, 11, 0.15); }
 
         .modal-actions { display: flex; gap: 12px; margin-top: 22px; }
         
@@ -490,10 +479,7 @@
             color: #d1d5db; font-size: 15px; font-weight: 600; cursor: pointer;
             transition: all 0.2s ease;
         }
-        .btn-cancel:hover {
-            background: rgba(156, 163, 175, 0.08);
-            color: #fff;
-        }
+        .btn-cancel:hover { background: rgba(156, 163, 175, 0.08); color: #fff; }
 
         .btn-save {
             flex: 1; height: 48px; background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(22, 163, 74, 0.15));
@@ -506,14 +492,36 @@
             filter: brightness(1.05);
         }
 
+        /* Уведомление в виде горизонтального плавающего окна сверху экрана */
         .toast {
-            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
-            background: linear-gradient(135deg, rgba(28, 12, 42, 0.95), rgba(14, 5, 22, 0.95));
-            border: 1px solid rgba(192, 132, 252, 0.3); backdrop-filter: blur(16px);
-            color: #fff; padding: 15px 22px; border-radius: 18px; font-size: 14px; font-weight: 600;
-            opacity: 0; visibility: hidden; transition: all 0.4s var(--spring); z-index: 9999; text-align: center;
+            position: fixed; 
+            top: 20px; 
+            left: 50%; 
+            transform: translateX(-50%) translateY(-80px);
+            background: linear-gradient(165deg, rgba(28, 14, 42, 0.92), rgba(14, 7, 24, 0.96));
+            border: 1px solid rgba(192, 132, 252, 0.3); 
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            color: #fff; 
+            padding: 12px 20px; 
+            border-radius: 16px; 
+            font-size: 13.5px; 
+            font-weight: 600;
+            opacity: 0; 
+            visibility: hidden; 
+            transition: all 0.4s var(--spring); 
+            z-index: 9999; 
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            max-width: 90%;
+            width: auto;
+            white-space: nowrap;
         }
-        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; visibility: visible; }
+        .toast.show { 
+            transform: translateX(-50%) translateY(0); 
+            opacity: 1; 
+            visibility: visible; 
+        }
     </style>
 </head>
 <body>
