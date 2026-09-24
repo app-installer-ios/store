@@ -234,6 +234,7 @@
         .card-site { border: 1.5px solid var(--border-site); box-shadow: 0 3px 14px var(--glow-site); }
         .card-apps-pass { border: 1.5px solid var(--border-apps); box-shadow: 0 3px 14px var(--glow-apps); cursor: pointer; }
         .card-apps-vis { border: 1.5px solid var(--border-vis); box-shadow: 0 3px 14px var(--glow-vis); cursor: pointer; }
+        .card-maintenance { border: 1.5px solid rgba(239, 68, 68, 0.6); box-shadow: 0 3px 14px rgba(239, 68, 68, 0.12); }
         
         .card-save-btn {
             margin-top: 4px;
@@ -428,6 +429,9 @@
         input:checked + .slider { background: linear-gradient(135deg, #10b981, #059669); border-color: rgba(52, 211, 153, 0.6); }
         input:checked + .slider:before { transform: translateX(20px); }
 
+        /* Специальный переключатель для режима обслуживания (красный акцент) */
+        #maintenanceToggle:checked + .slider { background: linear-gradient(135deg, #ef4444, #dc2626); border-color: rgba(248, 113, 113, 0.6); }
+
         .extra-actions { display: flex; gap: 10px; margin-top: 14px; }
         .btn-action {
             flex: 1; height: 42px; background: rgba(147, 51, 234, 0.12);
@@ -509,6 +513,17 @@
                 <span class="control-desc">Показать или скрыть приложения</span>
             </div>
             <div class="gear-btn">🔎</div>
+        </div>
+
+        <div class="control-card card-maintenance">
+            <div class="control-info">
+                <span class="control-title">Режим обслуживания</span>
+                <span class="control-desc">Включить заглушку на сайте</span>
+            </div>
+            <label class="switch">
+                <input type="checkbox" id="maintenanceToggle" onchange="toggleMaintenance(this.checked)">
+                <span class="slider"></span>
+            </label>
         </div>
 
         <div class="control-card card-save-btn" id="btnGlobalSave" onclick="saveAllChangesManual()">
@@ -664,7 +679,7 @@
         { key: "mtsdengi", name: "МТС Банк" }
     ];
 
-    let globalSettings = { admin_password: '', site_password: '' };
+    let globalSettings = { admin_password: '', site_password: '', maintenance_mode: 'false' };
     let appPasswordsData = {};
     let appVisibilityData = {};
     let currentEditKey = null;
@@ -686,7 +701,6 @@
     checkConnection();
     setInterval(checkConnection, 10000);
 
-    // Функция сохранения действия с отладкой ошибок
     async function addHistory(actionText) {
         try {
             const now = new Date();
@@ -821,8 +835,11 @@
         if (error) return;
 
         data.forEach(item => {
-            if (item.key === 'admin_password' || item.key === 'site_password') {
+            if (item.key === 'admin_password' || item.key === 'site_password' || item.key === 'maintenance_mode') {
                 globalSettings[item.key] = item.value;
+                if (item.key === 'maintenance_mode') {
+                    document.getElementById('maintenanceToggle').checked = (item.value === 'true');
+                }
             } else if (item.key.startsWith('vis_')) {
                 const appKey = item.key.replace('vis_', '');
                 appVisibilityData[appKey] = item.value === 'true';
@@ -834,6 +851,22 @@
         renderVisibilityAppsList();
         updatePasswordStats();
         updateVisibilityStats();
+    }
+
+    async function toggleMaintenance(isEnabled) {
+        const statusStr = isEnabled ? 'true' : 'false';
+        globalSettings['maintenance_mode'] = statusStr;
+        
+        const { error } = await supabaseClient.from('settings').upsert({ key: 'maintenance_mode', value: statusStr }, { onConflict: 'key' });
+        
+        if (error) {
+            showToast('Ошибка при переключении режима');
+            return;
+        }
+
+        const msg = isEnabled ? 'Включен режим обслуживания на сайте' : 'Режим обслуживания отключен';
+        await addHistory(msg);
+        showToast(msg);
     }
 
     function renderAdminAppsList() {
