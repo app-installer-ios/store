@@ -696,42 +696,35 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 .search-empty { display: none; text-align: center; color: #94a3b8; font-size: 13px; padding: 20px 10px; }
 
 /* Стили для модального окна инструкции */
-.guide-modal { height: min(82vh, 620px); }
-.guide-content { display: flex; flex-direction: column; gap: 14px; }
+.guide-modal { height: min(85vh, 650px); }
+.guide-content { display: flex; flex-direction: column; gap: 12px; }
 .guide-step {
     display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 14px;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 13px 14px;
     background: rgba(30, 41, 59, 0.35);
     border: 1.8px solid rgba(110, 160, 135, 0.3);
     border-radius: 16px;
     flex-shrink: 0;
 }
 .guide-step-number {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
-    width: 26px;
-    height: 26px;
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
     background: linear-gradient(135deg, #0f766e, #1e3a8a);
     color: #fff;
     font-size: 13px;
     font-weight: 700;
     border-radius: 50%;
+    margin-top: 1px;
 }
-.guide-step-text { font-size: 13.5px; color: #e2e8f0; line-height: 1.45; }
+.guide-step-text { font-size: 13px; color: #e2e8f0; line-height: 1.5; }
 .guide-step-text strong { color: #ffffff; }
-.guide-screenshot {
-    width: 100%;
-    border-radius: 12px;
-    overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    background: rgba(15, 23, 42, 0.6);
-    display: flex;
-    justify-content: center;
-}
-.guide-screenshot img { width: 100%; height: auto; object-fit: cover; display: block; max-height: 200px; }
+.guide-step-text em { color: #5eead4; font-style: normal; font-weight: 600; }
 
 .last-update {
     position: fixed;
@@ -1163,7 +1156,7 @@ function executeDownload() {
         
         <!-- КНОПКА «Как это работает?» -->
         <button type="button" class="btn btn-secondary" onclick="openGuideSheet()" style="margin-top: 8px;">
-            ❓ Как это работает?
+            <span style="color: #fca5a5; font-weight: 700; margin-right: 4px;">•</span> Как это работает?
         </button>
 
         <div class="support-notice">
@@ -1480,7 +1473,7 @@ function executeDownload() {
 <div class="sheet-overlay" id="guideOverlay" onclick="closeGuideSheet()">
     <div class="sheet-modal guide-modal" onclick="event.stopPropagation()">
         <div class="sheet-header">
-            <div class="sheet-title">Как это работает?</div>
+            <div class="sheet-title">Как это работает</div>
             <button type="button" class="sheet-close" onclick="closeGuideSheet()">✕</button>
         </div>
 
@@ -1490,39 +1483,33 @@ function executeDownload() {
                 <div class="guide-step-text">
                     <strong>Выберите нужное приложение</strong> в списке, нажав на поле выбора, и нажмите кнопку <strong>«Установить»</strong>.
                 </div>
-                <div class="guide-screenshot">
-                    <img src="https://via.placeholder.com/350x180/1e293b/94a3b8?text=Step+1+Select+App" alt="Шаг 1">
-                </div>
             </div>
 
             <div class="guide-step">
                 <div class="guide-step-number">2</div>
                 <div class="guide-step-text">
-                    Подтвердите установку в появившемся системном окне iOS. Дождитесь окончания процесса загрузки на экране.
-                </div>
-                <div class="guide-screenshot">
-                    <img src="https://via.placeholder.com/350x180/1e293b/94a3b8?text=Step+2+Install" alt="Шаг 2">
+                    Подтвердите установку в появившемся системном окне iOS и дождитесь окончания загрузки приложения на экране.
                 </div>
             </div>
 
             <div class="guide-step">
                 <div class="guide-step-number">3</div>
                 <div class="guide-step-text">
-                    Если при открытии приложения появляется сообщение о <strong>«Ненадёжном корпоративном разработчике»</strong>, перейдите в 
-                    <em>Настройки ➔ Основные ➔ VPN и управление устройством</em>.
-                </div>
-                <div class="guide-screenshot">
-                    <img src="https://via.placeholder.com/350x180/1e293b/94a3b8?text=Step+3+Settings" alt="Шаг 3">
+                    Если после установки при открытии приложения оно вылетает, <strong>обратитесь к администратору</strong> для получения аккаунта.
                 </div>
             </div>
 
             <div class="guide-step">
                 <div class="guide-step-number">4</div>
                 <div class="guide-step-text">
-                    Выберите профиль разработчика и нажмите <strong>«Доверить»</strong>. После этого приложение будет полностью готово к работе!
+                    Зайдите в <em>Настройки</em> — нажмите <em>свое имя</em> — <em>Контент и покупки</em> и зайдите в аккаунт, который выдал администратор. При необходимости введите код подтверждения, который пришлет администратор! <strong>Заходить нужно строго в раздел «Контент и покупки»!</strong>
                 </div>
-                <div class="guide-screenshot">
-                    <img src="https://via.placeholder.com/350x180/1e293b/94a3b8?text=Step+4+Trust" alt="Шаг 4">
+            </div>
+
+            <div class="guide-step">
+                <div class="guide-step-number">5</div>
+                <div class="guide-step-text">
+                    После входа в аккаунт можно открывать приложение, и оно начнет работать. После того как приложение заработало, из аккаунта в разделе <strong>Контент и покупки</strong> нужно выйти.
                 </div>
             </div>
         </div>
