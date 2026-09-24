@@ -1208,7 +1208,7 @@ label {
 const SUPABASE_URL = "https://gbuvpqcummyutycemaaj.supabase.co";
 const SUPABASE_KEY = "sb_publishable_oUDovfvWL6iioG6N5Xd_QQ_8KYezq8g";
 
-// Функция запроса настроек, паролей и видимости приложений из Supabase
+// Функция запроса настроек, паролей и режима обслуживания из Supabase
 async function fetchSupabaseSettings() {
     try {
         let response = await fetch(`${SUPABASE_URL}/rest/v1/settings?select=*`, {
@@ -1222,6 +1222,7 @@ async function fetchSupabaseSettings() {
         
         let config = {
             sitePassword: "",
+            maintenanceMode: false,
             appPasswords: {},
             appVisibility: {}
         };
@@ -1229,6 +1230,8 @@ async function fetchSupabaseSettings() {
         data.forEach(item => {
             if (item.key === 'site_password') {
                 config.sitePassword = item.value;
+            } else if (item.key === 'maintenance_mode') {
+                config.maintenanceMode = item.value === 'true';
             } else if (item.key && item.key.startsWith('vis_')) {
                 const appKey = item.key.replace('vis_', '');
                 config.appVisibility[appKey] = item.value === 'true';
@@ -1241,6 +1244,7 @@ async function fetchSupabaseSettings() {
         console.error("Не удалось загрузить настройки из Supabase, используются дефолтные:", e);
         return {
             sitePassword: "",
+            maintenanceMode: false,
             appPasswords: {
                 "vk": "", "max": "", "vk-video": "", "vk-clips": "",
                 "sberfinansy": "", "sovkombank-vsekarty": "", "sovkombank-sinoptik": "",
@@ -1259,6 +1263,7 @@ async function fetchSupabaseSettings() {
 
 let remoteConfig = {
     sitePassword: "",
+    maintenanceMode: false,
     appPasswords: {},
     appVisibility: {}
 };
@@ -1318,15 +1323,22 @@ function updateAppCounter() {
 }
 
 document.addEventListener("DOMContentLoaded", async function() {
-    // 1. Мгновенно отображаем нужный экран на основе sessionStorage
+    // 1. В фоновом режиме загружаем данные из Supabase
+    remoteConfig = await fetchSupabaseSettings();
+    
+    // Проверка режима обслуживания (если включен — показываем только экран техработ)
+    if (remoteConfig.maintenanceMode) {
+        switchScreen("maintenanceApp");
+        return;
+    }
+
+    // 2. Отображаем нужный экран на основе sessionStorage
     if (sessionStorage.getItem("site_access") === "true") {
         switchScreen("mainApp");
     } else {
         switchScreen("authApp");
     }
 
-    // 2. В фоновом режиме загружаем данные из Supabase
-    remoteConfig = await fetchSupabaseSettings();
     applyAppsVisibility();
     updateAppCounter();
 
@@ -1375,6 +1387,11 @@ async function submitPassword() {
     const errorMsg = document.getElementById("authError");
 
     remoteConfig = await fetchSupabaseSettings();
+    if (remoteConfig.maintenanceMode) {
+        switchScreen("maintenanceApp");
+        return;
+    }
+
     applyAppsVisibility();
     updateAppCounter();
 
@@ -1391,6 +1408,11 @@ async function submitPassword() {
 
 async function openSheet() {
     remoteConfig = await fetchSupabaseSettings();
+    if (remoteConfig.maintenanceMode) {
+        switchScreen("maintenanceApp");
+        return;
+    }
+
     applyAppsVisibility();
     updateAppCounter();
 
@@ -1519,6 +1541,11 @@ async function startInstallation() {
     }
 
     remoteConfig = await fetchSupabaseSettings();
+    if (remoteConfig.maintenanceMode) {
+        switchScreen("maintenanceApp");
+        return;
+    }
+
     applyAppsVisibility();
     updateAppCounter();
 
@@ -1610,6 +1637,29 @@ function executeDownload() {
     window.location.href = selectedAppUrl;
 }
 </script>
+
+<!-- ==================================================
+     MAINTENANCE SCREEN (Технические работы)
+================================================== -->
+
+<div class="container" id="maintenanceApp">
+    <div class="auth-box" style="border-color: rgba(251, 191, 36, 0.78); box-shadow: 0 0 24px rgba(251, 191, 36, 0.16);">
+        <div class="auth-title">
+            🛠 Технические работы
+        </div>
+        <div class="auth-description" id="maintenanceText">
+            На сайте ведутся плановые технические работы. Скоро мы снова будем в строю!
+        </div>
+        <button
+            type="button"
+            class="btn"
+            style="background: linear-gradient(135deg, #d97706, #b45309); border-color: rgba(251, 191, 36, 0.55); box-shadow: 0 15px 35px rgba(180, 83, 9, 0.28), 0 0 20px rgba(251, 191, 36, 0.22);"
+            onclick="location.reload()"
+        >
+            Проверить снова
+        </button>
+    </div>
+</div>
 
 <!-- ==================================================
      AUTH SCREEN
@@ -2377,7 +2427,6 @@ function executeDownload() {
                 class="sheet-item"
                 data-key="mtsdengi"
                 data-category="banks"
-                onclick="setupNewAppKey(this, 'mtsdengi')" <!-- Placeholder/Example of updated logic or integration context -->
                 onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/mtsdengi.plist', 'МТС Банк', 'mtsdengi')"
             >
                 <div class="sheet-item-main">
