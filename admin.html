@@ -325,7 +325,7 @@
             flex-direction: column;
             gap: 8px;
             overflow-y: auto;
-            max-height: 350px;
+            max-height: 380px;
             padding-right: 4px;
             scrollbar-width: none;
         }
@@ -343,7 +343,6 @@
         }
         .history-modal-time { font-size: 11px; color: var(--muted); }
 
-        /* ИСПРАВЛЕННЫЙ СТИЛЬ СТАТИСТИКИ (ПЛАШЕК ВВЕРХУ) */
         .sheet-stats-container {
             display: flex;
             gap: 10px;
@@ -358,27 +357,10 @@
             align-items: center;
             gap: 10px;
         }
-        .stat-card-icon {
-            font-size: 18px;
-            line-height: 1;
-        }
-        .stat-card-info {
-            display: flex;
-            flex-direction: column;
-            gap: 1px;
-        }
-        .stat-card-val {
-            font-size: 15px;
-            font-weight: 700;
-            line-height: 1.2;
-            letter-spacing: 0.3px;
-        }
-        .stat-card-label {
-            font-size: 11.5px;
-            color: var(--muted);
-            line-height: 1.2;
-            font-weight: 500;
-        }
+        .stat-card-icon { font-size: 18px; line-height: 1; }
+        .stat-card-info { display: flex; flex-direction: column; gap: 1px; }
+        .stat-card-val { font-size: 15px; font-weight: 700; line-height: 1.2; letter-spacing: 0.3px; }
+        .stat-card-label { font-size: 11.5px; color: var(--muted); line-height: 1.2; font-weight: 500; }
 
         .stat-pass-locked { background: rgba(217, 70, 239, 0.09); border: 1px solid rgba(217, 70, 239, 0.4); }
         .stat-pass-locked .stat-card-val { color: #f5d0fe; }
@@ -547,7 +529,7 @@
         </div>
         <div class="history-modal-list" id="historyModalList">
             <div class="history-modal-item">
-                <span>Панель загружена</span>
+                <span>Загрузка истории из базы...</span>
                 <span class="history-modal-time">--:--</span>
             </div>
         </div>
@@ -687,7 +669,6 @@
     let appVisibilityData = {};
     let currentEditKey = null;
     let currentEditType = null;
-    let actionHistory = [];
 
     async function checkConnection() {
         const dot = document.getElementById('dbDot');
@@ -705,23 +686,53 @@
     checkConnection();
     setInterval(checkConnection, 10000);
 
-    function addHistory(actionText) {
-        const now = new Date();
-        const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        const dateStr = now.toLocaleDateString();
-        actionHistory.unshift({ datetime: `${dateStr} в ${timeStr}`, text: actionText });
-        if (actionHistory.length > 20) actionHistory.pop();
+    // Функция сохранения действия в таблицу history в Supabase
+    async function addHistory(actionText) {
+        try {
+            const now = new Date();
+            const datetimeStr = now.toLocaleString('ru-RU', {
+                day: '2-digit', month: '2-digit', year: 'numeric',
+                hour: '2-digit', minute: '2-digit', second: '2-digit'
+            });
 
-        const list = document.getElementById('historyModalList');
-        list.innerHTML = actionHistory.map(item => `
-            <div class="history-modal-item">
-                <span>${item.text}</span>
-                <span class="history-modal-time">${item.datetime}</span>
-            </div>
-        `).join('');
+            await supabaseClient.from('history').insert([
+                { text: actionText, datetime: datetimeStr, created_at: new Date() }
+            ]);
+        } catch (e) {
+            console.error('Ошибка записи истории:', e);
+        }
+    }
+
+    // Загрузка истории из базы данных
+    async function loadHistory() {
+        try {
+            const { data, error } = await supabaseClient
+                .from('history')
+                .select('*')
+                .order('created_at', { ascending: false })
+                .limit(50);
+
+            if (error) throw error;
+
+            const list = document.getElementById('historyModalList');
+            if (!data || data.length === 0) {
+                list.innerHTML = '<div class="history-modal-item"><span>История пока пуста</span><span class="history-modal-time">--:--</span></div>';
+                return;
+            }
+
+            list.innerHTML = data.map(item => `
+                <div class="history-modal-item">
+                    <span>${item.text}</span>
+                    <span class="history-modal-time">${item.datetime || ''}</span>
+                </div>
+            `).join('');
+        } catch (e) {
+            console.error('Ошибка загрузки истории:', e);
+        }
     }
 
     function openHistoryModal() {
+        loadHistory();
         document.getElementById('historyCatalogOverlay').classList.add('active');
     }
 
@@ -770,12 +781,19 @@
                 document.getElementById('admin-panel').style.display = 'flex';
                 
                 loadSettings();
-                addHistory('Успешный вход в панель управления');
+                addHistory('Успешный вход в панель управления с сайта');
 
+                // Подписка на изменения настроек и истории в реальном времени (от сайта и Telegram бота)
                 supabaseClient
-                    .channel('public:settings')
+                    .channel('public:db_changes')
                     .on('postgres_changes', { event: '*', schema: 'public', table: 'settings' }, () => {
                         loadSettings();
+                    })
+                    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'history' }, (payload) => {
+                        // Если открыто модальное окно истории, сразу обновляем список
+                        if (document.getElementById('historyCatalogOverlay').classList.contains('active')) {
+                            loadHistory();
+                        }
                     })
                     .subscribe();
 
@@ -928,7 +946,7 @@
 
         try {
             await loadSettings();
-            addHistory('Ручная синхронизация настроек');
+            addHistory('Ручная синхронизация настроек с сайта');
             showToast('Все изменения успешно сохранены!');
         } catch (e) {
             showToast('Ошибка при сохранении');
