@@ -20,7 +20,6 @@
             --danger-bg: rgba(239, 68, 68, 0.18);
             --spring: cubic-bezier(.22,1,.36,1);
 
-            /* Приглушённые обводки окон и карточек */
             --border-admin: rgba(245, 158, 11, 0.6);
             --glow-admin: rgba(245, 158, 11, 0.12);
 
@@ -133,7 +132,6 @@
             padding-left: 4px;
         }
 
-        /* Приглушённая обводка полей ввода */
         input {
             width: 100%;
             height: 52px;
@@ -196,7 +194,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Карточки управления */
         .control-card {
             display: flex;
             align-items: center;
@@ -211,7 +208,6 @@
             transform: translateY(-2px);
         }
 
-        /* Мягкие обводки карточек */
         .card-admin {
             border: 1.5px solid var(--border-admin);
             box-shadow: 0 3px 14px var(--glow-admin);
@@ -254,7 +250,6 @@
             background: rgba(16, 185, 129, 0.06);
         }
 
-        /* 5-я кнопка: Сохранить изменения */
         .card-save-btn {
             margin-top: 6px;
             margin-bottom: 0;
@@ -321,7 +316,6 @@
             background: rgba(217, 70, 239, 0.12);
             border: 1px solid var(--border-apps);
         }
-
         .card-apps-pass .gear-btn:hover {
             background: rgba(217, 70, 239, 0.22);
             transform: rotate(90deg) scale(1.04);
@@ -335,7 +329,6 @@
             transform: rotate(90deg) scale(1.04);
         }
 
-        /* Модальные окна */
         .sheet-overlay {
             position: fixed;
             inset: 0;
@@ -371,7 +364,6 @@
             transform: translateY(0) scale(1);
         }
 
-        /* Мягкие обводки каталогов */
         #appsCatalogOverlay .sheet-modal {
             border: 1.5px solid var(--border-apps);
             box-shadow: 0 0 25px var(--glow-apps), 0 25px 70px rgba(0,0,0,0.7);
@@ -381,7 +373,6 @@
             box-shadow: 0 0 25px var(--glow-vis), 0 25px 70px rgba(0,0,0,0.7);
         }
 
-        /* Информационные плашки со статистикой */
         .sheet-stats-container {
             display: flex;
             gap: 8px;
@@ -419,42 +410,31 @@
             line-height: 1.2;
         }
 
-        /* Стили плашек для паролей */
         .stat-pass-locked {
             background: rgba(217, 70, 239, 0.09);
             border: 1px solid rgba(217, 70, 239, 0.4);
             box-shadow: 0 0 12px rgba(217, 70, 239, 0.12);
         }
-        .stat-pass-locked .stat-card-val {
-            color: #f5d0fe;
-        }
+        .stat-pass-locked .stat-card-val { color: #f5d0fe; }
         .stat-pass-unlocked {
             background: rgba(147, 51, 234, 0.07);
             border: 1px solid rgba(192, 132, 252, 0.22);
         }
-        .stat-pass-unlocked .stat-card-val {
-            color: #cbd5e1;
-        }
+        .stat-pass-unlocked .stat-card-val { color: #cbd5e1; }
 
-        /* Стили плашек для видимости */
         .stat-vis-shown {
             background: rgba(16, 185, 129, 0.09);
             border: 1px solid rgba(16, 185, 129, 0.4);
             box-shadow: 0 0 12px rgba(16, 185, 129, 0.12);
         }
-        .stat-vis-shown .stat-card-val {
-            color: #86efac;
-        }
+        .stat-vis-shown .stat-card-val { color: #86efac; }
         .stat-vis-hidden {
             background: rgba(239, 68, 68, 0.08);
             border: 1px solid rgba(239, 68, 68, 0.35);
             box-shadow: 0 0 12px rgba(239, 68, 68, 0.1);
         }
-        .stat-vis-hidden .stat-card-val {
-            color: #fca5a5;
-        }
+        .stat-vis-hidden .stat-card-val { color: #fca5a5; }
 
-        /* Мягкие обводки окна редактирования пароля */
         .modal-theme-admin {
             border: 1.5px solid var(--border-admin) !important;
             box-shadow: 0 0 25px var(--glow-admin), 0 25px 70px rgba(0,0,0,0.7) !important;
@@ -521,7 +501,6 @@
             box-shadow: 0 4px 18px var(--glow-admin);
             transition: all 0.25s var(--spring);
         }
-
         .btn-generate-all:hover {
             border-color: rgba(245, 158, 11, 0.95);
             background: linear-gradient(135deg, rgba(245, 158, 11, 0.32), rgba(217, 119, 6, 0.2));
@@ -529,7 +508,6 @@
             transform: translateY(-1px);
             color: #fef3c7;
         }
-
         .btn-generate-all:disabled {
             opacity: 0.65;
             cursor: wait;
@@ -618,7 +596,6 @@
             word-break: break-word;
         }
 
-        /* Переключатель видимости */
         .switch {
             position: relative;
             display: inline-block;
@@ -750,7 +727,7 @@
 <div class="aurora-bg"></div>
 
 <div class="container">
-    <!-- Вход (без точек/плейсхолдера) -->
+    <!-- Вход -->
     <div id="login-screen">
         <h1>ПАНЕЛЬ АДМИНИСТРАТОРА</h1>
         <p class="subtitle">Введите пароль для доступа</p>
@@ -766,7 +743,6 @@
         <h1>Настройки</h1>
         <p class="subtitle">Управление параметрами и доступом</p>
 
-        <!-- 1. Панель администратора -->
         <div class="control-card card-admin">
             <div class="control-info">
                 <span class="control-title">Панель администратора</span>
@@ -775,7 +751,6 @@
             <button class="gear-btn" onclick="openEditModal('admin_password', 'Пароль администратора', 'admin')">⚙️</button>
         </div>
 
-        <!-- 2. Сайт -->
         <div class="control-card card-site">
             <div class="control-info">
                 <span class="control-title">Сайт</span>
@@ -784,7 +759,6 @@
             <button class="gear-btn" onclick="openEditModal('site_password', 'Пароль для сайта', 'site')">🌐</button>
         </div>
 
-        <!-- 3. Пароли приложений -->
         <div class="control-card card-apps-pass" onclick="openAppsCatalogSheet()">
             <div class="control-info">
                 <span class="control-title">Пароли приложений</span>
@@ -793,7 +767,6 @@
             <div class="gear-btn">🔐</div>
         </div>
 
-        <!-- 4. Видимость приложений -->
         <div class="control-card card-apps-vis" onclick="openVisibilityCatalogSheet()">
             <div class="control-info">
                 <span class="control-title">Отображение приложений</span>
@@ -802,7 +775,6 @@
             <div class="gear-btn">🔎</div>
         </div>
 
-        <!-- 5. Кнопка «Сохранить изменения» -->
         <div class="control-card card-save-btn" id="btnGlobalSave" onclick="saveAllChangesManual()">
             <span>✓ Сохранить изменения</span>
         </div>
@@ -817,7 +789,6 @@
             <button class="sheet-close" onclick="closeAppsCatalogSheet()">✕</button>
         </div>
 
-        <!-- Статистика паролей -->
         <div class="sheet-stats-container">
             <div class="stat-card stat-pass-locked">
                 <span class="stat-card-icon">🔒</span>
@@ -847,7 +818,7 @@
     </div>
 </div>
 
-<!-- Каталог: Видимость приложений (Показ/Скрытие) -->
+<!-- Каталог: Видимость приложений -->
 <div class="sheet-overlay" id="visibilityCatalogOverlay" onclick="closeVisibilityCatalogSheet()">
     <div class="sheet-modal" onclick="event.stopPropagation()">
         <div class="sheet-header">
@@ -855,7 +826,6 @@
             <button class="sheet-close" onclick="closeVisibilityCatalogSheet()">✕</button>
         </div>
 
-        <!-- Статистика видимости -->
         <div class="sheet-stats-container">
             <div class="stat-card stat-vis-shown">
                 <span class="stat-card-icon">👁️</span>
@@ -873,11 +843,10 @@
             </div>
         </div>
 
-                <div class="visibility-actions">
+        <div class="visibility-actions">
             <button class="visibility-action-btn" type="button" onclick="setAllAppsVisibility(true)">
                 👁️ Показать все
             </button>
-
             <button class="visibility-action-btn" type="button" onclick="setAllAppsVisibility(false)">
                 🚫 Скрыть все
             </button>
@@ -891,9 +860,9 @@
     </div>
 </div>
 
-<!-- Окно изменения пароля -->
-<div class="sheet-overlay" id="editModalOverlay" onclick="closeEditModal()">
-    <div class="sheet-modal" id="editModalContainer" style="max-width: 340px; margin: auto;" onclick="event.stopPropagation()">
+<!-- Окно изменения пароля (клик по фону больше не закрывает случайно) -->
+<div class="sheet-overlay" id="editModalOverlay">
+    <div class="sheet-modal modal-theme-app" id="editModalContainer" style="max-width: 340px; margin: auto;" onclick="event.stopPropagation()">
         <div class="sheet-header" style="margin-bottom: 12px; border: none;">
             <div class="sheet-title" id="editModalTitle">Пароль</div>
         </div>
@@ -914,7 +883,6 @@
     </div>
 </div>
 
-<!-- Всплывающее уведомление -->
 <div id="toast" class="toast">Изменения сохранены</div>
 
 <script>
@@ -922,6 +890,7 @@
     const SUPABASE_ANON_KEY = 'sb_publishable_oUDovfvWL6iioG6N5Xd_QQ_8KYezq8g';
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+    // Полный синхронизированный список приложений с index.html
     const appConfigList = [
         { key: "vk", name: "ВКонтакте" },
         { key: "max", name: "MAX" },
@@ -939,19 +908,19 @@
         { key: "psb", name: "ПСБ (Чайная Церемония)" },
         { key: "kuper", name: "Купер" },
         { key: "rutube", name: "Rutube(Starship Battle)" },
-        { key: "mobio", name: "СберМобайл(Мобио)" },
+        { key: "mobio", name: "СберМобайл (Мобио)" },
         { key: "rzd", name: "РЖД Пассажирам" },
-        { key: "sberkids", name: "СберKids(SpeakaBoo)" },
+        { key: "sberkids", name: "СберKids (SpeakaBoo)" },
         { key: "lentaa", name: "Лента (Быстро Продукты)" },
         { key: "avito-anero", name: "Авито (Anero)" },
         { key: "craftersy", name: "Т-Банк (Craftersy)" },
         { key: "scbnotes", name: "СовкомБанк (SCB Notes)" },
-        { key: "ak-bars-bank", name: "АК Барс(Всё Учтено)" },
-        { key: "blum", name: "РокетБанк(Блум)" },
+        { key: "ak-bars-bank", name: "АК Барс (Всё Учтено)" },
+        { key: "blum", name: "РокетБанк (Блум)" },
         { key: "happ_proxy", name: "Happ Proxy" },
         { key: "sber_invest", name: "СберИнвестиции" },
         { key: "vtb_invest", name: "ВТБ Инвестиции" },
-        { key: "gazpromneft", name: "Газпромнефть (Бак+Бонус)" },
+        { key: "gazpromneft", name: "Газпромнефть" },
         { key: "novikombank", name: "Новикомбанк" },
         { key: "mtsdengi", name: "МТС Банк" }
     ];
@@ -994,7 +963,7 @@
         if (elHidden) elHidden.textContent = hidden;
     }
 
-        async function checkAdminAuth() {
+    async function checkAdminAuth() {
         const inputPass = document.getElementById('admin-pass-input').value.trim();
         const errorDiv = document.getElementById('login-error');
         errorDiv.classList.remove('active');
@@ -1015,19 +984,20 @@
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('admin-panel').style.display = 'flex';
                 
-                // 1. Загружаем текущие настройки
                 loadSettings();
 
-                // 2. ВСТАВЛЯЕМ СЮДА: слушаем обновления базы в реальном времени
                 supabaseClient
                     .channel('public:settings')
-                    .on('postgres_changes', { event: '*', schema: 'public', table: 'settings' }, (payload) => {
+                    .on('postgres_changes', { event: '*', schema: 'public', table: 'settings' }, () => {
                         loadSettings();
                     })
                     .subscribe();
 
             } else {
                 showLoginError('Неверный пароль');
+                const passInput = document.getElementById('admin-pass-input');
+                passInput.value = '';
+                passInput.focus();
             }
         } catch (err) {
             showLoginError('Ошибка авторизации');
@@ -1180,7 +1150,6 @@
         showToast(isVisible ? `«${appName}» показано` : `«${appName}» скрыто`);
     }
 
-    // Сохранение всех параметров по 5-й кнопке
     async function saveAllChangesManual() {
         const btn = document.getElementById('btnGlobalSave');
         const oldText = btn.innerHTML;
@@ -1240,13 +1209,11 @@
         btn.innerHTML = '<span>⏳ Генерация и сохранение...</span>';
 
         try {
-            // Генерируем уникальный шестизначный цифровой пароль для каждого приложения.
             const usedPasswords = new Set();
             const updates = [];
 
             for (const app of appConfigList) {
                 let newPass = '';
-
                 do {
                     const array = new Uint32Array(1);
                     crypto.getRandomValues(array);
@@ -1257,7 +1224,6 @@
                 updates.push({ key: app.key, value: newPass });
             }
 
-            // Сохраняем все пароли одним пакетом.
             const { error } = await supabaseClient
                 .from('settings')
                 .upsert(updates, { onConflict: 'key' });
@@ -1267,7 +1233,6 @@
                 return;
             }
 
-            // Обновляем локальные данные без изменения остальной логики панели.
             updates.forEach(item => {
                 appPasswordsData[item.key] = item.value;
             });
