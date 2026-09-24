@@ -1,1591 +1,266 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#0b0f17">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-<title>Установка удалённых приложений</title>
-
-<style>
-:root {
-    --bg: #0b0f17;
-    --text: #f8fafc;
-    --muted: #94a3b8;
-    --spring: cubic-bezier(.22,1,.36,1);
-}
-
-* {
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
-    font-weight: 500;
-}
-
-html, body {
-    width: 100%;
-    min-height: 100%;
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    min-height: 100dvh;
-    overflow-x: hidden;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    color: var(--text);
-    background:
-        radial-gradient(circle at 18% 8%, rgba(30,58,138,.15), transparent 32%),
-        radial-gradient(circle at 88% 18%, rgba(15,118,110,.12), transparent 30%),
-        radial-gradient(circle at 75% 92%, rgba(51,65,85,.15), transparent 30%),
-        #0b0f17;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: max(20px, env(safe-area-inset-top)) 0 max(30px, env(safe-area-inset-bottom));
-}
-
-.aurora-bg {
-    position: fixed;
-    inset: -15%;
-    z-index: -10;
-    background:
-        radial-gradient(ellipse at 18% 18%, rgba(30,58,138,.18), transparent 35%),
-        radial-gradient(ellipse at 85% 20%, rgba(15,118,110,.14), transparent 35%),
-        radial-gradient(ellipse at 70% 85%, rgba(51,65,85,.12), transparent 34%),
-        linear-gradient(135deg, #0b0f17 0%, #111827 48%, #0f172a 100%);
-    background-size: 160% 160%;
-    background-position: 40% 50%;
-    pointer-events: none;
-}
-
-.bg-glow {
-    position: fixed;
-    width: 300px;
-    height: 300px;
-    border-radius: 50%;
-    filter: blur(120px);
-    opacity: .2;
-    z-index: -5;
-    pointer-events: none;
-}
-
-.glow-1 { top: -120px; left: -110px; background: #1e3a8a; }
-.glow-2 { right: -110px; bottom: -120px; background: #0f766e; }
-
-.container {
-    width: 100%;
-    max-width: 430px;
-    padding: 0 18px max(10px, env(safe-area-inset-bottom));
-    z-index: 2;
-    display: none;
-    flex-direction: column;
-    justify-content: center;
-    margin: auto 0;
-    animation: screenIn .45s var(--spring);
-}
-
-.container.active-screen {
-    display: flex;
-}
-
-@keyframes screenIn {
-    from { opacity: 0; transform: translateY(14px) scale(.975); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-.auth-box {
-    position: relative;
-    overflow: hidden;
-    background: linear-gradient(165deg, rgba(17,24,39,.78), rgba(11,15,23,.88));
-    backdrop-filter: blur(40px) saturate(170%);
-    -webkit-backdrop-filter: blur(40px) saturate(170%);
-    border: 1.8px solid rgba(110, 160, 135, 0.45);
-    border-radius: 30px;
-    padding: 30px 21px 22px;
-    text-align: center;
-    box-shadow: 0 0 24px rgba(90, 140, 115, 0.08), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.08);
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-#appAuthApp .auth-box {
-    gap: 12px;
-    padding-top: 26px;
-    padding-bottom: 20px;
-    border: 1.8px solid rgba(115, 145, 185, 0.48);
-    box-shadow: 0 0 24px rgba(95, 125, 165, 0.08), 0 25px 70px rgba(0,0,0,.65), inset 0 1px 1px rgba(255,255,255,.08);
-}
-
-.auth-title {
-    font-size: 23px;
-    line-height: 1.15;
-    letter-spacing: -.5px;
-    font-weight: 650;
-    background: linear-gradient(135deg, #ffffff 10%, #e2e8f0 55%, #94a3b8 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.auth-description {
-    font-size: 13px;
-    color: #cbd5e1;
-    line-height: 1.5;
-}
-
-.app-badge-box {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    padding: 10px 14px;
-    margin-top: 8px;
-    border-radius: 14px;
-    background: linear-gradient(135deg, rgba(51, 65, 85, 0.35), rgba(15, 118, 110, 0.2));
-    border: 1.8px solid rgba(115, 145, 135, 0.45);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-}
-
-.app-badge-box span {
-    font-size: 15px;
-    font-weight: 700;
-    background: linear-gradient(135deg, #ffffff 15%, #ccfbf1 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    word-break: break-word;
-}
-
-.auth-input {
-    width: 100%;
-    height: 52px;
-    border-radius: 17px;
-    border: 1.8px solid rgba(120, 165, 135, 0.45);
-    outline: none;
-    background: rgba(30,41,59,.3);
-    color: #fff;
-    padding: 0 15px;
-    font-size: 15px;
-    text-align: center;
-    backdrop-filter: blur(22px);
-    -webkit-backdrop-filter: blur(22px);
-    box-shadow: 0 0 14px rgba(100, 145, 115, 0.05), inset 0 1px 0 rgba(255,255,255,.045), inset 0 2px 10px rgba(0,0,0,.16);
-    transition: border .2s ease, box-shadow .25s ease, background .25s ease;
-}
-
-.auth-input::placeholder { color: #687386; }
-
-.auth-input:focus {
-    border-color: rgba(145, 190, 160, 0.75);
-    background: rgba(30,41,59,.5);
-    box-shadow: 0 0 0 3px rgba(120, 165, 135, 0.12), 0 0 20px rgba(120, 165, 135, 0.15), inset 0 1px 0 rgba(255,255,255,.08);
-}
-
-.header-section { margin-bottom: 20px; }
-
-h1 {
-    margin: 0 0 9px;
-    text-align: center;
-    font-size: 25px;
-    line-height: 1.08;
-    letter-spacing: -.75px;
-    font-weight: 700;
-    background: linear-gradient(135deg, #ffffff 10%, #e2e8f0 55%, #94a3b8 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.card {
-    position: relative;
-    overflow: hidden;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 13px;
-    border-radius: 28px;
-    background: linear-gradient(165deg, rgba(17,24,39,.78), rgba(11,15,23,.88));
-    backdrop-filter: blur(38px) saturate(165%);
-    -webkit-backdrop-filter: blur(38px) saturate(165%);
-    border: 1.8px solid rgba(110, 160, 135, 0.48);
-    box-shadow: 0 0 28px rgba(90, 140, 115, 0.08), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.08);
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.card.app-selected {
-    border-color: rgba(15, 118, 110, 0.65);
-    box-shadow: 0 0 35px rgba(15, 118, 110, 0.15), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.12);
-}
-
-label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
-
-.custom-select-btn {
-    position: relative;
-    width: 100%;
-    min-height: 52px;
-    padding: 14px 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    text-align: left;
-    border-radius: 18px;
-    border: 1.8px solid rgba(185, 160, 110, 0.48);
-    background: rgba(30,41,59,.35);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    color: #fff;
-    outline: none;
-    box-shadow: 0 0 15px rgba(165, 140, 90, 0.06), inset 0 1px 0 rgba(255,255,255,.065);
-    cursor: pointer;
-    transition: transform .2s var(--spring), border .2s ease, background .2s ease, box-shadow .2s ease;
-}
-
-.custom-select-btn.has-selection {
-    border-color: rgba(15, 118, 110, 0.7);
-    background: rgba(15, 118, 110, 0.15);
-    box-shadow: 0 0 20px rgba(15, 118, 110, 0.12), inset 0 1px 0 rgba(255,255,255,.08);
-}
-
-.custom-select-btn span { font-size: 14px; }
-
-.custom-select-btn::after {
-    content: "›";
-    width: 25px;
-    height: 25px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    background: rgba(51,65,85,.3);
-    color: #94a3b8;
-    font-size: 20px;
-    line-height: 1;
-    flex-shrink: 0;
-    transition: transform .25s var(--spring), background .2s ease;
-}
-
-.custom-select-btn:hover {
-    background: rgba(51,65,85,.4);
-    border-color: rgba(195, 170, 120, 0.7);
-    box-shadow: 0 0 22px rgba(165, 140, 90, 0.1);
-}
-
-.custom-select-btn:active { transform: scale(.975); }
-
-.btn {
-    position: relative;
-    width: 100%;
-    min-height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 12px;
-    overflow: hidden;
-    border-radius: 16px;
-    border: 1.8px solid rgba(148, 163, 184, 0.4);
-    background: #334155;
-    color: #fff;
-    font-size: 14px;
-    font-weight: 650;
-    text-decoration: none;
-    cursor: pointer;
-    box-shadow: 0 10px 25px rgba(51, 65, 85, 0.25), inset 0 1px 0 rgba(255,255,255,0.2);
-    transition: transform .2s var(--spring), background-color .2s ease, filter .2s ease, box-shadow .2s ease;
-}
-
-.btn:hover {
-    background: #475569;
-    box-shadow: 0 14px 32px rgba(51, 65, 85, 0.35), inset 0 1px 0 rgba(255,255,255,0.25);
-}
-
-.btn:active { transform: scale(.975); filter: brightness(.95); }
-
-.btn-secondary {
-    margin-top: 1px;
-    background: rgba(30,41,59,.4);
-    border: 1.8px solid rgba(148, 163, 184, 0.25);
-    color: #cbd5e1;
-    box-shadow: none;
-}
-.btn-secondary:hover {
-    background: rgba(30,41,59,.7);
-}
-
-.btn-telegram {
-    gap: 8px;
-    background: rgba(14, 116, 144, 0.12);
-    border: 1.8px solid rgba(56, 155, 185, 0.45);
-    color: #7dd3fc;
-    box-shadow: none;
-}
-
-.telegram-icon { width: 17px; height: 17px; object-fit: contain; }
-
-.support-notice {
-    width: 100%;
-    text-align: center;
-    font-size: 13px;
-    color: #cbd5e1;
-    line-height: 1.45;
-    padding: 9px 12px;
-    border: 1.8px solid rgba(110, 160, 135, 0.35);
-    border-radius: 14px;
-    background: rgba(110, 160, 135, 0.03);
-}
-
-.support-notice a { color: #6ee7b7; text-decoration: none; font-weight: 600; }
-.support-notice a:hover { color: #a7f3d0; text-decoration: underline; }
-
-.progress-container {
-    width: 100%;
-    margin-top: 4px;
-    display: none;
-    flex-direction: column;
-    animation: screenIn .35s var(--spring);
-}
-
-.progress-container.active { display: flex; }
-
-.progress-box {
-    position: relative;
-    overflow: hidden;
-    width: 100%;
-    padding: 16px 20px;
-    border-radius: 20px;
-    background: linear-gradient(145deg, rgba(50, 130, 100, 0.1), rgba(17, 24, 39, 0.90));
-    backdrop-filter: blur(35px) saturate(180%);
-    -webkit-backdrop-filter: blur(35px) saturate(180%);
-    border: 1.8px solid rgba(110, 175, 135, 0.45);
-    box-shadow: 0 0 22px rgba(90, 145, 115, 0.08), 0 20px 55px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.09);
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.progress-box.completed {
-    border-color: rgba(100, 185, 140, 0.65);
-    box-shadow: 0 25px 60px rgba(0,0,0,0.5), 0 0 35px rgba(90, 165, 125, 0.2);
-}
-
-.progress-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 13.5px;
-    font-weight: 650;
-    color: #f8fafc;
-}
-
-#progressStatus {
-    background: linear-gradient(135deg, #ffffff 20%, #94a3b8 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-#progressText {
-    background: linear-gradient(135deg, #7dd3fc 20%, #2dd4bf 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    font-size: 14px;
-    font-weight: 700;
-}
-
-.progress-track {
-    width: 100%;
-    height: 10px;
-    background: rgba(0, 0, 0, 0.55);
-    border-radius: 999px;
-    overflow: hidden;
-    position: relative;
-    border: 1px solid rgba(255,255,255,0.06);
-}
-
-.progress-fill {
-    position: relative;
-    width: 0%;
-    height: 100%;
-    background: #0f766e;
-    border-radius: 999px;
-    transition: width 0.15s ease-out;
-}
-
-.auth-error {
-    display: none;
-    margin-top: -5px;
-    color: #fca5a5;
-    font-size: 12px;
-    font-weight: 600;
-}
-
-.sheet-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 999;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 15px;
-    background: rgba(5,7,12,.85);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity .3s ease, visibility .3s ease;
-}
-
-.sheet-overlay.active { opacity: 1; visibility: visible; }
-
-.sheet-modal {
-    position: relative;
-    width: 100%;
-    max-width: 430px;
-    height: min(78vh, 580px);
-    display: flex;
-    flex-direction: column;
-    padding: 18px 16px 16px;
-    overflow: hidden;
-    border-radius: 26px;
-    background: linear-gradient(165deg, rgba(17,24,39,.96), rgba(11,15,23,.98));
-    backdrop-filter: blur(40px) saturate(170%);
-    -webkit-backdrop-filter: blur(40px) saturate(170%);
-    border: 1.8px solid rgba(195, 115, 115, 0.5);
-    box-shadow: 0 0 28px rgba(175, 95, 95, 0.08), 0 25px 70px rgba(0,0,0,.70);
-    transform: translateY(20px) scale(.97);
-    opacity: 0;
-    transition: transform .4s var(--spring), opacity .3s ease;
-}
-
-.sheet-overlay.active .sheet-modal { transform: translateY(0) scale(1); opacity: 1; }
-
-.sheet-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-bottom: 10px;
-    margin-bottom: 10px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    flex-shrink: 0;
-}
-
-.sheet-title {
-    font-size: 17px;
-    font-weight: 650;
-    background: linear-gradient(135deg, #ffffff 10%, #e2e8f0 55%, #94a3b8 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.sheet-close {
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    border: 1.8px solid rgba(148, 163, 184, 0.25);
-    background: rgba(51,65,85,.3);
-    color: #cbd5e1;
-    font-size: 14px;
-    cursor: pointer;
-}
-
-.app-search-wrap { position: relative; flex-shrink: 0; margin-bottom: 10px; }
-
-.app-search {
-    width: 100%;
-    height: 44px;
-    padding: 0 42px 0 38px;
-    border-radius: 14px;
-    border: 1.8px solid rgba(90, 155, 195, 0.55);
-    outline: none;
-    background: rgba(30,41,59,.35);
-    color: #fff;
-    font-size: 13.5px;
-    backdrop-filter: blur(22px);
-    -webkit-backdrop-filter: blur(22px);
-}
-
-.search-icon {
-    position: absolute;
-    left: 13px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 19px;
-    height: 19px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 3;
-    color: #ffffff;
-    background: rgba(51, 65, 85, 0.4);
-    border: 1px solid rgba(255,255,255,.28);
-    border-radius: 50%;
-}
-
-.search-icon svg { width: 18px; height: 18px; display: block; stroke: #ffffff; stroke-width: 2.5; }
-
-.search-clear {
-    position: absolute;
-    right: 42px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 26px;
-    height: 26px;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    border: 0;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.08);
-    color: #cbd5e1;
-    cursor: pointer;
-}
-
-.search-clear.visible { display: flex; }
-
-.search-filter-btn {
-    position: absolute;
-    right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1.8px solid rgba(195, 115, 115, 0.55);
-    border-radius: 10px;
-    background: rgba(195, 115, 115, 0.08);
-    color: #fca5a5;
-    cursor: pointer;
-}
-
-.filter-dropdown {
-    position: absolute;
-    top: calc(100% + 6px);
-    right: 0;
-    width: 190px;
-    background: rgba(17,24,39,.95);
-    border: 1.8px solid rgba(185, 160, 110, 0.55);
-    border-radius: 14px;
-    padding: 6px;
-    display: none;
-    z-index: 10;
-}
-
-.filter-dropdown.active { display: flex; flex-direction: column; gap: 4px; }
-
-.filter-option {
-    padding: 8px 12px;
-    border-radius: 8px;
-    font-size: 13px;
-    cursor: pointer;
-    text-align: left;
-    background: transparent;
-    border: none;
-    width: 100%;
-    color: #9ca3af;
-}
-
-.filter-option.active {
-    background: linear-gradient(135deg, rgba(51,65,85,.6), rgba(15,118,110,.4));
-    border-color: rgba(45,212,191,.72);
-    color: #fff;
-    font-weight: 650;
-}
-
-.info-blocks-container { display: flex; gap: 8px; margin: 0 0 10px 0; flex-shrink: 0; }
-
-.info-card {
-    flex: 1;
-    min-height: 48px;
-    padding: 8px 10px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(30,41,59,.3);
-}
-
-.app-status-card {
-    border: 1.8px solid rgba(75, 165, 150, 0.5);
-    background: rgba(45, 145, 130, 0.03);
-}
-
-.pulse-dot {
-    width: 8px;
-    height: 8px;
-    background-color: #34d399;
-    border-radius: 50%;
-    box-shadow: 0 0 6px #34d399;
-    animation: pulse-animation 2s infinite;
-}
-
-@keyframes pulse-animation {
-    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.5); }
-    70% { transform: scale(1); box-shadow: 0 0 0 4px rgba(52, 211, 153, 0); }
-    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
-}
-
-.info-text { display: flex; flex-direction: column; justify-content: center; min-width: 0; }
-.info-title { font-size: 12px; font-weight: 600; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.info-subtitle { font-size: 10px; color: rgba(255, 255, 255, 0.65); margin-top: 2px; }
-
-.sheet-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    overflow-y: auto;
-    padding-right: 8px;
-    scrollbar-width: thin;
-}
-
-.sheet-item {
-    min-height: 50px;
-    padding: 7px 12px;
-    border-radius: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: rgba(30,41,59,.3);
-    border: 1.8px solid rgba(75, 165, 150, 0.4);
-    cursor: pointer;
-    flex-shrink: 0;
-    transition: all 0.25s ease;
-}
-
-.sheet-item:hover, .sheet-item.selected {
-    background: rgba(51,65,85,.5);
-    border-color: rgba(95, 195, 175, 0.75);
-}
-
-.sheet-item-main { display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1; }
-
-.app-icon {
-    width: 32px;
-    height: 32px;
-    min-width: 32px;
-    min-height: 32px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    flex-shrink: 0;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-}
-
-.app-icon img { width: 100%; height: 100%; object-fit: cover; }
-.sheet-info-box { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
-.sheet-item span.app-name { color: #f1f5f9; font-size: 13.5px; font-weight: 550; }
-
-.ios-badge {
-    font-size: 11px;
-    font-weight: 600;
-    color: #cbd5e1;
-    background: rgba(51,65,85,.4);
-    border: 1px solid rgba(148, 163, 184, 0.3);
-    padding: 2px 7px;
-    border-radius: 6px;
-    flex-shrink: 0;
-}
-
-.search-empty { display: none; text-align: center; color: #94a3b8; font-size: 13px; padding: 20px 10px; }
-
-.guide-modal { 
-    height: min(88vh, 680px); 
-    background: linear-gradient(165deg, rgba(20, 26, 40, 0.98), rgba(10, 14, 22, 0.99));
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow: 0 0 40px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-}
-
-.guide-content { 
-    display: flex; 
-    flex-direction: column; 
-    gap: 10px; 
-    padding-top: 4px;
-}
-
-.guide-step {
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-    padding: 16px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 20px;
-    flex-shrink: 0;
-    transition: background 0.2s ease, border-color 0.2s ease;
-}
-
-.guide-step:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.1);
-}
-
-.guide-step-number {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 26px;
-    height: 26px;
-    min-width: 26px;
-    background: rgba(255, 255, 255, 0.08);
-    color: #ef4444;
-    font-size: 12px;
-    font-weight: 700;
-    border-radius: 50%;
-    margin-top: 2px;
-    border: 1px solid rgba(239, 68, 68, 0.3);
-}
-
-.guide-step-text { 
-    font-size: 13.5px; 
-    color: #cbd5e1; 
-    line-height: 1.55; 
-    letter-spacing: -0.1px;
-}
-
-.guide-step-text strong { 
-    color: #ef4444; 
-    font-weight: 600; 
-}
-
-.guide-step-text em { 
-    color: #ef4444; 
-    font-style: normal; 
-    font-weight: 600; 
-}
-
-.last-update {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: max(30px, env(safe-area-inset-bottom));
-    text-align: center;
-    font-size: 14px;
-    color: rgba(148, 163, 184, 0.82);
-    letter-spacing: .5px;
-    z-index: 20;
-    pointer-events: none;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Установка приложений</title>
+    <!-- Подключаем Supabase JS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-color: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --border: #334155;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            width: 100%;
+            max-width: 480px;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        h1 {
+            font-size: 24px;
+            margin: 0 0 8px 0;
+        }
+        p.subtitle {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin: 0;
+        }
+        /* Статусы и ошибки */
+        .status-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            margin-top: 40px;
+        }
+        .spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px auto;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        /* Список приложений */
+        .apps-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .app-item {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+        .app-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            overflow: hidden;
+        }
+        .app-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            object-fit: cover;
+            background-color: var(--border);
+            flex-shrink: 0;
+        }
+        .app-details {
+            overflow: hidden;
+        }
+        .app-name {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0 0 4px 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .app-version {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+        .install-btn {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.2s;
+            flex-shrink: 0;
+        }
+        .install-btn:hover {
+            background-color: var(--accent-hover);
+            color: white;
+        }
+        .hidden {
+            display: none !important;
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="aurora-bg"></div>
-<div class="bg-glow glow-1"></div>
-<div class="bg-glow glow-2"></div>
+<div class="container">
+    <header>
+        <h1>Доступные приложения</h1>
+        <p class="subtitle">Установка выбранных приложений для вашего устройства</p>
+    </header>
+
+    <!-- Состояние загрузки -->
+    <div id="loading-state" class="status-card">
+        <div class="spinner"></div>
+        <p style="margin: 0; color: var(--text-secondary);">Проверяем доступ...</p>
+    </div>
+
+    <!-- Состояние ошибки или недействительной ссылки -->
+    <div id="error-state" class="status-card hidden">
+        <h3 style="margin-top: 0; color: #ef4444;">Ссылка недействительна</h3>
+        <p id="error-text" style="color: var(--text-secondary); font-size: 14px; margin-bottom: 0;">Возможно, срок действия ссылки истек или она указана неверно.</p>
+    </div>
+
+    <!-- Контейнер со списком приложений -->
+    <div id="apps-container" class="apps-list hidden">
+        <!-- Сюда динамически добавятся приложения -->
+    </div>
+</div>
 
 <script>
-const SUPABASE_URL = "https://gbuvpqcummyutycemaaj.supabase.co";
-const SUPABASE_KEY = "sb_publishable_oUDovfvWL6iioG6N5Xd_QQ_8KYezq8g";
+    // НАСТРОЙКИ SUPABASE (замените на свои ключи)
+    const SUPABASE_URL = 'ВАШ_SUPABASE_URL';
+    const SUPABASE_ANON_KEY = 'ВАШ_SUPABASE_ANON_KEY';
 
-async function fetchSupabaseSettings() {
-    try {
-        let response = await fetch(`${SUPABASE_URL}/rest/v1/settings?select=*`, {
-            headers: {
-                "apikey": SUPABASE_KEY,
-                "Authorization": `Bearer ${SUPABASE_KEY}`
-            }
-        });
-        if (!response.ok) throw new Error("Ошибка загрузки");
-        let data = await response.json();
-        
-        let config = {
-            sitePassword: "",
-            maintenanceMode: false,
-            appPasswords: {},
-            appVisibility: {}
-        };
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        data.forEach(item => {
-            if (item.key === 'site_password') {
-                config.sitePassword = item.value;
-            } else if (item.key === 'maintenance_mode') {
-                config.maintenanceMode = item.value === 'true';
-            } else if (item.key && item.key.startsWith('vis_')) {
-                config.appVisibility[item.key.replace('vis_', '')] = item.value === 'true';
-            } else if (item.key && item.key !== 'admin_password') {
-                config.appPasswords[item.key] = item.value;
-            }
-        });
-        return config;
-    } catch (e) {
-        console.error("Ошибка загрузки настроек, используются дефолтные:", e);
-        return { sitePassword: "", maintenanceMode: false, appPasswords: {}, appVisibility: {} };
-    }
-}
+    // Главная функция инициализации
+    async function init() {
+        const urlParams = new URLSearchParams(window.location.search);
+        // Поддерживаем разные варианты параметров в ссылке (?token=... или ?invite=...)
+        const token = urlParams.get('token') || urlParams.get('invite');
 
-let remoteConfig = { sitePassword: "", maintenanceMode: false, appPasswords: {}, appVisibility: {} };
-let selectedAppUrl = "";
-let selectedAppKey = "";
-let isInstalling = false;
-let currentCategory = "all";
-
-function getAppPasswords() { return remoteConfig.appPasswords; }
-function getSitePassword() { return remoteConfig.sitePassword; }
-
-function applyAppsVisibility() {
-    document.querySelectorAll('.sheet-list .sheet-item').forEach(item => {
-        const key = item.getAttribute('data-key');
-        const isVisible = remoteConfig.appVisibility[key] !== false;
-        item.setAttribute('data-visible', isVisible ? 'true' : 'false');
-        item.style.display = isVisible ? 'flex' : 'none';
-    });
-}
-
-function switchScreen(screenId) {
-    document.querySelectorAll(".container").forEach(el => el.classList.remove("active-screen"));
-    const target = document.getElementById(screenId);
-    if (target) target.classList.add("active-screen");
-}
-
-function updateAppCounter() {
-    const visibleApps = document.querySelectorAll('.sheet-list .sheet-item:not([data-visible="false"])').length;
-    const counterElement = document.getElementById('app-counter-text');
-    
-    if (counterElement) {
-        let word = 'приложений';
-        const lastDigit = visibleApps % 10;
-        const lastTwoDigits = visibleApps % 100;
-
-        if (lastTwoDigits < 11 || lastTwoDigits > 14) {
-            if (lastDigit === 1) word = 'приложение';
-            else if (lastDigit >= 2 && lastDigit <= 4) word = 'приложения';
-        }
-        counterElement.textContent = `Все ${visibleApps} ${word}`;
-    }
-}
-
-function checkUrlAppParam() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const appKey = urlParams.get('app');
-    if (!appKey) return;
-
-    const targetItem = document.querySelector(`.sheet-item[data-key="${appKey}"]`);
-    if (targetItem) {
-        const nameEl = targetItem.querySelector('.app-name');
-        const appName = nameEl ? nameEl.textContent : "Приложение";
-        const onclickAttr = targetItem.getAttribute('onclick');
-        
-        if (onclickAttr) {
-            const match = onclickAttr.match(/selectApp\(this,\s*'([^']+)',\s*'([^']+)',\s*'([^']+)'\)/);
-            if (match) {
-                selectedAppUrl = match[1];
-                selectedAppKey = match[3];
-
-                document.getElementById("selectedAppText").textContent = appName;
-                document.getElementById("selectedAppText").style.color = "#ffffff";
-                document.querySelector(".custom-select-btn").classList.add("has-selection");
-                document.querySelector(".card").classList.add("app-selected");
-
-                const appAuthNameEl = document.getElementById("appAuthAppName");
-                if (appAuthNameEl) appAuthNameEl.textContent = appName;
-
-                targetItem.classList.add("selected");
-            }
-        }
-    }
-}
-
-document.addEventListener("DOMContentLoaded", async function() {
-    remoteConfig = await fetchSupabaseSettings();
-    
-    if (remoteConfig.maintenanceMode) {
-        switchScreen("maintenanceApp");
-        return;
-    }
-
-    applyAppsVisibility();
-    updateAppCounter();
-    
-    // Проверяем параметр приложения из ссылки сразу после загрузки конфига
-    checkUrlAppParam();
-
-    if (getSitePassword() === "" || sessionStorage.getItem("site_access") === "true") {
-        switchScreen("mainApp");
-    } else {
-        switchScreen("authApp");
-    }
-
-    const passInput = document.getElementById("passInput");
-    if (passInput) passInput.addEventListener("keydown", e => { if (e.key === "Enter") submitPassword(); });
-
-    const appPassInput = document.getElementById("appPassInput");
-    if (appPassInput) appPassInput.addEventListener("keydown", e => { if (e.key === "Enter") submitAppPassword(); });
-
-    const searchInput = document.getElementById("appSearchInput");
-    if (searchInput) {
-        searchInput.addEventListener("input", filterApps);
-        searchInput.addEventListener("keydown", e => {
-            if (e.key === "Escape") { clearAppSearch(); searchInput.blur(); }
-        });
-    }
-
-    document.addEventListener("click", e => {
-        const dropdown = document.getElementById("filterDropdown");
-        const filterBtn = document.getElementById("searchFilterBtn");
-        if (dropdown && dropdown.classList.contains("active") && !dropdown.contains(e.target) && !filterBtn.contains(e.target)) {
-            dropdown.classList.remove("active");
-        }
-    });
-});
-
-async function submitPassword() {
-    const input = document.getElementById("passInput");
-    const errorMsg = document.getElementById("authError");
-
-    remoteConfig = await fetchSupabaseSettings();
-    if (remoteConfig.maintenanceMode) { switchScreen("maintenanceApp"); return; }
-
-    applyAppsVisibility();
-    updateAppCounter();
-
-    if (input.value.trim() === getSitePassword()) {
-        sessionStorage.setItem("site_access", "true");
-        switchScreen("mainApp");
-        return;
-    }
-
-    errorMsg.style.display = "block";
-    input.value = "";
-    input.focus();
-}
-
-async function openSheet() {
-    remoteConfig = await fetchSupabaseSettings();
-    if (remoteConfig.maintenanceMode) { switchScreen("maintenanceApp"); return; }
-
-    applyAppsVisibility();
-    updateAppCounter();
-
-    const searchInput = document.getElementById("appSearchInput");
-    if (searchInput) {
-        searchInput.value = "";
-        document.getElementById("searchClear").classList.remove("visible");
-    }
-    filterApps();
-    document.getElementById("sheetOverlay").classList.add("active");
-}
-
-function closeSheet() {
-    const searchInput = document.getElementById("appSearchInput");
-    if (searchInput) { searchInput.value = ""; searchInput.blur(); }
-    document.getElementById("filterDropdown").classList.remove("active");
-    document.getElementById("sheetOverlay").classList.remove("active");
-    filterApps();
-}
-
-function openGuideSheet() {
-    document.getElementById("guideOverlay").classList.add("active");
-}
-
-function closeGuideSheet() {
-    document.getElementById("guideOverlay").classList.remove("active");
-}
-
-function toggleFilterMenu() {
-    document.getElementById("filterDropdown").classList.toggle("active");
-}
-
-function setCategory(cat, element) {
-    currentCategory = cat;
-    document.querySelectorAll(".filter-option").forEach(opt => opt.classList.remove("active"));
-    if (element) element.classList.add("active");
-
-    const filterBtn = document.getElementById("searchFilterBtn");
-    if (cat !== "all") filterBtn.classList.add("active");
-    else filterBtn.classList.remove("active");
-
-    document.getElementById("filterDropdown").classList.remove("active");
-    
-    const sheetList = document.querySelector(".sheet-list");
-    if (sheetList) sheetList.scrollTop = 0;
-
-    filterApps();
-}
-
-function filterApps() {
-    const input = document.getElementById("appSearchInput");
-    const query = input ? input.value.trim().toLowerCase() : "";
-    const clearBtn = document.getElementById("searchClear");
-    const emptyMessage = document.getElementById("searchEmpty");
-
-    if (clearBtn) {
-        if (query) clearBtn.classList.add("visible");
-        else clearBtn.classList.remove("visible");
-    }
-
-    let visibleCount = 0;
-
-    document.querySelectorAll(".sheet-item").forEach(item => {
-        if (item.getAttribute("data-visible") === "false") {
-            item.style.display = "none";
+        if (!token) {
+            showError("В ссылке отсутствует токен доступа. Запросите новую ссылку у бота.");
             return;
         }
 
-        const appNameElement = item.querySelector(".app-name");
-        if (!appNameElement) return;
+        try {
+            // 1. Ищем токен в таблице сапбазы (предполагаем, что таблица называется invite_links)
+            // Поля в таблице: token (текст), apps (массив строк или JSON с ID/названиями приложений)
+            const { data, error } = await supabaseClient
+                .from('invite_links')
+                .select('*')
+                .eq('token', token)
+                .single();
 
-        const name = appNameElement.textContent.toLowerCase();
-        const itemCategory = item.getAttribute("data-category") || "";
-        
-        const matchesQuery = name.includes(query);
-        const matchesCategory = (currentCategory === "all" || itemCategory === currentCategory);
-
-        if (!matchesQuery || !matchesCategory) {
-            item.style.display = "none";
-            return;
-        }
-
-        item.style.display = "flex";
-        visibleCount++;
-    });
-
-    if (emptyMessage) {
-        emptyMessage.style.display = visibleCount === 0 ? "block" : "none";
-    }
-}
-
-function clearAppSearch() {
-    const input = document.getElementById("appSearchInput");
-    if (!input) return;
-    input.value = "";
-    filterApps();
-    input.focus();
-}
-
-function selectApp(element, url, name, appKey) {
-    selectedAppUrl = url;
-    selectedAppKey = appKey;
-
-    document.getElementById("selectedAppText").textContent = name;
-    document.getElementById("selectedAppText").style.color = "#ffffff";
-
-    document.querySelector(".custom-select-btn").classList.add("has-selection");
-    document.querySelector(".card").classList.add("app-selected");
-
-    const appAuthNameEl = document.getElementById("appAuthAppName");
-    if (appAuthNameEl) appAuthNameEl.textContent = name;
-
-    document.querySelectorAll(".sheet-item").forEach(item => item.classList.remove("selected"));
-    element.classList.add("selected");
-
-    closeSheet();
-}
-
-async function startInstallation() {
-    if (!selectedAppUrl || isInstalling) return;
-
-    remoteConfig = await fetchSupabaseSettings();
-    if (remoteConfig.maintenanceMode) { switchScreen("maintenanceApp"); return; }
-
-    applyAppsVisibility();
-    updateAppCounter();
-
-    if (getAppPasswords()[selectedAppKey]) {
-        document.getElementById("appPassError").style.display = "none";
-        document.getElementById("appPassInput").value = "";
-        switchScreen("appAuthApp");
-        document.getElementById("appPassInput").focus();
-        return;
-    }
-
-    executeDownload();
-}
-
-function submitAppPassword() {
-    const input = document.getElementById("appPassInput");
-    const errorMsg = document.getElementById("appPassError");
-
-    if (input.value.trim() === getAppPasswords()[selectedAppKey]) {
-        switchScreen("mainApp");
-        executeDownload();
-        return;
-    }
-
-    errorMsg.style.display = "block";
-    input.value = "";
-    input.focus();
-}
-
-function cancelAppPassword() {
-    switchScreen("mainApp");
-}
-
-function executeDownload() {
-    isInstalling = true;
-
-    const mainCard = document.querySelector(".card");
-    if(mainCard) mainCard.style.boxShadow = "0 0 45px rgba(15, 118, 110, 0.25), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.15)";
-
-    setTimeout(() => {
-        const progressContainer = document.getElementById("progressContainer");
-        const progressBox = progressContainer.querySelector(".progress-box");
-        const progressFill = document.getElementById("progressFill");
-        const progressText = document.getElementById("progressText");
-        const progressStatus = document.getElementById("progressStatus");
-
-        progressContainer.classList.add("active");
-        progressBox.classList.remove("completed");
-        progressFill.style.width = "0%";
-        progressText.textContent = "0%";
-        progressStatus.textContent = "Подготовка...";
-
-        const duration = 27000;
-        const intervalTime = 100;
-        let elapsed = 0;
-
-        const timer = setInterval(() => {
-            elapsed += intervalTime;
-            let percent = Math.min(Math.floor((elapsed / duration) * 100), 100);
-
-            progressFill.style.width = percent + "%";
-            progressText.textContent = percent + "%";
-
-            if (percent <= 17) progressStatus.textContent = "Подготовка...";
-            else if (percent <= 65) progressStatus.textContent = "Загрузка...";
-            else if (percent <= 85) progressStatus.textContent = "Распаковка...";
-            else if (percent < 100) progressStatus.textContent = "Установка...";
-
-            if (elapsed >= duration) {
-                clearInterval(timer);
-                isInstalling = false;
-                if(mainCard) mainCard.style.boxShadow = "";
-
-                setTimeout(() => {
-                    progressStatus.textContent = "Установка завершена";
-                    progressBox.classList.add("completed");
-                    
-                    setTimeout(() => {
-                        progressContainer.classList.remove("active");
-                        progressBox.classList.remove("completed");
-                    }, 2200);
-                }, 800);
+            if (error || !data) {
+                showError("Такой ссылки не существует или она была удалена.");
+                return;
             }
-        }, intervalTime);
-    }, 1500);
 
-    window.location.href = selectedAppUrl;
-}
+            // Проверяем, передан ли список приложений (например, массив данных data.apps)
+            let allowedAppIds = data.apps; 
+            if (typeof allowedAppIds === 'string') {
+                try { allowedAppIds = JSON.parse(allowedAppIds); } catch(e){}
+            }
+
+            if (!Array.isArray(allowedAppIds) || allowedAppIds.length === 0) {
+                showError("К этой ссылке не привязано ни одного приложения.");
+                return;
+            }
+
+            // 2. Загружаем детальную информацию по разрешенным приложениям 
+            // (Предполагаем, что у вас есть таблица со списком приложений "apps_catalog", где есть id, name, version, icon_url, plist_url)
+            const { data: appsData, error: appsError } = await supabaseClient
+                .from('apps_catalog')
+                .select('*')
+                .in('id', allowedAppIds); // выбираем только те, ID которых разрешены в инвайте
+
+            if (appsError || !appsData || appsData.length === 0) {
+                showError("Не удалось загрузить каталог приложений для вашей ссылки.");
+                return;
+            }
+
+            renderApps(appsData);
+
+        } catch (err) {
+            console.error(err);
+            showError("Произошла ошибка при загрузке данных.");
+        }
+    }
+
+    // Рендер списка приложений
+    function renderApps(apps) {
+        const container = document.getElementById('apps-container');
+        container.innerHTML = '';
+
+        apps.forEach(app => {
+            const item = document.createElement('div');
+            item.className = 'app-item';
+
+            // Формируем ссылку на установку через itms-services
+            // Обычно она выглядит так: itms-services://?action=download-manifest&url=ССЫЛКА_НА_PLIST
+            const installLink = `itms-services://?action=download-manifest&url=${encodeURIComponent(app.plist_url)}`;
+
+            item.innerHTML = `
+                <div class="app-info">
+                    <img src="${app.icon_url || 'https://via.placeholder.com/56'}" alt="${app.name}" class="app-icon">
+                    <div class="app-details">
+                        <h3 class="app-name">${app.name}</h3>
+                        <p class="app-version">Версия: ${app.version || '1.0'}</p>
+                    </div>
+                </div>
+                <a href="${installLink}" class="install-btn">Установить</a>
+            `;
+            container.appendChild(item);
+        });
+
+        document.getElementById('loading-state').classList.add('hidden');
+        container.classList.remove('hidden');
+    }
+
+    function showError(message) {
+        document.getElementById('loading-state').classList.add('hidden');
+        document.getElementById('error-text').textContent = message;
+        document.getElementById('error-state').classList.remove('hidden');
+    }
+
+    // Запуск при загрузке страницы
+    window.addEventListener('DOMContentLoaded', init);
 </script>
-
-<!-- MAINTENANCE SCREEN -->
-<div class="container" id="maintenanceApp">
-    <div class="auth-box" style="border-color: rgba(185, 160, 110, 0.55);">
-        <div class="auth-title">🛠 Технические работы</div>
-        <div class="auth-description">На сайте ведутся плановые технические работы. Скоро мы снова будем в строю!</div>
-        <button type="button" class="btn" style="background: #b45309;" onclick="location.reload()">Проверить снова</button>
-    </div>
-</div>
-
-<!-- AUTH SCREEN -->
-<div class="container" id="authApp">
-    <div class="auth-box">
-        <div class="auth-title">👋 Добро пожаловать!</div>
-        <div class="auth-description">Введите пароль для доступа<br>к каталогу приложений</div>
-        <input type="tel" inputmode="numeric" pattern="[0-9]*" id="passInput" class="auth-input" placeholder="Введите пароль" autocomplete="off">
-        <div id="authError" class="auth-error">Неверный пароль</div>
-        <button type="button" class="btn" onclick="submitPassword()">Войти</button>
-        <a href="https://t.me/ios_appstore01" target="_blank" rel="noopener noreferrer" class="btn btn-telegram">
-            <img src="Telegram_logo.svg" alt="Telegram" class="telegram-icon">Мы в Telegram!
-        </a>
-    </div>
-</div>
-
-<!-- APP PASSWORD SCREEN -->
-<div class="container" id="appAuthApp">
-    <div class="auth-box">
-        <div class="auth-title">🔒 Защита установки</div>
-        <div class="auth-description">Вы выбрали приложение:
-            <div class="app-badge-box"><span id="appAuthAppName">Не выбрано</span></div>
-        </div>
-        <input type="tel" inputmode="numeric" pattern="[0-9]*" id="appPassInput" class="auth-input" placeholder="Введите пароль" autocomplete="off">
-        <div id="appPassError" class="auth-error">Неверный пароль</div>
-        <button type="button" class="btn" onclick="submitAppPassword()">Подтвердить</button>
-        <button type="button" class="btn btn-secondary" onclick="cancelAppPassword()">Назад</button>
-    </div>
-</div>
-
-<!-- MAIN SCREEN -->
-<div class="container" id="mainApp" style="padding-bottom:30px;">
-    <div class="header-section">
-        <h1>Установка удалённых<br>приложений</h1>
-    </div>
-    <div class="card">
-        <label>Выберите приложение</label>
-        <button type="button" class="custom-select-btn" onclick="openSheet()">
-            <span id="selectedAppText" style="color:#94a3b8;">Нажмите для выбора приложения</span>
-        </button>
-        <button type="button" class="btn" onclick="startInstallation()">Установить</button>
-        
-        <button type="button" class="btn btn-secondary" onclick="openGuideSheet()" style="margin-top: 8px;">
-            <span style="color: #38bdf8; font-weight: 700; margin-right: 4px;">•</span> Как это работает?
-        </button>
-
-        <div class="support-notice">
-            После установки приложения <a href="https://t.me/dizabled" target="_blank" rel="noopener noreferrer">свяжитесь с нами!</a>
-        </div>
-
-        <div class="progress-container" id="progressContainer">
-            <div class="progress-box">
-                <div class="progress-info">
-                    <span id="progressStatus">Подготовка...</span>
-                    <span id="progressText">0%</span>
-                </div>
-                <div class="progress-track">
-                    <div id="progressFill" class="progress-fill"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- APP SELECTION SHEET -->
-<div class="sheet-overlay" id="sheetOverlay" onclick="closeSheet()">
-    <div class="sheet-modal" onclick="event.stopPropagation()">
-        <div class="sheet-header">
-            <div class="sheet-title">Выбор приложения</div>
-            <button type="button" class="sheet-close" onclick="closeSheet()">✕</button>
-        </div>
-
-        <div class="info-blocks-container">
-            <div class="info-card app-status-card">
-                <div class="pulse-dot"></div>
-                <div class="info-text">
-                    <span class="info-title" id="app-counter-text">Все приложения активны</span>
-                    <span class="info-subtitle">Работают стабильно</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="app-search-wrap">
-            <span class="search-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="11" cy="11" r="6.5"></circle>
-                    <path d="m16 16 4.2 4.2"></path>
-                </svg>
-            </span>
-            <input type="text" id="appSearchInput" class="app-search" placeholder="Поиск по названию..." autocomplete="off">
-            <button type="button" id="searchClear" class="search-clear" onclick="clearAppSearch()" aria-label="Очистить поиск">✕</button>
-            <button type="button" id="searchFilterBtn" class="search-filter-btn" onclick="toggleFilterMenu()" aria-label="Фильтр категорий">⚙</button>
-
-            <div class="filter-dropdown" id="filterDropdown">
-                <button type="button" class="filter-option active" onclick="setCategory('all', this)">Все</button>
-                <button type="button" class="filter-option" onclick="setCategory('banks', this)">Банки</button>
-                <button type="button" class="filter-option" onclick="setCategory('social', this)">Соцсети</button>
-                <button type="button" class="filter-option" onclick="setCategory('investments', this)">Инвестиции</button>
-                <button type="button" class="filter-option" onclick="setCategory('other', this)">Другие</button>
-            </div>
-        </div>
-
-        <div id="searchEmpty" class="search-empty">🔎 Ничего не найдено</div>
-
-        <div class="sheet-list">
-            <div class="sheet-item" data-key="vk" data-category="social" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk.plist', 'ВКонтакте', 'vk')">
-                <div class="sheet-item-main">
-                    <div class="app-icon"><img src="https://i.pinimg.com/736x/92/a9/dc/92a9dc918ad00d529922958f603ede6d.jpg" alt="ВК"></div>
-                    <div class="sheet-info-box"><span class="app-name">ВКонтакте</span></div>
-                </div>
-                <span class="ios-badge">iOS 17.6+</span>
-            </div>
-      
-            <div class="sheet-item" data-key="max" data-category="social" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/max.plist', 'MAX', 'max')">
-                <div class="sheet-item-main">
-                    <div class="app-icon"><img src="https://mari-el.gov.ru/upload/iblock/ff2/wiu6p92d5b9r5t9cr4tvv8dwbt3iwiej.png" alt="Макс"></div>
-                    <div class="sheet-info-box"><span class="app-name">MAX</span></div>
-                </div>
-                <span class="ios-badge">iOS 15.5+</span>
-            </div>
-
-            <div class="sheet-item" data-key="vk-video" data-category="social" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk-video.plist', 'VK Видео', 'vk-video')">
-                <div class="sheet-item-main">
-                    <div class="app-icon"><img src="https://termo-wood.ru/local/templates/main/components/bitrix/news.list/index_youtube/images/vk-video-sign-logo2.png" alt="VK Видео"></div>
-                    <div class="sheet-info-box"><span class="app-name">VK Видео</span></div>
-                </div>
-                <span class="ios-badge">iOS 17.6+</span>
-            </div>
-      
-            <div class="sheet-item" data-key="vk-clips" data-category="social" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk-clips.plist', 'VK Клипы', 'vk-clips')">
-                <div class="sheet-item-main">
-                    <div class="app-icon"><img src="https://freesoft.ru/storage/images/759/7588/758713/758713_normal.png" alt="VK Клипы"></div>
-                    <div class="sheet-info-box"><span class="app-name">VK Клипы</span></div>
-                </div>
-                <span class="ios-badge">iOS 14.0+</span>
-            </div>
-      
-            <div class="sheet-item" data-key="sberfinansy" data-category="banks" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sberfinansy.plist', 'СберБанк (Финансы Онлайн)', 'sberfinansy')">
-                <div class="sheet-item-main">
-                    <div class="app-icon"><img src="https://avatars.mds.yandex.net/i?id=eb4ffd4cce20ff26621f4d2e1302d559_l-3510839-images-thumbs&n=13" alt="Сбербанк"></div>
-                    <div class="sheet-info-box"><span class="app-name">СберБанк (Финансы Онлайн)</span></div>
-                </div>
-                <span class="ios-badge">iOS 15.0+</span>
-            </div>
-
-            <div class="sheet-item" data-key="avito" data-category="other" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/avito.plist', 'Авито', 'avito')">
-                <div class="sheet-item-main">
-                    <div class="app-icon"><img src="https://images.meme-arsenal.com/831d76849c248c4785c163219dda744b.jpg" alt="Авито"></div>
-                    <div class="sheet-info-box"><span class="app-name">Авито</span></div>
-                </div>
-                <span class="ios-badge">iOS 16.0+</span>
-            </div>
-      
-            <div class="sheet-item" data-key="sovkombank-vsekarty" data-category="banks" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sovkombank-vsekarty.plist', 'Совкомбанк (Все карты MDS)', 'sovkombank-vsekarty')">
-                <div class="sheet-item-main">
-                    <div class="app-icon"><img src="https://i.pinimg.com/originals/ca/e1/21/cae1210d8c914afea22adc94dcdd0eee.jpg" alt="Все Карты MDS"></div>
-                    <div class="sheet-info-box"><span class="app-name">Совкомбанк (Все карты MDS)</span></div>
-                </div>
-                <span class="ios-badge">iOS 17.0+</span>
-            </div>
-
-            <div class="sheet-item" data-key="tbank" data-category="banks" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/tbank.plist', 'Т-Банк(8PRO)', 'tbank')">
-                <div class="sheet-item-main">
-                    <div class="app-icon"><img src="https://avatars.mds.yandex.net/i?id=1e5b5c8153fd68c3ad7b66b0cd19fefa_l-5016868-images-thumbs&n=13" alt="Т-Банк (8PRO)"></div>
-                    <div class="sheet-info-box"><span class="app-name">Т-Банк (8PRO)</span></div>
-                </div>
-                <span class="ios-badge">iOS 16.0+</span>
-            </div>
-      
-            <div class="sheet-item" data-key="sovkombank-sinoptik" data-category="banks" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sovkombank-sinoptik.plist', 'Совкомбанк (Синоптик+)', 'sovkombank-sinoptik')">
-                <div class="sheet-item-main">
-                    <div class="app-icon"><img src="https://i.pinimg.com/originals/ca/e1/21/cae1210d8c914afea22adc94dcdd0eee.jpg" alt="Синоптик+"></div>
-                    <div class="sheet-info-box"><span class="app-name">Совкомбанк (Синоптик+)</span></div>
-                </div>
-                <span class="ios-badge">iOS 17.0+</span>
-            </div>
-
-            <div class="sheet-item" data-key="drive-transit" data-category="banks" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/drive-transit.plist', 'Т-Банк (Drive Transit)', 'drive-transit')">
-                <div class="sheet-item-main">
-                    <div class="app-icon"><img src="https://avatars.mds.yandex.net/i?id=1e5b5c8153fd68c3ad7b66b0cd19fefa_l-5016868-images-thumbs&n=13" alt="Т-Банк (Drive Transit)"></div>
-                    <div class="sheet-info-box"><span class="app-name">Т-Банк (Drive Transit)</span></div>
-                </div>
-                <span class="ios-badge">iOS 16.0+</span>
-            </div>
-
-            <div class="sheet-item" data-key="lenta" data-category="other" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/lenta.plist', 'Лента', 'lenta')">
-                <div class="sheet-item-main">
-                    <div class="app-icon"><img src="https://i.taplink.st/a/1/4/7/e/15bb4a.jpg?139" alt="Лента"></div>
-                    <div class="sheet-info-box"><span class="app-name">Лента</span></div>
-                </div>
-                <span class="ios-badge">iOS 16.0+</span>
-            </div>
-      
-            <div class="sheet-item" data-key="yandex-pay" data-category="banks" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/yandex-pay.plist', 'Яндекс Пэй', 'yandex-pay')">
-                <div class="sheet-item-main">
-                    <div class="app-icon"><img src="https://avatars.mds.yandex.net/get-altay/16329243/2a0000019bc0e7a55b0eaa0dcc6b77eca410/XL" alt="yandex pay"></div>
-                    <div class="sheet-info-box"><span class="app-name">Яндекс Пэй</span></div>
-                </div>
-                <span class="ios-badge">iOS 16.0+</span>
-            </div>
-
-            <div class="sheet-item" data-key="2gis" data-category="other" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/2gis.plist', '2ГИС', '2gis')">
-                <div class="sheet-item-main">
-                    <div class="app-icon"><img src="https://avatars.mds.yandex.net/i?id=55fe61e4c88acc4ce04bdd4b010fe649cecd5944-5233671-images-thumbs&n=13" alt="2gis"></div>
-                    <div class="sheet-info-box"><span class="app-name">2ГИС</span></div>
-                </div>
-                <span class="ios-badge">iOS 16.0+</span>
-            </div>
-
-            <div class="sheet-item" data-key="psb" data-category="banks" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/psb.plist', 'ПСБ (Чайная Церемония)', 'psb')">
-                <div class="sheet-item-main">
-                    <div class="app-icon"><img src="https://avatars.mds.yandex.net/i?id=8ee36645ffa71da6eb92a8fe9278eca3_l-5358567-images-thumbs&n=13" alt="psb"></div>
-                    <div class="sheet-info-box"><span class="app-name">ПСБ (Чайная Церемония)</span></div>
-                </div>
-                <span class="ios-badge">iOS 15.0+</span>
-            </div>
-
-            <div class="sheet-item" data-key="kuper" data-category="other" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/kuper.plist', 'Купер', 'kuper')">
-                <div class="sheet-item-main">
-                    <div class="app-icon"><img src="https://cdn1-media.rabota.ru/processor/logo/original/2024/09/05/kuper-5063ae9603f8b65c8279335b06828795.png" alt="Купер"></div>
-                    <div class="sheet-info-box"><span class="app-name">Купер</span></div>
-                </div>
-                <span class="ios-badge">iOS 15.0+</span>
-            </div>
-
-            <div class="sheet-item" data-key="rutube" data-category="social" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/rutube.plist', 'Rutube', 'rutube')">
-                <div class="sheet-item-main">
-                    <div class="app-icon"><img src="https://azecsuwvwypwnkgobujn.supabase.co/storage/v1/object/public/avatars/company-logos/b341fde4-0bb0-4361-8104-81c7a384f66f.png" alt="Rutube"></div>
-                    <div class="sheet-info-box"><span class="app-name">Rutube (Starship Battle)</span></div>
-                </div>
-                <span class="ios-badge">iOS 16.0+</span>
-            </div>
-
-            <div class="sheet-item" data-key="mobio" data-category="other" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/mobio.plist', 'СберМобайл (Мобио)', 'mobio')">
-                <div class="sheet-item-main">
-                    <div class="app-icon"><img src="https://tulapressa.ru/wp-content/uploads/2024/08/20/fb7a303a916e6d96-840x520.jpg" alt="СберМобайл"></div>
-                    <div class="sheet-info-box"><span class="app-name">СберМобайл (Мобио)</span></div>
-                </div>
-                <span class="ios-badge">iOS 15.0+</span>
-            </div>
-      
-            <div class="sheet-item" data-key="rzd" data-category="other" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/rzd.plist', 'РЖД Пассажирам', 'rzd')">
-                <div class="sheet-item-main">
-                    <div class="app-icon"><img src="https://workspace.ru/upload/articles/1fa/z7iixhu9jizu22hfpll8avumy9f30ubh.png" alt="РЖД Пассажирам"></div>
-                    <div class="sheet-info-box"><span class="app-name">РЖД Пассажирам</span></div>
-                </div>
-                <span class="ios-badge">iOS 15.0+</span>
-            </div>
-
-            <div class="sheet-item" data-key="sberkids" data-category="banks" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sberkids.plist', 'СберKids (SpeakaBoo)','sberkids')">
-                <div class="sheet-item-main">
-                    <div class="app-icon"><img src="https://lh3.googleusercontent.com/6yVLZ4nvDll9uZGm71IpcQIQ4lJwxjXV5VdYerGW7tDEnMCZx9r440DzJKOVPdkni7jJ" alt="СберKids"></div>
-                    <div class="sheet-info-box"><span class="app-name">СберKids (SpeakaBoo)</span></div>
-                </div>
-                <span class="ios-badge">iOS 15.0+</span>
-            </div>
-
-            <div class="sheet-item" data-key="lentaa" data-category="other" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/lentaa.plist', 'Лента (Быстро Продукты)', 'lentaa')">
-                <div class="sheet-item-main">
-                    <div class="app-icon"><img src="https://i.taplink.st/a/1/4/7/e/15bb4a.jpg?139" alt="Быстро Продукты"></div>
-                    <div class="sheet-info-box"><span class="app-name">Лента (Быстро Продукты)</span></div>
-                </div>
-                <span class="ios-badge">iOS 16.0+</span>
-            </div>
-      
-            <div class="sheet-item" data-key="avito-anero" data-category="other" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/avito-anero.plist', 'Авито (Anero)', 'avito-anero')">
-                <div class="sheet-item-main">
-                    <div class="app-icon"><img src="https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/7e/28/f6/7e28f600-04c2-5f88-51ea-5f0a866da9f6/AppIcon-0-0-1x_U007epad-0-1-85-220.png/1200x1200bb.png" alt="Anero"></div>
-                    <div class="sheet-info-box"><span class="app-name">Авито (Anero)</span></div>
-                </div>
-                <span class="ios-badge">iOS 16.0+</span>
-            </div>
-
-            <div class="sheet-item" data-key="craftersy" data-category="banks" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/craftersy.plist', 'Т-Банк (Craftersy)', 'craftersy')">
-                <div class="sheet-item-main">
-                    <div class="app-icon"><img src="https://avatars.mds.yandex.net/i?id=1e5b5c8153fd68c3ad7b66b0cd19fefa_l-5016868-images-thumbs&n=13" alt="Т-Банк (Craftersy)"></div>
-                    <div class="sheet-info-box"><span class="app-name">Т-Банк (Craftersy)</span></div>
-                </div>
-                <span class="ios-badge">iOS 16.0+</span>
-            </div>
-      
-            <div class="sheet-item" data-key="scbnotes" data-category="banks" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/scbnotes.plist', 'СовкомБанк (SCB Notes)', 'scbnotes')">
-                <div class="sheet-item-main">
-                    <div class="app-icon"><img src="https://i.pinimg.com/originals/ca/e1/21/cae1210d8c914afea22adc94dcdd0eee.jpg" alt="СовкомБанк"></div>
-                    <div class="sheet-info-box"><span class="app-name">СовкомБанк (SCB Notes)</span></div>
-                </div>
-                <span class="ios-badge">iOS 17.0+</span>
-            </div>
-      
-            <div class="sheet-item" data-key="ak-bars-bank" data-category="banks" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/ak-bars-bank.plist', 'АК Барс (Всё Учтено)', 'ak-bars-bank')">
-                <div class="sheet-item-main">
-                    <div class="app-icon"><img src="https://static.tildacdn.com/tild6335-3234-4462-b262-303937366262/__.jpg" alt="АКБарс Банк"></div>
-                    <div class="sheet-info-box"><span class="app-name">АК Барс (Всё Учтено)</span></div>
-                </div>
-                <span class="ios-badge">iOS 16.0+</span>
-            </div>
-
-            <div class="sheet-item" data-key="blum" data-category="banks" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/blum.plist', 'РокетБанк (Блум)', 'blum')">
-                <div class="sheet-item-main">
-                    <div class="app-icon"><img src="https://smart-lab.ru/uploads/articles/00/50/58/thumbnail.webp" alt="РокетБанк"></div>
-                    <div class="sheet-info-box"><span class="app-name">РокетБанк (Блум)</span></div>
-                </div>
-                <span class="ios-badge">iOS 15.0+</span>
-            </div>
-            
-            <div class="sheet-item" data-key="happ_proxy" data-category="other" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/happ.plist', 'Happ Proxy', 'happ_proxy')">
-                <div class="sheet-item-main">
-                    <div class="app-icon"><img src="https://www.anti-malware.ru/files/images/source/happisback-news.png" alt="Happ Proxy"></div>
-                    <div class="sheet-info-box"><span class="app-name">Happ Proxy</span></div>
-                </div>
-                <span class="ios-badge">iOS 15.0+</span>
-            </div>
-            
-            <div class="sheet-item" data-key="sber_invest" data-category="investments" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sberinvest_siyanie.plist', 'СберИнвестиции', 'sber_invest')">
-                <div class="sheet-item-main">
-                    <div class="app-icon"><img src="https://play-lh.googleusercontent.com/0Ze_YXs4dsMKylkIIOvmEEvZ0ENVvw1IkDgjQu8hW_0_bR4r8VgBFdoZ26R5omZ3WOp0A8eXXi_k7HiP5_Eq" alt="СберИнвестиции"></div>
-                    <div class="sheet-info-box"><span class="app-name">СберИнвестиции</span></div>
-                </div>
-                <span class="ios-badge">iOS 15.0+</span>
-            </div>
-
-            <div class="sheet-item" data-key="vtb_invest" data-category="investments" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vtbinvest_GetQuot.plist', 'ВТБ Инвестиции', 'vtb_invest')">
-                <div class="sheet-item-main">
-                    <div class="app-icon"><img src="https://avatars.mds.yandex.net/i?id=dad679c9a9151f179f35c091b379f63ddde52982-4575475-images-thumbs&n=13" alt="ВТБ Инвестиции"></div>
-                    <div class="sheet-info-box"><span class="app-name">ВТБ Инвестиции</span></div>
-                </div>
-                <span class="ios-badge">iOS 15.0+</span>
-            </div>
-
-            <div class="sheet-item" data-key="gazpromneft" data-category="other" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/gazpromneft.plist', 'Газпромнефть', 'gazpromneft')">
-                <div class="sheet-item-main">
-                    <div class="app-icon"><img src="https://avatars.mds.yandex.net/i?id=f5b78015f371133a357d570c8857c46db5324c27-8343045-images-thumbs&n=13" alt="Газпромнефть"></div>
-                    <div class="sheet-info-box"><span class="app-name">Газпромнефть</span></div>
-                </div>
-                <span class="ios-badge">iOS 15.0+</span>
-            </div>
-
-            <div class="sheet-item" data-key="novikombank" data-category="banks" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/novikombank.plist', 'Новикомбанк', 'novikombank')">
-                <div class="sheet-item-main">
-                    <div class="app-icon"><img src="https://adindex.ru/assets/seo/2024_05/facebook_322651.jpg?ts=1715940689" alt="Новикомбанк"></div>
-                    <div class="sheet-info-box"><span class="app-name">Новикомбанк</span></div>
-                </div>
-                <span class="ios-badge">iOS 12.0+</span>
-            </div>
-
-            <div class="sheet-item" data-key="mtsdengi" data-category="banks" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/mtsdengi.plist', 'МТС Банк', 'mtsdengi')">
-                <div class="sheet-item-main">
-                    <div class="app-icon"><img src="https://mybroker.storage.bcs.ru/FinInstrumentLogo/RU000A0JRH43.png" alt="МТС Банк"></div>
-                    <div class="sheet-info-box"><span class="app-name">МТС Банк</span></div>
-                </div>
-                <span class="ios-badge">iOS 14.0+</span>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- GUIDE SHEET / MODAL -->
-<div class="sheet-overlay" id="guideOverlay" onclick="closeGuideSheet()">
-    <div class="sheet-modal guide-modal" onclick="event.stopPropagation()">
-        <div class="sheet-header">
-            <div class="sheet-title">Как это работает</div>
-            <button type="button" class="sheet-close" onclick="closeGuideSheet()">✕</button>
-        </div>
-
-        <div class="guide-content sheet-list">
-            <div class="guide-step">
-                <div class="guide-step-number">1</div>
-                <div class="guide-step-text">
-                    Выберите нужное приложение в списке, нажав на поле выбора, и нажмите кнопку <strong>«Установить»</strong>. После этого <strong>введите пароль для установки, который Вам выдаст администратор</strong> и подтвердите установку в системном окне iOS для запуска процесса загрузки приложения на устройство.
-                </div>
-            </div>
-
-            <div class="guide-step">
-                <div class="guide-step-number">2</div>
-                <div class="guide-step-text">
-                    Дождитесь окончания загрузки и появления иконки приложения на экране «Домой».
-                </div>
-            </div>
-
-            <div class="guide-step">
-                <div class="guide-step-number">3</div>
-                <div class="guide-step-text">
-                    Если при открытии приложения происходит вылет (краш), <strong>обратитесь к администратору</strong> для получения временного аккаунта.
-                </div>
-            </div>
-
-            <div class="guide-step">
-                <div class="guide-step-number">4</div>
-                <div class="guide-step-text">
-                    Перейдите в <em>Настройки</em> — тапните <em>по вашему имени (Apple ID)</em> — выберите <em>«Контент и покупки»</em> (на старых версиях iOS — <em>iTunes Store и App Store</em>) и авторизуйтесь с данными, которые выдал администратор. Если потребуется код подтверждения, запросите его у администратора. <em>Ни в коем случае не вводите данные вверху в разделе «iCloud»!</em>
-                </div>
-            </div>
-
-            <div class="guide-step">
-                <div class="guide-step-number">5</div>
-                <div class="guide-step-text">
-                    После успешного входа запустите приложение — оно заработает. Как только приложение откроется, обязательно выйдите из аккаунта в разделе <strong>Контент и покупки</strong>.
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="last-update">Последнее обновление: 24 сентября 2026</div>
 
 </body>
 </html>
