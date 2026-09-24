@@ -212,6 +212,13 @@ h1 {
     -webkit-backdrop-filter: blur(38px) saturate(165%);
     border: 1.8px solid rgba(110, 160, 135, 0.48);
     box-shadow: 0 0 28px rgba(90, 140, 115, 0.08), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.08);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Акцент карточки при выбранном приложении */
+.card.app-selected {
+    border-color: rgba(168, 85, 247, 0.65);
+    box-shadow: 0 0 35px rgba(168, 85, 247, 0.15), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.12);
 }
 
 label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
@@ -234,7 +241,14 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     outline: none;
     box-shadow: 0 0 15px rgba(165, 140, 90, 0.06), inset 0 1px 0 rgba(255,255,255,.065);
     cursor: pointer;
-    transition: transform .2s var(--spring), border .2s ease, background .2s ease;
+    transition: transform .2s var(--spring), border .2s ease, background .2s ease, box-shadow .2s ease;
+}
+
+/* Акцент кнопки выбора после выбора приложения */
+.custom-select-btn.has-selection {
+    border-color: rgba(168, 85, 247, 0.7);
+    background: rgba(168, 85, 247, 0.12);
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.12), inset 0 1px 0 rgba(255,255,255,.08);
 }
 
 .custom-select-btn span { font-size: 14px; }
@@ -263,6 +277,7 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 
 .custom-select-btn:active { transform: scale(.975); }
 
+/* Единый тон для кнопок «Установить» и «Войти» без градиентов и переливаний */
 .btn {
     position: relative;
     width: 100%;
@@ -273,20 +288,20 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     padding: 12px;
     overflow: hidden;
     border-radius: 16px;
-    border: 1.8px solid rgba(175, 130, 215, 0.45);
-    background: linear-gradient(135deg, #7e22ce, #a21caf);
+    border: 1.8px solid rgba(192, 132, 252, 0.4);
+    background: #7c3aed;
     color: #fff;
     font-size: 14px;
     font-weight: 650;
     text-decoration: none;
     cursor: pointer;
-    box-shadow: 0 15px 35px rgba(88,28,135,.28), 0 0 20px rgba(168,85,247,.15), inset 0 1px 0 rgba(255,255,255,.2);
-    transition: transform .2s var(--spring), filter .2s ease, box-shadow .2s ease;
+    box-shadow: 0 10px 25px rgba(124, 58, 237, 0.25), inset 0 1px 0 rgba(255,255,255,0.2);
+    transition: transform .2s var(--spring), background-color .2s ease, filter .2s ease, box-shadow .2s ease;
 }
 
 .btn:hover {
-    filter: brightness(1.08);
-    box-shadow: 0 18px 42px rgba(88,28,135,.35), 0 0 28px rgba(168,85,247,.22), inset 0 1px 0 rgba(255,255,255,.25);
+    background: #8b5cf6;
+    box-shadow: 0 14px 32px rgba(124, 58, 237, 0.35), inset 0 1px 0 rgba(255,255,255,0.25);
 }
 
 .btn:active { transform: scale(.975); filter: brightness(.95); }
@@ -296,6 +311,10 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     background: rgba(147,51,234,.08);
     border: 1.8px solid rgba(175, 130, 215, 0.25);
     color: #ddd6fe;
+    box-shadow: none;
+}
+.btn-secondary:hover {
+    background: rgba(147,51,234,.15);
 }
 
 .btn-telegram {
@@ -303,6 +322,7 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     background: rgba(14, 116, 144, 0.08);
     border: 1.8px solid rgba(56, 155, 185, 0.45);
     color: #7dd3fc;
+    box-shadow: none;
 }
 
 .telegram-icon { width: 17px; height: 17px; object-fit: contain; }
@@ -390,17 +410,9 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     position: relative;
     width: 0%;
     height: 100%;
-    background: linear-gradient(90deg, #7e22ce, #0284c7, #a855f7);
-    background-size: 200% 100%;
+    background: #7c3aed;
     border-radius: 999px;
-    transition: width 0.15s ease-out, background 0.4s ease;
-    animation: gradientMove 3s linear infinite;
-}
-
-@keyframes gradientMove {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+    transition: width 0.15s ease-out;
 }
 
 .auth-error {
@@ -948,6 +960,10 @@ function selectApp(element, url, name, appKey) {
     document.getElementById("selectedAppText").textContent = name;
     document.getElementById("selectedAppText").style.color = "#ffffff";
 
+    // Добавляем акцент на кнопку выбора и основную карточку
+    document.querySelector(".custom-select-btn").classList.add("has-selection");
+    document.querySelector(".card").classList.add("app-selected");
+
     const appAuthNameEl = document.getElementById("appAuthAppName");
     if (appAuthNameEl) appAuthNameEl.textContent = name;
 
@@ -999,6 +1015,10 @@ function cancelAppPassword() {
 function executeDownload() {
     isInstalling = true;
 
+    // Дополнительный легкий акцент на карточку при старте установки
+    const mainCard = document.querySelector(".card");
+    if(mainCard) mainCard.style.boxShadow = "0 0 45px rgba(168, 85, 247, 0.25), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.15)";
+
     setTimeout(() => {
         const progressContainer = document.getElementById("progressContainer");
         const progressBox = progressContainer.querySelector(".progress-box");
@@ -1031,6 +1051,7 @@ function executeDownload() {
             if (elapsed >= duration) {
                 clearInterval(timer);
                 isInstalling = false;
+                if(mainCard) mainCard.style.boxShadow = "";
 
                 setTimeout(() => {
                     progressStatus.textContent = "Установка завершена";
@@ -1054,7 +1075,7 @@ function executeDownload() {
     <div class="auth-box" style="border-color: rgba(185, 160, 110, 0.55);">
         <div class="auth-title">🛠 Технические работы</div>
         <div class="auth-description">На сайте ведутся плановые технические работы. Скоро мы снова будем в строю!</div>
-        <button type="button" class="btn" style="background: linear-gradient(135deg, #b45309, #92400e);" onclick="location.reload()">Проверить снова</button>
+        <button type="button" class="btn" style="background: #b45309;" onclick="location.reload()">Проверить снова</button>
     </div>
 </div>
 
