@@ -863,6 +863,44 @@ function updateAppCounter() {
     }
 }
 
+// Функция для автоматического выбора приложения из параметра ссылки (например: ?app=vk)
+function checkUrlAppParam() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const appKey = urlParams.get('app');
+    if (!appKey) return;
+
+    // Ищем элемент приложения в списке по data-key
+    const targetItem = document.querySelector(`.sheet-item[data-key="${appKey}"]`);
+    if (targetItem) {
+        // Извлекаем нужные параметры прямо из клика/атрибутов элемента
+        const nameEl = targetItem.querySelector('.app-name');
+        const appName = nameEl ? nameEl.textContent : "Приложение";
+        
+        // Вытаскиваем URL манифеста из onclick атрибута
+        const onclickAttr = targetItem.getAttribute('onclick');
+        // Пример из onclick: selectApp(this, 'itms-services://?action=download-manifest&url=...', 'ВКонтакте', 'vk')
+        // Аккуратно выпарсим URL и ключ с помощью регулярного выражения или простой логики:
+        const match = onclickAttr.match(/selectApp\(this,\s*'([^']+)',\s*'([^']+)',\s*'([^']+)'\)/);
+        if (match) {
+            const url = match.1;
+            const key = match.3;
+            // Устанавливаем выбранное приложение без открытия модалки
+            selectedAppUrl = url;
+            selectedAppKey = key;
+
+            document.getElementById("selectedAppText").textContent = appName;
+            document.getElementById("selectedAppText").style.color = "#ffffff";
+            document.querySelector(".custom-select-btn").classList.add("has-selection");
+            document.querySelector(".card").classList.add("app-selected");
+
+            const appAuthNameEl = document.getElementById("appAuthAppName");
+            if (appAuthNameEl) appAuthNameEl.textContent = appName;
+
+            targetItem.classList.add("selected");
+        }
+    }
+}
+
 document.addEventListener("DOMContentLoaded", async function() {
     remoteConfig = await fetchSupabaseSettings();
     
@@ -871,14 +909,17 @@ document.addEventListener("DOMContentLoaded", async function() {
         return;
     }
 
+    applyAppsVisibility();
+    updateAppCounter();
+    
+    // Проверяем, передано ли конкретное приложение в ссылке
+    checkUrlAppParam();
+
     if (sessionStorage.getItem("site_access") === "true") {
         switchScreen("mainApp");
     } else {
         switchScreen("authApp");
     }
-
-    applyAppsVisibility();
-    updateAppCounter();
 
     document.getElementById("passInput").addEventListener("keydown", e => { if (e.key === "Enter") submitPassword(); });
     document.getElementById("appPassInput").addEventListener("keydown", e => { if (e.key === "Enter") submitAppPassword(); });
@@ -1120,7 +1161,7 @@ function executeDownload() {
 
             if (elapsed >= duration) {
                 clearInterval(timer);
-                isInstalling = false;
+            isInstalling = false;
                 if(mainCard) mainCard.style.boxShadow = "";
 
                 setTimeout(() => {
