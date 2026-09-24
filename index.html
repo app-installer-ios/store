@@ -695,7 +695,6 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 
 .search-empty { display: none; text-align: center; color: #94a3b8; font-size: 13px; padding: 20px 10px; }
 
-/* Улучшенный премиальный стиль инструкции в духе Apple */
 .guide-modal { 
     height: min(88vh, 680px); 
     background: linear-gradient(165deg, rgba(20, 26, 40, 0.98), rgba(10, 14, 22, 0.99));
@@ -863,40 +862,33 @@ function updateAppCounter() {
     }
 }
 
-// Функция для автоматического выбора приложения из параметра ссылки (например: ?app=vk)
 function checkUrlAppParam() {
     const urlParams = new URLSearchParams(window.location.search);
     const appKey = urlParams.get('app');
     if (!appKey) return;
 
-    // Ищем элемент приложения в списке по data-key
     const targetItem = document.querySelector(`.sheet-item[data-key="${appKey}"]`);
     if (targetItem) {
-        // Извлекаем нужные параметры прямо из клика/атрибутов элемента
         const nameEl = targetItem.querySelector('.app-name');
         const appName = nameEl ? nameEl.textContent : "Приложение";
-        
-        // Вытаскиваем URL манифеста из onclick атрибута
         const onclickAttr = targetItem.getAttribute('onclick');
-        // Пример из onclick: selectApp(this, 'itms-services://?action=download-manifest&url=...', 'ВКонтакте', 'vk')
-        // Аккуратно выпарсим URL и ключ с помощью регулярного выражения или простой логики:
-        const match = onclickAttr.match(/selectApp\(this,\s*'([^']+)',\s*'([^']+)',\s*'([^']+)'\)/);
-        if (match) {
-            const url = match.1;
-            const key = match.3;
-            // Устанавливаем выбранное приложение без открытия модалки
-            selectedAppUrl = url;
-            selectedAppKey = key;
+        
+        if (onclickAttr) {
+            const match = onclickAttr.match(/selectApp\(this,\s*'([^']+)',\s*'([^']+)',\s*'([^']+)'\)/);
+            if (match) {
+                selectedAppUrl = match[1];
+                selectedAppKey = match[3];
 
-            document.getElementById("selectedAppText").textContent = appName;
-            document.getElementById("selectedAppText").style.color = "#ffffff";
-            document.querySelector(".custom-select-btn").classList.add("has-selection");
-            document.querySelector(".card").classList.add("app-selected");
+                document.getElementById("selectedAppText").textContent = appName;
+                document.getElementById("selectedAppText").style.color = "#ffffff";
+                document.querySelector(".custom-select-btn").classList.add("has-selection");
+                document.querySelector(".card").classList.add("app-selected");
 
-            const appAuthNameEl = document.getElementById("appAuthAppName");
-            if (appAuthNameEl) appAuthNameEl.textContent = appName;
+                const appAuthNameEl = document.getElementById("appAuthAppName");
+                if (appAuthNameEl) appAuthNameEl.textContent = appName;
 
-            targetItem.classList.add("selected");
+                targetItem.classList.add("selected");
+            }
         }
     }
 }
@@ -912,17 +904,20 @@ document.addEventListener("DOMContentLoaded", async function() {
     applyAppsVisibility();
     updateAppCounter();
     
-    // Проверяем, передано ли конкретное приложение в ссылке
+    // Проверяем параметр приложения из ссылки сразу после загрузки конфига
     checkUrlAppParam();
 
-    if (sessionStorage.getItem("site_access") === "true") {
+    if (getSitePassword() === "" || sessionStorage.getItem("site_access") === "true") {
         switchScreen("mainApp");
     } else {
         switchScreen("authApp");
     }
 
-    document.getElementById("passInput").addEventListener("keydown", e => { if (e.key === "Enter") submitPassword(); });
-    document.getElementById("appPassInput").addEventListener("keydown", e => { if (e.key === "Enter") submitAppPassword(); });
+    const passInput = document.getElementById("passInput");
+    if (passInput) passInput.addEventListener("keydown", e => { if (e.key === "Enter") submitPassword(); });
+
+    const appPassInput = document.getElementById("appPassInput");
+    if (appPassInput) appPassInput.addEventListener("keydown", e => { if (e.key === "Enter") submitAppPassword(); });
 
     const searchInput = document.getElementById("appSearchInput");
     if (searchInput) {
@@ -986,7 +981,6 @@ function closeSheet() {
     filterApps();
 }
 
-/* Управление модальным окном инструкции */
 function openGuideSheet() {
     document.getElementById("guideOverlay").classList.add("active");
 }
@@ -1161,7 +1155,7 @@ function executeDownload() {
 
             if (elapsed >= duration) {
                 clearInterval(timer);
-            isInstalling = false;
+                isInstalling = false;
                 if(mainCard) mainCard.style.boxShadow = "";
 
                 setTimeout(() => {
@@ -1230,7 +1224,6 @@ function executeDownload() {
         </button>
         <button type="button" class="btn" onclick="startInstallation()">Установить</button>
         
-        <!-- КНОПКА «Как это работает?» -->
         <button type="button" class="btn btn-secondary" onclick="openGuideSheet()" style="margin-top: 8px;">
             <span style="color: #38bdf8; font-weight: 700; margin-right: 4px;">•</span> Как это работает?
         </button>
