@@ -44,7 +44,6 @@
             font-size: 14px;
             margin: 0;
         }
-        /* Статусы и ошибки */
         .status-card {
             background-color: var(--card-bg);
             border: 1px solid var(--border);
@@ -65,7 +64,6 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
-        /* Список приложений */
         .apps-list {
             display: flex;
             flex-direction: column;
@@ -138,60 +136,63 @@
 <div class="container">
     <header>
         <h1>Доступные приложения</h1>
-        <p class="subtitle">Установка выбранных приложений для вашего устройства</p>
+        <p class="subtitle">Установка выбранных приложений</p>
     </header>
 
-    <!-- Состояние загрузки -->
     <div id="loading-state" class="status-card">
         <div class="spinner"></div>
         <p style="margin: 0; color: var(--text-secondary);">Проверяем доступ...</p>
     </div>
 
-    <!-- Состояние ошибки или недействительной ссылки -->
     <div id="error-state" class="status-card hidden">
-        <h3 style="margin-top: 0; color: #ef4444;">Ссылка недействительна</h3>
-        <p id="error-text" style="color: var(--text-secondary); font-size: 14px; margin-bottom: 0;">Возможно, срок действия ссылки истек или она указана неверно.</p>
+        <h3 style="margin-top: 0; color: #ef4444;">Ошибка доступа</h3>
+        <p id="error-text" style="color: var(--text-secondary); font-size: 14px; margin-bottom: 0; word-break: break-all;"></p>
     </div>
 
-    <!-- Контейнер со списком приложений -->
-    <div id="apps-container" class="apps-list hidden">
-        <!-- Сюда динамически добавятся приложения -->
-    </div>
+    <div id="apps-container" class="apps-list hidden"></div>
 </div>
 
 <script>
-    // НАСТРОЙКИ SUPABASE (замените на свои ключи)
+    // Вставьте ваши реальные данные от Supabase
     const SUPABASE_URL = 'ВАШ_SUPABASE_URL';
     const SUPABASE_ANON_KEY = 'ВАШ_SUPABASE_ANON_KEY';
 
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    let supabaseClient;
+    try {
+        supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    } catch (e) {
+        showError("Ошибка инициализации Supabase: проверьте правильность ключей.");
+    }
 
-    // Главная функция инициализации
     async function init() {
+        if (!supabaseClient) return;
+
         const urlParams = new URLSearchParams(window.location.search);
-        // Поддерживаем разные варианты параметров в ссылке (?token=... или ?invite=...)
         const token = urlParams.get('token') || urlParams.get('invite');
 
         if (!token) {
-            showError("В ссылке отсутствует токен доступа. Запросите новую ссылку у бота.");
+            showError("В ссылке отсутствует токен. Откройте корректную ссылку, полученную от бота.");
             return;
         }
 
         try {
-            // 1. Ищем токен в таблице сапбазы (предполагаем, что таблица называется invite_links)
-            // Поля в таблице: token (текст), apps (массив строк или JSON с ID/названиями приложений)
+            // Ищем токен в таблице invite_links
             const { data, error } = await supabaseClient
                 .from('invite_links')
                 .select('*')
                 .eq('token', token)
-                .single();
+                .maybeSingle(); // Использование maybeSingle вместо single защищает от падения, если строка не найдена
 
-            if (error || !data) {
-                showError("Такой ссылки не существует или она была удалена.");
+            if (error) {
+                showError("Ошибка базы данных: " + error.message);
                 return;
             }
 
-            // Проверяем, передан ли список приложений (например, массив данных data.apps)
+            if (!data) {
+                showError("Указанный токен не найден в базе данных или устарел.");
+                return;
+            }
+
             let allowedAppIds = data.apps; 
             if (typeof allowedAppIds === 'string') {
                 try { allowedAppIds = JSON.parse(allowedAppIds); } catch(e){}
@@ -202,15 +203,19 @@
                 return;
             }
 
-            // 2. Загружаем детальную информацию по разрешенным приложениям 
-            // (Предполагаем, что у вас есть таблица со списком приложений "apps_catalog", где есть id, name, version, icon_url, plist_url)
+            // Загружаем приложения из каталога
             const { data: appsData, error: appsError } = await supabaseClient
                 .from('apps_catalog')
                 .select('*')
-                .in('id', allowedAppIds); // выбираем только те, ID которых разрешены в инвайте
+                .in('id', allowedAppIds);
 
-            if (appsError || !appsData || appsData.length === 0) {
-                showError("Не удалось загрузить каталог приложений для вашей ссылки.");
+            if (appsError) {
+                showError("Ошибка загрузки каталога: " + appsError.message);
+                return;
+            }
+
+            if (!appsData || appsData.length === 0) {
+                showError("Приложения, указанные в ссылке, не найдены в каталоге.");
                 return;
             }
 
@@ -218,11 +223,10 @@
 
         } catch (err) {
             console.error(err);
-            showError("Произошла ошибка при загрузке данных.");
+            showError("Непредвиденная ошибка: " + err.message);
         }
     }
 
-    // Рендер списка приложений
     function renderApps(apps) {
         const container = document.getElementById('apps-container');
         container.innerHTML = '';
@@ -231,8 +235,6 @@
             const item = document.createElement('div');
             item.className = 'app-item';
 
-            // Формируем ссылку на установку через itms-services
-            // Обычно она выглядит так: itms-services://?action=download-manifest&url=ССЫЛКА_НА_PLIST
             const installLink = `itms-services://?action=download-manifest&url=${encodeURIComponent(app.plist_url)}`;
 
             item.innerHTML = `
@@ -258,7 +260,6 @@
         document.getElementById('error-state').classList.remove('hidden');
     }
 
-    // Запуск при загрузке страницы
     window.addEventListener('DOMContentLoaded', init);
 </script>
 
