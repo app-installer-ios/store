@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Панель Управления</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Подключаем Supabase JS клиент -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
@@ -37,62 +39,51 @@
             backdrop-filter: blur(25px);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        /* Уникальные стили для кнопок во всех окнах */
         .btn-primary-cyan {
             background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
             box-shadow: 0 4px 20px rgba(6, 182, 212, 0.25);
             border: 1px solid rgba(6, 182, 212, 0.4);
         }
-        .btn-primary-cyan:hover {
-            box-shadow: 0 6px 25px rgba(6, 182, 212, 0.4);
-        }
+        .btn-primary-cyan:hover { box-shadow: 0 6px 25px rgba(6, 182, 212, 0.4); }
         .btn-primary-purple {
             background: linear-gradient(135deg, #8b5cf6 0%, #d946ef 100%);
             box-shadow: 0 4px 20px rgba(139, 92, 246, 0.25);
             border: 1px solid rgba(139, 92, 246, 0.4);
         }
-        .btn-primary-purple:hover {
-            box-shadow: 0 6px 25px rgba(139, 92, 246, 0.4);
-        }
+        .btn-primary-purple:hover { box-shadow: 0 6px 25px rgba(139, 92, 246, 0.4); }
         .btn-primary-emerald {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             box-shadow: 0 4px 20px rgba(16, 185, 129, 0.25);
             border: 1px solid rgba(16, 185, 129, 0.4);
         }
-        .btn-primary-emerald:hover {
-            box-shadow: 0 6px 25px rgba(16, 185, 129, 0.4);
-        }
+        .btn-primary-emerald:hover { box-shadow: 0 6px 25px rgba(16, 185, 129, 0.4); }
         .btn-primary-amber {
             background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
             box-shadow: 0 4px 20px rgba(245, 158, 11, 0.25);
             border: 1px solid rgba(245, 158, 11, 0.4);
         }
-        .btn-primary-amber:hover {
-            box-shadow: 0 6px 25px rgba(245, 158, 11, 0.4);
-        }
+        .btn-primary-amber:hover { box-shadow: 0 6px 25px rgba(245, 158, 11, 0.4); }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4 sm:p-6">
 
-    <!-- Кастомное всплывающее уведомление (Тост) -->
+    <!-- Тост уведомления -->
     <div id="toast" class="fixed top-5 right-5 z-50 transform translate-x-full opacity-0 transition-all duration-300 glass-card px-5 py-3 rounded-2xl border border-cyan-500/30 shadow-2xl flex items-center space-x-3">
-        <div id="toastIcon" class="w-8 h-8 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center">
+        <div class="w-8 h-8 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center">
             <i data-lucide="check" class="w-4 h-4"></i>
         </div>
         <span id="toastText" class="text-sm font-medium text-white">Успешно выполнено</span>
     </div>
 
-    <!-- Модальное окно (диалоговое окно по центру) -->
+    <!-- Модальное окно -->
     <div id="modalOverlay" class="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
-        <div id="modalContainer" class="glass-modal w-full max-w-md rounded-3xl p-6 shadow-2xl border border-white/10 transform scale-95 opacity-0 transition-all duration-300">
-            <!-- Сюда динамически подгружается контент модалки -->
-        </div>
+        <div id="modalContainer" class="glass-modal w-full max-w-md rounded-3xl p-6 shadow-2xl border border-white/10 transform scale-95 opacity-0 transition-all duration-300"></div>
     </div>
 
-    <!-- Основной компактный контейнер -->
+    <!-- Основной контейнер -->
     <main class="w-full max-w-xl space-y-4">
 
-        <!-- 1. Главный блок "Пароли" -->
+        <!-- 1. Пароли -->
         <div class="glass-card rounded-2xl p-5 border-l-4 border-l-cyan-500 transition-all">
             <div onclick="toggleAccordion('passwordsSection')" class="flex items-center justify-between cursor-pointer select-none">
                 <div class="flex items-center space-x-3.5">
@@ -107,13 +98,12 @@
                 <i data-lucide="chevron-down" id="passwordsChevron" class="w-5 h-5 text-gray-400 transition-transform duration-300"></i>
             </div>
 
-            <!-- Раскрывающееся подменю паролей -->
             <div id="passwordsSection" class="hidden mt-4 pt-4 border-t border-white/5 space-y-2.5">
-                <button onclick="openPasswordEditor('site', 'Сайт')" class="w-full text-left px-4 py-3 rounded-xl bg-white/5 hover:bg-cyan-500/10 border border-white/5 hover:border-cyan-500/30 text-sm font-medium text-gray-200 transition flex items-center justify-between group">
+                <button onclick="openPasswordEditor('site_password', 'Сайт')" class="w-full text-left px-4 py-3 rounded-xl bg-white/5 hover:bg-cyan-500/10 border border-white/5 hover:border-cyan-500/30 text-sm font-medium text-gray-200 transition flex items-center justify-between group">
                     <span class="flex items-center space-x-3"><i data-lucide="globe" class="w-4 h-4 text-cyan-400 group-hover:scale-110 transition"></i><span>Сайт</span></span>
                     <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500"></i>
                 </button>
-                <button onclick="openPasswordEditor('admin', 'Админ-панель')" class="w-full text-left px-4 py-3 rounded-xl bg-white/5 hover:bg-purple-500/10 border border-white/5 hover:border-purple-500/30 text-sm font-medium text-gray-200 transition flex items-center justify-between group">
+                <button onclick="openPasswordEditor('admin_password', 'Админ-панель')" class="w-full text-left px-4 py-3 rounded-xl bg-white/5 hover:bg-purple-500/10 border border-white/5 hover:border-purple-500/30 text-sm font-medium text-gray-200 transition flex items-center justify-between group">
                     <span class="flex items-center space-x-3"><i data-lucide="shield-alert" class="w-4 h-4 text-purple-400 group-hover:scale-110 transition"></i><span>Админ-панель</span></span>
                     <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500"></i>
                 </button>
@@ -124,7 +114,7 @@
             </div>
         </div>
 
-        <!-- 2. Кнопка "Видимость приложений" -->
+        <!-- 2. Видимость -->
         <div onclick="openVisibilitySection()" class="glass-card rounded-2xl p-5 border-l-4 border-l-purple-500 cursor-pointer transition-all hover:border-purple-500/50 flex items-center justify-between group">
             <div class="flex items-center space-x-3.5">
                 <div class="w-11 h-11 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 group-hover:scale-105 transition">
@@ -138,7 +128,7 @@
             <i data-lucide="arrow-right" class="w-4 h-4 text-gray-500 group-hover:text-purple-400 group-hover:translate-x-1 transition"></i>
         </div>
 
-        <!-- 3. Кнопка "Режим обслуживания" -->
+        <!-- 3. Режим обслуживания -->
         <div onclick="openMaintenanceSection()" class="glass-card rounded-2xl p-5 border-l-4 border-l-amber-500 cursor-pointer transition-all hover:border-amber-500/50 flex items-center justify-between group">
             <div class="flex items-center space-x-3.5">
                 <div class="w-11 h-11 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 group-hover:scale-105 transition">
@@ -152,7 +142,7 @@
             <i data-lucide="arrow-right" class="w-4 h-4 text-gray-500 group-hover:text-amber-400 group-hover:translate-x-1 transition"></i>
         </div>
 
-        <!-- 4. Кнопка "История действий" -->
+        <!-- 4. История -->
         <div onclick="openHistorySection()" class="glass-card rounded-2xl p-5 border-l-4 border-l-emerald-500 cursor-pointer transition-all hover:border-emerald-500/50 flex items-center justify-between group">
             <div class="flex items-center space-x-3.5">
                 <div class="w-11 h-11 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 group-hover:scale-105 transition">
@@ -168,9 +158,14 @@
 
     </main>
 
-    <!-- Скрипты управления логикой и интерфейсом -->
+    <!-- Скрипты и логика Supabase -->
     <script>
         lucide.createIcons();
+
+        // Инициализация Supabase (замените на свои реальные данные)
+        const SUPABASE_URL = 'ВАШ_SUPABASE_URL';
+        const SUPABASE_ANON_KEY = 'ВАШ_SUPABASE_ANON_KEY';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         function showToast(message) {
             const toast = document.getElementById('toast');
@@ -210,13 +205,11 @@
             const container = document.getElementById('modalContainer');
             container.classList.remove('scale-100', 'opacity-100');
             container.classList.add('scale-95', 'opacity-0');
-            setTimeout(() => {
-                overlay.classList.add('hidden');
-            }, 300);
+            setTimeout(() => { overlay.classList.add('hidden'); }, 300);
         }
 
-        // Окно генерации/копирования/сохранения 6-значного пароля для Сайт / Админ-панель / Приложение
-        function openPasswordEditor(idKey, titleName) {
+        // Открытие редактора пароля с загрузкой из таблицы settings
+        async function openPasswordEditor(dbKey, titleName) {
             openModal(`
                 <div class="space-y-4">
                     <div class="flex items-center justify-between pb-3 border-b border-white/5">
@@ -225,27 +218,59 @@
                     </div>
                     <div class="space-y-2">
                         <label class="text-xs text-gray-400">Код доступа (6 цифр)</label>
-                        <input type="text" id="passInput_${idKey}" maxlength="6" value="482910" class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-center text-lg text-white font-mono tracking-widest focus:outline-none focus:border-cyan-500">
+                        <input type="text" id="passInput_${dbKey}" maxlength="6" value="Загрузка..." class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-center text-lg text-white font-mono tracking-widest focus:outline-none focus:border-cyan-500">
                     </div>
                     <div class="grid grid-cols-3 gap-2 pt-2">
-                        <button onclick="generatePass('${idKey}')" class="btn-primary-cyan text-white rounded-xl py-2.5 text-xs font-semibold transition flex items-center justify-center space-x-1">
-                            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
-                            <span>Генерировать</span>
+                        <button onclick="generatePass('${dbKey}')" class="btn-primary-cyan text-white rounded-xl py-2.5 text-xs font-semibold transition flex items-center justify-center space-x-1">
+                            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i><span>Генерировать</span>
                         </button>
-                        <button onclick="copyPass('${idKey}')" class="btn-primary-purple text-white rounded-xl py-2.5 text-xs font-semibold transition flex items-center justify-center space-x-1">
-                            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-                            <span>Копировать</span>
+                        <button onclick="copyPass('${dbKey}')" class="btn-primary-purple text-white rounded-xl py-2.5 text-xs font-semibold transition flex items-center justify-center space-x-1">
+                            <i data-lucide="copy" class="w-3.5 h-3.5"></i><span>Копировать</span>
                         </button>
-                        <button onclick="savePass('${titleName}')" class="btn-primary-emerald text-white rounded-xl py-2.5 text-xs font-semibold transition flex items-center justify-center space-x-1">
-                            <i data-lucide="save" class="w-3.5 h-3.5"></i>
-                            <span>Сохранить</span>
+                        <button onclick="savePassToSupabase('${dbKey}', '${titleName}')" class="btn-primary-emerald text-white rounded-xl py-2.5 text-xs font-semibold transition flex items-center justify-center space-x-1">
+                            <i data-lucide="save" class="w-3.5 h-3.5"></i><span>Сохранить</span>
                         </button>
                     </div>
                 </div>
             `);
+
+            // Загружаем текущее значение из Supabase (таблица settings)
+            try {
+                const { data, error } = await supabaseClient
+                    .from('settings')
+                    .select('value')
+                    .eq('key', dbKey)
+                    .single();
+                
+                if (data && data.value) {
+                    document.getElementById('passInput_' + dbKey).value = data.value;
+                } else {
+                    document.getElementById('passInput_' + dbKey).value = '000000';
+                }
+            } catch (err) {
+                console.error(err);
+                document.getElementById('passInput_' + dbKey).value = '123456';
+            }
         }
 
-        // Модальное окно со списком приложений
+        // Сохранение пароля в таблицу settings
+        async function savePassToSupabase(dbKey, titleName) {
+            const val = document.getElementById('passInput_' + dbKey).value;
+            try {
+                const { error } = await supabaseClient
+                    .from('settings')
+                    .upsert({ key: dbKey, value: val }, { onConflict: 'key' });
+
+                if (error) throw error;
+                showToast(`Пароль для "${titleName}" сохранен в базу!`);
+                closeModal();
+            } catch (err) {
+                showToast("Ошибка сохранения!");
+                console.error(err);
+            }
+        }
+
+        // Список приложений
         function openAppsList() {
             openModal(`
                 <div class="space-y-4">
@@ -253,27 +278,41 @@
                         <h3 class="text-sm font-bold text-white uppercase tracking-wider">Пароли приложений</h3>
                         <button onclick="closeModal()" class="text-gray-400 hover:text-white transition"><i data-lucide="x" class="w-4 h-4"></i></button>
                     </div>
-                    <!-- Кнопка генерации/сохранения для всех приложений сразу -->
                     <button onclick="generateAllAppsPasswords()" class="w-full btn-primary-amber text-white rounded-xl py-3 text-xs font-bold uppercase tracking-wider transition flex items-center justify-center space-x-2">
                         <i data-lucide="zap" class="w-4 h-4"></i>
                         <span>Генерировать и сохранить для всех</span>
                     </button>
                     <div class="space-y-2 pt-1 max-h-60 overflow-y-auto pr-1">
-                        <div onclick="openPasswordEditor('sber', 'SberBank')" class="p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 cursor-pointer flex items-center justify-between transition">
+                        <div onclick="openPasswordEditor('app_sber', 'SberBank')" class="p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 cursor-pointer flex items-center justify-between transition">
                             <span class="text-sm font-medium text-white">SberBank iOS</span>
                             <span class="text-xs text-cyan-400 flex items-center space-x-1"><span>Изменить</span><i data-lucide="chevron-right" class="w-3.5 h-3.5"></i></span>
                         </div>
-                        <div onclick="openPasswordEditor('tbank', 'T-Bank')" class="p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 cursor-pointer flex items-center justify-between transition">
+                        <div onclick="openPasswordEditor('app_tbank', 'T-Bank')" class="p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 cursor-pointer flex items-center justify-between transition">
                             <span class="text-sm font-medium text-white">T-Bank iOS</span>
                             <span class="text-xs text-cyan-400 flex items-center space-x-1"><span>Изменить</span><i data-lucide="chevron-right" class="w-3.5 h-3.5"></i></span>
                         </div>
-                        <div onclick="openPasswordEditor('max', 'Max App')" class="p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 cursor-pointer flex items-center justify-between transition">
+                        <div onclick="openPasswordEditor('app_max', 'Max App')" class="p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 cursor-pointer flex items-center justify-between transition">
                             <span class="text-sm font-medium text-white">Max App</span>
                             <span class="text-xs text-cyan-400 flex items-center space-x-1"><span>Изменить</span><i data-lucide="chevron-right" class="w-3.5 h-3.5"></i></span>
                         </div>
                     </div>
                 </div>
             `);
+        }
+
+        async function generateAllAppsPasswords() {
+            const apps = ['app_sber', 'app_tbank', 'app_max'];
+            try {
+                for (let appKey of apps) {
+                    const pin = Math.floor(100000 + Math.random() * 900000).toString();
+                    await supabaseClient.from('settings').upsert({ key: appKey, value: pin }, { onConflict: 'key' });
+                }
+                showToast("Пароли для всех приложений обновлены в базе!");
+                closeModal();
+            } catch (err) {
+                showToast("Ошибка пакетного обновления!");
+                console.error(err);
+            }
         }
 
         function openVisibilitySection() {
@@ -291,10 +330,6 @@
                         <div class="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5">
                             <span class="text-sm font-medium text-white">T-Bank iOS</span>
                             <input type="checkbox" checked class="w-4 h-4 accent-purple-500 cursor-pointer">
-                        </div>
-                        <div class="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5">
-                            <span class="text-sm font-medium text-white">Max App</span>
-                            <input type="checkbox" class="w-4 h-4 accent-purple-500 cursor-pointer">
                         </div>
                     </div>
                 </div>
@@ -329,12 +364,8 @@
                         <button onclick="closeModal()" class="text-gray-400 hover:text-white transition"><i data-lucide="x" class="w-4 h-4"></i></button>
                     </div>
                     <div class="p-3 rounded-xl bg-white/5 border border-white/5 flex justify-between items-center text-xs">
-                        <span class="text-gray-300">Изменен пароль: Сайт</span>
-                        <span class="text-gray-500">Только что</span>
-                    </div>
-                    <div class="p-3 rounded-xl bg-white/5 border border-white/5 flex justify-between items-center text-xs">
-                        <span class="text-gray-300">Обновлена видимость приложений</span>
-                        <span class="text-gray-500">10 минут назад</span>
+                        <span class="text-gray-300">Синхронизация с Supabase активна</span>
+                        <span class="text-emerald-400">Online</span>
                     </div>
                 </div>
             `);
@@ -351,16 +382,6 @@
             const input = document.getElementById('passInput_' + key);
             navigator.clipboard.writeText(input.value);
             showToast("Код скопирован в буфер!");
-        }
-
-        function savePass(name) {
-            showToast(`Пароль для "${name}" сохранен!`);
-            closeModal();
-        }
-
-        function generateAllAppsPasswords() {
-            showToast("Пароли для всех приложений обновлены!");
-            closeModal();
         }
     </script>
 </body>
