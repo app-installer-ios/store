@@ -548,7 +548,7 @@
     </div>
 
     <div id="login-screen">
-        <h1>ПАНЕЛЬ АДМИНИСТРАТОРА</h1>
+        <h1>АДМИН-ПАНЕЛЬ</h1>
         <p class="subtitle">Введите пароль для доступа</p>
         <div class="input-group">
             <input type="tel" inputmode="numeric" pattern="[0-9]*" id="admin-pass-input" autocomplete="off">
@@ -558,30 +558,30 @@
     </div>
 
     <div id="admin-panel">
-        <h1>Панель Управления</h1>
-        <p class="subtitle">Системные настройки и доступы</p>
+        <h1>ПАНЕЛЬ УПРАВЛЕНИЯ</h1>
+        <p class="subtitle">НАСТРОЙКИ ПАРОЛЕЙ И ДОСТУПА</p>
 
         <div class="dashboard-grid">
             <div class="control-card card-passwords" onclick="openPasswordsMenuSheet()">
                 <div class="control-info">
-                    <span class="control-title">Пароли</span>
-                    <span class="control-desc">Сайт, админка и приложения</span>
+                    <span class="control-title">ПАРОЛИ</span>
+                    <span class="control-desc">САЙТ, АДМИН-ПАНЕЛЬ и ПРИЛОЖЕНИЯ</span>
                 </div>
                 <div class="control-icon-badge">🔐</div>
             </div>
 
             <div class="control-card card-visibility" onclick="openVisibilityCatalogSheet()">
                 <div class="control-info">
-                    <span class="control-title">Видимость приложений</span>
-                    <span class="control-desc">Управление каталогом на сайте</span>
+                    <span class="control-title">ВИДИМОСТЬ ПРИЛОЖЕНИЙ</span>
+                    <span class="control-desc">УПРАВЛЕНИЕ КАТАЛОГОМ НА САЙТЕ</span>
                 </div>
                 <div class="control-icon-badge">🔎</div>
             </div>
 
             <div class="control-card card-maintenance">
                 <div class="control-info">
-                    <span class="control-title">Технические работы</span>
-                    <span class="control-desc">Включить заглушку на сайте</span>
+                    <span class="control-title">ТЕХНИЧЕСКИЕ РАБОТЫ НА САЙТЕ</span>
+                    <span class="control-desc">ВЫКЛЮЧИТЬ САЙТ</span>
                 </div>
                 <label class="switch">
                     <input type="checkbox" id="maintenanceToggle" onchange="toggleMaintenance(this.checked)">
@@ -591,8 +591,8 @@
 
             <div class="control-card card-history" onclick="openHistoryModal()">
                 <div class="control-info">
-                    <span class="control-title">История действий</span>
-                    <span class="control-desc">Журнал событий системы</span>
+                    <span class="control-title">ИСТОРИЯ ДЕЙСТВИЙ</span>
+                    <span class="control-desc">ЖУРНАЛ СОБЫТИЙ</span>
                 </div>
                 <div class="control-icon-badge">📜</div>
             </div>
@@ -603,28 +603,28 @@
 <div class="sheet-overlay" id="passwordsMenuOverlay" onclick="closePasswordsMenuSheet()">
     <div class="sheet-modal" onclick="event.stopPropagation()">
         <div class="sheet-header">
-            <div class="sheet-title">Управление паролями</div>
+            <div class="sheet-title">УПРАВЛЕНИЕ ПАРОЛЯМИ</div>
             <button class="sheet-close" onclick="closePasswordsMenuSheet()">✕</button>
         </div>
         <div class="passwords-menu-list">
             <div class="password-subcard" onclick="openEditModal('site_password', 'Пароль для сайта', 'site')">
                 <div class="control-info">
-                    <span class="control-title">Пароль сайта</span>
-                    <span class="control-desc">Доступ пользователей к каталогу</span>
+                    <span class="control-title">ПАРОЛЬ САЙТА</span>
+                    <span class="control-desc">ДОСТУП ПОЛЬЗОВАТЕЛЕЙ К КАТАЛОГУ</span>
                 </div>
                 <span style="font-size: 16px;">🌐</span>
             </div>
             <div class="password-subcard" onclick="openEditModal('admin_password', 'Пароль администратора', 'admin')">
                 <div class="control-info">
-                    <span class="control-title">Пароль админ-панели</span>
-                    <span class="control-desc">Защита панели управления</span>
+                    <span class="control-title">ПАРОЛЬ АДМИН-ПАНЕЛИ</span>
+                    <span class="control-desc">ЗАЩИТА ПАНЕЛИ УПРАВЛЕНИЯ</span>
                 </div>
                 <span style="font-size: 16px;">🛡️</span>
             </div>
             <div class="password-subcard" onclick="openAppsCatalogSheet()">
                 <div class="control-info">
-                    <span class="control-title">Пароли приложений</span>
-                    <span class="control-desc">Цифровые коды для каждого ПО</span>
+                    <span class="control-title">ПАРОЛИ ПРИЛОЖЕНИЙ</span>
+                    <span class="control-desc">ПАРОЛИ КАЖДОГО ПРИЛОЖЕНИЯ</span>
                 </div>
                 <span style="font-size: 16px;">📱</span>
             </div>
@@ -635,7 +635,7 @@
 <div class="sheet-overlay" id="historyCatalogOverlay" onclick="closeHistoryModal()">
     <div class="sheet-modal" onclick="event.stopPropagation()">
         <div class="sheet-header">
-            <div class="sheet-title">История действий</div>
+            <div class="sheet-title">ИСТОРИЯ ДЕЙСТВИЙ</div>
             <button class="sheet-close" onclick="closeHistoryModal()">✕</button>
         </div>
         <div class="history-modal-list" id="historyModalList">
@@ -650,7 +650,7 @@
 <div class="sheet-overlay" id="appsCatalogOverlay" onclick="closeAppsCatalogSheet()">
     <div class="sheet-modal" onclick="event.stopPropagation()">
         <div class="sheet-header">
-            <div class="sheet-title">Пароли приложений</div>
+            <div class="sheet-title">ПАРОЛИ ПРИЛОЖЕНИЙ</div>
             <button class="sheet-close" onclick="closeAppsCatalogSheet()">✕</button>
         </div>
         <div class="sheet-stats-container">
@@ -670,7 +670,7 @@
             </div>
         </div>
         <button class="btn-generate-all" id="btnGenerateAllPasswords" type="button" onclick="generateAndSaveAllPasswords()">
-            <span>🔐 Сгенерировать и сохранить пароли для всех</span>
+            <span>🔐 Сгенерировать и сохранить пароли для всех приложений</span>
         </button>
         <div class="app-search-wrap">
             <span class="search-icon">⌕</span>
@@ -683,7 +683,7 @@
 <div class="sheet-overlay" id="visibilityCatalogOverlay" onclick="closeVisibilityCatalogSheet()">
     <div class="sheet-modal" onclick="event.stopPropagation()">
         <div class="sheet-header">
-            <div class="sheet-title">Видимость приложений</div>
+            <div class="sheet-title">ВИДИМОСТЬ ПРИЛОЖЕНИЙ</div>
             <button class="sheet-close" onclick="closeVisibilityCatalogSheet()">✕</button>
         </div>
         <div class="sheet-stats-container">
@@ -720,7 +720,7 @@
             <div class="sheet-title" id="editModalTitle">Пароль</div>
         </div>
         <div class="input-group">
-            <label>Новый цифровой пароль</label>
+            <label>Новый пароль</label>
             <input type="tel" inputmode="numeric" pattern="[0-9]*" id="editPasswordInput" autocomplete="off">
         </div>
         <div class="extra-actions-container">
