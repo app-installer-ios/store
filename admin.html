@@ -3,23 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Премиальная Панель Управления</title>
-    <!-- Подключаем Tailwind CSS для быстрой и красивой стилизации -->
+    <title>Панель Управления</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Подключаем шрифт Inter и иконки Lucide -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
                     colors: {
-                        darkBg: '#090a0f',
-                        cardBg: '#13151f',
-                        cardBorder: '#1e2235',
-                        accent: '#6366f1',
-                        accentHover: '#4f46e5'
+                        darkBg: '#07080c',
+                        cardBg: '#10131d',
+                        cardBorder: '#1c2237',
                     }
                 }
             }
@@ -27,212 +23,257 @@
     </script>
     <style>
         body {
-            background-color: #090a0f;
-            color: #f3f4f6;
-            font-family: 'Inter', sans-serif;
+            background-color: #07080c;
+            color: #f1f5f9;
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
-        .glass-panel {
-            background: rgba(19, 21, 31, 0.7);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.07);
+        .glass-card {
+            background: linear-gradient(135deg, rgba(16, 19, 29, 0.8) 0%, rgba(10, 12, 18, 0.9) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
         }
-        .glow-btn:hover {
-            box-shadow: 0 0 25px rgba(99, 102, 241, 0.4);
+        /* Уникальные стили для кнопок во всех окнах */
+        .btn-primary-cyan {
+            background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+            box-shadow: 0 4px 20px rgba(6, 182, 212, 0.25);
+            border: 1px solid rgba(6, 182, 212, 0.4);
+        }
+        .btn-primary-cyan:hover {
+            box-shadow: 0 6px 25px rgba(6, 182, 212, 0.4);
+        }
+        .btn-primary-purple {
+            background: linear-gradient(135deg, #8b5cf6 0%, #d946ef 100%);
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.25);
+            border: 1px solid rgba(139, 92, 246, 0.4);
+        }
+        .btn-primary-purple:hover {
+            box-shadow: 0 6px 25px rgba(139, 92, 246, 0.4);
+        }
+        .btn-primary-emerald {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.25);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+        }
+        .btn-primary-emerald:hover {
+            box-shadow: 0 6px 25px rgba(16, 185, 129, 0.4);
+        }
+        .btn-primary-amber {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            box-shadow: 0 4px 20px rgba(245, 158, 11, 0.25);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+        }
+        .btn-primary-amber:hover {
+            box-shadow: 0 6px 25px rgba(245, 158, 11, 0.4);
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-start p-4 sm:p-8">
+<body class="min-h-screen flex items-center justify-center p-4 sm:p-6">
 
-    <!-- Шапка панели -->
-    <header class="w-full max-w-4xl mb-8 flex items-center justify-between glass-panel px-6 py-4 rounded-2xl shadow-2xl">
-        <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
-                <i data-lucide="shield-check" class="w-6 h-6"></i>
-            </div>
-            <div>
-                <h1 class="text-lg font-bold tracking-wide text-white">Admin Control Center</h1>
-                <p class="text-xs text-gray-400">Премиальное управление системой</p>
-            </div>
+    <!-- Кастомное всплывающее уведомление (Тост) -->
+    <div id="toast" class="fixed top-5 right-5 z-50 transform translate-x-full opacity-0 transition-all duration-300 glass-card px-5 py-3 rounded-2xl border border-cyan-500/30 shadow-2xl flex items-center space-x-3">
+        <div id="toastIcon" class="w-8 h-8 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center">
+            <i data-lucide="check" class="w-4 h-4"></i>
         </div>
-        <button onclick="logout()" class="flex items-center space-x-2 text-sm text-gray-400 hover:text-red-400 transition bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 px-4 py-2 rounded-xl">
-            <i data-lucide="log-out" class="w-4 h-4"></i>
-            <span>Выйти</span>
-        </button>
-    </header>
+        <span id="toastText" class="text-sm font-medium text-white">Успешно выполнено</span>
+    </div>
 
-    <!-- Основной контейнер -->
-    <main class="w-full max-w-4xl space-y-6">
+    <!-- Основной компактный контейнер -->
+    <main class="w-full max-w-xl space-y-4">
 
-        <!-- Главное меню кнопок -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            
-            <!-- 1. Кнопка "Пароли" с раскрывающимся подменю -->
-            <div class="glass-panel p-6 rounded-2xl transition duration-300 border border-indigo-500/20 hover:border-indigo-500/40">
-                <div class="flex items-center justify-between cursor-pointer" onclick="toggleSubMenu('passwordsSubMenu')">
-                    <div class="flex items-center space-x-4">
-                        <div class="w-12 h-12 rounded-xl bg-indigo-600/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
-                            <i data-lucide="key-round" class="w-6 h-6"></i>
-                        </div>
-                        <div>
-                            <h2 class="text-base font-semibold text-white">Пароли</h2>
-                            <p class="text-xs text-gray-400">Управление доступом, генерация и копирование</p>
-                        </div>
-                    </div>
-                    <i data-lucide="chevron-down" id="passwordsChevron" class="w-5 h-5 text-gray-400 transition-transform duration-300"></i>
-                </div>
-
-                <!-- Подменю паролей (3 кнопки) -->
-                <div id="passwordsSubMenu" class="hidden mt-5 pt-4 border-t border-white/5 grid grid-cols-1 gap-2.5">
-                    <button onclick="openPasswordsSection('site')" class="w-full text-left px-4 py-3 rounded-xl bg-white/5 hover:bg-indigo-600/20 border border-white/5 hover:border-indigo-500/30 text-sm font-medium text-gray-200 transition flex items-center justify-between">
-                        <span class="flex items-center space-x-3"><i data-lucide="globe" class="w-4 h-4 text-indigo-400"></i><span>Сайт</span></span>
-                        <i data-lucide="arrow-right" class="w-4 h-4 text-gray-500"></i>
-                    </button>
-                    <button onclick="openPasswordsSection('admin')" class="w-full text-left px-4 py-3 rounded-xl bg-white/5 hover:bg-indigo-600/20 border border-white/5 hover:border-indigo-500/30 text-sm font-medium text-gray-200 transition flex items-center justify-between">
-                        <span class="flex items-center space-x-3"><i data-lucide="lock" class="w-4 h-4 text-indigo-400"></i><span>Админ-панель</span></span>
-                        <i data-lucide="arrow-right" class="w-4 h-4 text-gray-500"></i>
-                    </button>
-                    <button onclick="openPasswordsSection('apps')" class="w-full text-left px-4 py-3 rounded-xl bg-white/5 hover:bg-indigo-600/20 border border-white/5 hover:border-indigo-500/30 text-sm font-medium text-gray-200 transition flex items-center justify-between">
-                        <span class="flex items-center space-x-3"><i data-lucide="grid" class="w-4 h-4 text-indigo-400"></i><span>Пароли приложений (Список)</span></span>
-                        <i data-lucide="arrow-right" class="w-4 h-4 text-gray-500"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- 2. Кнопка "Видимость приложений" -->
-            <div onclick="openVisibilitySection()" class="glass-panel p-6 rounded-2xl cursor-pointer transition duration-300 border border-white/5 hover:border-indigo-500/40 group">
-                <div class="flex items-center space-x-4">
-                    <div class="w-12 h-12 rounded-xl bg-purple-600/10 border border-purple-500/20 flex items-center justify-center text-purple-400 group-hover:scale-110 transition">
-                        <i data-lucide="eye" class="w-6 h-6"></i>
+        <!-- 1. Главный блок "Пароли" -->
+        <div class="glass-card rounded-2xl p-5 border-l-4 border-l-cyan-500 transition-all">
+            <div onclick="toggleAccordion('passwordsSection')" class="flex items-center justify-between cursor-pointer select-none">
+                <div class="flex items-center space-x-3.5">
+                    <div class="w-11 h-11 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+                        <i data-lucide="key-round" class="w-5 h-5"></i>
                     </div>
                     <div>
-                        <h2 class="text-base font-semibold text-white">Видимость приложений</h2>
-                        <p class="text-xs text-gray-400">Настройка отображения элементов каталога</p>
+                        <h2 class="text-sm font-bold text-white uppercase tracking-wider">Пароли</h2>
+                        <p class="text-xs text-gray-400">Управление доступом, генерация и списки</p>
                     </div>
                 </div>
+                <i data-lucide="chevron-down" id="passwordsChevron" class="w-5 h-5 text-gray-400 transition-transform duration-300"></i>
             </div>
 
-            <!-- 3. Кнопка "Режим обслуживания" -->
-            <div onclick="openMaintenanceSection()" class="glass-panel p-6 rounded-2xl cursor-pointer transition duration-300 border border-white/5 hover:border-amber-500/40 group">
-                <div class="flex items-center space-x-4">
-                    <div class="w-12 h-12 rounded-xl bg-amber-600/10 border border-amber-500/20 flex items-center justify-center text-amber-400 group-hover:scale-110 transition">
-                        <i data-lucide="wrench" class="w-6 h-6"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-base font-semibold text-white">Режим обслуживания</h2>
-                        <p class="text-xs text-gray-400">Включение заглушки и технических работ</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 4. Кнопка "История действий" -->
-            <div onclick="openHistorySection()" class="glass-panel p-6 rounded-2xl cursor-pointer transition duration-300 border border-white/5 hover:border-emerald-500/40 group">
-                <div class="flex items-center space-x-4">
-                    <div class="w-12 h-12 rounded-xl bg-emerald-600/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition">
-                        <i data-lucide="history" class="w-6 h-6"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-base font-semibold text-white">История действий</h2>
-                        <p class="text-xs text-gray-400">Логирование и аудит админ-панели</p>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- Динамическая рабочая зона / Модальный блок функционала паролей и т.д. -->
-        <div id="workspace" class="glass-panel p-6 rounded-2xl hidden">
-            <div class="flex items-center justify-between mb-4 pb-3 border-b border-white/5">
-                <h3 id="workspaceTitle" class="text-lg font-semibold text-white">Раздел</h3>
-                <button onclick="closeWorkspace()" class="text-gray-400 hover:text-white transition">
-                    <i data-lucide="x" class="w-5 h-5"></i>
+            <!-- Раскрывающееся подменю паролей -->
+            <div id="passwordsSection" class="hidden mt-4 pt-4 border-t border-white/5 space-y-2.5">
+                <button onclick="openPasswordEditor('site', 'Сайт')" class="w-full text-left px-4 py-3 rounded-xl bg-white/5 hover:bg-cyan-500/10 border border-white/5 hover:border-cyan-500/30 text-sm font-medium text-gray-200 transition flex items-center justify-between group">
+                    <span class="flex items-center space-x-3"><i data-lucide="globe" class="w-4 h-4 text-cyan-400 group-hover:scale-110 transition"></i><span>Сайт</span></span>
+                    <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500"></i>
+                </button>
+                <button onclick="openPasswordEditor('admin', 'Админ-панель')" class="w-full text-left px-4 py-3 rounded-xl bg-white/5 hover:bg-purple-500/10 border border-white/5 hover:border-purple-500/30 text-sm font-medium text-gray-200 transition flex items-center justify-between group">
+                    <span class="flex items-center space-x-3"><i data-lucide="shield-alert" class="w-4 h-4 text-purple-400 group-hover:scale-110 transition"></i><span>Админ-панель</span></span>
+                    <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500"></i>
+                </button>
+                <button onclick="openAppsList()" class="w-full text-left px-4 py-3 rounded-xl bg-white/5 hover:bg-emerald-500/10 border border-white/5 hover:border-emerald-500/30 text-sm font-medium text-gray-200 transition flex items-center justify-between group">
+                    <span class="flex items-center space-x-3"><i data-lucide="grid" class="w-4 h-4 text-emerald-400 group-hover:scale-110 transition"></i><span>Пароли приложений</span></span>
+                    <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500"></i>
                 </button>
             </div>
-            <div id="workspaceContent" class="space-y-4">
-                <!-- Сюда динамически подгружается функционал генерации, сохранения, копирования и списков -->
+        </div>
+
+        <!-- Динамическая зона появления подконтента (не уводит экран вниз) -->
+        <div id="dynamicContainer" class="hidden glass-card rounded-2xl p-5 border border-white/10 transition-all">
+            <!-- Сюда динамически подгружаются окна -->
+        </div>
+
+        <!-- 2. Кнопка "Видимость приложений" -->
+        <div onclick="openVisibilitySection()" class="glass-card rounded-2xl p-5 border-l-4 border-l-purple-500 cursor-pointer transition-all hover:border-purple-500/50 flex items-center justify-between group">
+            <div class="flex items-center space-x-3.5">
+                <div class="w-11 h-11 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 group-hover:scale-105 transition">
+                    <i data-lucide="eye" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h2 class="text-sm font-bold text-white uppercase tracking-wider">Видимость приложений</h2>
+                    <p class="text-xs text-gray-400">Настройка отображения элементов каталога</p>
+                </div>
             </div>
+            <i data-lucide="arrow-right" class="w-4 h-4 text-gray-500 group-hover:text-purple-400 group-hover:translate-x-1 transition"></i>
+        </div>
+
+        <!-- 3. Кнопка "Режим обслуживания" -->
+        <div onclick="openMaintenanceSection()" class="glass-card rounded-2xl p-5 border-l-4 border-l-amber-500 cursor-pointer transition-all hover:border-amber-500/50 flex items-center justify-between group">
+            <div class="flex items-center space-x-3.5">
+                <div class="w-11 h-11 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 group-hover:scale-105 transition">
+                    <i data-lucide="wrench" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h2 class="text-sm font-bold text-white uppercase tracking-wider">Режим обслуживания</h2>
+                    <p class="text-xs text-gray-400">Управление заглушкой и техническими работами</p>
+                </div>
+            </div>
+            <i data-lucide="arrow-right" class="w-4 h-4 text-gray-500 group-hover:text-amber-400 group-hover:translate-x-1 transition"></i>
+        </div>
+
+        <!-- 4. Кнопка "История действий" -->
+        <div onclick="openHistorySection()" class="glass-card rounded-2xl p-5 border-l-4 border-l-emerald-500 cursor-pointer transition-all hover:border-emerald-500/50 flex items-center justify-between group">
+            <div class="flex items-center space-x-3.5">
+                <div class="w-11 h-11 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 group-hover:scale-105 transition">
+                    <i data-lucide="history" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h2 class="text-sm font-bold text-white uppercase tracking-wider">История действий</h2>
+                    <p class="text-xs text-gray-400">Аудит и логирование панели управления</p>
+                </div>
+            </div>
+            <i data-lucide="arrow-right" class="w-4 h-4 text-gray-500 group-hover:text-emerald-400 group-hover:translate-x-1 transition"></i>
         </div>
 
     </main>
 
-    <!-- Инициализация икон и логика скриптов -->
+    <!-- Скрипты управления логикой и интерфейсом -->
     <script>
         lucide.createIcons();
 
-        function toggleSubMenu(id) {
-            const menu = document.getElementById(id);
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastText').textContent = message;
+            toast.classList.remove('translate-x-full', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-x-full', 'opacity-0');
+            }, 2500);
+        }
+
+        function toggleAccordion(id) {
+            const section = document.getElementById(id);
             const chevron = document.getElementById('passwordsChevron');
-            if (menu.classList.contains('hidden')) {
-                menu.classList.remove('hidden');
+            if (section.classList.contains('hidden')) {
+                section.classList.remove('hidden');
                 chevron.style.transform = 'rotate(180deg)';
             } else {
-                menu.classList.add('hidden');
+                section.classList.add('hidden');
                 chevron.style.transform = 'rotate(0deg)';
+                document.getElementById('dynamicContainer').classList.add('hidden');
             }
         }
 
-        function showWorkspace(title, htmlContent) {
-            const ws = document.getElementById('workspace');
-            const wsTitle = document.getElementById('workspaceTitle');
-            const wsContent = document.getElementById('workspaceContent');
-            
-            wsTitle.textContent = title;
-            wsContent.innerHTML = htmlContent;
-            ws.classList.remove('hidden');
-            ws.scrollIntoView({ behavior: 'smooth' });
+        function showDynamicContent(html) {
+            const container = document.getElementById('dynamicContainer');
+            container.innerHTML = html;
+            container.classList.remove('hidden');
             lucide.createIcons();
         }
 
-        function closeWorkspace() {
-            document.getElementById('workspace').classList.add('hidden');
-        }
-
-        function openPasswordsSection(type) {
-            let title = '';
-            if (type === 'site') title = 'Пароль: Сайт';
-            if (type === 'admin') title = 'Пароль: Админ-панель';
-            if (type === 'apps') title = 'Пароли приложений (Весь список)';
-
-            let content = `
+        // Окно генерации/копирования/сохранения пароля для Сайт / Админ-панель / Конкретное приложение
+        function openPasswordEditor(idKey, titleName) {
+            showDynamicContent(`
                 <div class="space-y-4">
-                    <p class="text-sm text-gray-400">Управление защитой для раздела: <strong>${title}</strong></p>
-                    <div class="flex space-x-2">
-                        <input type="text" id="passInput" value="sec_key_99281_xyz" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500">
-                        <button onclick="generatePassword()" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-medium transition glow-btn flex items-center space-x-1">
-                            <i data-lucide="refresh-cw" class="w-4 h-4"></i>
-                            <span>Генерация</span>
-                        </button>
+                    <div class="flex items-center justify-between pb-3 border-b border-white/5">
+                        <h3 class="text-sm font-bold text-white uppercase tracking-wider">Пароль: ${titleName}</h3>
+                        <button onclick="document.getElementById('dynamicContainer').classList.add('hidden')" class="text-gray-400 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
                     </div>
-                    <div class="flex space-x-3 pt-2">
-                        <button onclick="copyPassword()" class="flex-1 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-xl text-sm font-medium transition flex items-center justify-center space-x-2">
-                            <i data-lucide="copy" class="w-4 h-4 text-indigo-400"></i>
+                    <div class="space-y-2">
+                        <label class="text-xs text-gray-400">Текущий ключ защиты</label>
+                        <input type="text" id="passInput_${idKey}" value="prv_${Math.random().toString(36).substring(2, 10)}_sec" class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 font-mono">
+                    </div>
+                    <div class="grid grid-cols-3 gap-2 pt-1">
+                        <button onclick="generatePass('${idKey}')" class="btn-primary-cyan text-white rounded-xl py-2.5 text-xs font-semibold transition flex items-center justify-center space-x-1.5">
+                            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                            <span>Генерировать</span>
+                        </button>
+                        <button onclick="copyPass('${idKey}')" class="btn-primary-purple text-white rounded-xl py-2.5 text-xs font-semibold transition flex items-center justify-center space-x-1.5">
+                            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
                             <span>Копировать</span>
                         </button>
-                        <button onclick="savePassword()" class="flex-1 py-2.5 bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/30 text-emerald-300 rounded-xl text-sm font-medium transition flex items-center justify-center space-x-2">
-                            <i data-lucide="save" class="w-4 h-4"></i>
+                        <button onclick="savePass('${titleName}')" class="btn-primary-emerald text-white rounded-xl py-2.5 text-xs font-semibold transition flex items-center justify-center space-x-1.5">
+                            <i data-lucide="save" class="w-3.5 h-3.5"></i>
                             <span>Сохранить</span>
                         </button>
                     </div>
                 </div>
-            `;
-            showWorkspace(title, content);
+            `);
+        }
+
+        // Список приложений для кнопки "Пароли приложений"
+        function openAppsList() {
+            showDynamicContent(`
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between pb-3 border-b border-white/5">
+                        <h3 class="text-sm font-bold text-white uppercase tracking-wider">Список приложений</h3>
+                        <button onclick="document.getElementById('dynamicContainer').classList.add('hidden')" class="text-gray-400 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
+                    </div>
+                    <!-- Общая кнопка генерации/сохранения для всех приложений -->
+                    <button onclick="generateAllAppsPasswords()" class="w-full btn-primary-amber text-white rounded-xl py-3 text-xs font-bold uppercase tracking-wider transition flex items-center justify-center space-x-2">
+                        <i data-lucide="zap" class="w-4 h-4"></i>
+                        <span>Сгенерировать и сохранить пароли для всех приложений</span>
+                    </button>
+                    <div class="space-y-2 pt-1">
+                        <div onclick="openPasswordEditor('sber', 'SberBank')" class="p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 cursor-pointer flex items-center justify-between transition">
+                            <span class="text-sm font-medium text-white">SberBank iOS</span>
+                            <span class="text-xs text-cyan-400 flex items-center space-x-1"><span>Изменить пароль</span><i data-lucide="chevron-right" class="w-3.5 h-3.5"></i></span>
+                        </div>
+                        <div onclick="openPasswordEditor('tbank', 'T-Bank')" class="p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 cursor-pointer flex items-center justify-between transition">
+                            <span class="text-sm font-medium text-white">T-Bank iOS</span>
+                            <span class="text-xs text-cyan-400 flex items-center space-x-1"><span>Изменить пароль</span><i data-lucide="chevron-right" class="w-3.5 h-3.5"></i></span>
+                        </div>
+                        <div onclick="openPasswordEditor('max', 'Max App')" class="p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 cursor-pointer flex items-center justify-between transition">
+                            <span class="text-sm font-medium text-white">Max App</span>
+                            <span class="text-xs text-cyan-400 flex items-center space-x-1"><span>Изменить пароль</span><i data-lucide="chevron-right" class="w-3.5 h-3.5"></i></span>
+                        </div>
+                    </div>
+                </div>
+            `);
         }
 
         function openVisibilitySection() {
-            showWorkspace('Видимость приложений', `
-                <div class="space-y-3">
-                    <p class="text-sm text-gray-400">Управляйте доступностью приложений в общем каталоге:</p>
+            showDynamicContent(`
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between pb-3 border-b border-white/5">
+                        <h3 class="text-sm font-bold text-white uppercase tracking-wider">Видимость приложений</h3>
+                        <button onclick="document.getElementById('dynamicContainer').classList.add('hidden')" class="text-gray-400 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
+                    </div>
                     <div class="space-y-2">
                         <div class="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5">
                             <span class="text-sm font-medium text-white">SberBank iOS</span>
-                            <input type="checkbox" checked class="w-4 h-4 accent-indigo-600 cursor-pointer">
+                            <input type="checkbox" checked class="w-4 h-4 accent-purple-500 cursor-pointer">
                         </div>
                         <div class="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5">
                             <span class="text-sm font-medium text-white">T-Bank iOS</span>
-                            <input type="checkbox" checked class="w-4 h-4 accent-indigo-600 cursor-pointer">
+                            <input type="checkbox" checked class="w-4 h-4 accent-purple-500 cursor-pointer">
                         </div>
                         <div class="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5">
                             <span class="text-sm font-medium text-white">Max App</span>
-                            <input type="checkbox" class="w-4 h-4 accent-indigo-600 cursor-pointer">
+                            <input type="checkbox" class="w-4 h-4 accent-purple-500 cursor-pointer">
                         </div>
                     </div>
                 </div>
@@ -240,16 +281,19 @@
         }
 
         function openMaintenanceSection() {
-            showWorkspace('Режим обслуживания', `
+            showDynamicContent(`
                 <div class="space-y-4">
-                    <p class="text-sm text-gray-400">Включение технического режима блокирует клиентскую часть сайта красивой заглушкой.</p>
-                    <div class="flex items-center justify-between p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
+                    <div class="flex items-center justify-between pb-3 border-b border-white/5">
+                        <h3 class="text-sm font-bold text-white uppercase tracking-wider">Режим обслуживания</h3>
+                        <button onclick="document.getElementById('dynamicContainer').classList.add('hidden')" class="text-gray-400 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
+                    </div>
+                    <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-between">
                         <div>
-                            <h4 class="text-sm font-semibold text-amber-200">Статус обслуживания</h4>
-                            <p class="text-xs text-amber-300/70">Сайт сейчас работает в штатном режиме</p>
+                            <h4 class="text-xs font-bold text-amber-300 uppercase">Статус: Штатный режим</h4>
+                            <p class="text-xs text-gray-400 mt-0.5">Включение заглушки на сайте</p>
                         </div>
-                        <button onclick="alert('Режим обслуживания изменен!')" class="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-semibold transition">
-                            Включить режим
+                        <button onclick="showToast('Режим обслуживания обновлен!')" class="btn-primary-amber text-white rounded-xl px-4 py-2 text-xs font-semibold transition">
+                            Включить
                         </button>
                     </div>
                 </div>
@@ -257,44 +301,46 @@
         }
 
         function openHistorySection() {
-            showWorkspace('История действий', `
-                <div class="space-y-3 text-sm">
-                    <div class="p-3 rounded-xl bg-white/5 border border-white/5 flex justify-between items-center">
-                        <span class="text-gray-300">Изменен пароль администратора</span>
-                        <span class="text-xs text-gray-500">Сегодня, 18:42</span>
+            showDynamicContent(`
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between pb-3 border-b border-white/5">
+                        <h3 class="text-sm font-bold text-white uppercase tracking-wider">История действий</h3>
+                        <button onclick="document.getElementById('dynamicContainer').classList.add('hidden')" class="text-gray-400 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
                     </div>
-                    <div class="p-3 rounded-xl bg-white/5 border border-white/5 flex justify-between items-center">
+                    <div class="p-3 rounded-xl bg-white/5 border border-white/5 flex justify-between items-center text-xs">
+                        <span class="text-gray-300">Изменен пароль: Сайт</span>
+                        <span class="text-gray-500">Только что</span>
+                    </div>
+                    <div class="p-3 rounded-xl bg-white/5 border border-white/5 flex justify-between items-center text-xs">
                         <span class="text-gray-300">Обновлена видимость приложений</span>
-                        <span class="text-xs text-gray-500">Сегодня, 15:10</span>
+                        <span class="text-gray-500">10 минут назад</span>
                     </div>
                 </div>
             `);
         }
 
-        function generatePassword() {
+        function generatePass(key) {
             const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$!";
             let pass = "";
-            for (let i = 0; i < 16; i++) {
+            for (let i = 0; i < 14; i++) {
                 pass += chars.charAt(Math.floor(Math.random() * chars.length));
             }
-            document.getElementById('passInput').value = pass;
+            document.getElementById('passInput_' + key).value = pass;
+            showToast("Пароль сгенерирован!");
         }
 
-        function copyPassword() {
-            const input = document.getElementById('passInput');
-            input.select();
+        function copyPass(key) {
+            const input = document.getElementById('passInput_' + key);
             navigator.clipboard.writeText(input.value);
-            alert("Пароль скопирован в буфер обмена!");
+            showToast("Скопировано в буфер!");
         }
 
-        function savePassword() {
-            alert("Пароль успешно сохранен в базе данных!");
+        function savePass(name) {
+            showToast(`Пароль для "${name}" сохранен!`);
         }
 
-        function logout() {
-            if(confirm("Вы действительно хотите выйти?")) {
-                window.location.reload();
-            }
+        function generateAllAppsPasswords() {
+            showToast("Пароли для всех приложений обновлены и сохранены!");
         }
     </script>
 </body>
