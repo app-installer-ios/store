@@ -285,7 +285,7 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     padding: 12px;
     overflow: hidden;
     border-radius: 16px;
-    border: 1.8px solid rgba(195, 95, 95, 0.45);
+    border: none;
     background: #334155;
     color: #fff;
     font-size: 14px;
@@ -298,7 +298,6 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 
 .btn:hover {
     background: #475569;
-    border-color: rgba(215, 115, 115, 0.65);
     box-shadow: 0 14px 32px rgba(51, 65, 85, 0.35), inset 0 1px 0 rgba(255,255,255,0.25);
 }
 
@@ -313,6 +312,17 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 }
 .btn-secondary:hover {
     background: rgba(30,41,59,.7);
+}
+
+.btn-guide {
+    background: rgba(45, 115, 140, 0.18);
+    border: 1.8px solid rgba(80, 160, 200, 0.45);
+    color: #bae6fd;
+    box-shadow: 0 8px 20px rgba(56, 189, 248, 0.08);
+}
+.btn-guide:hover {
+    background: rgba(45, 115, 140, 0.28);
+    border-color: rgba(80, 160, 200, 0.65);
 }
 
 .btn-telegram {
@@ -1191,7 +1201,7 @@ function executeDownload() {
         <button type="button" class="btn" onclick="startInstallation()">Установить</button>
         
         <!-- КНОПКА «Как это работает?» -->
-        <button type="button" class="btn btn-secondary" onclick="openGuideSheet()" style="margin-top: 8px;">
+        <button type="button" class="btn btn-guide" onclick="openGuideSheet()" style="margin-top: 8px;">
             <span style="color: #38bdf8; font-weight: 700; margin-right: 4px;">•</span> Как это работает?
         </button>
 
@@ -1312,7 +1322,7 @@ function executeDownload() {
 
             <div class="sheet-item" data-key="tbank" data-category="banks" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/tbank.plist', 'Т-Банк(8PRO)', 'tbank')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img src="https://lh3.googleusercontent.com/6yVLZ4nvDll9uZGm71IpcQIQ4lJwxjXV5VdYerGW7tDEnMCZx9r440DzJKOVPdkni7jJ" alt="Т-Банк (8PRO)"></div>
+                    <div class="app-icon"><img src="https://static6.tgstat.ru/channels/_50/cc/ccbdee27cc3ba4234ebf990580c1e00f.jpg" alt="Т-Банк (8PRO)"></div>
                     <div class="sheet-info-box"><span class="app-name">Т-Банк (8PRO)</span></div>
                 </div>
                 <span class="ios-badge">iOS 16.0+</span>
@@ -1432,7 +1442,7 @@ function executeDownload() {
 
             <div class="sheet-item" data-key="craftersy" data-category="banks" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/craftersy.plist', 'Т-Банк (Craftersy)', 'craftersy')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img src="https://lh3.googleusercontent.com/6yVLZ4nvDll9uZGm71IpcQIQ4lJwxjXV5VdYerGW7tDEnMCZx9r440DzJKOVPdkni7jJ" alt="Т-Банк (Craftersy)"></div>
+                    <div class="app-icon"><img src="https://static6.tgstat.ru/channels/_50/cc/ccbdee27cc3ba4234ebf990580c1e00f.jpg" alt="Т-Банк (Craftersy)"></div>
                     <div class="sheet-info-box"><span class="app-name">Т-Банк (Craftersy)</span></div>
                 </div>
                 <span class="ios-badge">iOS 16.0+</span>
@@ -1564,4 +1574,3 @@ function executeDownload() {
 
 </body>
 </html>
-```[cite: 1]
