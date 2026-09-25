@@ -213,7 +213,6 @@
         }
         #login-error.active { display: block; }
 
-        /* Компактный главный экран: сетка или вертикальный стек из 4 кнопок */
         .dashboard-grid {
             display: flex;
             flex-direction: column;
@@ -260,7 +259,6 @@
         .card-visibility .control-icon-badge { background: rgba(20, 184, 166, 0.1); border: 1px solid var(--border-visibility); }
         .card-history .control-icon-badge { background: rgba(168, 85, 247, 0.1); border: 1px solid var(--border-history); }
 
-        /* Подменю выбора паролей (внутри модального или как подменю) */
         .passwords-menu-list {
             display: flex;
             flex-direction: column;
@@ -564,7 +562,6 @@
         <p class="subtitle">Системные настройки и доступы</p>
 
         <div class="dashboard-grid">
-            <!-- Кнопка 1: Пароли (внутри: пароль сайта, пароль админ-панели, пароли приложений) -->
             <div class="control-card card-passwords" onclick="openPasswordsMenuSheet()">
                 <div class="control-info">
                     <span class="control-title">Пароли</span>
@@ -573,7 +570,6 @@
                 <div class="control-icon-badge">🔐</div>
             </div>
 
-            <!-- Кнопка 2: Видимость приложений -->
             <div class="control-card card-visibility" onclick="openVisibilityCatalogSheet()">
                 <div class="control-info">
                     <span class="control-title">Видимость приложений</span>
@@ -582,7 +578,6 @@
                 <div class="control-icon-badge">🔎</div>
             </div>
 
-            <!-- Кнопка 3: Режим технических работ -->
             <div class="control-card card-maintenance">
                 <div class="control-info">
                     <span class="control-title">Технические работы</span>
@@ -594,7 +589,6 @@
                 </label>
             </div>
 
-            <!-- Кнопка 4: История действий -->
             <div class="control-card card-history" onclick="openHistoryModal()">
                 <div class="control-info">
                     <span class="control-title">История действий</span>
@@ -606,7 +600,6 @@
     </div>
 </div>
 
-<!-- Модальное меню выбора категории паролей -->
 <div class="sheet-overlay" id="passwordsMenuOverlay" onclick="closePasswordsMenuSheet()">
     <div class="sheet-modal" onclick="event.stopPropagation()">
         <div class="sheet-header">
@@ -1103,7 +1096,6 @@
     }
 
     function openEditModal(key, title, type) {
-        closePasswordsMenuSheet();
         currentEditKey = key;
         currentEditType = type;
         document.getElementById('editModalTitle').textContent = title;
@@ -1116,9 +1108,20 @@
 
     function closeEditModal() {
         document.getElementById('editModalOverlay').classList.remove('active');
+        const prevType = currentEditType;
         currentEditKey = null;
         currentEditType = null;
+        
+        if (prevType === 'admin' || prevType === 'site') {
+            openPasswordsMenuSheet();
+        }
     }
+
+    document.getElementById('editModalOverlay').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeEditModal();
+        }
+    });
 
     function generatePassword() {
         const newPass = Math.floor(100000 + Math.random() * 900000).toString();
