@@ -783,50 +783,31 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 <div class="bg-glow glow-2"></div>
 
 <script>
-const SUPABASE_URL = "https://gbuvpqcummyutycemaaj.supabase.co";
-const SUPABASE_KEY = "sb_publishable_oUDovfvWL6iioG6N5Xd_QQ_8KYezq8g";
-
-async function fetchSupabaseSettings() {
-    try {
-        let response = await fetch(`${SUPABASE_URL}/rest/v1/settings?select=*`, {
-            headers: {
-                "apikey": SUPABASE_KEY,
-                "Authorization": `Bearer ${SUPABASE_KEY}`
-            }
-        });
-        if (!response.ok) throw new Error("Ошибка загрузки");
-        let data = await response.json();
-        
-        let config = {
-            sitePassword: "",
-            maintenanceMode: false,
-            appPasswords: {},
-            appVisibility: {}
-        };
-
-        data.forEach(item => {
-            if (item.key === 'site_password') {
-                config.sitePassword = item.value;
-            } else if (item.key === 'maintenance_mode') {
-                config.maintenanceMode = item.value === 'true';
-            } else if (item.key && item.key.startsWith('vis_')) {
-                config.appVisibility[item.key.replace('vis_', '')] = item.value === 'true';
-            } else if (item.key && item.key !== 'admin_password') {
-                config.appPasswords[item.key] = item.value;
-            }
-        });
-        return config;
-    } catch (e) {
-        console.error("Ошибка загрузки настроек, используются дефолтные:", e);
-        return { sitePassword: "", maintenanceMode: false, appPasswords: {}, appVisibility: {} };
-    }
-}
+// URL вашей Edge Function в Supabase
+const FUNCTION_URL = "https://gbuvpqcummyutycemaaj.supabase.co/functions/v1/verify-password";
 
 let remoteConfig = { sitePassword: "", maintenanceMode: false, appPasswords: {}, appVisibility: {} };
 let selectedAppUrl = "";
 let selectedAppKey = "";
 let isInstalling = false;
 let currentCategory = "all";
+
+async function checkSiteStatus() {
+    try {
+        let response = await fetch(FUNCTION_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ type: 'site', password: '' })
+        });
+        let result = await response.json();
+        if (result.maintenance) {
+            return { maintenanceMode: true };
+        }
+    } catch (e) {
+        console.error("Ошибка проверки статуса:", e);
+    }
+    return { maintenanceMode: false };
+}
 
 function getAppPasswords() { return remoteConfig.appPasswords; }
 function getSitePassword() { return remoteConfig.sitePassword; }
@@ -864,14 +845,26 @@ function updateAppCounter() {
 }
 
 document.addEventListener("DOMContentLoaded", async function() {
-    remoteConfig = await fetchSupabaseSettings();
+    let status = await checkSiteStatus();
     
-    if (remoteConfig.maintenanceMode) {
+    if (status.maintenanceMode) {
         switchScreen("maintenanceApp");
         return;
     }
 
     if (sessionStorage.getItem("site_access") === "true") {
+        try {
+            let response = await fetch(FUNCTION_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ type: 'site', password: '' })
+            });
+            let res = await response.json();
+            if (res.appPasswords) remoteConfig.appPasswords = res.appPasswords;
+            if (res.appVisibility) remoteConfig.appVisibility = res.appVisibility;
+        } catch (e) {
+            console.error("Ошибка загрузки конфигурации:", e);
+        }
         switchScreen("mainApp");
     } else {
         switchScreen("authApp");
@@ -903,17 +896,34 @@ document.addEventListener("DOMContentLoaded", async function() {
 async function submitPassword() {
     const input = document.getElementById("passInput");
     const errorMsg = document.getElementById("authError");
+    const enteredPass = input.value.trim();
 
-    remoteConfig = await fetchSupabaseSettings();
-    if (remoteConfig.maintenanceMode) { switchScreen("maintenanceApp"); return; }
+    try {
+        let response = await fetch(FUNCTION_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ type: 'site', password: enteredPass })
+        });
+        let result = await response.json();
 
-    applyAppsVisibility();
-    updateAppCounter();
+        if (result.maintenance) { 
+            switchScreen("maintenanceApp"); 
+            return; 
+        }
 
-    if (input.value.trim() === getSitePassword()) {
-        sessionStorage.setItem("site_access", "true");
-        switchScreen("mainApp");
-        return;
+        if (result.success) {
+            remoteConfig.appPasswords = result.appPasswords || {};
+            remoteConfig.appVisibility = result.appVisibility || {};
+            
+            applyAppsVisibility();
+            updateAppCounter();
+
+            sessionStorage.setItem("site_access", "true");
+            switchScreen("mainApp");
+            return;
+        }
+    } catch (e) {
+        console.error("Ошибка авторизации:", e);
     }
 
     errorMsg.style.display = "block";
@@ -922,8 +932,19 @@ async function submitPassword() {
 }
 
 async function openSheet() {
-    remoteConfig = await fetchSupabaseSettings();
-    if (remoteConfig.maintenanceMode) { switchScreen("maintenanceApp"); return; }
+    try {
+        let response = await fetch(FUNCTION_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ type: 'site', password: '' })
+        });
+        let result = await response.json();
+        if (result.maintenance) { switchScreen("maintenanceApp"); return; }
+        if (result.appPasswords) remoteConfig.appPasswords = result.appPasswords;
+        if (result.appVisibility) remoteConfig.appVisibility = result.appVisibility;
+    } catch (e) {
+        console.error("Ошибка обновления данных:", e);
+    }
 
     applyAppsVisibility();
     updateAppCounter();
@@ -1047,8 +1068,10 @@ function selectApp(element, url, name, appKey) {
 async function startInstallation() {
     if (!selectedAppUrl || isInstalling) return;
 
-    remoteConfig = await fetchSupabaseSettings();
-    if (remoteConfig.maintenanceMode) { switchScreen("maintenanceApp"); return; }
+    try {
+        let status = await checkSiteStatus();
+        if (status.maintenanceMode) { switchScreen("maintenanceApp"); return; }
+    } catch(e) {}
 
     applyAppsVisibility();
     updateAppCounter();
@@ -1064,14 +1087,26 @@ async function startInstallation() {
     executeDownload();
 }
 
-function submitAppPassword() {
+async function submitAppPassword() {
     const input = document.getElementById("appPassInput");
     const errorMsg = document.getElementById("appPassError");
+    const enteredPass = input.value.trim();
 
-    if (input.value.trim() === getAppPasswords()[selectedAppKey]) {
-        switchScreen("mainApp");
-        executeDownload();
-        return;
+    try {
+        let response = await fetch(FUNCTION_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ type: 'app', password: enteredPass, appKey: selectedAppKey })
+        });
+        let result = await response.json();
+
+        if (result.success) {
+            switchScreen("mainApp");
+            executeDownload();
+            return;
+        }
+    } catch (e) {
+        console.error("Ошибка проверки пароля приложения:", e);
     }
 
     errorMsg.style.display = "block";
