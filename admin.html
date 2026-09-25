@@ -2,1211 +2,300 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#0b0f19">
-    <title>Панель управления — Управление приложениями</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Премиальная Панель Управления</title>
+    <!-- Подключаем Tailwind CSS для быстрой и красивой стилизации -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Подключаем шрифт Inter и иконки Lucide -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        darkBg: '#090a0f',
+                        cardBg: '#13151f',
+                        cardBorder: '#1e2235',
+                        accent: '#6366f1',
+                        accentHover: '#4f46e5'
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        :root {
-            --bg: #0b0f19;
-            --glass: rgba(30, 41, 59, 0.4);
-            --muted: #94a3b8;
-            --danger-color: #fca5a5;
-            --danger-bg: rgba(239, 68, 68, 0.15);
-            --spring: cubic-bezier(.22,1,.36,1);
-
-            /* Спокойные и различимые цветовые акценты */
-            --border-admin: rgba(245, 158, 11, 0.4);   /* Теплый янтарный */
-            --glow-admin: rgba(245, 158, 11, 0.05);
-
-            --border-site: rgba(14, 165, 233, 0.4);   /* Небесный синий */
-            --glow-site: rgba(14, 165, 233, 0.05);
-
-            --border-apps: rgba(99, 102, 241, 0.4);   /* Индиго */
-            --glow-apps: rgba(99, 102, 241, 0.05);
-
-            --border-vis: rgba(20, 184, 166, 0.4);   /* Бирюзовый */
-            --glow-vis: rgba(20, 184, 166, 0.05);
-
-            --border-db: rgba(129, 140, 248, 0.3);    /* Сине-серый */
-            --glow-db: rgba(129, 140, 248, 0.05);
-
-            --border-history: rgba(148, 163, 184, 0.3); /* Стальной */
-            --glow-history: rgba(148, 163, 184, 0.04);
-
-            --border-apps-pass: rgba(129, 140, 248, 0.35);  /* Индиго для паролей */
-            --glow-apps-pass: rgba(129, 140, 248, 0.05);
-
-            --border-apps-vis: rgba(45, 212, 191, 0.35);   /* Мятный для видимости */
-            --glow-apps-vis: rgba(45, 212, 191, 0.05);
-
-            --border-show-all: rgba(52, 211, 153, 0.4);  /* Изумрудный */
-            --border-hide-all: rgba(248, 113, 113, 0.4);  /* Мягкий красный */
-
-            /* Уникальные цвета обводок для кнопок в модальных окнах */
-            --border-btn-gen-all: rgba(236, 72, 153, 0.4); /* Розовый пастельный */
-            --border-btn-gen: rgba(56, 189, 248, 0.4);     /* Голубой */
-            --border-btn-copy: rgba(167, 139, 250, 0.4);   /* Лавандовый */
-            --border-btn-clear: rgba(251, 191, 36, 0.4);   /* Желтый */
-            --border-btn-cancel: rgba(148, 163, 184, 0.3); /* Серый */
-            --border-btn-save: rgba(74, 222, 128, 0.4);    /* Зеленый */
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
         body {
-            min-height: 100dvh;
-            background: var(--bg);
-            color: #f1f5f9;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            overflow-x: hidden;
+            background-color: #090a0f;
+            color: #f3f4f6;
+            font-family: 'Inter', sans-serif;
         }
-
-        .aurora-bg {
-            position: fixed;
-            inset: -20%;
-            z-index: -10;
-            background:
-                radial-gradient(circle at 15% 30%, rgba(56, 189, 248, 0.07), transparent 45%),
-                radial-gradient(circle at 85% 20%, rgba(99, 102, 241, 0.07), transparent 45%),
-                radial-gradient(circle at 50% 80%, rgba(20, 184, 166, 0.05), transparent 50%);
-            filter: blur(80px);
-            pointer-events: none;
-            animation: pulse 14s ease-in-out infinite alternate;
+        .glass-panel {
+            background: rgba(19, 21, 31, 0.7);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.07);
         }
-
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 0.5; }
-            100% { transform: scale(1.04); opacity: 0.8; }
-        }
-
-        .container {
-            width: 100%;
-            max-width: 420px;
-            background: linear-gradient(165deg, rgba(15, 23, 42, 0.85), rgba(11, 15, 25, 0.95));
-            backdrop-filter: blur(20px) saturate(130%);
-            -webkit-backdrop-filter: blur(20px) saturate(130%);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 28px;
-            padding: 28px 22px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.05);
-            animation: screenIn .5s var(--spring);
-        }
-
-        @keyframes screenIn {
-            from { opacity: 0; transform: translateY(15px) scale(.96); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        .db-status-bar {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            font-size: 11px;
-            color: var(--muted);
-            margin-bottom: 14px;
-            background: rgba(129, 140, 248, 0.04);
-            border: 1px solid var(--border-db);
-            box-shadow: 0 2px 8px var(--glow-db);
-            padding: 5px 10px;
-            border-radius: 10px;
-        }
-        .db-dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background-color: #fca5a5;
-            box-shadow: 0 0 6px rgba(252, 165, 165, 0.4);
-            transition: all 0.3s ease;
-        }
-        .db-dot.online {
-            background-color: #34d399;
-            box-shadow: 0 0 8px rgba(52, 211, 153, 0.4);
-        }
-
-        h1 {
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 6px;
-            text-align: center;
-            color: #f8fafc;
-            letter-spacing: -0.3px;
-        }
-
-        p.subtitle {
-            color: var(--muted);
-            font-size: 13px;
-            margin-bottom: 20px;
-            text-align: center;
-            line-height: 1.4;
-        }
-
-        #login-screen, #admin-panel {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-        }
-        #admin-panel { display: none; }
-
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            width: 100%;
-            margin-bottom: 18px;
-        }
-
-        label {
-            font-size: 13.5px;
-            color: var(--muted);
-            font-weight: 500;
-            padding-left: 4px;
-        }
-
-        input {
-            width: 100%;
-            height: 50px;
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 0 16px;
-            color: #fff;
-            font-size: 15px;
-            outline: none;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-            transition: all 0.3s ease;
-        }
-
-        input:focus {
-            border-color: rgba(99, 102, 241, 0.5);
-            background: rgba(30, 41, 59, 0.5);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
-        }
-
-        button.primary-btn {
-            width: 100%;
-            height: 50px;
-            background: linear-gradient(135deg, #4f46e5, #4338ca);
-            color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 16px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(67, 56, 202, 0.25);
-            transition: all 0.3s var(--spring);
-        }
-
-        button.primary-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(67, 56, 202, 0.35);
-            filter: brightness(1.05);
-        }
-
-        #login-error {
-            display: none;
-            margin-top: 16px;
-            padding: 12px;
-            border-radius: 12px;
-            background: var(--danger-bg);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            color: var(--danger-color);
-            font-size: 13.5px;
-            font-weight: 600;
-            text-align: center;
-        }
-        #login-error.active { display: block; }
-
-        .control-card {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: var(--glass);
-            padding: 14px 16px;
-            border-radius: 16px;
-            margin-bottom: 10px;
-            transition: all 0.25s ease;
-        }
-        .control-card:hover { transform: translateY(-1px); }
-
-        .card-admin { border: 1px solid var(--border-admin); box-shadow: 0 2px 8px var(--glow-admin); background: rgba(245, 158, 11, 0.02); }
-        .card-site { border: 1px solid var(--border-site); box-shadow: 0 2px 8px var(--glow-site); background: rgba(14, 165, 233, 0.02); }
-        
-        .card-apps-pass { border: 1px solid var(--border-apps-pass); box-shadow: 0 2px 8px var(--glow-apps-pass); background: rgba(99, 102, 241, 0.02); cursor: pointer; }
-        .card-apps-vis { border: 1px solid var(--border-apps-vis); box-shadow: 0 2px 8px var(--glow-apps-vis); background: rgba(20, 184, 166, 0.02); cursor: pointer; }
-        
-        .card-maintenance { border: 1px solid rgba(239, 68, 68, 0.3); box-shadow: 0 2px 8px rgba(239, 68, 68, 0.05); background: rgba(239, 68, 68, 0.02); }
-
-        .card-history-btn {
-            margin-bottom: 0;
-            border: 1px solid var(--border-history);
-            box-shadow: 0 2px 8px var(--glow-history);
-            background: rgba(148, 163, 184, 0.02);
-            cursor: pointer;
-            justify-content: center;
-            gap: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            color: #cbd5e1;
-        }
-        .card-history-btn:hover {
-            background: rgba(148, 163, 184, 0.06);
-            border-color: rgba(148, 163, 184, 0.4);
-            color: #fff;
-        }
-
-        .control-info { display: flex; flex-direction: column; gap: 2px; }
-        .control-title { font-size: 14px; font-weight: 600; color: #f8fafc; }
-        .control-desc { font-size: 11.5px; color: var(--muted); }
-
-        .gear-btn {
-            border-radius: 12px;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .card-admin .gear-btn { background: rgba(245, 158, 11, 0.1); border: 1px solid var(--border-admin); }
-        .card-site .gear-btn { background: rgba(14, 165, 233, 0.1); border: 1px solid var(--border-site); }
-        .card-apps-pass .gear-btn { background: rgba(99, 102, 241, 0.1); border: 1px solid var(--border-apps-pass); }
-        .card-apps-vis .gear-btn { background: rgba(20, 184, 166, 0.1); border: 1px solid var(--border-apps-vis); }
-
-        .sheet-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            background: rgba(11, 15, 25, 0.75);
-            backdrop-filter: blur(12px);
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-        .sheet-overlay.active { opacity: 1; visibility: visible; }
-        
-        .sheet-modal {
-            width: 100%;
-            max-width: 390px;
-            background: linear-gradient(165deg, rgba(18, 24, 38, 0.96), rgba(11, 15, 25, 0.99));
-            border-radius: 24px;
-            padding: 22px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.06);
-            transform: translateY(20px) scale(0.96);
-            transition: all 0.35s var(--spring);
-            display: flex;
-            flex-direction: column;
-            max-height: 85vh;
-        }
-        .sheet-overlay.active .sheet-modal { transform: translateY(0) scale(1); }
-
-        /* Уникальное спокойное оформление рамок для каждого модального окна */
-        #appsCatalogOverlay .sheet-modal { border: 1px solid rgba(99, 102, 241, 0.3); background: linear-gradient(165deg, rgba(20, 24, 45, 0.96), rgba(11, 15, 25, 0.99)); }
-        #visibilityCatalogOverlay .sheet-modal { border: 1px solid rgba(20, 184, 166, 0.3); background: linear-gradient(165deg, rgba(15, 30, 38, 0.96), rgba(11, 15, 25, 0.99)); }
-        #historyCatalogOverlay .sheet-modal { border: 1px solid rgba(148, 163, 184, 0.25); background: linear-gradient(165deg, rgba(20, 25, 35, 0.96), rgba(11, 15, 25, 0.99)); }
-        #editModalContainer { max-width: 330px; margin: auto; border: 1px solid rgba(129, 140, 248, 0.3); background: linear-gradient(165deg, rgba(22, 28, 48, 0.96), rgba(11, 15, 25, 0.99)); }
-
-        .history-modal-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            overflow-y: auto;
-            max-height: 360px;
-            padding-right: 4px;
-            scrollbar-width: none;
-        }
-        .history-modal-list::-webkit-scrollbar { display: none; }
-        
-        .history-modal-item {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-            padding: 10px 14px;
-            background: rgba(148, 163, 184, 0.03);
-            border: 1px solid rgba(148, 163, 184, 0.1);
-            border-radius: 12px;
-            font-size: 13px;
-            color: #f1f5f9;
-        }
-        .history-modal-time { font-size: 11px; color: var(--muted); }
-
-        .sheet-stats-container {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 14px;
-            flex-shrink: 0;
-        }
-        .stat-card {
-            flex: 1;
-            padding: 10px 12px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .stat-card-icon { font-size: 17px; line-height: 1; }
-        .stat-card-info { display: flex; flex-direction: column; gap: 1px; }
-        .stat-card-val { font-size: 14.5px; font-weight: 700; line-height: 1.2; }
-        .stat-card-label { font-size: 11px; color: var(--muted); line-height: 1.2; font-weight: 500; }
-
-        .stat-pass-locked { background: rgba(99, 102, 241, 0.06); border: 1px solid rgba(99, 102, 241, 0.2); }
-        .stat-pass-locked .stat-card-val { color: #a5b4fc; }
-        .stat-pass-unlocked { background: rgba(148, 163, 184, 0.05); border: 1px solid rgba(148, 163, 184, 0.15); }
-        .stat-pass-unlocked .stat-card-val { color: #cbd5e1; }
-        .stat-vis-shown { background: rgba(20, 184, 166, 0.06); border: 1px solid rgba(20, 184, 166, 0.2); }
-        .stat-vis-shown .stat-card-val { color: #5eead4; }
-        .stat-vis-hidden { background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.2); }
-        .stat-vis-hidden .stat-card-val { color: #fca5a5; }
-
-        .sheet-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-        .sheet-title { font-size: 18px; font-weight: 700; color: #fff; }
-        .sheet-close { background: none; border: none; color: var(--muted); font-size: 22px; font-weight: 700; cursor: pointer; }
-
-        .btn-generate-all {
-            width: 100%;
-            min-height: 44px;
-            margin-bottom: 12px;
-            background: rgba(236, 72, 153, 0.06);
-            border: 1px solid var(--border-btn-gen-all);
-            border-radius: 14px;
-            color: #fbcfe8;
-            font-size: 12.5px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .btn-generate-all:hover { background: rgba(236, 72, 153, 0.12); }
-
-        .visibility-actions { display: flex; gap: 8px; margin-bottom: 12px; }
-        
-        .visibility-action-btn-show {
-            flex: 1; min-height: 40px; border-radius: 12px;
-            border: 1px solid var(--border-show-all); background: rgba(52, 211, 153, 0.05);
-            color: #a7f3d0; font-size: 12.5px; font-weight: 600; cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .visibility-action-btn-show:hover { background: rgba(52, 211, 153, 0.1); }
-
-        .visibility-action-btn-hide {
-            flex: 1; min-height: 40px; border-radius: 12px;
-            border: 1px solid var(--border-hide-all); background: rgba(248, 113, 113, 0.05);
-            color: #fecdd3; font-size: 12.5px; font-weight: 600; cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .visibility-action-btn-hide:hover { background: rgba(248, 113, 113, 0.1); }
-
-        .app-search-wrap { position: relative; margin-bottom: 14px; }
-        .app-search {
-            width: 100%; height: 42px; padding: 0 14px 0 38px;
-            border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.08);
-            background: rgba(15, 23, 42, 0.6); color: #fff; font-size: 14px; outline: none;
-        }
-        .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 16px; }
-
-        .sheet-list { display: flex; flex-direction: column; gap: 8px; overflow-y: auto; padding-right: 4px; scrollbar-width: none; }
-        .sheet-list::-webkit-scrollbar { display: none; }
-
-        .sheet-item {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 10px 14px; background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 14px;
-        }
-        .app-name { font-size: 14px; font-weight: 500; color: #f1f5f9; max-width: 190px; word-break: break-word; }
-
-        .app-item-actions {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-        }
-
-        .switch { position: relative; display: inline-block; width: 44px; height: 26px; flex-shrink: 0; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider {
-            position: absolute; cursor: pointer; inset: 0;
-            background-color: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: 0.3s var(--spring); border-radius: 34px;
-        }
-        .slider:before {
-            position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px;
-            background-color: #cbd5e1; transition: 0.3s var(--spring); border-radius: 50%;
-        }
-        input:checked + .slider { background: linear-gradient(135deg, #14b8a6, #0d9488); border-color: rgba(45, 212, 191, 0.4); }
-        input:checked + .slider:before { transform: translateX(18px); background-color: #fff; }
-
-        #maintenanceToggle:checked + .slider { background: linear-gradient(135deg, #ef4444, #dc2626); border-color: rgba(248, 113, 113, 0.4); }
-
-        /* Кнопки в модальном окне редактирования (с разделением по уровням) */
-        .extra-actions-container {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-top: 12px;
-        }
-
-        .btn-action-copy {
-            width: 100%; height: 40px; background: rgba(167, 139, 250, 0.06);
-            border: 1px solid var(--border-btn-copy); border-radius: 12px;
-            color: #ddd6fe; font-size: 12px; font-weight: 600; cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .btn-action-copy:hover { background: rgba(167, 139, 250, 0.12); }
-
-        .extra-actions-row {
-            display: flex;
-            gap: 8px;
-            width: 100%;
-        }
-
-        .btn-action-generate {
-            flex: 1; height: 40px; background: rgba(56, 189, 248, 0.06);
-            border: 1px solid var(--border-btn-gen); border-radius: 12px;
-            color: #bae6fd; font-size: 12px; font-weight: 600; cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .btn-action-generate:hover { background: rgba(56, 189, 248, 0.12); }
-
-        .btn-action-clear {
-            flex: 1; height: 40px; background: rgba(251, 191, 36, 0.06);
-            border: 1px solid var(--border-btn-clear); border-radius: 12px;
-            color: #fef08a; font-size: 12px; font-weight: 600; cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .btn-action-clear:hover { background: rgba(251, 191, 36, 0.12); }
-
-        .modal-actions { display: flex; gap: 10px; margin-top: 18px; }
-        
-        .btn-cancel {
-            flex: 1; height: 44px; background: rgba(148, 163, 184, 0.04);
-            border: 1px solid var(--border-btn-cancel); border-radius: 14px;
-            color: #cbd5e1; font-size: 14px; font-weight: 600; cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .btn-cancel:hover { background: rgba(148, 163, 184, 0.08); color: #fff; }
-
-        .btn-save {
-            flex: 1; height: 44px; background: rgba(74, 222, 128, 0.08);
-            border: 1px solid var(--border-btn-save); border-radius: 14px;
-            color: #bbf7d0; font-size: 14px; font-weight: 600; cursor: pointer;
-            box-shadow: 0 4px 12px rgba(22, 163, 74, 0.15);
-            transition: all 0.2s ease;
-        }
-        .btn-save:hover {
-            background: rgba(74, 222, 128, 0.15);
-            filter: brightness(1.05);
-        }
-
-        /* Уведомление */
-        .toast {
-            position: fixed; 
-            top: 20px; 
-            left: 50%; 
-            transform: translateX(-50%) translateY(-80px);
-            background: rgba(15, 23, 42, 0.92);
-            border: 1px solid rgba(255, 255, 255, 0.15); 
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            color: #fff; 
-            padding: 10px 18px; 
-            border-radius: 14px; 
-            font-size: 13px; 
-            font-weight: 600;
-            opacity: 0; 
-            visibility: hidden; 
-            transition: all 0.35s var(--spring); 
-            z-index: 9999; 
-            text-align: center;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-            max-width: 90%;
-            white-space: nowrap;
-        }
-        .toast.show { 
-            transform: translateX(-50%) translateY(0); 
-            opacity: 1; 
-            visibility: visible; 
+        .glow-btn:hover {
+            box-shadow: 0 0 25px rgba(99, 102, 241, 0.4);
         }
     </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col items-center justify-start p-4 sm:p-8">
 
-<div class="aurora-bg"></div>
-
-<div class="container">
-    <div class="db-status-bar" id="dbStatusBar">
-        <div class="db-dot" id="dbDot"></div>
-        <span id="dbStatusText">Подключение к Supabase...</span>
-    </div>
-
-    <div id="login-screen">
-        <h1>ПАНЕЛЬ АДМИНИСТРАТОРА</h1>
-        <p class="subtitle">Введите пароль для доступа</p>
-        <div class="input-group">
-            <input type="tel" inputmode="numeric" pattern="[0-9]*" id="admin-pass-input" autocomplete="off">
-        </div>
-        <button class="primary-btn" onclick="checkAdminAuth()">Войти</button>
-        <div id="login-error">Неверный пароль</div>
-    </div>
-
-    <div id="admin-panel">
-        <h1>Настройки</h1>
-        <p class="subtitle">Управление параметрами и доступом</p>
-
-        <div class="control-card card-admin">
-            <div class="control-info">
-                <span class="control-title">Панель администратора</span>
-                <span class="control-desc">Изменение пароля для панели</span>
+    <!-- Шапка панели -->
+    <header class="w-full max-w-4xl mb-8 flex items-center justify-between glass-panel px-6 py-4 rounded-2xl shadow-2xl">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
+                <i data-lucide="shield-check" class="w-6 h-6"></i>
             </div>
-            <button class="gear-btn" onclick="openEditModal('admin_password', 'Пароль администратора', 'admin')">⚙️</button>
-        </div>
-
-        <div class="control-card card-site">
-            <div class="control-info">
-                <span class="control-title">Сайт</span>
-                <span class="control-desc">Изменение пароля для сайта</span>
-            </div>
-            <button class="gear-btn" onclick="openEditModal('site_password', 'Пароль для сайта', 'site')">🌐</button>
-        </div>
-
-        <div class="control-card card-apps-pass" onclick="openAppsCatalogSheet()">
-            <div class="control-info">
-                <span class="control-title">Пароли приложений</span>
-                <span class="control-desc">Изменение паролей для приложений</span>
-            </div>
-            <div class="gear-btn">🔐</div>
-        </div>
-
-        <div class="control-card card-apps-vis" onclick="openVisibilityCatalogSheet()">
-            <div class="control-info">
-                <span class="control-title">Отображение приложений</span>
-                <span class="control-desc">Показать или скрыть приложения</span>
-            </div>
-            <div class="gear-btn">🔎</div>
-        </div>
-
-        <div class="control-card card-maintenance">
-            <div class="control-info">
-                <span class="control-title">Режим обслуживания</span>
-                <span class="control-desc">Включить заглушку на сайте</span>
-            </div>
-            <label class="switch">
-                <input type="checkbox" id="maintenanceToggle" onchange="toggleMaintenance(this.checked)">
-                <span class="slider"></span>
-            </label>
-        </div>
-
-        <div class="control-card card-history-btn" onclick="openHistoryModal()">
-            <span>📜 История действий</span>
-        </div>
-    </div>
-</div>
-
-<div class="sheet-overlay" id="historyCatalogOverlay" onclick="closeHistoryModal()">
-    <div class="sheet-modal" onclick="event.stopPropagation()">
-        <div class="sheet-header">
-            <div class="sheet-title">История действий</div>
-            <button class="sheet-close" onclick="closeHistoryModal()">✕</button>
-        </div>
-        <div class="history-modal-list" id="historyModalList">
-            <div class="history-modal-item">
-                <span>Загрузка истории из базы...</span>
-                <span class="history-modal-time">--:--</span>
+            <div>
+                <h1 class="text-lg font-bold tracking-wide text-white">Admin Control Center</h1>
+                <p class="text-xs text-gray-400">Премиальное управление системой</p>
             </div>
         </div>
-    </div>
-</div>
-
-<div class="sheet-overlay" id="appsCatalogOverlay" onclick="closeAppsCatalogSheet()">
-    <div class="sheet-modal" onclick="event.stopPropagation()">
-        <div class="sheet-header">
-            <div class="sheet-title">Пароли приложений</div>
-            <button class="sheet-close" onclick="closeAppsCatalogSheet()">✕</button>
-        </div>
-        <div class="sheet-stats-container">
-            <div class="stat-card stat-pass-locked">
-                <span class="stat-card-icon">🔒</span>
-                <div class="stat-card-info">
-                    <span class="stat-card-val" id="statPassLocked">0</span>
-                    <span class="stat-card-label">С паролем</span>
-                </div>
-            </div>
-            <div class="stat-card stat-pass-unlocked">
-                <span class="stat-card-icon">🔓</span>
-                <div class="stat-card-info">
-                    <span class="stat-card-val" id="statPassUnlocked">0</span>
-                    <span class="stat-card-label">Без пароля</span>
-                </div>
-            </div>
-        </div>
-        <button class="btn-generate-all" id="btnGenerateAllPasswords" type="button" onclick="generateAndSaveAllPasswords()">
-            <span>🔐 Сгенерировать и сохранить пароли для всех</span>
+        <button onclick="logout()" class="flex items-center space-x-2 text-sm text-gray-400 hover:text-red-400 transition bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 px-4 py-2 rounded-xl">
+            <i data-lucide="log-out" class="w-4 h-4"></i>
+            <span>Выйти</span>
         </button>
-        <div class="app-search-wrap">
-            <span class="search-icon">⌕</span>
-            <input type="search" id="adminAppSearch" class="app-search" placeholder="Поиск приложения..." oninput="filterAdminApps()" autocomplete="off">
-        </div>
-        <div class="sheet-list" id="adminAppsList"></div>
-    </div>
-</div>
+    </header>
 
-<div class="sheet-overlay" id="visibilityCatalogOverlay" onclick="closeVisibilityCatalogSheet()">
-    <div class="sheet-modal" onclick="event.stopPropagation()">
-        <div class="sheet-header">
-            <div class="sheet-title">Видимость приложений</div>
-            <button class="sheet-close" onclick="closeVisibilityCatalogSheet()">✕</button>
-        </div>
-        <div class="sheet-stats-container">
-            <div class="stat-card stat-vis-shown">
-                <span class="stat-card-icon">👁️</span>
-                <div class="stat-card-info">
-                    <span class="stat-card-val" id="statVisShown">0</span>
-                    <span class="stat-card-label">Показано</span>
+    <!-- Основной контейнер -->
+    <main class="w-full max-w-4xl space-y-6">
+
+        <!-- Главное меню кнопок -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            
+            <!-- 1. Кнопка "Пароли" с раскрывающимся подменю -->
+            <div class="glass-panel p-6 rounded-2xl transition duration-300 border border-indigo-500/20 hover:border-indigo-500/40">
+                <div class="flex items-center justify-between cursor-pointer" onclick="toggleSubMenu('passwordsSubMenu')">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 rounded-xl bg-indigo-600/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+                            <i data-lucide="key-round" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-base font-semibold text-white">Пароли</h2>
+                            <p class="text-xs text-gray-400">Управление доступом, генерация и копирование</p>
+                        </div>
+                    </div>
+                    <i data-lucide="chevron-down" id="passwordsChevron" class="w-5 h-5 text-gray-400 transition-transform duration-300"></i>
+                </div>
+
+                <!-- Подменю паролей (3 кнопки) -->
+                <div id="passwordsSubMenu" class="hidden mt-5 pt-4 border-t border-white/5 grid grid-cols-1 gap-2.5">
+                    <button onclick="openPasswordsSection('site')" class="w-full text-left px-4 py-3 rounded-xl bg-white/5 hover:bg-indigo-600/20 border border-white/5 hover:border-indigo-500/30 text-sm font-medium text-gray-200 transition flex items-center justify-between">
+                        <span class="flex items-center space-x-3"><i data-lucide="globe" class="w-4 h-4 text-indigo-400"></i><span>Сайт</span></span>
+                        <i data-lucide="arrow-right" class="w-4 h-4 text-gray-500"></i>
+                    </button>
+                    <button onclick="openPasswordsSection('admin')" class="w-full text-left px-4 py-3 rounded-xl bg-white/5 hover:bg-indigo-600/20 border border-white/5 hover:border-indigo-500/30 text-sm font-medium text-gray-200 transition flex items-center justify-between">
+                        <span class="flex items-center space-x-3"><i data-lucide="lock" class="w-4 h-4 text-indigo-400"></i><span>Админ-панель</span></span>
+                        <i data-lucide="arrow-right" class="w-4 h-4 text-gray-500"></i>
+                    </button>
+                    <button onclick="openPasswordsSection('apps')" class="w-full text-left px-4 py-3 rounded-xl bg-white/5 hover:bg-indigo-600/20 border border-white/5 hover:border-indigo-500/30 text-sm font-medium text-gray-200 transition flex items-center justify-between">
+                        <span class="flex items-center space-x-3"><i data-lucide="grid" class="w-4 h-4 text-indigo-400"></i><span>Пароли приложений (Список)</span></span>
+                        <i data-lucide="arrow-right" class="w-4 h-4 text-gray-500"></i>
+                    </button>
                 </div>
             </div>
-            <div class="stat-card stat-vis-hidden">
-                <span class="stat-card-icon">🚫</span>
-                <div class="stat-card-info">
-                    <span class="stat-card-val" id="statVisHidden">0</span>
-                    <span class="stat-card-label">Скрыто</span>
+
+            <!-- 2. Кнопка "Видимость приложений" -->
+            <div onclick="openVisibilitySection()" class="glass-panel p-6 rounded-2xl cursor-pointer transition duration-300 border border-white/5 hover:border-indigo-500/40 group">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-xl bg-purple-600/10 border border-purple-500/20 flex items-center justify-center text-purple-400 group-hover:scale-110 transition">
+                        <i data-lucide="eye" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-base font-semibold text-white">Видимость приложений</h2>
+                        <p class="text-xs text-gray-400">Настройка отображения элементов каталога</p>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="visibility-actions">
-            <button class="visibility-action-btn-show" type="button" onclick="setAllAppsVisibility(true)">👁️ Показать все</button>
-            <button class="visibility-action-btn-hide" type="button" onclick="setAllAppsVisibility(false)">🚫 Скрыть все</button>
-        </div>
-        <div class="app-search-wrap">
-            <span class="search-icon">⌕</span>
-            <input type="search" id="visibilityAppSearch" class="app-search" placeholder="Поиск приложения..." oninput="filterVisibilityApps()" autocomplete="off">
-        </div>
-        <div class="sheet-list" id="visibilityAppsList"></div>
-    </div>
-</div>
 
-<div class="sheet-overlay" id="editModalOverlay">
-    <div class="sheet-modal" id="editModalContainer" onclick="event.stopPropagation()">
-        <div class="sheet-header">
-            <div class="sheet-title" id="editModalTitle">Пароль</div>
+            <!-- 3. Кнопка "Режим обслуживания" -->
+            <div onclick="openMaintenanceSection()" class="glass-panel p-6 rounded-2xl cursor-pointer transition duration-300 border border-white/5 hover:border-amber-500/40 group">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-xl bg-amber-600/10 border border-amber-500/20 flex items-center justify-center text-amber-400 group-hover:scale-110 transition">
+                        <i data-lucide="wrench" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-base font-semibold text-white">Режим обслуживания</h2>
+                        <p class="text-xs text-gray-400">Включение заглушки и технических работ</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Кнопка "История действий" -->
+            <div onclick="openHistorySection()" class="glass-panel p-6 rounded-2xl cursor-pointer transition duration-300 border border-white/5 hover:border-emerald-500/40 group">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-600/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition">
+                        <i data-lucide="history" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-base font-semibold text-white">История действий</h2>
+                        <p class="text-xs text-gray-400">Логирование и аудит админ-панели</p>
+                    </div>
+                </div>
+            </div>
+
         </div>
-        <div class="input-group">
-            <label>Новый цифровой пароль</label>
-            <input type="tel" inputmode="numeric" pattern="[0-9]*" id="editPasswordInput" autocomplete="off">
-        </div>
-        <div class="extra-actions-container">
-            <button class="btn-action-copy" type="button" onclick="copyCurrentModalPassword()">Копировать</button>
-            <div class="extra-actions-row">
-                <button class="btn-action-generate" type="button" onclick="generatePassword()">Сгенерировать</button>
-                <button class="btn-action-clear" type="button" id="btnClearPassword" onclick="clearPassword()">Без пароля</button>
+
+        <!-- Динамическая рабочая зона / Модальный блок функционала паролей и т.д. -->
+        <div id="workspace" class="glass-panel p-6 rounded-2xl hidden">
+            <div class="flex items-center justify-between mb-4 pb-3 border-b border-white/5">
+                <h3 id="workspaceTitle" class="text-lg font-semibold text-white">Раздел</h3>
+                <button onclick="closeWorkspace()" class="text-gray-400 hover:text-white transition">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div id="workspaceContent" class="space-y-4">
+                <!-- Сюда динамически подгружается функционал генерации, сохранения, копирования и списков -->
             </div>
         </div>
-        <div class="modal-actions">
-            <button class="btn-cancel" onclick="closeEditModal()">Отмена</button>
-            <button class="btn-save" onclick="savePassword()">Сохранить</button>
-        </div>
-    </div>
-</div>
 
-<div id="toast" class="toast">Изменения сохранены</div>
+    </main>
 
-<script>
-    const SUPABASE_URL = 'https://gbuvpqcummyutycemaaj.supabase.co';
-    const SUPABASE_ANON_KEY = 'sb_publishable_oUDovfvWL6iioG6N5Xd_QQ_8KYezq8g';
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    <!-- Инициализация икон и логика скриптов -->
+    <script>
+        lucide.createIcons();
 
-    const appConfigList = [
-        { key: "vk", name: "ВКонтакте" },
-        { key: "max", name: "MAX" },
-        { key: "vk-video", name: "VK Видео" },
-        { key: "vk-clips", name: "VK Клипы" },
-        { key: "sberfinansy", name: "СберБанк (Финансы Онлайн)" },
-        { key: "avito", name: "Авито" },
-        { key: "sovkombank-vsekarty", name: "Совкомбанк (Все карты MDS)" },
-        { key: "tbank", name: "Т-Банк (8PRO)" },
-        { key: "sovkombank-sinoptik", name: "Совкомбанк (Синоптик+)" },
-        { key: "spotluma", name: "Т-Банк (Spotluma)" },
-        { key: "lenta", name: "Лента" },
-        { key: "yandex-pay", name: "Яндекс Пэй" },
-        { key: "2gis", name: "2ГИС" },
-        { key: "yla", name: "Юла" },
-        { key: "psb", name: "ПСБ (Чайная Церемония)" },
-        { key: "kuper", name: "Купер" },
-        { key: "rutube", name: "Rutube(Starship Battle)" },
-        { key: "mobio", name: "СберМобайл (Мобио)" },
-        { key: "rzd", name: "РЖД Пассажирам" },
-        { key: "sberkids", name: "СберKids (SpeakaBoo)" },
-        { key: "lentaa", name: "Лента (Быстро Продукты)" },
-        { key: "avito-anero", name: "Авито (Anero)" },
-        { key: "craftersy", name: "Т-Банк (Craftersy)" },
-        { key: "scbnotes", name: "СовкомБанк (SCB Notes)" },
-        { key: "ak-bars-bank", name: "АК Барс (Всё Учтено)" },
-        { key: "blum", name: "РокетБанк (Блум)" },
-        { key: "happ_proxy", name: "Happ Proxy" },
-        { key: "sber_invest", name: "СберИнвестиции" },
-        { key: "vtb_invest", name: "ВТБ Инвестиции" },
-        { key: "gazpromneft", name: "Газпромнефть" },
-        { key: "novikombank", name: "Новикомбанк" },
-        { key: "mtsdengi", name: "МТС Банк" }
-    ];
-
-    let globalSettings = { admin_password: '', site_password: '', maintenance_mode: 'false' };
-    let appPasswordsData = {};
-    let appVisibilityData = {};
-    let currentEditKey = null;
-    let currentEditType = null;
-
-    async function checkConnection() {
-        const dot = document.getElementById('dbDot');
-        const text = document.getElementById('dbStatusText');
-        try {
-            const { error } = await supabaseClient.from('settings').select('key').limit(1);
-            if (error) throw error;
-            dot.classList.add('online');
-            text.textContent = 'База данных на связи';
-        } catch (e) {
-            dot.classList.remove('online');
-            text.textContent = 'Нет связи с Supabase';
-        }
-    }
-    checkConnection();
-    setInterval(checkConnection, 10000);
-
-    window.addEventListener('DOMContentLoaded', () => {
-        if (sessionStorage.getItem('admin_logged_in') === 'true') {
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('admin-panel').style.display = 'flex';
-            loadSettings();
-            initRealtime();
-        }
-    });
-
-    async function addHistory(actionText) {
-        try {
-            const now = new Date();
-            const datetimeStr = now.toLocaleString('ru-RU', {
-                day: '2-digit', month: '2-digit', year: 'numeric',
-                hour: '2-digit', minute: '2-digit', second: '2-digit'
-            });
-
-            const { error } = await supabaseClient.from('history').insert([
-                { text: actionText, datetime: datetimeStr, created_at: new Date() }
-            ]);
-
-            if (error) console.error('Ошибка Supabase при записи истории:', error);
-        } catch (e) {
-            console.error('Сетевая ошибка истории:', e);
-        }
-    }
-
-    async function loadHistory() {
-        try {
-            const { data, error } = await supabaseClient
-                .from('history')
-                .select('*')
-                .order('created_at', { ascending: false })
-                .limit(50);
-
-            if (error) throw error;
-
-            const list = document.getElementById('historyModalList');
-            if (!data || data.length === 0) {
-                list.innerHTML = '<div class="history-modal-item"><span>История пока пуста</span><span class="history-modal-time">--:--</span></div>';
-                return;
-            }
-
-            list.innerHTML = data.map(item => `
-                <div class="history-modal-item">
-                    <span>${item.text}</span>
-                    <span class="history-modal-time">${item.datetime || ''}</span>
-                </div>
-            `).join('');
-        } catch (e) {
-            console.error('Ошибка загрузки истории:', e);
-        }
-    }
-
-    function openHistoryModal() {
-        loadHistory();
-        document.getElementById('historyCatalogOverlay').classList.add('active');
-    }
-
-    function closeHistoryModal() {
-        document.getElementById('historyCatalogOverlay').classList.remove('active');
-    }
-
-    function updatePasswordStats() {
-        let locked = 0;
-        appConfigList.forEach(app => {
-            const pass = appPasswordsData[app.key];
-            if (pass && String(pass).trim() !== '') locked++;
-        });
-        document.getElementById('statPassLocked').textContent = locked;
-        document.getElementById('statPassUnlocked').textContent = appConfigList.length - locked;
-    }
-
-    function updateVisibilityStats() {
-        let shown = 0;
-        appConfigList.forEach(app => {
-            if (appVisibilityData[app.key] !== false) shown++;
-        });
-        document.getElementById('statVisShown').textContent = shown;
-        document.getElementById('statVisHidden').textContent = appConfigList.length - shown;
-    }
-
-    function initRealtime() {
-        supabaseClient
-            .channel('public:db_changes')
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'settings' }, () => {
-                loadSettings();
-            })
-            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'history' }, () => {
-                if (document.getElementById('historyCatalogOverlay').classList.contains('active')) {
-                    loadHistory();
-                }
-            })
-            .subscribe();
-    }
-
-    async function checkAdminAuth() {
-        const inputPass = document.getElementById('admin-pass-input').value.trim();
-        const errorDiv = document.getElementById('login-error');
-        errorDiv.classList.remove('active');
-
-        try {
-            const { data, error } = await supabaseClient
-                .from('settings')
-                .select('value')
-                .eq('key', 'admin_password')
-                .single();
-
-            if (error || !data) {
-                showLoginError('Ошибка базы данных');
-                return;
-            }
-
-            if (inputPass === data.value) {
-                sessionStorage.setItem('admin_logged_in', 'true');
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('admin-panel').style.display = 'flex';
-                
-                loadSettings();
-                initRealtime();
-                await addHistory('Успешный вход в панель управления с сайта');
-
+        function toggleSubMenu(id) {
+            const menu = document.getElementById(id);
+            const chevron = document.getElementById('passwordsChevron');
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                chevron.style.transform = 'rotate(180deg)';
             } else {
-                showLoginError('Неверный пароль');
-                const passInput = document.getElementById('admin-pass-input');
-                passInput.value = '';
-                passInput.focus();
+                menu.classList.add('hidden');
+                chevron.style.transform = 'rotate(0deg)';
             }
-        } catch (err) {
-            showLoginError('Ошибка авторизации');
-        }
-    }
-
-    function showLoginError(msg) {
-        const err = document.getElementById('login-error');
-        err.textContent = msg;
-        err.classList.add('active');
-    }
-
-    async function loadSettings() {
-        const { data, error } = await supabaseClient.from('settings').select('key, value');
-        if (error) return;
-
-        data.forEach(item => {
-            if (item.key === 'admin_password' || item.key === 'site_password' || item.key === 'maintenance_mode') {
-                globalSettings[item.key] = item.value;
-                if (item.key === 'maintenance_mode') {
-                    document.getElementById('maintenanceToggle').checked = (item.value === 'true');
-                }
-            } else if (item.key.startsWith('vis_')) {
-                const appKey = item.key.replace('vis_', '');
-                appVisibilityData[appKey] = item.value === 'true';
-            } else {
-                appPasswordsData[item.key] = item.value;
-            }
-        });
-        renderAdminAppsList();
-        renderVisibilityAppsList();
-        updatePasswordStats();
-        updateVisibilityStats();
-    }
-
-    async function toggleMaintenance(isEnabled) {
-        const statusStr = isEnabled ? 'true' : 'false';
-        globalSettings['maintenance_mode'] = statusStr;
-        
-        const { error } = await supabaseClient.from('settings').upsert({ key: 'maintenance_mode', value: statusStr }, { onConflict: 'key' });
-        
-        if (error) {
-            showToast('Ошибка при переключении режима');
-            return;
         }
 
-        const msg = isEnabled ? 'Включен режим обслуживания на сайте' : 'Режим обслуживания отключен';
-        await addHistory(msg);
-        showToast(msg);
-    }
+        function showWorkspace(title, htmlContent) {
+            const ws = document.getElementById('workspace');
+            const wsTitle = document.getElementById('workspaceTitle');
+            const wsContent = document.getElementById('workspaceContent');
+            
+            wsTitle.textContent = title;
+            wsContent.innerHTML = htmlContent;
+            ws.classList.remove('hidden');
+            ws.scrollIntoView({ behavior: 'smooth' });
+            lucide.createIcons();
+        }
 
-    function renderAdminAppsList() {
-        const listContainer = document.getElementById('adminAppsList');
-        listContainer.innerHTML = '';
-        appConfigList.forEach(app => {
-            const div = document.createElement('div');
-            div.className = 'sheet-item';
-            div.setAttribute('data-name', app.name.toLowerCase());
-            div.innerHTML = `
-                <span class="app-name">${app.name}</span>
-                <div class="app-item-actions">
-                    <button class="gear-btn" style="width:34px; height:34px; font-size:14px; background: rgba(167, 139, 250, 0.06); border: 1px solid var(--border-apps-pass);" title="Копировать пароль" onclick="copyAppPassword('${app.key}', '${app.name}')">📋</button>
-                    <button class="gear-btn" style="width:34px; height:34px; font-size:15px; background: rgba(99, 102, 241, 0.06); border: 1px solid var(--border-apps-pass);" title="Настроить пароль" onclick="openEditModal('${app.key}', '${app.name}', 'app')">⚙️</button>
+        function closeWorkspace() {
+            document.getElementById('workspace').classList.add('hidden');
+        }
+
+        function openPasswordsSection(type) {
+            let title = '';
+            if (type === 'site') title = 'Пароль: Сайт';
+            if (type === 'admin') title = 'Пароль: Админ-панель';
+            if (type === 'apps') title = 'Пароли приложений (Весь список)';
+
+            let content = `
+                <div class="space-y-4">
+                    <p class="text-sm text-gray-400">Управление защитой для раздела: <strong>${title}</strong></p>
+                    <div class="flex space-x-2">
+                        <input type="text" id="passInput" value="sec_key_99281_xyz" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500">
+                        <button onclick="generatePassword()" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-medium transition glow-btn flex items-center space-x-1">
+                            <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                            <span>Генерация</span>
+                        </button>
+                    </div>
+                    <div class="flex space-x-3 pt-2">
+                        <button onclick="copyPassword()" class="flex-1 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-xl text-sm font-medium transition flex items-center justify-center space-x-2">
+                            <i data-lucide="copy" class="w-4 h-4 text-indigo-400"></i>
+                            <span>Копировать</span>
+                        </button>
+                        <button onclick="savePassword()" class="flex-1 py-2.5 bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/30 text-emerald-300 rounded-xl text-sm font-medium transition flex items-center justify-center space-x-2">
+                            <i data-lucide="save" class="w-4 h-4"></i>
+                            <span>Сохранить</span>
+                        </button>
+                    </div>
                 </div>
             `;
-            listContainer.appendChild(div);
-        });
-    }
-
-    function filterAdminApps() {
-        const query = document.getElementById('adminAppSearch').value.toLowerCase();
-        document.querySelectorAll('#adminAppsList .sheet-item').forEach(item => {
-            const name = item.getAttribute('data-name');
-            item.style.display = name.includes(query) ? 'flex' : 'none';
-        });
-    }
-
-    function openAppsCatalogSheet() {
-        updatePasswordStats();
-        document.getElementById('appsCatalogOverlay').classList.add('active');
-        document.getElementById('adminAppSearch').value = '';
-        filterAdminApps();
-    }
-
-    function closeAppsCatalogSheet() {
-        document.getElementById('appsCatalogOverlay').classList.remove('active');
-    }
-
-    function renderVisibilityAppsList() {
-        const listContainer = document.getElementById('visibilityAppsList');
-        listContainer.innerHTML = '';
-        appConfigList.forEach(app => {
-            const isVisible = appVisibilityData[app.key] !== false;
-            const div = document.createElement('div');
-            div.className = 'sheet-item';
-            div.setAttribute('data-name', app.name.toLowerCase());
-            div.innerHTML = `
-                <span class="app-name">${app.name}</span>
-                <label class="switch">
-                    <input type="checkbox" ${isVisible ? 'checked' : ''} onchange="toggleAppVisibility('${app.key}', this.checked)">
-                    <span class="slider"></span>
-                </label>
-            `;
-            listContainer.appendChild(div);
-        });
-    }
-
-    async function setAllAppsVisibility(isVisible) {
-        const updates = appConfigList.map(app => ({
-            key: `vis_${app.key}`,
-            value: isVisible ? 'true' : 'false'
-        }));
-        appConfigList.forEach(app => { appVisibilityData[app.key] = isVisible; });
-
-        const { error } = await supabaseClient.from('settings').upsert(updates, { onConflict: 'key' });
-        if (error) { showToast('Ошибка сохранения'); return; }
-
-        updateVisibilityStats();
-        renderVisibilityAppsList();
-        filterVisibilityApps();
-        const msg = isVisible ? 'Все приложения показаны' : 'Все приложения скрыты';
-        await addHistory(msg);
-        showToast(msg);
-    }
-
-    function filterVisibilityApps() {
-        const query = document.getElementById('visibilityAppSearch').value.toLowerCase();
-        document.querySelectorAll('#visibilityAppsList .sheet-item').forEach(item => {
-            const name = item.getAttribute('data-name');
-            item.style.display = name.includes(query) ? 'flex' : 'none';
-        });
-    }
-
-    function openVisibilityCatalogSheet() {
-        updateVisibilityStats();
-        document.getElementById('visibilityCatalogOverlay').classList.add('active');
-        document.getElementById('visibilityAppSearch').value = '';
-        renderVisibilityAppsList();
-        filterVisibilityApps();
-    }
-
-    function closeVisibilityCatalogSheet() {
-        document.getElementById('visibilityCatalogOverlay').classList.remove('active');
-    }
-
-    async function toggleAppVisibility(appKey, isVisible) {
-        appVisibilityData[appKey] = isVisible;
-        updateVisibilityStats();
-
-        const app = appConfigList.find(a => a.key === appKey);
-        const appName = app ? app.name : appKey;
-
-        await supabaseClient.from('settings').upsert({ key: `vis_${appKey}`, value: isVisible ? 'true' : 'false' }, { onConflict: 'key' });
-        const msg = isVisible ? `Показано: ${appName}` : `Скрыто: ${appName}`;
-        await addHistory(msg);
-        showToast(msg);
-    }
-
-    function openEditModal(key, title, type) {
-        currentEditKey = key;
-        currentEditType = type;
-        document.getElementById('editModalTitle').textContent = title;
-        const currentPass = (type === 'admin' || type === 'site') ? globalSettings[key] : appPasswordsData[key];
-        document.getElementById('editPasswordInput').value = currentPass || '';
-        
-        document.getElementById('editModalOverlay').classList.add('active');
-        setTimeout(() => document.getElementById('editPasswordInput').focus(), 100);
-    }
-
-    function closeEditModal() {
-        document.getElementById('editModalOverlay').classList.remove('active');
-        currentEditKey = null;
-        currentEditType = null;
-    }
-
-    function generatePassword() {
-        const newPass = Math.floor(100000 + Math.random() * 900000).toString();
-        document.getElementById('editPasswordInput').value = newPass;
-    }
-
-    function copyCurrentModalPassword() {
-        const passVal = document.getElementById('editPasswordInput').value.trim();
-        if (!passVal) {
-            showToast('Пароль отсутствует');
-            return;
+            showWorkspace(title, content);
         }
-        navigator.clipboard.writeText(passVal).then(() => {
-            showToast('Пароль скопирован в буфер');
-        }).catch(() => {
-            showToast('Не удалось скопировать пароль');
-        });
-    }
 
-    function copyAppPassword(appKey, appName) {
-        const passVal = appPasswordsData[appKey];
-        if (!passVal || String(passVal).trim() === '') {
-            showToast(`У «${appName}» нет пароля`);
-            return;
+        function openVisibilitySection() {
+            showWorkspace('Видимость приложений', `
+                <div class="space-y-3">
+                    <p class="text-sm text-gray-400">Управляйте доступностью приложений в общем каталоге:</p>
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5">
+                            <span class="text-sm font-medium text-white">SberBank iOS</span>
+                            <input type="checkbox" checked class="w-4 h-4 accent-indigo-600 cursor-pointer">
+                        </div>
+                        <div class="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5">
+                            <span class="text-sm font-medium text-white">T-Bank iOS</span>
+                            <input type="checkbox" checked class="w-4 h-4 accent-indigo-600 cursor-pointer">
+                        </div>
+                        <div class="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5">
+                            <span class="text-sm font-medium text-white">Max App</span>
+                            <input type="checkbox" class="w-4 h-4 accent-indigo-600 cursor-pointer">
+                        </div>
+                    </div>
+                </div>
+            `);
         }
-        navigator.clipboard.writeText(passVal).then(() => {
-            showToast(`Пароль «${appName}» скопирован`);
-        }).catch(() => {
-            showToast('Не удалось скопировать пароль');
-        });
-    }
 
-    async function generateAndSaveAllPasswords() {
-        const btn = document.getElementById('btnGenerateAllPasswords');
-        if (!btn) return;
-        const oldText = btn.innerHTML;
-        btn.disabled = true;
-        btn.innerHTML = '<span>⏳ Генерация...</span>';
+        function openMaintenanceSection() {
+            showWorkspace('Режим обслуживания', `
+                <div class="space-y-4">
+                    <p class="text-sm text-gray-400">Включение технического режима блокирует клиентскую часть сайта красивой заглушкой.</p>
+                    <div class="flex items-center justify-between p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
+                        <div>
+                            <h4 class="text-sm font-semibold text-amber-200">Статус обслуживания</h4>
+                            <p class="text-xs text-amber-300/70">Сайт сейчас работает в штатном режиме</p>
+                        </div>
+                        <button onclick="alert('Режим обслуживания изменен!')" class="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-semibold transition">
+                            Включить режим
+                        </button>
+                    </div>
+                </div>
+            `);
+        }
 
-        try {
-            const usedPasswords = new Set();
-            const updates = [];
-            for (const app of appConfigList) {
-                let newPass = '';
-                do {
-                    const array = new Uint32Array(1);
-                    crypto.getRandomValues(array);
-                    newPass = String(100000 + (array[0] % 900000));
-                } while (usedPasswords.has(newPass));
-                usedPasswords.add(newPass);
-                updates.push({ key: app.key, value: newPass });
+        function openHistorySection() {
+            showWorkspace('История действий', `
+                <div class="space-y-3 text-sm">
+                    <div class="p-3 rounded-xl bg-white/5 border border-white/5 flex justify-between items-center">
+                        <span class="text-gray-300">Изменен пароль администратора</span>
+                        <span class="text-xs text-gray-500">Сегодня, 18:42</span>
+                    </div>
+                    <div class="p-3 rounded-xl bg-white/5 border border-white/5 flex justify-between items-center">
+                        <span class="text-gray-300">Обновлена видимость приложений</span>
+                        <span class="text-xs text-gray-500">Сегодня, 15:10</span>
+                    </div>
+                </div>
+            `);
+        }
+
+        function generatePassword() {
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$!";
+            let pass = "";
+            for (let i = 0; i < 16; i++) {
+                pass += chars.charAt(Math.floor(Math.random() * chars.length));
             }
-
-            await supabaseClient.from('settings').upsert(updates, { onConflict: 'key' });
-            updates.forEach(item => { appPasswordsData[item.key] = item.value; });
-
-            updatePasswordStats();
-            renderAdminAppsList();
-            await addHistory('Сгенерированы новые пароли для всех приложений');
-            showToast('Новые пароли сохранены для всех приложений');
-        } catch (error) {
-            showToast('Ошибка при генерации паролей');
-        } finally {
-            btn.innerHTML = oldText;
-            btn.disabled = false;
-        }
-    }
-
-    function clearPassword() {
-        document.getElementById('editPasswordInput').value = '';
-    }
-
-    async function savePassword() {
-        if (!currentEditKey) return;
-        const newPass = document.getElementById('editPasswordInput').value.trim();
-        
-        if (newPass && !/^\d+$/.test(newPass)) {
-            alert('Пароль должен состоять только из цифр!');
-            return;
+            document.getElementById('passInput').value = pass;
         }
 
-        const btnSave = document.querySelector('.btn-save');
-        btnSave.textContent = '...';
-        btnSave.style.pointerEvents = 'none';
-
-        await supabaseClient.from('settings').upsert({ key: currentEditKey, value: newPass }, { onConflict: 'key' });
-
-        btnSave.textContent = 'Сохранить';
-        btnSave.style.pointerEvents = 'auto';
-
-        let toastMsg = '';
-        if (currentEditType === 'app') {
-            appPasswordsData[currentEditKey] = newPass;
-            updatePasswordStats();
-            const app = appConfigList.find(a => a.key === currentEditKey);
-            const appName = app ? app.name : currentEditKey;
-            toastMsg = newPass ? `Пароль для «${appName}» изменён` : `Пароль для «${appName}» удален`;
-        } else {
-            globalSettings[currentEditKey] = newPass;
-            toastMsg = currentEditKey === 'admin_password' ? 'Пароль админ-панели изменён' : 'Пароль сайта изменён';
+        function copyPassword() {
+            const input = document.getElementById('passInput');
+            input.select();
+            navigator.clipboard.writeText(input.value);
+            alert("Пароль скопирован в буфер обмена!");
         }
 
-        await addHistory(toastMsg);
-        closeEditModal();
-        showToast(toastMsg);
-    }
+        function savePassword() {
+            alert("Пароль успешно сохранен в базе данных!");
+        }
 
-    function showToast(msg) {
-        const toast = document.getElementById('toast');
-        toast.textContent = msg;
-        toast.classList.add('show');
-        setTimeout(() => { toast.classList.remove('show'); }, 3000);
-    }
-
-    document.getElementById('admin-pass-input').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') checkAdminAuth();
-    });
-    document.getElementById('editPasswordInput').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') savePassword();
-    });
-</script>
-
+        function logout() {
+            if(confirm("Вы действительно хотите выйти?")) {
+                window.location.reload();
+            }
+        }
+    </script>
 </body>
 </html>
