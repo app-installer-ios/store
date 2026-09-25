@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Панель Управления</title>
+    <title>Панель Управления — Apple Style</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Подключаем Supabase JS клиент -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -14,155 +13,174 @@
             theme: {
                 extend: {
                     fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
-                    colors: {
-                        darkBg: '#07080c',
-                        cardBg: '#10131d',
-                        cardBorder: '#1c2237',
-                    }
                 }
             }
         }
     </script>
     <style>
         body {
-            background-color: #07080c;
+            background-color: #050507;
             color: #f1f5f9;
             font-family: 'Plus Jakarta Sans', sans-serif;
+            background-image: radial-gradient(circle at 50% 0%, #121526 0%, #050507 70%);
         }
-        .glass-card {
-            background: linear-gradient(135deg, rgba(16, 19, 29, 0.8) 0%, rgba(10, 12, 18, 0.9) 100%);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.06);
+        /* Премиальный стеклянный эффект Apple */
+        .apple-card {
+            background: rgba(20, 24, 39, 0.65);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
         }
-        .glass-modal {
-            background: linear-gradient(135deg, rgba(18, 22, 34, 0.95) 0%, rgba(10, 12, 18, 0.98) 100%);
-            backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        .apple-modal {
+            background: rgba(14, 17, 27, 0.85);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
         }
-        .btn-primary-cyan {
-            background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
-            box-shadow: 0 4px 20px rgba(6, 182, 212, 0.25);
-            border: 1px solid rgba(6, 182, 212, 0.4);
+        /* Профессиональные микро-кнопки в стиле Apple iOS */
+        .btn-apple-action {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px 14px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 10px;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
-        .btn-primary-cyan:hover { box-shadow: 0 6px 25px rgba(6, 182, 212, 0.4); }
-        .btn-primary-purple {
-            background: linear-gradient(135deg, #8b5cf6 0%, #d946ef 100%);
-            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.25);
-            border: 1px solid rgba(139, 92, 246, 0.4);
+        .btn-apple-action:active {
+            transform: scale(0.96);
         }
-        .btn-primary-purple:hover { box-shadow: 0 6px 25px rgba(139, 92, 246, 0.4); }
-        .btn-primary-emerald {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.25);
-            border: 1px solid rgba(16, 185, 129, 0.4);
+        .btn-cyan {
+            background: rgba(6, 182, 212, 0.12);
+            color: #22d3ee;
+            border-color: rgba(6, 182, 212, 0.3);
         }
-        .btn-primary-emerald:hover { box-shadow: 0 6px 25px rgba(16, 185, 129, 0.4); }
-        .btn-primary-amber {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            box-shadow: 0 4px 20px rgba(245, 158, 11, 0.25);
-            border: 1px solid rgba(245, 158, 11, 0.4);
+        .btn-cyan:hover {
+            background: rgba(6, 182, 212, 0.22);
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.2);
         }
-        .btn-primary-amber:hover { box-shadow: 0 6px 25px rgba(245, 158, 11, 0.4); }
+        .btn-purple {
+            background: rgba(168, 85, 247, 0.12);
+            color: #c084fc;
+            border-color: rgba(168, 85, 247, 0.3);
+        }
+        .btn-purple:hover {
+            background: rgba(168, 85, 247, 0.22);
+            box-shadow: 0 0 15px rgba(168, 85, 247, 0.2);
+        }
+        .btn-emerald {
+            background: rgba(16, 185, 129, 0.12);
+            color: #34d399;
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+        .btn-emerald:hover {
+            background: rgba(16, 185, 129, 0.22);
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+        }
+        .btn-amber {
+            background: rgba(245, 158, 11, 0.12);
+            color: #fbbf24;
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+        .btn-amber:hover {
+            background: rgba(245, 158, 11, 0.22);
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
+        }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4 sm:p-6">
 
-    <!-- Тост уведомления -->
-    <div id="toast" class="fixed top-5 right-5 z-50 transform translate-x-full opacity-0 transition-all duration-300 glass-card px-5 py-3 rounded-2xl border border-cyan-500/30 shadow-2xl flex items-center space-x-3">
-        <div class="w-8 h-8 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center">
-            <i data-lucide="check" class="w-4 h-4"></i>
+    <!-- Тост уведомление в стиле macOS -->
+    <div id="toast" class="fixed top-6 right-6 z-50 transform translate-x-full opacity-0 transition-all duration-300 apple-card px-4 py-3 rounded-2xl shadow-2xl flex items-center space-x-3 border border-cyan-500/30">
+        <div class="w-7 h-7 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center">
+            <i data-lucide="check" class="w-3.5 h-3.5"></i>
         </div>
-        <span id="toastText" class="text-sm font-medium text-white">Успешно выполнено</span>
+        <span id="toastText" class="text-xs font-semibold text-white tracking-wide">Выполнено</span>
     </div>
 
-    <!-- Модальное окно -->
-    <div id="modalOverlay" class="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
-        <div id="modalContainer" class="glass-modal w-full max-w-md rounded-3xl p-6 shadow-2xl border border-white/10 transform scale-95 opacity-0 transition-all duration-300"></div>
+    <!-- Модальное окно по центру -->
+    <div id="modalOverlay" class="fixed inset-0 z-40 bg-black/60 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div id="modalContainer" class="apple-modal w-full max-w-md rounded-3xl p-6 transform scale-95 opacity-0 transition-all duration-300"></div>
     </div>
 
-    <!-- Основной контейнер -->
-    <main class="w-full max-w-xl space-y-4">
-
-        <!-- 1. Пароли -->
-        <div class="glass-card rounded-2xl p-5 border-l-4 border-l-cyan-500 transition-all">
-            <div onclick="toggleAccordion('passwordsSection')" class="flex items-center justify-between cursor-pointer select-none">
-                <div class="flex items-center space-x-3.5">
-                    <div class="w-11 h-11 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
-                        <i data-lucide="key-round" class="w-5 h-5"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-sm font-bold text-white uppercase tracking-wider">Пароли</h2>
-                        <p class="text-xs text-gray-400">Управление доступом, генерация и списки</p>
-                    </div>
-                </div>
-                <i data-lucide="chevron-down" id="passwordsChevron" class="w-5 h-5 text-gray-400 transition-transform duration-300"></i>
-            </div>
-
-            <div id="passwordsSection" class="hidden mt-4 pt-4 border-t border-white/5 space-y-2.5">
-                <button onclick="openPasswordEditor('site_password', 'Сайт')" class="w-full text-left px-4 py-3 rounded-xl bg-white/5 hover:bg-cyan-500/10 border border-white/5 hover:border-cyan-500/30 text-sm font-medium text-gray-200 transition flex items-center justify-between group">
-                    <span class="flex items-center space-x-3"><i data-lucide="globe" class="w-4 h-4 text-cyan-400 group-hover:scale-110 transition"></i><span>Сайт</span></span>
-                    <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500"></i>
-                </button>
-                <button onclick="openPasswordEditor('admin_password', 'Админ-панель')" class="w-full text-left px-4 py-3 rounded-xl bg-white/5 hover:bg-purple-500/10 border border-white/5 hover:border-purple-500/30 text-sm font-medium text-gray-200 transition flex items-center justify-between group">
-                    <span class="flex items-center space-x-3"><i data-lucide="shield-alert" class="w-4 h-4 text-purple-400 group-hover:scale-110 transition"></i><span>Админ-панель</span></span>
-                    <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500"></i>
-                </button>
-                <button onclick="openAppsList()" class="w-full text-left px-4 py-3 rounded-xl bg-white/5 hover:bg-emerald-500/10 border border-white/5 hover:border-emerald-500/30 text-sm font-medium text-gray-200 transition flex items-center justify-between group">
-                    <span class="flex items-center space-x-3"><i data-lucide="grid" class="w-4 h-4 text-emerald-400 group-hover:scale-110 transition"></i><span>Пароли приложений</span></span>
-                    <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500"></i>
-                </button>
-            </div>
+    <!-- Главный экран: 4 премиальные кнопки -->
+    <main class="w-full max-w-lg space-y-3.5">
+        
+        <!-- Заголовок панели -->
+        <div class="px-2 pb-1">
+            <h1 class="text-xs font-bold uppercase tracking-widest text-gray-400">System Control</h1>
+            <p class="text-lg font-bold text-white tracking-tight mt-0.5">Панель управления</p>
         </div>
 
-        <!-- 2. Видимость -->
-        <div onclick="openVisibilitySection()" class="glass-card rounded-2xl p-5 border-l-4 border-l-purple-500 cursor-pointer transition-all hover:border-purple-500/50 flex items-center justify-between group">
+        <!-- Кнопка 1: Пароли -->
+        <div onclick="openPasswordsMenu()" class="apple-card rounded-2xl p-4 cursor-pointer transition-all hover:scale-[1.01] flex items-center justify-between group border-l-2 border-l-cyan-400">
             <div class="flex items-center space-x-3.5">
-                <div class="w-11 h-11 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 group-hover:scale-105 transition">
+                <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 group-hover:scale-105 transition">
+                    <i data-lucide="key-round" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h2 class="text-sm font-bold text-white tracking-wide">Пароли</h2>
+                    <p class="text-xs text-gray-400">Сайт, админ-панель и приложения</p>
+                </div>
+            </div>
+            <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500 group-hover:text-cyan-400 group-hover:translate-x-0.5 transition"></i>
+        </div>
+
+        <!-- Кнопка 2: Видимость приложений -->
+        <div onclick="openVisibilitySection()" class="apple-card rounded-2xl p-4 cursor-pointer transition-all hover:scale-[1.01] flex items-center justify-between group border-l-2 border-l-purple-400">
+            <div class="flex items-center space-x-3.5">
+                <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 group-hover:scale-105 transition">
                     <i data-lucide="eye" class="w-5 h-5"></i>
                 </div>
                 <div>
-                    <h2 class="text-sm font-bold text-white uppercase tracking-wider">Видимость приложений</h2>
-                    <p class="text-xs text-gray-400">Настройка отображения элементов каталога</p>
+                    <h2 class="text-sm font-bold text-white tracking-wide">Видимость приложений</h2>
+                    <p class="text-xs text-gray-400">Управление отображением в каталоге</p>
                 </div>
             </div>
-            <i data-lucide="arrow-right" class="w-4 h-4 text-gray-500 group-hover:text-purple-400 group-hover:translate-x-1 transition"></i>
+            <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500 group-hover:text-purple-400 group-hover:translate-x-0.5 transition"></i>
         </div>
 
-        <!-- 3. Режим обслуживания -->
-        <div onclick="openMaintenanceSection()" class="glass-card rounded-2xl p-5 border-l-4 border-l-amber-500 cursor-pointer transition-all hover:border-amber-500/50 flex items-center justify-between group">
+        <!-- Кнопка 3: Режим обслуживания -->
+        <div onclick="openMaintenanceSection()" class="apple-card rounded-2xl p-4 cursor-pointer transition-all hover:scale-[1.01] flex items-center justify-between group border-l-2 border-l-amber-400">
             <div class="flex items-center space-x-3.5">
-                <div class="w-11 h-11 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 group-hover:scale-105 transition">
+                <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 group-hover:scale-105 transition">
                     <i data-lucide="wrench" class="w-5 h-5"></i>
                 </div>
                 <div>
-                    <h2 class="text-sm font-bold text-white uppercase tracking-wider">Режим обслуживания</h2>
-                    <p class="text-xs text-gray-400">Управление заглушкой и техническими работами</p>
+                    <h2 class="text-sm font-bold text-white tracking-wide">Режим обслуживания</h2>
+                    <p class="text-xs text-gray-400">Технические работы и заглушка</p>
                 </div>
             </div>
-            <i data-lucide="arrow-right" class="w-4 h-4 text-gray-500 group-hover:text-amber-400 group-hover:translate-x-1 transition"></i>
+            <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500 group-hover:text-amber-400 group-hover:translate-x-0.5 transition"></i>
         </div>
 
-        <!-- 4. История -->
-        <div onclick="openHistorySection()" class="glass-card rounded-2xl p-5 border-l-4 border-l-emerald-500 cursor-pointer transition-all hover:border-emerald-500/50 flex items-center justify-between group">
+        <!-- Кнопка 4: История действий -->
+        <div onclick="openHistorySection()" class="apple-card rounded-2xl p-4 cursor-pointer transition-all hover:scale-[1.01] flex items-center justify-between group border-l-2 border-l-emerald-400">
             <div class="flex items-center space-x-3.5">
-                <div class="w-11 h-11 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 group-hover:scale-105 transition">
+                <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 group-hover:scale-105 transition">
                     <i data-lucide="history" class="w-5 h-5"></i>
                 </div>
                 <div>
-                    <h2 class="text-sm font-bold text-white uppercase tracking-wider">История действий</h2>
-                    <p class="text-xs text-gray-400">Аудит и логирование панели управления</p>
+                    <h2 class="text-sm font-bold text-white tracking-wide">История действий</h2>
+                    <p class="text-xs text-gray-400">Лог аудита из базы данных</p>
                 </div>
             </div>
-            <i data-lucide="arrow-right" class="w-4 h-4 text-gray-500 group-hover:text-emerald-400 group-hover:translate-x-1 transition"></i>
+            <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500 group-hover:text-emerald-400 group-hover:translate-x-0.5 transition"></i>
         </div>
 
     </main>
 
-    <!-- Скрипты и логика Supabase -->
+    <!-- Скрипты и интеграция с Supabase -->
     <script>
         lucide.createIcons();
 
-        // Инициализация Supabase (замените на свои реальные данные)
+        // Настройки Supabase (подставьте ваши данные)
         const SUPABASE_URL = 'ВАШ_SUPABASE_URL';
         const SUPABASE_ANON_KEY = 'ВАШ_SUPABASE_ANON_KEY';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -174,18 +192,6 @@
             setTimeout(() => {
                 toast.classList.add('translate-x-full', 'opacity-0');
             }, 2500);
-        }
-
-        function toggleAccordion(id) {
-            const section = document.getElementById(id);
-            const chevron = document.getElementById('passwordsChevron');
-            if (section.classList.contains('hidden')) {
-                section.classList.remove('hidden');
-                chevron.style.transform = 'rotate(180deg)';
-            } else {
-                section.classList.add('hidden');
-                chevron.style.transform = 'rotate(0deg)';
-            }
         }
 
         function openModal(html) {
@@ -208,65 +214,92 @@
             setTimeout(() => { overlay.classList.add('hidden'); }, 300);
         }
 
-        // Открытие редактора пароля с загрузкой из таблицы settings
+        // Логгер в таблицу history Supabase
+        async function logAction(actionDescription) {
+            try {
+                await supabaseClient.from('history').insert([
+                    { action: actionDescription, created_at: new Date().toISOString() }
+                ]);
+            } catch (err) {
+                console.error("Ошибка логирования в history:", err);
+            }
+        }
+
+        // Подменю Паролей в модальном окне
+        function openPasswordsMenu() {
+            openModal(`
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between pb-3 border-b border-white/10">
+                        <h3 class="text-sm font-bold text-white uppercase tracking-wider">Управление паролями</h3>
+                        <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white transition"><i data-lucide="x" class="w-4 h-4"></i></button>
+                    </div>
+                    <div class="space-y-2">
+                        <button onclick="openPasswordEditor('site_password', 'Сайт')" class="w-full text-left px-4 py-3 rounded-xl bg-white/5 hover:bg-cyan-500/10 border border-white/5 hover:border-cyan-500/30 text-sm font-medium text-gray-200 transition flex items-center justify-between group">
+                            <span class="flex items-center space-x-3"><i data-lucide="globe" class="w-4 h-4 text-cyan-400"></i><span>Сайт</span></span>
+                            <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500 group-hover:text-cyan-400"></i>
+                        </button>
+                        <button onclick="openPasswordEditor('admin_password', 'Админ-панель')" class="w-full text-left px-4 py-3 rounded-xl bg-white/5 hover:bg-purple-500/10 border border-white/5 hover:border-purple-500/30 text-sm font-medium text-gray-200 transition flex items-center justify-between group">
+                            <span class="flex items-center space-x-3"><i data-lucide="shield-alert" class="w-4 h-4 text-purple-400"></i><span>Админ-панель</span></span>
+                            <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500 group-hover:text-purple-400"></i>
+                        </button>
+                        <button onclick="openAppsList()" class="w-full text-left px-4 py-3 rounded-xl bg-white/5 hover:bg-emerald-500/10 border border-white/5 hover:border-emerald-500/30 text-sm font-medium text-gray-200 transition flex items-center justify-between group">
+                            <span class="flex items-center space-x-3"><i data-lucide="grid" class="w-4 h-4 text-emerald-400"></i><span>Пароли приложений</span></span>
+                            <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500 group-hover:text-emerald-400"></i>
+                        </button>
+                    </div>
+                </div>
+            `);
+        }
+
+        // Редактор конкретного 6-значного пароля с премиальными микро-кнопками
         async function openPasswordEditor(dbKey, titleName) {
             openModal(`
                 <div class="space-y-4">
-                    <div class="flex items-center justify-between pb-3 border-b border-white/5">
+                    <div class="flex items-center justify-between pb-3 border-b border-white/10">
                         <h3 class="text-sm font-bold text-white uppercase tracking-wider">Пароль: ${titleName}</h3>
-                        <button onclick="closeModal()" class="text-gray-400 hover:text-white transition"><i data-lucide="x" class="w-4 h-4"></i></button>
+                        <button onclick="openPasswordsMenu()" class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white transition"><i data-lucide="arrow-left" class="w-4 h-4"></i></button>
                     </div>
                     <div class="space-y-2">
-                        <label class="text-xs text-gray-400">Код доступа (6 цифр)</label>
-                        <input type="text" id="passInput_${dbKey}" maxlength="6" value="Загрузка..." class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-center text-lg text-white font-mono tracking-widest focus:outline-none focus:border-cyan-500">
+                        <label class="text-xs text-gray-400">Пин-код защиты (6 цифр)</label>
+                        <input type="text" id="passInput_${dbKey}" maxlength="6" value="••••••" class="w-full bg-black/40 border border-white/10 rounded-2xl px-4 py-3.5 text-center text-xl text-white font-mono tracking-[0.3em] focus:outline-none focus:border-cyan-400 shadow-inner">
                     </div>
-                    <div class="grid grid-cols-3 gap-2 pt-2">
-                        <button onclick="generatePass('${dbKey}')" class="btn-primary-cyan text-white rounded-xl py-2.5 text-xs font-semibold transition flex items-center justify-center space-x-1">
-                            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i><span>Генерировать</span>
+                    <!-- Премиальные микро-кнопки действий в стиле Apple iOS -->
+                    <div class="grid grid-cols-3 gap-2 pt-1">
+                        <button onclick="generatePass('${dbKey}')" class="btn-apple-action btn-cyan">
+                            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                            <span>Генерировать</span>
                         </button>
-                        <button onclick="copyPass('${dbKey}')" class="btn-primary-purple text-white rounded-xl py-2.5 text-xs font-semibold transition flex items-center justify-center space-x-1">
-                            <i data-lucide="copy" class="w-3.5 h-3.5"></i><span>Копировать</span>
+                        <button onclick="copyPass('${dbKey}')" class="btn-apple-action btn-purple">
+                            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                            <span>Копировать</span>
                         </button>
-                        <button onclick="savePassToSupabase('${dbKey}', '${titleName}')" class="btn-primary-emerald text-white rounded-xl py-2.5 text-xs font-semibold transition flex items-center justify-center space-x-1">
-                            <i data-lucide="save" class="w-3.5 h-3.5"></i><span>Сохранить</span>
+                        <button onclick="savePassToSupabase('${dbKey}', '${titleName}')" class="btn-apple-action btn-emerald">
+                            <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                            <span>Сохранить</span>
                         </button>
                     </div>
                 </div>
             `);
 
-            // Загружаем текущее значение из Supabase (таблица settings)
             try {
-                const { data, error } = await supabaseClient
-                    .from('settings')
-                    .select('value')
-                    .eq('key', dbKey)
-                    .single();
-                
+                const { data } = await supabaseClient.from('settings').select('value').eq('key', dbKey).single();
                 if (data && data.value) {
                     document.getElementById('passInput_' + dbKey).value = data.value;
-                } else {
-                    document.getElementById('passInput_' + dbKey).value = '000000';
                 }
             } catch (err) {
                 console.error(err);
-                document.getElementById('passInput_' + dbKey).value = '123456';
             }
         }
 
-        // Сохранение пароля в таблицу settings
         async function savePassToSupabase(dbKey, titleName) {
             const val = document.getElementById('passInput_' + dbKey).value;
             try {
-                const { error } = await supabaseClient
-                    .from('settings')
-                    .upsert({ key: dbKey, value: val }, { onConflict: 'key' });
-
-                if (error) throw error;
-                showToast(`Пароль для "${titleName}" сохранен в базу!`);
+                await supabaseClient.from('settings').upsert({ key: dbKey, value: val }, { onConflict: 'key' });
+                await logAction(`Изменен пароль для "${titleName}"`);
+                showToast(`Пароль "${titleName}" сохранен!`);
                 closeModal();
             } catch (err) {
-                showToast("Ошибка сохранения!");
-                console.error(err);
+                showToast("Ошибка сохранения в базу");
             }
         }
 
@@ -274,15 +307,15 @@
         function openAppsList() {
             openModal(`
                 <div class="space-y-4">
-                    <div class="flex items-center justify-between pb-3 border-b border-white/5">
+                    <div class="flex items-center justify-between pb-3 border-b border-white/10">
                         <h3 class="text-sm font-bold text-white uppercase tracking-wider">Пароли приложений</h3>
-                        <button onclick="closeModal()" class="text-gray-400 hover:text-white transition"><i data-lucide="x" class="w-4 h-4"></i></button>
+                        <button onclick="openPasswordsMenu()" class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white transition"><i data-lucide="arrow-left" class="w-4 h-4"></i></button>
                     </div>
-                    <button onclick="generateAllAppsPasswords()" class="w-full btn-primary-amber text-white rounded-xl py-3 text-xs font-bold uppercase tracking-wider transition flex items-center justify-center space-x-2">
+                    <button onclick="generateAllAppsPasswords()" class="w-full btn-apple-action btn-amber py-3 text-xs uppercase tracking-wider justify-center font-bold">
                         <i data-lucide="zap" class="w-4 h-4"></i>
                         <span>Генерировать и сохранить для всех</span>
                     </button>
-                    <div class="space-y-2 pt-1 max-h-60 overflow-y-auto pr-1">
+                    <div class="space-y-2 pt-1">
                         <div onclick="openPasswordEditor('app_sber', 'SberBank')" class="p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 cursor-pointer flex items-center justify-between transition">
                             <span class="text-sm font-medium text-white">SberBank iOS</span>
                             <span class="text-xs text-cyan-400 flex items-center space-x-1"><span>Изменить</span><i data-lucide="chevron-right" class="w-3.5 h-3.5"></i></span>
@@ -301,26 +334,30 @@
         }
 
         async function generateAllAppsPasswords() {
-            const apps = ['app_sber', 'app_tbank', 'app_max'];
+            const apps = [
+                { key: 'app_sber', name: 'SberBank' },
+                { key: 'app_tbank', name: 'T-Bank' },
+                { key: 'app_max', name: 'Max App' }
+            ];
             try {
-                for (let appKey of apps) {
+                for (let app of apps) {
                     const pin = Math.floor(100000 + Math.random() * 900000).toString();
-                    await supabaseClient.from('settings').upsert({ key: appKey, value: pin }, { onConflict: 'key' });
+                    await supabaseClient.from('settings').upsert({ key: app.key, value: pin }, { onConflict: 'key' });
                 }
-                showToast("Пароли для всех приложений обновлены в базе!");
+                await logAction("Массовое обновление паролей всех приложений");
+                showToast("Все пароли приложений обновлены!");
                 closeModal();
             } catch (err) {
-                showToast("Ошибка пакетного обновления!");
-                console.error(err);
+                showToast("Ошибка массового обновления");
             }
         }
 
         function openVisibilitySection() {
             openModal(`
                 <div class="space-y-4">
-                    <div class="flex items-center justify-between pb-3 border-b border-white/5">
+                    <div class="flex items-center justify-between pb-3 border-b border-white/10">
                         <h3 class="text-sm font-bold text-white uppercase tracking-wider">Видимость приложений</h3>
-                        <button onclick="closeModal()" class="text-gray-400 hover:text-white transition"><i data-lucide="x" class="w-4 h-4"></i></button>
+                        <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white transition"><i data-lucide="x" class="w-4 h-4"></i></button>
                     </div>
                     <div class="space-y-2">
                         <div class="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5">
@@ -332,6 +369,9 @@
                             <input type="checkbox" checked class="w-4 h-4 accent-purple-500 cursor-pointer">
                         </div>
                     </div>
+                    <button onclick="logAction('Изменена видимость приложений'); showToast('Настройки видимости сохранены!'); closeModal();" class="w-full btn-apple-action btn-purple py-3 justify-center font-bold">
+                        Сохранить изменения
+                    </button>
                 </div>
             `);
         }
@@ -339,16 +379,16 @@
         function openMaintenanceSection() {
             openModal(`
                 <div class="space-y-4">
-                    <div class="flex items-center justify-between pb-3 border-b border-white/5">
+                    <div class="flex items-center justify-between pb-3 border-b border-white/10">
                         <h3 class="text-sm font-bold text-white uppercase tracking-wider">Режим обслуживания</h3>
-                        <button onclick="closeModal()" class="text-gray-400 hover:text-white transition"><i data-lucide="x" class="w-4 h-4"></i></button>
+                        <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white transition"><i data-lucide="x" class="w-4 h-4"></i></button>
                     </div>
-                    <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-between">
+                    <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/25 flex items-center justify-between">
                         <div>
-                            <h4 class="text-xs font-bold text-amber-300 uppercase">Статус: Штатный режим</h4>
-                            <p class="text-xs text-gray-400 mt-0.5">Включение заглушки на сайте</p>
+                            <h4 class="text-xs font-bold text-amber-300 uppercase">Статус заглушки</h4>
+                            <p class="text-xs text-gray-400 mt-0.5">Технические работы на сайте</p>
                         </div>
-                        <button onclick="showToast('Режим обслуживания обновлен!'); closeModal();" class="btn-primary-amber text-white rounded-xl px-4 py-2 text-xs font-semibold transition">
+                        <button onclick="logAction('Включен режим обслуживания'); showToast('Режим обслуживания активирован!'); closeModal();" class="btn-apple-action btn-amber">
                             Включить
                         </button>
                     </div>
@@ -356,32 +396,57 @@
             `);
         }
 
-        function openHistorySection() {
+        // Загрузка истории действий из таблицы history в Supabase
+        async function openHistorySection() {
             openModal(`
                 <div class="space-y-3">
-                    <div class="flex items-center justify-between pb-3 border-b border-white/5">
+                    <div class="flex items-center justify-between pb-3 border-b border-white/10">
                         <h3 class="text-sm font-bold text-white uppercase tracking-wider">История действий</h3>
-                        <button onclick="closeModal()" class="text-gray-400 hover:text-white transition"><i data-lucide="x" class="w-4 h-4"></i></button>
+                        <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white transition"><i data-lucide="x" class="w-4 h-4"></i></button>
                     </div>
-                    <div class="p-3 rounded-xl bg-white/5 border border-white/5 flex justify-between items-center text-xs">
-                        <span class="text-gray-300">Синхронизация с Supabase активна</span>
-                        <span class="text-emerald-400">Online</span>
+                    <div id="historyList" class="space-y-2 max-h-60 overflow-y-auto pr-1">
+                        <div class="p-3 rounded-xl bg-white/5 text-xs text-gray-400 text-center">Загрузка логов из базы...</div>
                     </div>
                 </div>
             `);
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('history')
+                    .select('*')
+                    .order('created_at', { ascending: false })
+                    .limit(10);
+
+                const container = document.getElementById('historyList');
+                if (error) throw error;
+
+                if (data && data.length > 0) {
+                    container.innerHTML = data.map(item => `
+                        <div class="p-3 rounded-xl bg-white/5 border border-white/5 flex justify-between items-center text-xs">
+                            <span class="text-gray-200 font-medium">${item.action}</span>
+                            <span class="text-gray-500">${new Date(item.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = `<div class="p-3 rounded-xl bg-white/5 text-xs text-gray-400 text-center">История пуста</div>`;
+                }
+            } catch (err) {
+                document.getElementById('historyList').innerHTML = `<div class="p-3 rounded-xl bg-red-500/10 text-xs text-red-400 text-center">Ошибка загрузки истории</div>`;
+                console.error(err);
+            }
         }
 
-        // Генерация строго 6 цифр без букв
+        // Генерация строго 6 цифр
         function generatePass(key) {
             const pin = Math.floor(100000 + Math.random() * 900000).toString();
             document.getElementById('passInput_' + key).value = pin;
-            showToast("Сгенерирован 6-значный код!");
+            showToast("Сгенерирован 6-значный пин-код");
         }
 
         function copyPass(key) {
             const input = document.getElementById('passInput_' + key);
             navigator.clipboard.writeText(input.value);
-            showToast("Код скопирован в буфер!");
+            showToast("Скопировано в буфер обмена");
         }
     </script>
 </body>
