@@ -15,32 +15,20 @@
             --danger-bg: rgba(239, 68, 68, 0.15);
             --spring: cubic-bezier(.22,1,.36,1);
 
-            --border-admin: rgba(245, 158, 11, 0.4);
-            --glow-admin: rgba(245, 158, 11, 0.05);
+            --border-passwords: rgba(99, 102, 241, 0.4);
+            --glow-passwords: rgba(99, 102, 241, 0.05);
 
-            --border-site: rgba(14, 165, 233, 0.4);
-            --glow-site: rgba(14, 165, 233, 0.05);
+            --border-visibility: rgba(20, 184, 166, 0.4);
+            --glow-visibility: rgba(20, 184, 166, 0.05);
 
-            --border-apps: rgba(99, 102, 241, 0.4);
-            --glow-apps: rgba(99, 102, 241, 0.05);
+            --border-maintenance: rgba(239, 68, 68, 0.35);
+            --glow-maintenance: rgba(239, 68, 68, 0.05);
 
-            --border-vis: rgba(20, 184, 166, 0.4);
-            --glow-vis: rgba(20, 184, 166, 0.05);
+            --border-history: rgba(168, 85, 247, 0.4);
+            --glow-history: rgba(168, 85, 247, 0.05);
 
             --border-db: rgba(129, 140, 248, 0.3);
             --glow-db: rgba(129, 140, 248, 0.05);
-
-            --border-history: rgba(148, 163, 184, 0.3);
-            --glow-history: rgba(148, 163, 184, 0.04);
-
-            --border-apps-pass: rgba(129, 140, 248, 0.35);
-            --glow-apps-pass: rgba(129, 140, 248, 0.05);
-
-            --border-apps-vis: rgba(45, 212, 191, 0.35);
-            --glow-apps-vis: rgba(45, 212, 191, 0.05);
-
-            --border-show-all: rgba(52, 211, 153, 0.4);
-            --border-hide-all: rgba(248, 113, 113, 0.4);
 
             --border-btn-gen-all: rgba(236, 72, 153, 0.4);
             --border-btn-gen: rgba(56, 189, 248, 0.4);
@@ -112,7 +100,7 @@
             gap: 6px;
             font-size: 11px;
             color: var(--muted);
-            margin-bottom: 14px;
+            margin-bottom: 16px;
             background: rgba(129, 140, 248, 0.04);
             border: 1px solid var(--border-db);
             box-shadow: 0 2px 8px var(--glow-db);
@@ -144,7 +132,7 @@
         p.subtitle {
             color: var(--muted);
             font-size: 13px;
-            margin-bottom: 20px;
+            margin-bottom: 22px;
             text-align: center;
             line-height: 1.4;
         }
@@ -225,63 +213,75 @@
         }
         #login-error.active { display: block; }
 
+        /* Компактный главный экран: сетка или вертикальный стек из 4 кнопок */
+        .dashboard-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+        }
+
         .control-card {
             display: flex;
             align-items: center;
             justify-content: space-between;
             background: var(--glass);
-            padding: 14px 16px;
-            border-radius: 16px;
-            margin-bottom: 10px;
-            transition: all 0.25s ease;
-        }
-        .control-card:hover { transform: translateY(-1px); }
-
-        .card-admin { border: 1px solid var(--border-admin); box-shadow: 0 2px 8px var(--glow-admin); background: rgba(245, 158, 11, 0.02); }
-        .card-site { border: 1px solid var(--border-site); box-shadow: 0 2px 8px var(--glow-site); background: rgba(14, 165, 233, 0.02); }
-        
-        .card-apps-pass { border: 1px solid var(--border-apps-pass); box-shadow: 0 2px 8px var(--glow-apps-pass); background: rgba(99, 102, 241, 0.02); cursor: pointer; }
-        .card-apps-vis { border: 1px solid var(--border-apps-vis); box-shadow: 0 2px 8px var(--glow-apps-vis); background: rgba(20, 184, 166, 0.02); cursor: pointer; }
-        
-        .card-maintenance { border: 1px solid rgba(239, 68, 68, 0.3); box-shadow: 0 2px 8px rgba(239, 68, 68, 0.05); background: rgba(239, 68, 68, 0.02); }
-
-        .card-history-btn {
-            margin-bottom: 0;
-            border: 1px solid var(--border-history);
-            box-shadow: 0 2px 8px var(--glow-history);
-            background: rgba(148, 163, 184, 0.02);
+            padding: 15px 18px;
+            border-radius: 18px;
+            transition: all 0.25s var(--spring);
             cursor: pointer;
-            justify-content: center;
-            gap: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            color: #cbd5e1;
+            text-decoration: none;
         }
-        .card-history-btn:hover {
-            background: rgba(148, 163, 184, 0.06);
-            border-color: rgba(148, 163, 184, 0.4);
-            color: #fff;
+        .control-card:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.08);
         }
 
-        .control-info { display: flex; flex-direction: column; gap: 2px; }
-        .control-title { font-size: 14px; font-weight: 600; color: #f8fafc; }
-        .control-desc { font-size: 11.5px; color: var(--muted); }
+        .card-passwords { border: 1px solid var(--border-passwords); box-shadow: 0 4px 12px var(--glow-passwords); background: rgba(99, 102, 241, 0.03); }
+        .card-visibility { border: 1px solid var(--border-visibility); box-shadow: 0 4px 12px var(--glow-visibility); background: rgba(20, 184, 166, 0.03); }
+        .card-maintenance { border: 1px solid var(--border-maintenance); box-shadow: 0 4px 12px var(--glow-maintenance); background: rgba(239, 68, 68, 0.03); cursor: default; }
+        .card-history { border: 1px solid var(--border-history); box-shadow: 0 4px 12px var(--glow-history); background: rgba(168, 85, 247, 0.03); }
 
-        .gear-btn {
+        .control-info { display: flex; flex-direction: column; gap: 3px; }
+        .control-title { font-size: 14.5px; font-weight: 600; color: #f8fafc; }
+        .control-desc { font-size: 12px; color: var(--muted); }
+
+        .control-icon-badge {
+            width: 38px;
+            height: 38px;
             border-radius: 12px;
-            width: 36px;
-            height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        .card-passwords .control-icon-badge { background: rgba(99, 102, 241, 0.1); border: 1px solid var(--border-passwords); }
+        .card-visibility .control-icon-badge { background: rgba(20, 184, 166, 0.1); border: 1px solid var(--border-visibility); }
+        .card-history .control-icon-badge { background: rgba(168, 85, 247, 0.1); border: 1px solid var(--border-history); }
+
+        /* Подменю выбора паролей (внутри модального или как подменю) */
+        .passwords-menu-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+        .password-subcard {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 14px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
             cursor: pointer;
             transition: all 0.2s ease;
         }
-        .card-admin .gear-btn { background: rgba(245, 158, 11, 0.1); border: 1px solid var(--border-admin); }
-        .card-site .gear-btn { background: rgba(14, 165, 233, 0.1); border: 1px solid var(--border-site); }
-        .card-apps-pass .gear-btn { background: rgba(99, 102, 241, 0.1); border: 1px solid var(--border-apps-pass); }
-        .card-apps-vis .gear-btn { background: rgba(20, 184, 166, 0.1); border: 1px solid var(--border-apps-vis); }
+        .password-subcard:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
 
         .sheet-overlay {
             position: fixed;
@@ -316,7 +316,8 @@
 
         #appsCatalogOverlay .sheet-modal { border: 1px solid rgba(99, 102, 241, 0.3); background: linear-gradient(165deg, rgba(20, 24, 45, 0.96), rgba(11, 15, 25, 0.99)); }
         #visibilityCatalogOverlay .sheet-modal { border: 1px solid rgba(20, 184, 166, 0.3); background: linear-gradient(165deg, rgba(15, 30, 38, 0.96), rgba(11, 15, 25, 0.99)); }
-        #historyCatalogOverlay .sheet-modal { border: 1px solid rgba(148, 163, 184, 0.25); background: linear-gradient(165deg, rgba(20, 25, 35, 0.96), rgba(11, 15, 25, 0.99)); }
+        #historyCatalogOverlay .sheet-modal { border: 1px solid rgba(168, 85, 247, 0.3); background: linear-gradient(165deg, rgba(25, 20, 40, 0.96), rgba(11, 15, 25, 0.99)); }
+        #passwordsMenuOverlay .sheet-modal { border: 1px solid rgba(99, 102, 241, 0.3); background: linear-gradient(165deg, rgba(20, 22, 42, 0.96), rgba(11, 15, 25, 0.99)); max-width: 350px; }
         #editModalContainer { max-width: 330px; margin: auto; border: 1px solid rgba(129, 140, 248, 0.3); background: linear-gradient(165deg, rgba(22, 28, 48, 0.96), rgba(11, 15, 25, 0.99)); }
 
         .history-modal-list {
@@ -335,8 +336,8 @@
             flex-direction: column;
             gap: 2px;
             padding: 10px 14px;
-            background: rgba(148, 163, 184, 0.03);
-            border: 1px solid rgba(148, 163, 184, 0.1);
+            background: rgba(168, 85, 247, 0.03);
+            border: 1px solid rgba(168, 85, 247, 0.12);
             border-radius: 12px;
             font-size: 13px;
             color: #f1f5f9;
@@ -394,7 +395,7 @@
         
         .visibility-action-btn-show {
             flex: 1; min-height: 40px; border-radius: 12px;
-            border: 1px solid var(--border-show-all); background: rgba(52, 211, 153, 0.05);
+            border: 1px solid rgba(52, 211, 153, 0.4); background: rgba(52, 211, 153, 0.05);
             color: #a7f3d0; font-size: 12.5px; font-weight: 600; cursor: pointer;
             transition: all 0.2s ease;
         }
@@ -402,7 +403,7 @@
 
         .visibility-action-btn-hide {
             flex: 1; min-height: 40px; border-radius: 12px;
-            border: 1px solid var(--border-hide-all); background: rgba(248, 113, 113, 0.05);
+            border: 1px solid rgba(248, 113, 113, 0.4); background: rgba(248, 113, 113, 0.05);
             color: #fecdd3; font-size: 12.5px; font-weight: 600; cursor: pointer;
             transition: all 0.2s ease;
         }
@@ -560,53 +561,80 @@
 
     <div id="admin-panel">
         <h1>Панель Управления</h1>
-        <p class="subtitle">Управление доступом и системными настройками</p>
+        <p class="subtitle">Системные настройки и доступы</p>
 
-        <div class="control-card card-admin">
-            <div class="control-info">
-                <span class="control-title">Панель администратора</span>
-                <span class="control-desc">Изменение пароля для панели</span>
+        <div class="dashboard-grid">
+            <!-- Кнопка 1: Пароли (внутри: пароль сайта, пароль админ-панели, пароли приложений) -->
+            <div class="control-card card-passwords" onclick="openPasswordsMenuSheet()">
+                <div class="control-info">
+                    <span class="control-title">Пароли</span>
+                    <span class="control-desc">Сайт, админка и приложения</span>
+                </div>
+                <div class="control-icon-badge">🔐</div>
             </div>
-            <button class="gear-btn" onclick="openEditModal('admin_password', 'Пароль администратора', 'admin')">⚙️</button>
-        </div>
 
-        <div class="control-card card-site">
-            <div class="control-info">
-                <span class="control-title">Сайт</span>
-                <span class="control-desc">Изменение пароля для сайта</span>
+            <!-- Кнопка 2: Видимость приложений -->
+            <div class="control-card card-visibility" onclick="openVisibilityCatalogSheet()">
+                <div class="control-info">
+                    <span class="control-title">Видимость приложений</span>
+                    <span class="control-desc">Управление каталогом на сайте</span>
+                </div>
+                <div class="control-icon-badge">🔎</div>
             </div>
-            <button class="gear-btn" onclick="openEditModal('site_password', 'Пароль для сайта', 'site')">🌐</button>
-        </div>
 
-        <div class="control-card card-apps-pass" onclick="openAppsCatalogSheet()">
-            <div class="control-info">
-                <span class="control-title">Пароли приложений</span>
-                <span class="control-desc">Управление цифровыми кодами доступа</span>
+            <!-- Кнопка 3: Режим технических работ -->
+            <div class="control-card card-maintenance">
+                <div class="control-info">
+                    <span class="control-title">Технические работы</span>
+                    <span class="control-desc">Включить заглушку на сайте</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="maintenanceToggle" onchange="toggleMaintenance(this.checked)">
+                    <span class="slider"></span>
+                </label>
             </div>
-            <div class="gear-btn">🔐</div>
-        </div>
 
-        <div class="control-card card-apps-vis" onclick="openVisibilityCatalogSheet()">
-            <div class="control-info">
-                <span class="control-title">Видимость приложений</span>
-                <span class="control-desc">Показать или скрыть элементы в каталоге</span>
+            <!-- Кнопка 4: История действий -->
+            <div class="control-card card-history" onclick="openHistoryModal()">
+                <div class="control-info">
+                    <span class="control-title">История действий</span>
+                    <span class="control-desc">Журнал событий системы</span>
+                </div>
+                <div class="control-icon-badge">📜</div>
             </div>
-            <div class="gear-btn">🔎</div>
         </div>
+    </div>
+</div>
 
-        <div class="control-card card-maintenance">
-            <div class="control-info">
-                <span class="control-title">Режим технических работ</span>
-                <span class="control-desc">Включить заглушку на сайте</span>
+<!-- Модальное меню выбора категории паролей -->
+<div class="sheet-overlay" id="passwordsMenuOverlay" onclick="closePasswordsMenuSheet()">
+    <div class="sheet-modal" onclick="event.stopPropagation()">
+        <div class="sheet-header">
+            <div class="sheet-title">Управление паролями</div>
+            <button class="sheet-close" onclick="closePasswordsMenuSheet()">✕</button>
+        </div>
+        <div class="passwords-menu-list">
+            <div class="password-subcard" onclick="openEditModal('site_password', 'Пароль для сайта', 'site')">
+                <div class="control-info">
+                    <span class="control-title">Пароль сайта</span>
+                    <span class="control-desc">Доступ пользователей к каталогу</span>
+                </div>
+                <span style="font-size: 16px;">🌐</span>
             </div>
-            <label class="switch">
-                <input type="checkbox" id="maintenanceToggle" onchange="toggleMaintenance(this.checked)">
-                <span class="slider"></span>
-            </label>
-        </div>
-
-        <div class="control-card card-history-btn" onclick="openHistoryModal()">
-            <span>📜 История действий</span>
+            <div class="password-subcard" onclick="openEditModal('admin_password', 'Пароль администратора', 'admin')">
+                <div class="control-info">
+                    <span class="control-title">Пароль админ-панели</span>
+                    <span class="control-desc">Защита панели управления</span>
+                </div>
+                <span style="font-size: 16px;">🛡️</span>
+            </div>
+            <div class="password-subcard" onclick="openAppsCatalogSheet()">
+                <div class="control-info">
+                    <span class="control-title">Пароли приложений</span>
+                    <span class="control-desc">Цифровые коды для каждого ПО</span>
+                </div>
+                <span style="font-size: 16px;">📱</span>
+            </div>
         </div>
     </div>
 </div>
@@ -843,6 +871,14 @@
         document.getElementById('historyCatalogOverlay').classList.remove('active');
     }
 
+    function openPasswordsMenuSheet() {
+        document.getElementById('passwordsMenuOverlay').classList.add('active');
+    }
+
+    function closePasswordsMenuSheet() {
+        document.getElementById('passwordsMenuOverlay').classList.remove('active');
+    }
+
     function updatePasswordStats() {
         let locked = 0;
         appConfigList.forEach(app => {
@@ -968,8 +1004,8 @@
             div.innerHTML = `
                 <span class="app-name">${app.name}</span>
                 <div class="app-item-actions">
-                    <button class="gear-btn" style="width:34px; height:34px; font-size:14px; background: rgba(167, 139, 250, 0.06); border: 1px solid var(--border-apps-pass);" title="Копировать пароль" onclick="copyAppPassword('${app.key}', '${app.name}')">📋</button>
-                    <button class="gear-btn" style="width:34px; height:34px; font-size:15px; background: rgba(99, 102, 241, 0.06); border: 1px solid var(--border-apps-pass);" title="Настроить пароль" onclick="openEditModal('${app.key}', '${app.name}', 'app')">⚙️</button>
+                    <button class="gear-btn" style="width:34px; height:34px; font-size:14px; background: rgba(167, 139, 250, 0.06); border: 1px solid var(--border-btn-copy); border-radius:10px; cursor:pointer;" title="Копировать пароль" onclick="copyAppPassword('${app.key}', '${app.name}')">📋</button>
+                    <button class="gear-btn" style="width:34px; height:34px; font-size:15px; background: rgba(99, 102, 241, 0.06); border: 1px solid var(--border-passwords); border-radius:10px; cursor:pointer;" title="Настроить пароль" onclick="openEditModal('${app.key}', '${app.name}', 'app')">⚙️</button>
                 </div>
             `;
             listContainer.appendChild(div);
@@ -985,6 +1021,7 @@
     }
 
     function openAppsCatalogSheet() {
+        closePasswordsMenuSheet();
         updatePasswordStats();
         document.getElementById('appsCatalogOverlay').classList.add('active');
         document.getElementById('adminAppSearch').value = '';
@@ -1066,6 +1103,7 @@
     }
 
     function openEditModal(key, title, type) {
+        closePasswordsMenuSheet();
         currentEditKey = key;
         currentEditType = type;
         document.getElementById('editModalTitle').textContent = title;
@@ -1177,10 +1215,10 @@
             updatePasswordStats();
             const app = appConfigList.find(a => a.key === currentEditKey);
             const appName = app ? app.name : currentEditKey;
-            toastMsg = newPass ? `Пароль для «${appName}» изменён` : `Пароль для «${appName}» удален`;
+            toastMsg = newPass ? `Пароль для «${appName}» изменен` : `Пароль для «${appName}» удален`;
         } else {
             globalSettings[currentEditKey] = newPass;
-            toastMsg = currentEditKey === 'admin_password' ? 'Пароль админ-панели изменён' : 'Пароль сайта изменён';
+            toastMsg = currentEditKey === 'admin_password' ? 'Пароль админ-панели изменен' : 'Пароль сайта изменен';
         }
 
         await addHistory(toastMsg);
