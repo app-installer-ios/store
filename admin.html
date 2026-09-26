@@ -1196,6 +1196,8 @@
 
     async function savePassword() {
         if (!currentEditKey) return;
+        const keyToSave = currentEditKey;
+        const typeToSave = currentEditType;
         const newPass = document.getElementById('editPasswordInput').value.trim();
         
         if (newPass && !/^\d+$/.test(newPass)) {
@@ -1207,21 +1209,21 @@
         btnSave.textContent = '...';
         btnSave.style.pointerEvents = 'none';
 
-        await supabaseClient.from('settings').upsert({ key: currentEditKey, value: newPass }, { onConflict: 'key' });
+        await supabaseClient.from('settings').upsert({ key: keyToSave, value: newPass }, { onConflict: 'key' });
 
         btnSave.textContent = 'Сохранить';
         btnSave.style.pointerEvents = 'auto';
 
         let toastMsg = '';
-        if (currentEditType === 'app') {
-            appPasswordsData[currentEditKey] = newPass;
+        if (typeToSave === 'app') {
+            appPasswordsData[keyToSave] = newPass;
             updatePasswordStats();
-            const app = appConfigList.find(a => a.key === currentEditKey);
-            const appName = app ? app.name : currentEditKey;
+            const app = appConfigList.find(a => a.key === keyToSave);
+            const appName = app ? app.name : keyToSave;
             toastMsg = newPass ? `Пароль для «${appName}» изменен` : `Пароль для «${appName}» удален`;
         } else {
-            globalSettings[currentEditKey] = newPass;
-            toastMsg = currentEditKey === 'admin_password' ? 'Пароль админ-панели изменен' : 'Пароль сайта изменен';
+            globalSettings[keyToSave] = newPass;
+            toastMsg = keyToSave === 'admin_password' ? 'Пароль админ-панели изменен' : 'Пароль сайта изменен';
         }
 
         await addHistory(toastMsg);
