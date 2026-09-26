@@ -822,7 +822,7 @@ async function fetchSupabaseSettings() {
                 config.maintenanceMode = item.value === 'true';
             } else if (item.key && item.key.startsWith('vis_')) {
                 config.appVisibility[item.key.replace('vis_', '')] = item.value === 'true';
-            } else if (item.key && item.key !== 'admin_password') {
+            } else if (item.key) {
                 config.appPasswords[item.key] = item.value;
             }
         });
