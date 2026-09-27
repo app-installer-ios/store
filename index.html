@@ -816,6 +816,27 @@ async function checkSiteStatus() {
     return true; // По умолчанию считаем сайт доступным
 }
 
+// Функция ручной проверки сайта кнопкой
+async function checkSiteStatusManual() {
+    const btn = document.getElementById("checkStatusBtn");
+    if (btn) {
+        btn.style.opacity = "0.7";
+        btn.textContent = "Проверка...";
+    }
+
+    const isEnabled = await checkSiteStatus();
+
+    if (isEnabled) {
+        // Если сайт включился, перезагружаем логику входа / отображение каталога
+        location.reload();
+    } else {
+        if (btn) {
+            btn.style.opacity = "1";
+            btn.textContent = "Проверить снова";
+        }
+    }
+}
+
 async function fetchSupabaseSettings() {
     try {
         let response = await fetch(`${SUPABASE_URL}/rest/v1/settings?select=*`, {
@@ -1165,12 +1186,15 @@ function executeDownload() {
 
 <!-- MAINTENANCE SCREEN (ЭКРАН ЗАГЛУШКА ПРИ ВЫКЛЮЧЕННОМ САЙТЕ) -->
 <div class="container" id="maintenanceApp">
-    <div class="auth-box" style="border-color: rgba(239, 68, 68, 0.45);">
-        <div class="auth-title" style="color: #fca5a5;">⚠️ Сайт временно отключен</div>
-        <div class="auth-description" style="margin-top: 10px;">
-            Проводятся технические работы или каталог временно недоступен. Пожалуйста, зайдите позже.
+    <div class="auth-box" style="border-color: rgba(148, 163, 184, 0.25); box-shadow: 0 0 28px rgba(100, 116, 139, 0.08), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.08);">
+        <div class="auth-title" style="background: linear-gradient(135deg, #ffffff 10%, #cbd5e1 55%, #64748b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Временное ограничение</div>
+        <div class="auth-description" style="margin-top: 4px; color: #94a3b8; font-size: 13.5px; line-height: 1.55;">
+            Каталог временно приостановил работу в связи с проведением регламентных и технических процедур. Пожалуйста, зайдите немного позже.
         </div>
-        <a href="https://t.me/ios_appstore01" target="_blank" rel="noopener noreferrer" class="btn btn-telegram" style="margin-top: 15px;">
+        <button type="button" class="btn btn-secondary" id="checkStatusBtn" onclick="checkSiteStatusManual()" style="margin-top: 10px;">
+            Проверить снова
+        </button>
+        <a href="https://t.me/ios_appstore01" target="_blank" rel="noopener noreferrer" class="btn btn-telegram" style="margin-top: 2px;">
             <img src="Telegram_logo.svg" alt="Telegram" class="telegram-icon">Наш Telegram-канал
         </a>
     </div>
