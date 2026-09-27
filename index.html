@@ -706,7 +706,6 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 
 .search-empty { display: none; text-align: center; color: #94a3b8; font-size: 13px; padding: 20px 10px; }
 
-/* Улучшенный премиальный стиль инструкции в духе Apple */
 .guide-modal { 
     height: min(88vh, 680px); 
     background: linear-gradient(165deg, rgba(20, 26, 40, 0.98), rgba(10, 14, 22, 0.99));
@@ -819,7 +818,7 @@ async function fetchSupabaseSettings() {
             if (item.key === 'site_password') {
                 config.sitePassword = item.value;
             } else if (item.key === 'maintenance_mode') {
-                config.maintenanceMode = item.value === 'true';
+                config.maintenanceMode = item.value === 'true' || item.value === true;
             } else if (item.key && item.key.startsWith('vis_')) {
                 config.appVisibility[item.key.replace('vis_', '')] = item.value === 'true';
             } else if (item.key) {
@@ -956,7 +955,6 @@ function closeSheet() {
     filterApps();
 }
 
-/* Управление модальным окном инструкции */
 function openGuideSheet() {
     document.getElementById("guideOverlay").classList.add("active");
 }
@@ -1200,7 +1198,6 @@ function executeDownload() {
         </button>
         <button type="button" class="btn" onclick="startInstallation()">Установить</button>
         
-        <!-- КНОПКА «Как это работает?» -->
         <button type="button" class="btn btn-guide" onclick="openGuideSheet()" style="margin-top: 8px;">
             <span style="color: #38bdf8; font-weight: 700; margin-right: 4px;">•</span> Как это работает?
         </button>
@@ -1496,7 +1493,7 @@ function executeDownload() {
                 <span class="ios-badge">iOS 15.0+</span>
             </div>
 
-                <div class="sheet-item" data-key="sbpay" data-category="other" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sbpay.plist', 'СБПэй', 'sbpay')">
+            <div class="sheet-item" data-key="sbpay" data-category="other" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sbpay.plist', 'СБПэй', 'sbpay')">
                 <div class="sheet-item-main">
                     <div class="app-icon"><img src="https://avatars.mds.yandex.net/i?id=7680b326d267d36c98347f09c4968699_l-5662910-images-thumbs&n=13" alt="СБПэй"></div>
                     <div class="sheet-info-box"><span class="app-name">СБПэй</span></div>
