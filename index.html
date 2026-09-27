@@ -721,7 +721,6 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 }
 
 .guide-step {
-    dir: ltr;
     display: flex;
     align-items: flex-start;
     gap: 14px;
@@ -810,24 +809,24 @@ async function fetchSupabaseSettings() {
         
         let config = {
             sitePassword: "",
-            isActive: true,
+            isActive: true, // По умолчанию сайт активен
             appPasswords: {},
             appVisibility: {}
         };
 
-        data.forEach(item => {
-            if (item.key === 'site_global_status') {
-                const val = item.value;
-                config.isActive = val === 'true' || val === true || val === 1 || val === '1';
-            } else if (item.key === 'site_password') {
-                config.sitePassword = item.value;
-            } else if (item.key && item.key.startsWith('vis_')) {
-                const visVal = item.value;
-                config.appVisibility[item.key.replace('vis_', '')] = visVal === 'true' || visVal === true || visVal === 1 || visVal === '1';
-            } else if (item.key) {
-                config.appPasswords[item.key] = item.value;
-            }
-        });
+       data.forEach(item => {
+    if (item.key === 'site_global_status') {
+        // Проверяем поле value в строке site_global_status
+        const val = item.value;
+        config.isActive = val === 'true' || val === true || val === 1 || val === '1';
+    } else if (item.key === 'site_password') {
+        config.sitePassword = item.value;
+    } else if (item.key && item.key.startsWith('vis_')) {
+        config.appVisibility[item.key.replace('vis_', '')] = item.value === 'true';
+    } else if (item.key) {
+        config.appPasswords[item.key] = item.value;
+    }
+});
         return config;
     } catch (e) {
         console.error("Ошибка загрузки настроек, используются дефолтные:", e);
@@ -847,7 +846,6 @@ function getSitePassword() { return remoteConfig.sitePassword; }
 function applyAppsVisibility() {
     document.querySelectorAll('.sheet-list .sheet-item').forEach(item => {
         const key = item.getAttribute('data-key');
-        // По умолчанию приложение видимо, если статус в базе не явно false/0/'false'
         const isVisible = remoteConfig.appVisibility[key] !== false;
         item.setAttribute('data-visible', isVisible ? 'true' : 'false');
         item.style.display = isVisible ? 'flex' : 'none';
