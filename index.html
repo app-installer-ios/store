@@ -866,13 +866,34 @@ function updateAppCounter() {
 }
 
 document.addEventListener("DOMContentLoaded", async function() {
-    // Проверка блокировки устройства через таблицу blocked_devices
-    let deviceId = localStorage.getItem("site_device_id");
-    if (!deviceId) {
-        deviceId = 'dev_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-        localStorage.setItem("site_device_id", deviceId);
+    // Генерация или получение хэша устройства
+    let deviceHash = localStorage.getItem("site_device_id");
+    if (!deviceHash) {
+        deviceHash = 'dev_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        localStorage.setItem("site_device_id", deviceHash);
     }
 
+    // Запись визита в таблицу history с device_hash и device_info
+    try {
+        await fetch(`${SUPABASE_URL}/rest/v1/history`, {
+            method: "POST",
+            headers: {
+                "apikey": SUPABASE_KEY,
+                "Authorization": `Bearer ${SUPABASE_KEY}`,
+                "Content-Type": "application/json",
+                "Prefer": "return=minimal"
+            },
+            body: JSON.stringify({
+                text: "Заход на сайт",
+                device_hash: deviceHash,
+                device_info: navigator.userAgent
+            })
+        });
+    } catch (e) {
+        console.error("Ошибка отправки истории визита:", e);
+    }
+
+    // Проверка блокировки устройства через таблицу blocked_devices
     try {
         let blockResponse = await fetch(`${SUPABASE_URL}/rest/v1/blocked_devices?select=*`, {
             headers: {
@@ -882,7 +903,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         });
         if (blockResponse.ok) {
             let blockedData = await blockResponse.json();
-            let isBlocked = blockedData.some(item => item.device_id === deviceId || item.id === deviceId || item.value === deviceId);
+            let isBlocked = blockedData.some(item => item.device_id === deviceHash || item.id === deviceHash || item.value === deviceHash);
             if (isBlocked) {
                 switchScreen("blockedApp");
                 return;
