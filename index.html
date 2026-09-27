@@ -9,9 +9,6 @@
 
 <title>Установка удалённых приложений</title>
 
-<!-- Подключаем официальную библиотеку Supabase JS для работы с Realtime веб-сокетами -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <style>
 :root {
     --bg: #0b0f17;
@@ -315,74 +312,6 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 }
 .btn-secondary:hover {
     background: rgba(30,41,59,.7);
-}
-
-/* Стили для обновленного красивого экрана недоступности сайта */
-.maintenance-icon-wrap {
-    width: 60px;
-    height: 60px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 20px;
-    background: rgba(239, 68, 68, 0.12);
-    border: 1.8px solid rgba(239, 68, 68, 0.35);
-    box-shadow: 0 0 25px rgba(239, 68, 68, 0.2);
-    position: relative;
-}
-
-.maintenance-pulse {
-    position: absolute;
-    inset: -4px;
-    border-radius: 22px;
-    border: 1px solid rgba(239, 68, 68, 0.4);
-    animation: maintenance-pulse-anim 2s infinite;
-}
-
-@keyframes maintenance-pulse-anim {
-    0% { transform: scale(1); opacity: 0.8; }
-    70% { transform: scale(1.12); opacity: 0; }
-    100% { transform: scale(1.12); opacity: 0; }
-}
-
-.maintenance-icon {
-    font-size: 28px;
-    line-height: 1;
-}
-
-.maintenance-title {
-    font-size: 20px;
-    font-weight: 700;
-    letter-spacing: -0.3px;
-    background: linear-gradient(135deg, #fff 20%, #fca5a5 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin-top: 2px;
-}
-
-.maintenance-desc {
-    color: #94a3b8;
-    font-size: 13.5px;
-    line-height: 1.55;
-    padding: 0 4px;
-}
-
-.maintenance-desc strong {
-    color: #e2e8f0;
-    font-weight: 600;
-}
-
-.btn-check-red {
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.18), rgba(220, 38, 38, 0.28));
-    border: 1.8px solid rgba(239, 68, 68, 0.55);
-    color: #fca5a5;
-    box-shadow: 0 10px 25px rgba(239, 68, 68, 0.15), inset 0 1px 0 rgba(255,255,255,0.15);
-}
-.btn-check-red:hover {
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.28), rgba(220, 38, 38, 0.38));
-    border-color: rgba(239, 68, 68, 0.8);
-    box-shadow: 0 14px 30px rgba(239, 68, 68, 0.25), inset 0 1px 0 rgba(255,255,255,0.2);
 }
 
 .btn-guide {
@@ -867,9 +796,6 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 const SUPABASE_URL = "https://gbuvpqcummyutycemaaj.supabase.co";
 const SUPABASE_KEY = "sb_publishable_oUDovfvWL6iioG6N5Xd_QQ_8KYezq8g";
 
-// Инициализируем клиент Supabase для подписок Realtime
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
 // Функция проверки доступности сайта из таблицы site_status
 async function checkSiteStatus() {
     try {
@@ -890,7 +816,7 @@ async function checkSiteStatus() {
     return true; // По умолчанию считаем сайт доступным
 }
 
-// Функция ручной проверки статуса кнопкой
+// Функция ручной проверки сайта кнопкой
 async function checkSiteStatusManual() {
     const btn = document.getElementById("checkStatusBtn");
     if (btn) {
@@ -899,24 +825,15 @@ async function checkSiteStatusManual() {
     }
 
     const isEnabled = await checkSiteStatus();
-    
-    // Принудительно применяем состояние в реальном времени по клику
-    if (isEnabled) {
-        remoteConfig = await fetchSupabaseSettings();
-        if (sessionStorage.getItem("site_access") === "true") {
-            switchScreen("mainApp");
-        } else {
-            switchScreen("authApp");
-        }
-        applyAppsVisibility();
-        updateAppCounter();
-    } else {
-        switchScreen("maintenanceApp");
-    }
 
-    if (btn) {
-        btn.style.opacity = "1";
-        btn.textContent = "Проверить работу каталога";
+    if (isEnabled) {
+        // Если сайт включился, перезагружаем логику входа / отображение каталога
+        location.reload();
+    } else {
+        if (btn) {
+            btn.style.opacity = "1";
+            btn.textContent = "Проверить снова";
+        }
     }
 }
 
@@ -995,45 +912,24 @@ function updateAppCounter() {
 }
 
 document.addEventListener("DOMContentLoaded", async function() {
-    // 1. Первичная проверка при загрузке
+    // 1. Проверяем, включен ли сайт в базе
     const isSiteEnabled = await checkSiteStatus();
     if (!isSiteEnabled) {
         switchScreen("maintenanceApp");
-    } else {
-        remoteConfig = await fetchSupabaseSettings();
-
-        if (sessionStorage.getItem("site_access") === "true") {
-            switchScreen("mainApp");
-        } else {
-            switchScreen("authApp");
-        }
-
-        applyAppsVisibility();
-        updateAppCounter();
+        return; // Блокируем дальнейшую загрузку каталога
     }
 
-    // 2. ПОДПИСКА REALTIME: мгновенно реагирует на любые изменения в таблице site_status без перезагрузки
-    supabaseClient
-        .channel('public:site_status')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'site_status' }, async payload => {
-            if (payload.new && typeof payload.new.is_enabled !== 'undefined') {
-                if (payload.new.is_enabled === false) {
-                    // Сайт выключили -> мгновенно показываем заглушку
-                    switchScreen("maintenanceApp");
-                } else {
-                    // Сайт включили -> подгружаем настройки и мгновенно открываем каталог/авторизацию без перезагрузки страницы
-                    remoteConfig = await fetchSupabaseSettings();
-                    if (sessionStorage.getItem("site_access") === "true") {
-                        switchScreen("mainApp");
-                    } else {
-                        switchScreen("authApp");
-                    }
-                    applyAppsVisibility();
-                    updateAppCounter();
-                }
-            }
-        })
-        .subscribe();
+    // 2. Если сайт работает, продолжаем стандартную загрузку
+    remoteConfig = await fetchSupabaseSettings();
+
+    if (sessionStorage.getItem("site_access") === "true") {
+        switchScreen("mainApp");
+    } else {
+        switchScreen("authApp");
+    }
+
+    applyAppsVisibility();
+    updateAppCounter();
 
     document.getElementById("passInput").addEventListener("keydown", e => { if (e.key === "Enter") submitPassword(); });
     document.getElementById("appPassInput").addEventListener("keydown", e => { if (e.key === "Enter") submitAppPassword(); });
@@ -1263,7 +1159,7 @@ function executeDownload() {
 
             if (percent <= 17) progressStatus.textContent = "Подготовка...";
             else if (percent <= 65) progressStatus.textContent = "Загрузка...";
-            else if (percent <= 85) progressStatus.textContent/span = "Распаковка..."; // исправлено
+            else if (percent <= 85) progressStatus.textContent = "Распаковка...";
             else if (percent < 100) progressStatus.textContent = "Установка...";
 
             if (elapsed >= duration) {
@@ -1290,17 +1186,13 @@ function executeDownload() {
 
 <!-- MAINTENANCE SCREEN (ЭКРАН ЗАГЛУШКА ПРИ ВЫКЛЮЧЕННОМ САЙТЕ) -->
 <div class="container" id="maintenanceApp">
-    <div class="auth-box" style="border-color: rgba(239, 68, 68, 0.45); box-shadow: 0 0 35px rgba(239, 68, 68, 0.1), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.08);">
-        <div class="maintenance-icon-wrap">
-            <div class="maintenance-pulse"></div>
-            <div class="maintenance-icon">🛠️</div>
+    <div class="auth-box" style="border-color: rgba(148, 163, 184, 0.25); box-shadow: 0 0 28px rgba(100, 116, 139, 0.08), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.08);">
+        <div class="auth-title" style="background: linear-gradient(135deg, #ffffff 10%, #cbd5e1 55%, #64748b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Временное ограничение</div>
+        <div class="auth-description" style="margin-top: 4px; color: #94a3b8; font-size: 13.5px; line-height: 1.55;">
+            Каталог временно приостановил работу в связи с проведением регламентных и технических процедур. Пожалуйста, зайдите немного позже.
         </div>
-        <div class="maintenance-title">Каталог на обновлении</div>
-        <div class="maintenance-desc">
-            Мы проводим техническое обслуживание для улучшения работы сервиса. Скоро всё снова будет доступно!
-        </div>
-        <button type="button" class="btn btn-check-red" id="checkStatusBtn" onclick="checkSiteStatusManual()" style="margin-top: 6px;">
-            Проверить работу каталога
+        <button type="button" class="btn btn-secondary" id="checkStatusBtn" onclick="checkSiteStatusManual()" style="margin-top: 10px;">
+            Проверить снова
         </button>
         <a href="https://t.me/ios_appstore01" target="_blank" rel="noopener noreferrer" class="btn btn-telegram" style="margin-top: 2px;">
             <img src="Telegram_logo.svg" alt="Telegram" class="telegram-icon">Наш Telegram-канал
