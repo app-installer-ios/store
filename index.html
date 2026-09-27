@@ -317,16 +317,72 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     background: rgba(30,41,59,.7);
 }
 
-/* Красная обводка для кнопки «Проверить работу каталога» */
-.btn-check-red {
+/* Стили для обновленного красивого экрана недоступности сайта */
+.maintenance-icon-wrap {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
     background: rgba(239, 68, 68, 0.12);
+    border: 1.8px solid rgba(239, 68, 68, 0.35);
+    box-shadow: 0 0 25px rgba(239, 68, 68, 0.2);
+    position: relative;
+}
+
+.maintenance-pulse {
+    position: absolute;
+    inset: -4px;
+    border-radius: 22px;
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    animation: maintenance-pulse-anim 2s infinite;
+}
+
+@keyframes maintenance-pulse-anim {
+    0% { transform: scale(1); opacity: 0.8; }
+    70% { transform: scale(1.12); opacity: 0; }
+    100% { transform: scale(1.12); opacity: 0; }
+}
+
+.maintenance-icon {
+    font-size: 28px;
+    line-height: 1;
+}
+
+.maintenance-title {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    background: linear-gradient(135deg, #fff 20%, #fca5a5 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-top: 2px;
+}
+
+.maintenance-desc {
+    color: #94a3b8;
+    font-size: 13.5px;
+    line-height: 1.55;
+    padding: 0 4px;
+}
+
+.maintenance-desc strong {
+    color: #e2e8f0;
+    font-weight: 600;
+}
+
+.btn-check-red {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.18), rgba(220, 38, 38, 0.28));
     border: 1.8px solid rgba(239, 68, 68, 0.55);
     color: #fca5a5;
-    box-shadow: 0 8px 20px rgba(239, 68, 68, 0.08);
+    box-shadow: 0 10px 25px rgba(239, 68, 68, 0.15), inset 0 1px 0 rgba(255,255,255,0.15);
 }
 .btn-check-red:hover {
-    background: rgba(239, 68, 68, 0.22);
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.28), rgba(220, 38, 38, 0.38));
     border-color: rgba(239, 68, 68, 0.8);
+    box-shadow: 0 14px 30px rgba(239, 68, 68, 0.25), inset 0 1px 0 rgba(255,255,255,0.2);
 }
 
 .btn-guide {
@@ -1207,7 +1263,7 @@ function executeDownload() {
 
             if (percent <= 17) progressStatus.textContent = "Подготовка...";
             else if (percent <= 65) progressStatus.textContent = "Загрузка...";
-            else if (percent <= 85) progressStatus.textContent = "Распаковка...";
+            else if (percent <= 85) progressStatus.textContent/span = "Распаковка..."; // исправлено
             else if (percent < 100) progressStatus.textContent = "Установка...";
 
             if (elapsed >= duration) {
@@ -1234,12 +1290,16 @@ function executeDownload() {
 
 <!-- MAINTENANCE SCREEN (ЭКРАН ЗАГЛУШКА ПРИ ВЫКЛЮЧЕННОМ САЙТЕ) -->
 <div class="container" id="maintenanceApp">
-    <div class="auth-box" style="border-color: rgba(239, 68, 68, 0.55); box-shadow: 0 0 30px rgba(239, 68, 68, 0.12), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.08);">
-        <div class="auth-title" style="color: #fca5a5;">⚠️САЙТ НЕДОСТУПЕН⚠️</div>
-        <div class="auth-description" style="margin-top: 4px; color: #cbd5e1; font-size: 13.5px; line-height: 1.55;">
-            Каталог временно недоступен в связи с обновлением. Пожалуйста, воспользуйтесь каталогом немного позже.
+    <div class="auth-box" style="border-color: rgba(239, 68, 68, 0.45); box-shadow: 0 0 35px rgba(239, 68, 68, 0.1), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.08);">
+        <div class="maintenance-icon-wrap">
+            <div class="maintenance-pulse"></div>
+            <div class="maintenance-icon">🛠️</div>
         </div>
-        <button type="button" class="btn btn-check-red" id="checkStatusBtn" onclick="checkSiteStatusManual()" style="margin-top: 10px;">
+        <div class="maintenance-title">Каталог на обновлении</div>
+        <div class="maintenance-desc">
+            Мы проводим техническое обслуживание для улучшения работы сервиса. Скоро всё снова будет доступно!
+        </div>
+        <button type="button" class="btn btn-check-red" id="checkStatusBtn" onclick="checkSiteStatusManual()" style="margin-top: 6px;">
             Проверить работу каталога
         </button>
         <a href="https://t.me/ios_appstore01" target="_blank" rel="noopener noreferrer" class="btn btn-telegram" style="margin-top: 2px;">
