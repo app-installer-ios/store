@@ -6,7 +6,6 @@
 <meta name="theme-color" content="#0b0f17">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
 <title>Установка удалённых приложений</title>
 
 <style>
@@ -310,9 +309,7 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     color: #cbd5e1;
     box-shadow: none;
 }
-.btn-secondary:hover {
-    background: rgba(30,41,59,.7);
-}
+.btn-secondary:hover { background: rgba(30,41,59,.7); }
 
 .btn-guide {
     background: rgba(45, 115, 140, 0.18);
@@ -706,7 +703,6 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 
 .search-empty { display: none; text-align: center; color: #94a3b8; font-size: 13px; padding: 20px 10px; }
 
-/* Улучшенный премиальный стиль инструкции в духе Apple */
 .guide-modal { 
     height: min(88vh, 680px); 
     background: linear-gradient(165deg, rgba(20, 26, 40, 0.98), rgba(10, 14, 22, 0.99));
@@ -761,12 +757,7 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     letter-spacing: -0.1px;
 }
 
-.guide-step-text strong { 
-    color: #ef4444; 
-    font-weight: 600; 
-}
-
-.guide-step-text em { 
+.guide-step-text strong, .guide-step-text em { 
     color: #ef4444; 
     font-style: normal; 
     font-weight: 600; 
@@ -828,7 +819,7 @@ async function fetchSupabaseSettings() {
         });
         return config;
     } catch (e) {
-        console.error("Ошибка загрузки настроек, используются дефолтные:", e);
+        console.error("Ошибка загрузки настроек:", e);
         return { sitePassword: "", maintenanceMode: false, appPasswords: {}, appVisibility: {} };
     }
 }
@@ -956,7 +947,6 @@ function closeSheet() {
     filterApps();
 }
 
-/* Управление модальным окном инструкции */
 function openGuideSheet() {
     document.getElementById("guideOverlay").classList.add("active");
 }
@@ -1200,7 +1190,6 @@ function executeDownload() {
         </button>
         <button type="button" class="btn" onclick="startInstallation()">Установить</button>
         
-        <!-- КНОПКА «Как это работает?» -->
         <button type="button" class="btn btn-guide" onclick="openGuideSheet()" style="margin-top: 8px;">
             <span style="color: #38bdf8; font-weight: 700; margin-right: 4px;">•</span> Как это работает?
         </button>
@@ -1394,7 +1383,7 @@ function executeDownload() {
 
             <div class="sheet-item" data-key="rutube" data-category="social" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/rutube.plist', 'Rutube', 'rutube')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img src="https://azecsuwvwypwnkgobujn.supabase.co/storage/v1/object/public/avatars/company-logos/b341fde4-0bb0-4361-8104-81c7a384f66f.png" alt="Rutube"></div>
+                    <div class="app-icon"><img src="https://azecsuwypwnkgobujn.supabase.co/storage/v1/object/public/avatars/company-logos/b341fde4-0bb0-4361-8104-81c7a384f66f.png" alt="Rutube"></div>
                     <div class="sheet-info-box"><span class="app-name">Rutube (Starship Battle)</span></div>
                 </div>
                 <span class="ios-badge">iOS 16.0+</span>
@@ -1496,7 +1485,7 @@ function executeDownload() {
                 <span class="ios-badge">iOS 15.0+</span>
             </div>
 
-                <div class="sheet-item" data-key="sbpay" data-category="other" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sbpay.plist', 'СБПэй', 'sbpay')">
+            <div class="sheet-item" data-key="sbpay" data-category="other" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sbpay.plist', 'СБПэй', 'sbpay')">
                 <div class="sheet-item-main">
                     <div class="app-icon"><img src="https://avatars.mds.yandex.net/i?id=7680b326d267d36c98347f09c4968699_l-5662910-images-thumbs&n=13" alt="СБПэй"></div>
                     <div class="sheet-info-box"><span class="app-name">СБПэй</span></div>
@@ -1549,16 +1538,12 @@ function executeDownload() {
 
             <div class="guide-step">
                 <div class="guide-step-number">2</div>
-                <div class="guide-step-text">
-                    Дождитесь окончания загрузки и появления иконки приложения на экране «Домой».
-                </div>
+                <div class="guide-step-text">Дождитесь окончания загрузки и появления иконки приложения на экране «Домой».</div>
             </div>
 
             <div class="guide-step">
                 <div class="guide-step-number">3</div>
-                <div class="guide-step-text">
-                    Если при открытии приложения происходит вылет (краш), <strong>обратитесь к администратору</strong> для получения временного аккаунта.
-                </div>
+                <div class="guide-step-text">Если при открытии приложения происходит вылет (краш), <strong>обратитесь к администратору</strong> для получения временного аккаунта.</div>
             </div>
 
             <div class="guide-step">
@@ -1570,15 +1555,13 @@ function executeDownload() {
 
             <div class="guide-step">
                 <div class="guide-step-number">5</div>
-                <div class="guide-step-text">
-                    После успешного входа запустите приложение — оно заработает. Как только приложение откроется, обязательно выйдите из аккаунта в разделе <strong>Контент и покупки</strong>.
-                </div>
+                <div class="guide-step-text">После успешного входа запустите приложение — оно заработает. Как только приложение откроется, обязательно выйдите из аккаунта в разделе <strong>Контент и покупки</strong>.</div>
             </div>
         </div>
     </div>
 </div>
 
-<div class="last-update">Последнее обновление: 26 сентября 2026</div>
+<div class="last-update">Последнее обновление: 27 сентября 2026</div>
 
 </body>
 </html>
