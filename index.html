@@ -809,7 +809,7 @@ async function fetchSupabaseSettings() {
         
         let config = {
             sitePassword: "",
-            maintenanceMode: false,
+            isActive: true, // По умолчанию сайт активен
             appPasswords: {},
             appVisibility: {}
         };
@@ -817,8 +817,8 @@ async function fetchSupabaseSettings() {
         data.forEach(item => {
             if (item.key === 'site_password') {
                 config.sitePassword = item.value;
-            } else if (item.key === 'maintenance_mode') {
-                config.maintenanceMode = item.value === 'true' || item.value === true;
+            } else if (item.key === 'is_active') {
+                config.isActive = item.value === 'true' || item.value === true;
             } else if (item.key && item.key.startsWith('vis_')) {
                 config.appVisibility[item.key.replace('vis_', '')] = item.value === 'true';
             } else if (item.key) {
@@ -828,11 +828,11 @@ async function fetchSupabaseSettings() {
         return config;
     } catch (e) {
         console.error("Ошибка загрузки настроек, используются дефолтные:", e);
-        return { sitePassword: "", maintenanceMode: false, appPasswords: {}, appVisibility: {} };
+        return { sitePassword: "", isActive: true, appPasswords: {}, appVisibility: {} };
     }
 }
 
-let remoteConfig = { sitePassword: "", maintenanceMode: false, appPasswords: {}, appVisibility: {} };
+let remoteConfig = { sitePassword: "", isActive: true, appPasswords: {}, appVisibility: {} };
 let selectedAppUrl = "";
 let selectedAppKey = "";
 let isInstalling = false;
@@ -876,7 +876,7 @@ function updateAppCounter() {
 document.addEventListener("DOMContentLoaded", async function() {
     remoteConfig = await fetchSupabaseSettings();
     
-    if (remoteConfig.maintenanceMode) {
+    if (!remoteConfig.isActive) {
         switchScreen("maintenanceApp");
         return;
     }
@@ -915,7 +915,7 @@ async function submitPassword() {
     const errorMsg = document.getElementById("authError");
 
     remoteConfig = await fetchSupabaseSettings();
-    if (remoteConfig.maintenanceMode) { switchScreen("maintenanceApp"); return; }
+    if (!remoteConfig.isActive) { switchScreen("maintenanceApp"); return; }
 
     applyAppsVisibility();
     updateAppCounter();
@@ -933,7 +933,7 @@ async function submitPassword() {
 
 async function openSheet() {
     remoteConfig = await fetchSupabaseSettings();
-    if (remoteConfig.maintenanceMode) { switchScreen("maintenanceApp"); return; }
+    if (!remoteConfig.isActive) { switchScreen("maintenanceApp"); return; }
 
     applyAppsVisibility();
     updateAppCounter();
@@ -1057,7 +1057,7 @@ async function startInstallation() {
     if (!selectedAppUrl || isInstalling) return;
 
     remoteConfig = await fetchSupabaseSettings();
-    if (remoteConfig.maintenanceMode) { switchScreen("maintenanceApp"); return; }
+    if (!remoteConfig.isActive) { switchScreen("maintenanceApp"); return; }
 
     applyAppsVisibility();
     updateAppCounter();
