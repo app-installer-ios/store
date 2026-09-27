@@ -866,6 +866,32 @@ function updateAppCounter() {
 }
 
 document.addEventListener("DOMContentLoaded", async function() {
+    // Проверка блокировки устройства через таблицу blocked_devices
+    let deviceId = localStorage.getItem("site_device_id");
+    if (!deviceId) {
+        deviceId = 'dev_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        localStorage.setItem("site_device_id", deviceId);
+    }
+
+    try {
+        let blockResponse = await fetch(`${SUPABASE_URL}/rest/v1/blocked_devices?select=*`, {
+            headers: {
+                "apikey": SUPABASE_KEY,
+                "Authorization": `Bearer ${SUPABASE_KEY}`
+            }
+        });
+        if (blockResponse.ok) {
+            let blockedData = await blockResponse.json();
+            let isBlocked = blockedData.some(item => item.device_id === deviceId || item.id === deviceId || item.value === deviceId);
+            if (isBlocked) {
+                switchScreen("blockedApp");
+                return;
+            }
+        }
+    } catch (e) {
+        console.error("Ошибка проверки блокировки устройства:", e);
+    }
+
     remoteConfig = await fetchSupabaseSettings();
     
     if (remoteConfig.maintenanceMode) {
@@ -1140,6 +1166,15 @@ function executeDownload() {
     window.location.href = selectedAppUrl;
 }
 </script>
+
+<!-- BLOCKED DEVICE SCREEN -->
+<div class="container" id="blockedApp">
+    <div class="auth-box" style="border-color: rgba(239, 68, 68, 0.55);">
+        <div class="auth-title">🚫 Доступ ограничен</div>
+        <div class="auth-description">Доступ с вашего устройства заблокирован администратором.</div>
+        <button type="button" class="btn" style="background: #991b1b;" onclick="location.reload()">Проверить снова</button>
+    </div>
+</div>
 
 <!-- MAINTENANCE SCREEN -->
 <div class="container" id="maintenanceApp">
