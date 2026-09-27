@@ -796,6 +796,26 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 const SUPABASE_URL = "https://gbuvpqcummyutycemaaj.supabase.co";
 const SUPABASE_KEY = "sb_publishable_oUDovfvWL6iioG6N5Xd_QQ_8KYezq8g";
 
+// Функция проверки доступности сайта из таблицы site_status
+async function checkSiteStatus() {
+    try {
+        let response = await fetch(`${SUPABASE_URL}/rest/v1/site_status?select=is_enabled&id=eq.1&limit=1`, {
+            headers: {
+                "apikey": SUPABASE_KEY,
+                "Authorization": `Bearer ${SUPABASE_KEY}`
+            }
+        });
+        if (!response.ok) throw new Error("Не удалось проверить статус сайта");
+        let data = await response.json();
+        if (Array.isArray(data) && data.length > 0) {
+            return data[0].is_enabled; // вернет true или false
+        }
+    } catch (e) {
+        console.error("Ошибка при проверке статуса сайта:", e);
+    }
+    return true; // По умолчанию считаем сайт доступным
+}
+
 async function fetchSupabaseSettings() {
     try {
         let response = await fetch(`${SUPABASE_URL}/rest/v1/settings?select=*`, {
@@ -871,6 +891,14 @@ function updateAppCounter() {
 }
 
 document.addEventListener("DOMContentLoaded", async function() {
+    // 1. Проверяем, включен ли сайт в базе
+    const isSiteEnabled = await checkSiteStatus();
+    if (!isSiteEnabled) {
+        switchScreen("maintenanceApp");
+        return; // Блокируем дальнейшую загрузку каталога
+    }
+
+    // 2. Если сайт работает, продолжаем стандартную загрузку
     remoteConfig = await fetchSupabaseSettings();
 
     if (sessionStorage.getItem("site_access") === "true") {
@@ -1134,6 +1162,19 @@ function executeDownload() {
     window.location.href = selectedAppUrl;
 }
 </script>
+
+<!-- MAINTENANCE SCREEN (ЭКРАН ЗАГЛУШКА ПРИ ВЫКЛЮЧЕННОМ САЙТЕ) -->
+<div class="container" id="maintenanceApp">
+    <div class="auth-box" style="border-color: rgba(239, 68, 68, 0.45);">
+        <div class="auth-title" style="color: #fca5a5;">⚠️ Сайт временно отключен</div>
+        <div class="auth-description" style="margin-top: 10px;">
+            Проводятся технические работы или каталог временно недоступен. Пожалуйста, зайдите позже.
+        </div>
+        <a href="https://t.me/ios_appstore01" target="_blank" rel="noopener noreferrer" class="btn btn-telegram" style="margin-top: 15px;">
+            <img src="Telegram_logo.svg" alt="Telegram" class="telegram-icon">Наш Telegram-канал
+        </a>
+    </div>
+</div>
 
 <!-- AUTH SCREEN -->
 <div class="container" id="authApp">
