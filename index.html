@@ -9,6 +9,9 @@
 
 <title>Установка удалённых приложений</title>
 
+<!-- Подключаем официальную библиотеку Supabase JS для работы с Realtime веб-сокетами -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 :root {
     --bg: #0b0f17;
@@ -808,6 +811,9 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 const SUPABASE_URL = "https://gbuvpqcummyutycemaaj.supabase.co";
 const SUPABASE_KEY = "sb_publishable_oUDovfvWL6iioG6N5Xd_QQ_8KYezq8g";
 
+// Инициализируем клиент Supabase для подписок Realtime
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
 // Функция проверки доступности сайта из таблицы site_status
 async function checkSiteStatus() {
     try {
@@ -837,14 +843,24 @@ async function checkSiteStatusManual() {
     }
 
     const isEnabled = await checkSiteStatus();
-
+    
+    // Принудительно применяем состояние в реальном времени по клику
     if (isEnabled) {
-        location.reload();
-    } else {
-        if (btn) {
-            btn.style.opacity = "1";
-            btn.textContent = "Проверить снова";
+        remoteConfig = await fetchSupabaseSettings();
+        if (sessionStorage.getItem("site_access") === "true") {
+            switchScreen("mainApp");
+        } else {
+            switchScreen("authApp");
         }
+        applyAppsVisibility();
+        updateAppCounter();
+    } else {
+        switchScreen("maintenanceApp");
+    }
+
+    if (btn) {
+        btn.style.opacity = "1";
+        btn.textContent = "Проверить снова";
     }
 }
 
@@ -927,29 +943,41 @@ document.addEventListener("DOMContentLoaded", async function() {
     const isSiteEnabled = await checkSiteStatus();
     if (!isSiteEnabled) {
         switchScreen("maintenanceApp");
-        
-        // Фоновый опрос в реальном времени (каждые 3 секунды проверяем, не включили ли сайт)
-        setInterval(async () => {
-            const activeNow = await checkSiteStatus();
-            if (activeNow) {
-                location.reload();
-            }
-        }, 3000);
-
-        return; // Блокируем дальнейшую загрузку каталога
-    }
-
-    // 2. Если сайт работает, продолжаем стандартную загрузку
-    remoteConfig = await fetchSupabaseSettings();
-
-    if (sessionStorage.getItem("site_access") === "true") {
-        switchScreen("mainApp");
     } else {
-        switchScreen("authApp");
+        remoteConfig = await fetchSupabaseSettings();
+
+        if (sessionStorage.getItem("site_access") === "true") {
+            switchScreen("mainApp");
+        } else {
+            switchScreen("authApp");
+        }
+
+        applyAppsVisibility();
+        updateAppCounter();
     }
 
-    applyAppsVisibility();
-    updateAppCounter();
+    // 2. ПОДПИСКА REALTIME: мгновенно реагирует на любые изменения в таблице site_status без перезагрузки
+    supabaseClient
+        .channel('public:site_status')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'site_status' }, async payload => {
+            if (payload.new && typeof payload.new.is_enabled !== 'undefined') {
+                if (payload.new.is_enabled === false) {
+                    // Сайт выключили -> мгновенно показываем заглушку
+                    switchScreen("maintenanceApp");
+                } else {
+                    // Сайт включили -> подгружаем настройки и мгновенно открываем каталог/авторизацию без перезагрузки страницы
+                    remoteConfig = await fetchSupabaseSettings();
+                    if (sessionStorage.getItem("site_access") === "true") {
+                        switchScreen("mainApp");
+                    } else {
+                        switchScreen("authApp");
+                    }
+                    applyAppsVisibility();
+                    updateAppCounter();
+                }
+            }
+        })
+        .subscribe();
 
     document.getElementById("passInput").addEventListener("keydown", e => { if (e.key === "Enter") submitPassword(); });
     document.getElementById("appPassInput").addEventListener("keydown", e => { if (e.key === "Enter") submitAppPassword(); });
