@@ -26,6 +26,11 @@
     font-weight: 500;
 }
 
+/* Отключаем зум по двойному тапу для всех кнопок и полей ввода на всех экранах */
+button, input, .btn, .custom-select-btn, .sheet-close, .search-clear, .search-filter-btn, .filter-option {
+    touch-action: manipulation;
+}
+
 html, body {
     width: 100%;
     min-height: 100%;
