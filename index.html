@@ -527,49 +527,6 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     cursor: pointer;
 }
 
-/* Карточка-индикатор доступности и количества приложений */
-.status-info-card {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    min-height: 44px;
-    padding: 0 14px;
-    border-radius: 14px;
-    background: rgba(30, 41, 59, 0.35);
-    border: 1.8px solid rgba(52, 211, 153, 0.35);
-    margin-bottom: 10px;
-    flex-shrink: 0;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-}
-
-.status-pulse-dot {
-    width: 8px;
-    height: 8px;
-    background-color: #34d399;
-    border-radius: 50%;
-    box-shadow: 0 0 8px #34d399;
-    animation: status-pulse 2s infinite;
-    flex-shrink: 0;
-}
-
-@keyframes status-pulse {
-    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.6); }
-    70% { transform: scale(1); box-shadow: 0 0 0 5px rgba(52, 211, 153, 0); }
-    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
-}
-
-.status-info-text {
-    font-size: 13px;
-    font-weight: 600;
-    background: linear-gradient(135deg, #ffffff 20%, #cbd5e1 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
 .app-search-wrap { position: relative; flex-shrink: 0; margin-bottom: 10px; }
 
 .app-search {
@@ -674,6 +631,43 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     color: #fff;
     font-weight: 650;
 }
+
+.info-blocks-container { display: flex; gap: 8px; margin: 0 0 10px 0; flex-shrink: 0; }
+
+.info-card {
+    flex: 1;
+    min-height: 48px;
+    padding: 8px 10px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(30,41,59,.3);
+}
+
+.app-status-card {
+    border: 1.8px solid rgba(75, 165, 150, 0.5);
+    background: rgba(45, 145, 130, 0.03);
+}
+
+.pulse-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #34d399;
+    border-radius: 50%;
+    box-shadow: 0 0 6px #34d399;
+    animation: pulse-animation 2s infinite;
+}
+
+@keyframes pulse-animation {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.5); }
+    70% { transform: scale(1); box-shadow: 0 0 0 4px rgba(52, 211, 153, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
+}
+
+.info-text { display: flex; flex-direction: column; justify-content: center; min-width: 0; }
+.info-title { font-size: 12px; font-weight: 600; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.info-subtitle { font-size: 10px; color: rgba(255, 255, 255, 0.65); margin-top: 2px; }
 
 .sheet-list {
     display: flex;
@@ -913,7 +907,7 @@ let currentCategory = "all";
 function getAppPasswords() { return remoteConfig.appPasswords; }
 function getSitePassword() { return remoteConfig.sitePassword; }
 
-function applyAppsConfig() {
+function applyAppsVisibility() {
     document.querySelectorAll('.sheet-list .sheet-item').forEach(item => {
         const key = item.getAttribute('data-key');
         const isVisible = remoteConfig.appVisibility[key] !== false;
@@ -930,9 +924,9 @@ function switchScreen(screenId) {
 
 function updateAppCounter() {
     const visibleApps = document.querySelectorAll('.sheet-list .sheet-item:not([data-visible="false"])').length;
-    const totalCounterEl = document.getElementById('totalAppsCountText');
+    const counterElement = document.getElementById('app-counter-text');
     
-    if (totalCounterEl) {
+    if (counterElement) {
         let word = 'приложений';
         const lastDigit = visibleApps % 10;
         const lastTwoDigits = visibleApps % 100;
@@ -941,7 +935,7 @@ function updateAppCounter() {
             if (lastDigit === 1) word = 'приложение';
             else if (lastDigit >= 2 && lastDigit <= 4) word = 'приложения';
         }
-        totalCounterEl.textContent = `Доступно: ${visibleApps} ${word} (все активны)`;
+        counterElement.textContent = `Все ${visibleApps} ${word}`;
     }
 }
 
@@ -958,7 +952,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             switchScreen("authApp");
         }
 
-        applyAppsConfig();
+        applyAppsVisibility();
         updateAppCounter();
     }
 
@@ -1000,7 +994,7 @@ async function submitPassword() {
     const errorMsg = document.getElementById("authError");
 
     remoteConfig = await fetchSupabaseSettings();
-    applyAppsConfig();
+    applyAppsVisibility();
     updateAppCounter();
 
     if (input.value.trim() === getSitePassword()) {
@@ -1016,7 +1010,7 @@ async function submitPassword() {
 
 async function openSheet() {
     remoteConfig = await fetchSupabaseSettings();
-    applyAppsConfig();
+    applyAppsVisibility();
     updateAppCounter();
 
     const searchInput = document.getElementById("appSearchInput");
@@ -1076,7 +1070,7 @@ function filterApps() {
         else clearBtn.classList.remove("visible");
     }
 
-    let activeCount = 0;
+    let visibleCount = 0;
 
     document.querySelectorAll(".sheet-item").forEach(item => {
         if (item.getAttribute("data-visible") === "false") {
@@ -1099,24 +1093,11 @@ function filterApps() {
         }
 
         item.style.display = "flex";
-        activeCount++;
+        visibleCount++;
     });
 
     if (emptyMessage) {
-        emptyMessage.style.display = activeCount === 0 ? "block" : "none";
-    }
-
-    const totalCounterEl = document.getElementById('totalAppsCountText');
-    if (totalCounterEl) {
-        let word = 'приложений';
-        const lastDigit = activeCount % 10;
-        const lastTwoDigits = activeCount % 100;
-
-        if (lastTwoDigits < 11 || lastTwoDigits > 14) {
-            if (lastDigit === 1) word = 'приложение';
-            else if (lastDigit >= 2 && lastDigit <= 4) word = 'приложения';
-        }
-        totalCounterEl.textContent = `Доступно: ${activeCount} ${word} (все активны)`;
+        emptyMessage.style.display = visibleCount === 0 ? "block" : "none";
     }
 }
 
@@ -1151,7 +1132,7 @@ async function startInstallation() {
     if (!selectedAppUrl || isInstalling) return;
 
     remoteConfig = await fetchSupabaseSettings();
-    applyAppsConfig();
+    applyAppsVisibility();
     updateAppCounter();
 
     if (getAppPasswords()[selectedAppKey]) {
@@ -1245,7 +1226,7 @@ function executeDownload() {
     <div class="brand-header">
         <img src="https://github.com/app-installer-ios/store/releases/download/logosite/logosite.jpg" alt="logosite" class="brand-logo">
         <div class="brand-name">AppRestore IOS</div>
-        <div class="version-text">v 3.2 (30.09.2026)</div>
+        <div class="version-text">v 3.1 (30.09.2026)</div>
     </div>
     <div class="auth-box" style="border-color: rgba(239, 68, 68, 0.55); box-shadow: 0 0 30px rgba(239, 68, 68, 0.12), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.08);">
         <div class="auth-description" style="margin-top: 4px; color: #cbd5e1; font-size: 13.5px; line-height: 1.55;">
@@ -1264,7 +1245,7 @@ function executeDownload() {
     <div class="brand-header">
         <img src="https://github.com/app-installer-ios/store/releases/download/logosite/logosite.jpg" alt="logosite" class="brand-logo">
         <div class="brand-name">AppRestore IOS</div>
-        <div class="version-text">v 3.2 (30.09.2026)</div>
+        <div class="version-text">v 3.1 (30.09.2026)</div>
     </div>
     <div class="auth-box">
         <div class="auth-description" style="margin-top: -2px;">Введите пароль для доступа<br>к каталогу</div>
@@ -1281,7 +1262,7 @@ function executeDownload() {
     <div class="brand-header">
         <img src="https://github.com/app-installer-ios/store/releases/download/logosite/logosite.jpg" alt="logosite" class="brand-logo">
         <div class="brand-name">AppRestore IOS</div>
-        <div class="version-text">v 3.2 (30.09.2026)</div>
+        <div class="version-text">v 3.1 (30.09.2026)</div>
     </div>
     <div class="auth-box">
         <div class="auth-title">🔒 Защита установки</div>
@@ -1299,7 +1280,7 @@ function executeDownload() {
     <div class="brand-header">
         <img src="https://github.com/app-installer-ios/store/releases/download/logosite/logosite.jpg" alt="logosite" class="brand-logo">
         <div class="brand-name">AppRestore IOS</div>
-        <div class="version-text">v 3.2 (30.09.2026)</div>
+        <div class="version-text">v 3.1 (30.09.2026)</div>
     </div>
     <div class="card">
         <div class="collapsible-content">
@@ -1337,10 +1318,14 @@ function executeDownload() {
             <button type="button" class="sheet-close" onclick="closeSheet()">✕</button>
         </div>
 
-        <!-- Окно-индикатор со статусом доступности -->
-        <div class="status-info-card">
-            <div class="status-pulse-dot"></div>
-            <div class="status-info-text" id="totalAppsCountText">Доступно: 0 приложений (все активны)</div>
+        <div class="info-blocks-container">
+            <div class="info-card app-status-card">
+                <div class="pulse-dot"></div>
+                <div class="info-text">
+                    <span class="info-title" id="app-counter-text">Все приложения активны</span>
+                    <span class="info-subtitle">Работают стабильно</span>
+                </div>
+            </div>
         </div>
 
         <div class="app-search-wrap">
