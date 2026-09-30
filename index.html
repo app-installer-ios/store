@@ -468,10 +468,15 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     -webkit-backdrop-filter: blur(20px);
     opacity: 0;
     visibility: hidden;
+    pointer-events: none; /* Защита от кликов в неактивном состоянии */
     transition: opacity .35s ease, visibility .35s ease;
 }
 
-.sheet-overlay.active { opacity: 1; visibility: visible; }
+.sheet-overlay.active { 
+    opacity: 1; 
+    visibility: visible; 
+    pointer-events: auto; /* Включаем клики только когда окно полностью открыто */
+}
 
 .sheet-modal {
     position: relative;
@@ -1265,7 +1270,7 @@ function executeDownload() {
     <div class="brand-header">
         <img src="https://github.com/app-installer-ios/store/releases/download/logosite/logosite.jpg" alt="logosite" class="brand-logo">
         <div class="brand-name">AppRestore IOS</div>
-        <div class="version-text">v 3.2 (30.09.2026)</div>
+        <div class="version-text">v 3.3 (30.09.2026)</div>
     </div>
     <div class="auth-box" style="border-color: rgba(239, 68, 68, 0.55); box-shadow: 0 0 30px rgba(239, 68, 68, 0.12), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.08);">
         <div class="auth-description" style="margin-top: 4px; color: #cbd5e1; font-size: 13.5px; line-height: 1.55;">
@@ -1284,7 +1289,7 @@ function executeDownload() {
     <div class="brand-header">
         <img src="https://github.com/app-installer-ios/store/releases/download/logosite/logosite.jpg" alt="logosite" class="brand-logo">
         <div class="brand-name">AppRestore IOS</div>
-        <div class="version-text">v 3.2 (30.09.2026)</div>
+        <div class="version-text">v 3.3 (30.09.2026)</div>
     </div>
     <div class="auth-box">
         <div class="auth-description" style="margin-top: -2px;">Введите пароль для доступа<br>к каталогу</div>
@@ -1301,7 +1306,7 @@ function executeDownload() {
     <div class="brand-header">
         <img src="https://github.com/app-installer-ios/store/releases/download/logosite/logosite.jpg" alt="logosite" class="brand-logo">
         <div class="brand-name">AppRestore IOS</div>
-        <div class="version-text">v 3.2 (30.09.2026)</div>
+        <div class="version-text">v 3.3 (30.09.2026)</div>
     </div>
     <div class="auth-box">
         <div class="auth-title">🔒 Защита установки</div>
@@ -1319,7 +1324,7 @@ function executeDownload() {
     <div class="brand-header">
         <img src="https://github.com/app-installer-ios/store/releases/download/logosite/logosite.jpg" alt="logosite" class="brand-logo">
         <div class="brand-name">AppRestore IOS</div>
-        <div class="version-text">v 3.2 (30.09.2026)</div>
+        <div class="version-text">v 3.3 (30.09.2026)</div>
     </div>
     <div class="card">
         <div class="collapsible-content">
