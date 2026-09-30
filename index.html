@@ -903,6 +903,7 @@ let selectedAppUrl = "";
 let selectedAppKey = "";
 let isInstalling = false;
 let currentCategory = "all";
+let isSheetClosing = false; // Флаг для предотвращения багов при быстром закрытии/открытии
 
 function getAppPasswords() { return remoteConfig.appPasswords; }
 function getSitePassword() { return remoteConfig.sitePassword; }
@@ -1009,6 +1010,8 @@ async function submitPassword() {
 }
 
 async function openSheet() {
+    if (isSheetClosing) return; // Если окно еще закрывается анимацией, блокируем повторный открывающий клик
+
     remoteConfig = await fetchSupabaseSettings();
     applyAppsVisibility();
     updateAppCounter();
@@ -1016,18 +1019,46 @@ async function openSheet() {
     const searchInput = document.getElementById("appSearchInput");
     if (searchInput) {
         searchInput.value = "";
-        document.getElementById("searchClear").classList.remove("visible");
+        const searchClear = document.getElementById("searchClear");
+        if (searchClear) searchClear.classList.remove("visible");
     }
+
+    // Снимаем фокус с любых активных элементов перед открытием
+    if (document.activeElement) {
+        document.activeElement.blur();
+    }
+
     filterApps();
     document.getElementById("sheetOverlay").classList.add("active");
 }
 
 function closeSheet() {
+    if (isSheetClosing) return;
+    isSheetClosing = true;
+
     const searchInput = document.getElementById("appSearchInput");
-    if (searchInput) { searchInput.value = ""; searchInput.blur(); }
-    document.getElementById("filterDropdown").classList.remove("active");
-    document.getElementById("sheetOverlay").classList.remove("active");
+    if (searchInput) { 
+        searchInput.value = ""; 
+        searchInput.blur(); 
+    }
+    
+    const filterDropdown = document.getElementById("filterDropdown");
+    if (filterDropdown) filterDropdown.classList.remove("active");
+
+    const sheetOverlay = document.getElementById("sheetOverlay");
+    if (sheetOverlay) sheetOverlay.classList.remove("active");
+
+    // Снимаем выбор со всех элементов внутри модалки во время закрытия, чтобы исключить фантомные подстановки
+    document.querySelectorAll(".sheet-item").forEach(item => {
+        item.blur();
+    });
+
     filterApps();
+
+    // Сбрасываем флаг блокировки после завершения анимации закрытия
+    setTimeout(() => {
+        isSheetClosing = false;
+    }, 400);
 }
 
 function openGuideSheet() {
@@ -1110,20 +1141,28 @@ function clearAppSearch() {
 }
 
 function selectApp(element, url, name, appKey) {
+    if (isSheetClosing) return;
+
     selectedAppUrl = url;
     selectedAppKey = appKey;
 
-    document.getElementById("selectedAppText").textContent = name;
-    document.getElementById("selectedAppText").style.color = "#ffffff";
+    const selectedAppText = document.getElementById("selectedAppText");
+    if (selectedAppText) {
+        selectedAppText.textContent = name;
+        selectedAppText.style.color = "#ffffff";
+    }
 
-    document.querySelector(".custom-select-btn").classList.add("has-selection");
-    document.querySelector(".card").classList.add("app-selected");
+    const customSelectBtn = document.querySelector(".custom-select-btn");
+    if (customSelectBtn) customSelectBtn.classList.add("has-selection");
+
+    const mainCard = document.querySelector(".card");
+    if (mainCard) mainCard.classList.add("app-selected");
 
     const appAuthNameEl = document.getElementById("appAuthAppName");
     if (appAuthNameEl) appAuthNameEl.textContent = name;
 
     document.querySelectorAll(".sheet-item").forEach(item => item.classList.remove("selected"));
-    element.classList.add("selected");
+    if (element) element.classList.add("selected");
 
     closeSheet();
 }
@@ -1226,7 +1265,7 @@ function executeDownload() {
     <div class="brand-header">
         <img src="https://github.com/app-installer-ios/store/releases/download/logosite/logosite.jpg" alt="logosite" class="brand-logo">
         <div class="brand-name">AppRestore IOS</div>
-        <div class="version-text">v 3.1 (30.09.2026)</div>
+        <div class="version-text">v 3.2 (30.09.2026)</div>
     </div>
     <div class="auth-box" style="border-color: rgba(239, 68, 68, 0.55); box-shadow: 0 0 30px rgba(239, 68, 68, 0.12), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.08);">
         <div class="auth-description" style="margin-top: 4px; color: #cbd5e1; font-size: 13.5px; line-height: 1.55;">
@@ -1245,7 +1284,7 @@ function executeDownload() {
     <div class="brand-header">
         <img src="https://github.com/app-installer-ios/store/releases/download/logosite/logosite.jpg" alt="logosite" class="brand-logo">
         <div class="brand-name">AppRestore IOS</div>
-        <div class="version-text">v 3.1 (30.09.2026)</div>
+        <div class="version-text">v 3.2 (30.09.2026)</div>
     </div>
     <div class="auth-box">
         <div class="auth-description" style="margin-top: -2px;">Введите пароль для доступа<br>к каталогу</div>
@@ -1262,7 +1301,7 @@ function executeDownload() {
     <div class="brand-header">
         <img src="https://github.com/app-installer-ios/store/releases/download/logosite/logosite.jpg" alt="logosite" class="brand-logo">
         <div class="brand-name">AppRestore IOS</div>
-        <div class="version-text">v 3.1 (30.09.2026)</div>
+        <div class="version-text">v 3.2 (30.09.2026)</div>
     </div>
     <div class="auth-box">
         <div class="auth-title">🔒 Защита установки</div>
@@ -1280,7 +1319,7 @@ function executeDownload() {
     <div class="brand-header">
         <img src="https://github.com/app-installer-ios/store/releases/download/logosite/logosite.jpg" alt="logosite" class="brand-logo">
         <div class="brand-name">AppRestore IOS</div>
-        <div class="version-text">v 3.1 (30.09.2026)</div>
+        <div class="version-text">v 3.2 (30.09.2026)</div>
     </div>
     <div class="card">
         <div class="collapsible-content">
