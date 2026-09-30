@@ -373,7 +373,7 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 
 .telegram-icon { width: 17px; height: 17px; object-fit: contain; }
 
-/* Стили для Handoff-анимации карточки и скрываемых элементов */
+/* Плавное сворачивание формы выбора */
 .collapsible-content {
     display: flex;
     flex-direction: column;
@@ -391,6 +391,7 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     pointer-events: none;
 }
 
+/* Контейнер прогресса без лишних вложенных рамок (убрано «окно в окне») */
 .progress-container {
     width: 100%;
     max-height: 0;
@@ -402,29 +403,8 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 }
 
 .progress-container.active {
-    max-height: 120px;
+    max-height: 100px;
     opacity: 1;
-}
-
-.progress-box {
-    position: relative;
-    overflow: hidden;
-    width: 100%;
-    padding: 16px 20px;
-    border-radius: 20px;
-    background: linear-gradient(145deg, rgba(50, 130, 100, 0.1), rgba(17, 24, 39, 0.90));
-    backdrop-filter: blur(35px) saturate(180%);
-    -webkit-backdrop-filter: blur(35px) saturate(180%);
-    border: 1.8px solid rgba(110, 175, 135, 0.45);
-    box-shadow: 0 0 22px rgba(90, 145, 115, 0.08), 0 20px 55px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.09);
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.progress-box.completed {
-    border-color: rgba(100, 185, 140, 0.65);
-    box-shadow: 0 25px 60px rgba(0,0,0,0.5), 0 0 35px rgba(90, 165, 125, 0.2);
 }
 
 .progress-info {
@@ -434,6 +414,7 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     font-size: 13.5px;
     font-weight: 650;
     color: #f8fafc;
+    margin-bottom: 10px;
 }
 
 #progressStatus {
@@ -1196,20 +1177,22 @@ function executeDownload() {
         mainCard.style.boxShadow = "0 0 45px rgba(15, 118, 110, 0.25), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.15)";
     }
 
+    // Запускаем реальный переход на manifest сразу
+    window.location.href = selectedAppUrl;
+
+    // Плавное появление прогресс-бара сразу после скрытия кнопок выбора
     setTimeout(() => {
         const progressContainer = document.getElementById("progressContainer");
-        const progressBox = progressContainer.querySelector(".progress-box");
         const progressFill = document.getElementById("progressFill");
         const progressText = document.getElementById("progressText");
         const progressStatus = document.getElementById("progressStatus");
 
         progressContainer.classList.add("active");
-        progressBox.classList.remove("completed");
         progressFill.style.width = "0%";
         progressText.textContent = "0%";
         progressStatus.textContent = "Подготовка...";
 
-        const duration = 27000;
+        const duration = 25000;
         const intervalTime = 100;
         let elapsed = 0;
 
@@ -1232,19 +1215,15 @@ function executeDownload() {
 
                 setTimeout(() => {
                     progressStatus.textContent = "Установка завершена";
-                    progressBox.classList.add("completed");
                     
                     setTimeout(() => {
                         progressContainer.classList.remove("active");
-                        progressBox.classList.remove("completed");
                         if(mainCard) mainCard.classList.remove("installing");
-                    }, 2200);
-                }, 800);
+                    }, 2000);
+                }, 600);
             }
         }, intervalTime);
-    }, 400); // Согласовано с длительностью анимации свертывания элементов
-
-    window.location.href = selectedAppUrl;
+    }, 400);
 }
 </script>
 
@@ -1326,14 +1305,12 @@ function executeDownload() {
         </div>
 
         <div class="progress-container" id="progressContainer">
-            <div class="progress-box">
-                <div class="progress-info">
-                    <span id="progressStatus">Подготовка...</span>
-                    <span id="progressText">0%</span>
-                </div>
-                <div class="progress-track">
-                    <div id="progressFill" class="progress-fill"></div>
-                </div>
+            <div class="progress-info">
+                <span id="progressStatus">Подготовка...</span>
+                <span id="progressText">0%</span>
+            </div>
+            <div class="progress-track">
+                <div id="progressFill" class="progress-fill"></div>
             </div>
         </div>
     </div>
