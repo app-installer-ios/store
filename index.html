@@ -950,7 +950,7 @@ function updateAppCounter(count) {
         }
 
         const isSearching = document.getElementById("appSearchInput")?.value.trim().length > 0;
-        const prefix = (currentCategory === "all" && !isSearching) ? "Все " : "Доступно: ";
+        const prefix = (currentCategory === "all" && !isSearching) ? "Все " : "Все ";
         counterElement.textContent = `${prefix}${visibleApps} ${word}`;
     }
 }
