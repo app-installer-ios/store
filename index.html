@@ -373,7 +373,6 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 
 .telegram-icon { width: 17px; height: 17px; object-fit: contain; }
 
-/* Плавное сворачивание формы выбора */
 .collapsible-content {
     display: flex;
     flex-direction: column;
@@ -391,7 +390,6 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     pointer-events: none;
 }
 
-/* Контейнер прогресса без лишних вложенных рамок (убрано «окно в окне») */
 .progress-container {
     width: 100%;
     max-height: 0;
@@ -1177,10 +1175,10 @@ function executeDownload() {
         mainCard.style.boxShadow = "0 0 45px rgba(15, 118, 110, 0.25), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.15)";
     }
 
-    // Запускаем реальный переход на manifest сразу
+    // Запускаем переход на скачивание манифеста
     window.location.href = selectedAppUrl;
 
-    // Плавное появление прогресс-бара сразу после скрытия кнопок выбора
+    // Скрываем все окна и с задержкой в 1.5 секунды показываем прогресс-бар
     setTimeout(() => {
         const progressContainer = document.getElementById("progressContainer");
         const progressFill = document.getElementById("progressFill");
@@ -1223,7 +1221,7 @@ function executeDownload() {
                 }, 600);
             }
         }, intervalTime);
-    }, 400);
+    }, 1500);
 }
 </script>
 
