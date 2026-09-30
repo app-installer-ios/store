@@ -351,7 +351,6 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     border-color: rgba(239, 68, 68, 0.8);
 }
 
-/* ИЗМЕНЕНИЕ: Кнопка «Как это работает?» сделана красной */
 .btn-guide {
     background: rgba(239, 68, 68, 0.12);
     border: 1.8px solid rgba(239, 68, 68, 0.45);
@@ -736,12 +735,12 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 
 .search-empty { display: none; text-align: center; color: #94a3b8; font-size: 13px; padding: 20px 10px; }
 
-/* ИЗМЕНЕНИЕ: Менее яркая красная рамка и мягкое свечение окна инструкции */
+/* ИЗМЕНЕНИЕ: Общее окно «Инструкция по установке» с неяркой зеленой обводкой */
 .guide-modal { 
     height: min(88vh, 680px); 
-    background: linear-gradient(165deg, rgba(20, 26, 40, 0.98), rgba(10, 14, 22, 0.99));
-    border: 1.8px solid rgba(239, 68, 68, 0.45);
-    box-shadow: 0 0 30px rgba(239, 68, 68, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    background: linear-gradient(165deg, rgba(16, 26, 20, 0.98), rgba(10, 16, 14, 0.99));
+    border: 1.8px solid rgba(46, 125, 50, 0.55);
+    box-shadow: 0 0 30px rgba(46, 125, 50, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .guide-content { 
@@ -779,11 +778,11 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
 }
 
-/* ИЗМЕНЕНИЕ: Другой цвет обводки для 5-го пункта (стильный янтарный оттенок) */
+/* ИЗМЕНЕНИЕ: 5-й пункт инструкции с измененным цветом обводки и акцентным текстом */
 .guide-step.highlighted-box {
-    border: 1.8px solid rgba(245, 158, 11, 0.65);
-    background: linear-gradient(145deg, rgba(245, 158, 11, 0.12), rgba(17, 24, 39, 0.75));
-    box-shadow: 0 0 22px rgba(245, 158, 11, 0.2), 0 8px 24px rgba(0, 0, 0, 0.25);
+    border: 1.8px solid #ff9800;
+    background: linear-gradient(145deg, rgba(255, 152, 0, 0.15), rgba(17, 24, 39, 0.8));
+    box-shadow: 0 0 24px rgba(255, 152, 0, 0.22), 0 8px 24px rgba(0, 0, 0, 0.25);
 }
 
 .guide-step-number {
@@ -810,7 +809,12 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     letter-spacing: -0.1px;
 }
 
-/* ИЗМЕНЕНИЕ: Сбалансированный красный цвет текста (не слишком вырвиглазный, но акцентный) */
+/* ИЗМЕНЕНИЕ: Яркий, выделяющийся цвет текста для 5-го пункта */
+.guide-step.highlighted-box .guide-step-text {
+    color: #ffcc80;
+    font-weight: 600;
+}
+
 .guide-step-text strong { 
     color: #f87171; 
     font-weight: 700; 
