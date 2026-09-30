@@ -130,9 +130,9 @@ body {
 }
 
 .version-text {
-    font-size: 11px;
-    font-weight: 500;
-    color: rgba(255, 255, 255, 0.15);
+    font-size: 12px;
+    font-weight: 600;
+    color: #94a3b8;
     margin-top: -5px;
     letter-spacing: 0.5px;
     user-select: none;
@@ -771,6 +771,12 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     border-color: rgba(80, 160, 200, 0.45);
     transform: translateY(-2px);
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+}
+
+.guide-step.highlighted-box {
+    border: 1.8px solid #38bdf8;
+    background: linear-gradient(145deg, rgba(56, 189, 248, 0.1), rgba(17, 24, 39, 0.75));
+    box-shadow: 0 0 25px rgba(56, 189, 248, 0.2), 0 8px 24px rgba(0, 0, 0, 0.25);
 }
 
 .guide-step-number {
@@ -1649,12 +1655,19 @@ function executeDownload() {
             <div class="guide-step">
                 <div class="guide-step-number">4</div>
                 <div class="guide-step-text">
-                    Перейдите в <em>Настройки</em> — тапните <em>по вашему имени (Apple ID)</em> — выберите <em>«Контент и покупки»</em> (на старых версиях iOS — <em>iTunes Store и App Store</em>) и авторизуйтесь с данными, которые выдал администратор. Если потребуется код подтверждения, запросите его у администратора. <em>Ни в коем случае не вводите данные вверху в разделе «iCloud»!</em>
+                    Перейдите в <em>Настройки</em> — тапните <em>по вашему имени (Apple ID)</em> — выберите <em>«Контент и покупки»</em> (на старых версиях iOS — <em>iTunes Store и App Store</em>) и авторизуйтесь с данными, которые выдал администратор. Если потребуется код подтверждения, запросите его у администратора.
+                </div>
+            </div>
+
+            <div class="guide-step highlighted-box">
+                <div class="guide-step-number">5</div>
+                <div class="guide-step-text">
+                    <em>Ни в коем случае не вводите данные вверху в разделе «iCloud»!</em>
                 </div>
             </div>
 
             <div class="guide-step">
-                <div class="guide-step-number">5</div>
+                <div class="guide-step-number">6</div>
                 <div class="guide-step-text">
                     После успешного входа запустите приложение — оно заработает. Как только приложение откроется, обязательно выйдите из аккаунта в разделе <strong>Контент и покупки</strong>.
                 </div>
