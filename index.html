@@ -738,8 +738,8 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 .guide-modal { 
     height: min(88vh, 680px); 
     background: linear-gradient(165deg, rgba(20, 26, 40, 0.98), rgba(10, 14, 22, 0.99));
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow: 0 0 40px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    border: 2px solid #ef4444; /* ИЗМЕНЕНИЕ: Красная рамка */
+    box-shadow: 0 0 40px rgba(239, 68, 68, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08); /* ИЗМЕНЕНИЕ: Красное свечение */
 }
 
 .guide-content { 
@@ -778,9 +778,9 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 }
 
 .guide-step.highlighted-box {
-    border: 1.8px solid #38bdf8;
-    background: linear-gradient(145deg, rgba(56, 189, 248, 0.1), rgba(17, 24, 39, 0.75));
-    box-shadow: 0 0 25px rgba(56, 189, 248, 0.2), 0 8px 24px rgba(0, 0, 0, 0.25);
+    border: 2px solid #34c759; /* ИЗМЕНЕНИЕ: Отличающийся цвет для 5-го пункта (Зеленый) */
+    background: linear-gradient(145deg, rgba(52, 199, 89, 0.15), rgba(17, 24, 39, 0.75));
+    box-shadow: 0 0 25px rgba(52, 199, 89, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
 }
 
 .guide-step-number {
@@ -808,14 +808,14 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 }
 
 .guide-step-text strong { 
-    color: #fca5a5; 
-    font-weight: 650; 
+    color: #ef4444; /* ИЗМЕНЕНИЕ: Красный цвет для важных пунктов */
+    font-weight: 700; 
 }
 
 .guide-step-text em { 
-    color: #38bdf8; 
+    color: #ef4444; /* ИЗМЕНЕНИЕ: Красный цвет для важных пунктов (курсив) */
     font-style: normal; 
-    font-weight: 650; 
+    font-weight: 700; 
 }
 </style>
 </head>
