@@ -373,15 +373,38 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 
 .telegram-icon { width: 17px; height: 17px; object-fit: contain; }
 
-.progress-container {
-    width: 100%;
-    margin-top: 4px;
-    display: none;
+/* Стили для Handoff-анимации карточки и скрываемых элементов */
+.collapsible-content {
+    display: flex;
     flex-direction: column;
-    animation: screenIn .35s var(--spring);
+    gap: 13px;
+    max-height: 400px;
+    opacity: 1;
+    overflow: hidden;
+    transition: max-height 0.4s var(--spring), opacity 0.3s ease, margin 0.4s var(--spring);
 }
 
-.progress-container.active { display: flex; }
+.card.installing .collapsible-content {
+    max-height: 0;
+    opacity: 0;
+    margin: 0;
+    pointer-events: none;
+}
+
+.progress-container {
+    width: 100%;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: max-height 0.4s var(--spring), opacity 0.3s ease;
+}
+
+.progress-container.active {
+    max-height: 120px;
+    opacity: 1;
+}
 
 .progress-box {
     position: relative;
@@ -742,11 +765,10 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     gap: 12px; 
     padding: 6px 2px 10px 2px;
     overflow-y: auto;
-    scrollbar-width: none !important; /* Убираем ползунок для Firefox */
-    -ms-overflow-style: none; /* Убираем ползунок для IE/Edge */
+    scrollbar-width: none !important;
+    -ms-overflow-style: none;
 }
 
-/* Убираем ползунок для Chrome, Safari и Opera */
 .guide-content::-webkit-scrollbar {
     display: none;
 }
@@ -1169,7 +1191,10 @@ function executeDownload() {
     isInstalling = true;
 
     const mainCard = document.querySelector(".card");
-    if(mainCard) mainCard.style.boxShadow = "0 0 45px rgba(15, 118, 110, 0.25), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.15)";
+    if(mainCard) {
+        mainCard.classList.add("installing");
+        mainCard.style.boxShadow = "0 0 45px rgba(15, 118, 110, 0.25), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.15)";
+    }
 
     setTimeout(() => {
         const progressContainer = document.getElementById("progressContainer");
@@ -1212,11 +1237,12 @@ function executeDownload() {
                     setTimeout(() => {
                         progressContainer.classList.remove("active");
                         progressBox.classList.remove("completed");
+                        if(mainCard) mainCard.classList.remove("installing");
                     }, 2200);
                 }, 800);
             }
         }, intervalTime);
-    }, 1500);
+    }, 400); // Согласовано с длительностью анимации свертывания элементов
 
     window.location.href = selectedAppUrl;
 }
@@ -1283,19 +1309,21 @@ function executeDownload() {
         <div class="version-text">v 3.1 (30.09.2026)</div>
     </div>
     <div class="card">
-        <label>Выберите приложение</label>
-        <button type="button" class="custom-select-btn" onclick="openSheet()">
-            <span id="selectedAppText" style="color:#94a3b8;">Нажмите для выбора приложения</span>
-        </button>
-        <button type="button" class="btn" onclick="startInstallation()">Установить</button>
-        
-        <button type="button" class="btn btn-guide" onclick="openGuideSheet()" style="margin-top: 8px;">
-            <span style="color: #38bdf8; font-weight: 700; margin-right: 4px;">•</span> Как это работает?
-        </button>
+        <div class="collapsible-content">
+            <label>Выберите приложение</label>
+            <button type="button" class="custom-select-btn" onclick="openSheet()">
+                <span id="selectedAppText" style="color:#94a3b8;">Нажмите для выбора приложения</span>
+            </button>
+            <button type="button" class="btn" onclick="startInstallation()">Установить</button>
+            
+            <button type="button" class="btn btn-guide" onclick="openGuideSheet()" style="margin-top: 8px;">
+                <span style="color: #38bdf8; font-weight: 700; margin-right: 4px;">•</span> Как это работает?
+            </button>
 
-        <a href="https://t.me/ios_appstore01" target="_blank" rel="noopener noreferrer" class="btn btn-telegram" style="margin-top: 2px;">
-            <img src="Telegram_logo.svg" alt="Telegram" class="telegram-icon">AppRestore IOS в Telegram!
-        </a>
+            <a href="https://t.me/ios_appstore01" target="_blank" rel="noopener noreferrer" class="btn btn-telegram" style="margin-top: 2px;">
+                <img src="Telegram_logo.svg" alt="Telegram" class="telegram-icon">AppRestore IOS в Telegram!
+            </a>
+        </div>
 
         <div class="progress-container" id="progressContainer">
             <div class="progress-box">
