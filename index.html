@@ -89,16 +89,15 @@ body {
     justify-content: center;
     flex: 1;
     margin: auto 0;
-    animation: screenIn .45s var(--spring);
+    opacity: 0;
+    transform: translateY(16px) scale(.97);
+    transition: opacity 0.4s var(--spring), transform 0.4s var(--spring);
 }
 
 .container.active-screen {
     display: flex;
-}
-
-@keyframes screenIn {
-    from { opacity: 0; transform: translateY(14px) scale(.975); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
+    opacity: 1;
+    transform: translateY(0) scale(1);
 }
 
 .brand-header {
@@ -469,7 +468,7 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     -webkit-backdrop-filter: blur(20px);
     opacity: 0;
     visibility: hidden;
-    transition: opacity .3s ease, visibility .3s ease;
+    transition: opacity .35s ease, visibility .35s ease;
 }
 
 .sheet-overlay.active { opacity: 1; visibility: visible; }
@@ -489,9 +488,9 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     -webkit-backdrop-filter: blur(40px) saturate(170%);
     border: 1.8px solid rgba(195, 115, 115, 0.5);
     box-shadow: 0 0 28px rgba(175, 95, 95, 0.08), 0 25px 70px rgba(0,0,0,.70);
-    transform: translateY(20px) scale(.97);
+    transform: translateY(24px) scale(.95);
     opacity: 0;
-    transition: transform .4s var(--spring), opacity .3s ease;
+    transition: transform .45s var(--spring), opacity .35s ease;
 }
 
 .sheet-overlay.active .sheet-modal { transform: translateY(0) scale(1); opacity: 1; }
@@ -1175,10 +1174,8 @@ function executeDownload() {
         mainCard.style.boxShadow = "0 0 45px rgba(15, 118, 110, 0.25), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.15)";
     }
 
-    // Запускаем переход на скачивание манифеста
     window.location.href = selectedAppUrl;
 
-    // Скрываем все окна и с задержкой в 1.5 секунды показываем прогресс-бар
     setTimeout(() => {
         const progressContainer = document.getElementById("progressContainer");
         const progressFill = document.getElementById("progressFill");
