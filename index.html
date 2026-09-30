@@ -108,7 +108,7 @@ body {
     align-items: center;
     gap: 10px;
     margin-bottom: 12px;
-    margin-top: -10px;
+    margin-top: -60px;
 }
 
 .brand-logo {
@@ -127,6 +127,15 @@ body {
     background: linear-gradient(135deg, #ffffff 15%, #cbd5e1 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+}
+
+.version-text {
+    font-size: 11px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.15);
+    margin-top: -5px;
+    letter-spacing: 0.5px;
+    user-select: none;
 }
 
 .auth-box {
@@ -734,7 +743,13 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     gap: 12px; 
     padding: 6px 2px 10px 2px;
     overflow-y: auto;
-    scrollbar-width: thin;
+    scrollbar-width: none !important; /* Убираем ползунок для Firefox */
+    -ms-overflow-style: none; /* Убираем ползунок для IE/Edge */
+}
+
+/* Убираем ползунок для Chrome, Safari и Opera */
+.guide-content::-webkit-scrollbar {
+    display: none;
 }
 
 .guide-step {
@@ -1206,6 +1221,7 @@ function executeDownload() {
     <div class="brand-header">
         <img src="https://github.com/app-installer-ios/store/releases/download/sitelogo/sitelogo.jpg" alt="sitelogo" class="brand-logo">
         <div class="brand-name">AppRestore IOS</div>
+        <div class="version-text">v 3.0 (30.09.2026)</div>
     </div>
     <div class="auth-box" style="border-color: rgba(239, 68, 68, 0.55); box-shadow: 0 0 30px rgba(239, 68, 68, 0.12), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.08);">
         <div class="auth-description" style="margin-top: 4px; color: #cbd5e1; font-size: 13.5px; line-height: 1.55;">
@@ -1224,6 +1240,7 @@ function executeDownload() {
     <div class="brand-header">
         <img src="https://github.com/app-installer-ios/store/releases/download/sitelogo/sitelogo.jpg" alt="sitelogo" class="brand-logo">
         <div class="brand-name">AppRestore IOS</div>
+        <div class="version-text">v 3.0 (30.09.2026)</div>
     </div>
     <div class="auth-box">
         <div class="auth-description" style="margin-top: -2px;">Введите пароль для доступа<br>к каталогу</div>
@@ -1253,6 +1270,7 @@ function executeDownload() {
     <div class="brand-header">
         <img src="https://github.com/app-installer-ios/store/releases/download/sitelogo/sitelogo.jpg" alt="sitelogo" class="brand-logo">
         <div class="brand-name">AppRestore IOS</div>
+        <div class="version-text">v 3.0 (30.09.2026)</div>
     </div>
     <div class="card">
         <label>Выберите приложение</label>
