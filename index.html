@@ -742,10 +742,11 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     gap: 12px; 
     padding: 6px 2px 10px 2px;
     overflow-y: auto;
-    scrollbar-width: none !important;
-    -ms-overflow-style: none;
+    scrollbar-width: none !important; /* Убираем ползунок для Firefox */
+    -ms-overflow-style: none; /* Убираем ползунок для IE/Edge */
 }
 
+/* Убираем ползунок для Chrome, Safari и Opera */
 .guide-content::-webkit-scrollbar {
     display: none;
 }
@@ -876,48 +877,35 @@ async function fetchSupabaseSettings() {
         let data = await response.json();
         
         let config = {
+            sitePassword: "",
+            appPasswords: {},
             appVisibility: {}
         };
 
         data.forEach(item => {
-            if (item.key && item.key.startsWith('vis_')) {
+            if (item.key === 'site_password') {
+                config.sitePassword = item.value;
+            } else if (item.key && item.key.startsWith('vis_')) {
                 config.appVisibility[item.key.replace('vis_', '')] = item.value === 'true';
+            } else if (item.key) {
+                config.appPasswords[item.key] = item.value;
             }
         });
         return config;
     } catch (e) {
         console.error("Ошибка загрузки настроек, используются дефолтные:", e);
-        return { appVisibility: {} };
+        return { sitePassword: "", appPasswords: {}, appVisibility: {} };
     }
 }
 
-// Новая функция через Edge-функцию verify-password для безопасной проверки паролей
-async function verifyPasswordViaEdge(key, password) {
-    try {
-        const response = await fetch(`${SUPABASE_URL}/functions/v1/verify-password`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "apikey": SUPABASE_KEY,
-                "Authorization": `Bearer ${SUPABASE_KEY}`
-            },
-            body: JSON.stringify({ key: key, password: password })
-        });
-        
-        if (!response.ok) return false;
-        const data = await response.json();
-        return data.success === true;
-    } catch (e) {
-        console.error("Ошибка вызова Edge-функции verify-password:", e);
-        return false;
-    }
-}
-
-let remoteConfig = { appVisibility: {} };
+let remoteConfig = { sitePassword: "", appPasswords: {}, appVisibility: {} };
 let selectedAppUrl = "";
 let selectedAppKey = "";
 let isInstalling = false;
 let currentCategory = "all";
+
+function getAppPasswords() { return remoteConfig.appPasswords; }
+function getSitePassword() { return remoteConfig.sitePassword; }
 
 function applyAppsVisibility() {
     document.querySelectorAll('.sheet-list .sheet-item').forEach(item => {
@@ -1004,16 +992,12 @@ document.addEventListener("DOMContentLoaded", async function() {
 async function submitPassword() {
     const input = document.getElementById("passInput");
     const errorMsg = document.getElementById("authError");
-    const password = input.value.trim();
 
     remoteConfig = await fetchSupabaseSettings();
     applyAppsVisibility();
     updateAppCounter();
 
-    // Проверяем общий пароль сайта через функцию verify-password
-    const isValid = await verifyPasswordViaEdge("site_password", password);
-
-    if (isValid) {
+    if (input.value.trim() === getSitePassword()) {
         sessionStorage.setItem("site_access", "true");
         switchScreen("mainApp");
         return;
@@ -1151,28 +1135,7 @@ async function startInstallation() {
     applyAppsVisibility();
     updateAppCounter();
 
-    // Проверяем через Edge-функцию, защищено ли приложение паролем
-    const hasPassword = await verifyPasswordViaEdge(selectedAppKey, "");
-
-    // Если функция вернула true по пустому паролю — значит пароля нет (или он пустой). 
-    // Либо можно проверять наличие пароля отдельным запросом/флагом. 
-    // Если требуется ввод пароля для приложения, проверяем защищено ли оно:
-    // (В данном ключе проверяем через вызов с пустым паролем: если вернуло true, значит пароль пустой, иначе запрашиваем пароль)
-    
-    // Безопаснее сделать запрос на валидацию защиты: если пароль для приложения существует, открываем экран ввода.
-    // Давайте сделаем проверку: запрашиваем ввод пароля, если ключ приложения задан в базе. 
-    // Для этого воспользуемся универсальным подходом: если привязанный пароль существует, выводим экран ввода.
-    
-    // Но так как пароль теперь хранится в таблице settings (или хэш), можно сделать быструю проверку:
-    const isProtectedCheck = await fetch(`${SUPABASE_URL}/rest/v1/settings?key=eq.${selectedAppKey}&select=key`, {
-        headers: {
-            "apikey": SUPABASE_KEY,
-            "Authorization": `Bearer ${SUPABASE_KEY}`
-        }
-    });
-    const protectData = await isProtectedCheck.json();
-
-    if (Array.isArray(protectData) && protectData.length > 0) {
+    if (getAppPasswords()[selectedAppKey]) {
         document.getElementById("appPassError").style.display = "none";
         document.getElementById("appPassInput").value = "";
         switchScreen("appAuthApp");
@@ -1183,15 +1146,11 @@ async function startInstallation() {
     executeDownload();
 }
 
-async function submitAppPassword() {
+function submitAppPassword() {
     const input = document.getElementById("appPassInput");
     const errorMsg = document.getElementById("appPassError");
-    const password = input.value.trim();
 
-    // Проверяем пароль приложения через Edge-функцию verify-password
-    const isValid = await verifyPasswordViaEdge(selectedAppKey, password);
-
-    if (isValid) {
+    if (input.value.trim() === getAppPasswords()[selectedAppKey]) {
         switchScreen("mainApp");
         executeDownload();
         return;
@@ -1648,33 +1607,74 @@ function executeDownload() {
                 <span class="ios-badge">iOS 15.0+</span>
             </div>
 
-            <div class="sheet-item" data-key="novikombank" data-category="banks" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/novikombank.plist', 'Новикомбанк')"></div>
+            <div class="sheet-item" data-key="novikombank" data-category="banks" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/novikombank.plist', 'Новикомбанк', 'novikombank')">
+                <div class="sheet-item-main">
+                    <div class="app-icon"><img src="https://s.rbk.ru/v1_companies_s3/media/trademarks/e0275264-62c2-41fb-a7be-963c06ffc091.jpg" alt="Новикомбанк"></div>
+                    <div class="sheet-info-box"><span class="app-name">Новикомбанк</span></div>
+                </div>
+                <span class="ios-badge">iOS 12.0+</span>
+            </div>
+
+            <div class="sheet-item" data-key="mtsdengi" data-category="banks" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/mtsdengi.plist', 'МТС Банк', 'mtsdengi')">
+                <div class="sheet-item-main">
+                    <div class="app-icon"><img src="https://yt3.googleusercontent.com/ni-yGWFO4YJzf02xm8UL9N_WReTfYAN6sIj0wtyoaLD16D8MUPaiuGp0So8ZYGw1ApRXw0wzW4w=s900-c-k-c0x00ffffff-no-rj" alt="МТС Банк"></div>
+                    <div class="sheet-info-box"><span class="app-name">МТС Банк</span></div>
+                </div>
+                <span class="ios-badge">iOS 15.0+</span>
+            </div>
         </div>
     </div>
 </div>
 
+<!-- GUIDE SHEET / MODAL -->
 <div class="sheet-overlay" id="guideOverlay" onclick="closeGuideSheet()">
     <div class="sheet-modal guide-modal" onclick="event.stopPropagation()">
         <div class="sheet-header">
-            <div class="sheet-title">Как установить приложение?</div>
+            <div class="sheet-title">Как это работает</div>
             <button type="button" class="sheet-close" onclick="closeGuideSheet()">✕</button>
         </div>
-        <div class="guide-content">
+
+        <div class="guide-content sheet-list">
             <div class="guide-step">
                 <div class="guide-step-number">1</div>
-                <div class="guide-step-text">Нажмите кнопку <strong>«Выбрать приложение»</strong> и найдите нужное через поиск или фильтр по категориям.</div>
+                <div class="guide-step-text">
+                    Выберите нужное приложение в списке, нажав на поле выбора, и нажмите кнопку <strong>«Установить»</strong>. После этого <strong>введите пароль для установки, который Вам выдаст администратор</strong> и подтвердите установку в системном окне iOS для запуска процесса загрузки приложения на устройство.
+                </div>
             </div>
+
             <div class="guide-step">
                 <div class="guide-step-number">2</div>
-                <div class="guide-step-text">Нажмите кнопку <strong>«Установить»</strong>. Если приложение защищено, введите выданный персональный пароль.</div>
+                <div class="guide-step-text">
+                    Дождитесь окончания загрузки и появления иконки приложения на экране «Домой».
+                </div>
             </div>
-            <div class="guide-step highlighted-box">
+
+            <div class="guide-step">
                 <div class="guide-step-number">3</div>
-                <div class="guide-step-text">После запуска установки <em>выйдите на главный экран вашего iPhone</em> (на рабочий стол) и дождитесь окончания загрузки и появления иконки приложения.</div>
+                <div class="guide-step-text">
+                    Если при открытии приложения происходит вылет (краш), <strong>обратитесь к администратору</strong> для получения временного аккаунта AppStore.
+                </div>
             </div>
+
             <div class="guide-step">
                 <div class="guide-step-number">4</div>
-                <div class="guide-step-text">Если при открытии приложения появится системное сообщение о ненадежном разработчике, перейдите в <strong>«Настройки» → «Основные» → «VPN и управление устройством»</strong> и подтвердите доверие сертификату.</div>
+                <div class="guide-step-text">
+                    Перейдите в <em>Настройки</em> — тапните <em>по вашему имени (Apple ID)</em> — выберите <em>«Контент и покупки»</em> (на старых версиях iOS — <em>iTunes Store и App Store</em>) и авторизуйтесь с данными, которые выдал администратор. Если потребуется код подтверждения, запросите его у администратора.
+                </div>
+            </div>
+
+            <div class="guide-step highlighted-box">
+                <div class="guide-step-number">5</div>
+                <div class="guide-step-text">
+                    <em>Ни в коем случае не вводите данные вверху в разделе «iCloud»!</em>
+                </div>
+            </div>
+
+            <div class="guide-step">
+                <div class="guide-step-number">6</div>
+                <div class="guide-step-text">
+                    После успешного входа запустите приложение — оно заработает. Как только приложение откроется, обязательно выйдите из аккаунта в разделе <strong>Контент и покупки</strong>.
+                </div>
             </div>
         </div>
     </div>
