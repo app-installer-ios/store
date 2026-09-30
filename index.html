@@ -468,14 +468,14 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     -webkit-backdrop-filter: blur(20px);
     opacity: 0;
     visibility: hidden;
-    pointer-events: none; /* Защита от кликов в неактивном состоянии */
+    pointer-events: none;
     transition: opacity .35s ease, visibility .35s ease;
 }
 
 .sheet-overlay.active { 
     opacity: 1; 
     visibility: visible; 
-    pointer-events: auto; /* Включаем клики только когда окно полностью открыто */
+    pointer-events: auto;
 }
 
 .sheet-modal {
@@ -908,7 +908,7 @@ let selectedAppUrl = "";
 let selectedAppKey = "";
 let isInstalling = false;
 let currentCategory = "all";
-let isSheetClosing = false; // Флаг для предотвращения багов при быстром закрытии/открытии
+let isSheetClosing = false;
 
 function getAppPasswords() { return remoteConfig.appPasswords; }
 function getSitePassword() { return remoteConfig.sitePassword; }
@@ -918,7 +918,6 @@ function applyAppsVisibility() {
         const key = item.getAttribute('data-key');
         const isVisible = remoteConfig.appVisibility[key] !== false;
         item.setAttribute('data-visible', isVisible ? 'true' : 'false');
-        item.style.display = isVisible ? 'flex' : 'none';
     });
 }
 
@@ -928,8 +927,16 @@ function switchScreen(screenId) {
     if (target) target.classList.add("active-screen");
 }
 
-function updateAppCounter() {
-    const visibleApps = document.querySelectorAll('.sheet-list .sheet-item:not([data-visible="false"])').length;
+function updateAppCounter(count) {
+    let visibleApps;
+    if (typeof count === 'number') {
+        visibleApps = count;
+    } else {
+        visibleApps = Array.from(document.querySelectorAll('.sheet-list .sheet-item')).filter(item => {
+            return item.getAttribute('data-visible') !== 'false' && getComputedStyle(item).display !== 'none';
+        }).length;
+    }
+
     const counterElement = document.getElementById('app-counter-text');
     
     if (counterElement) {
@@ -941,7 +948,10 @@ function updateAppCounter() {
             if (lastDigit === 1) word = 'приложение';
             else if (lastDigit >= 2 && lastDigit <= 4) word = 'приложения';
         }
-        counterElement.textContent = `Все ${visibleApps} ${word}`;
+
+        const isSearching = document.getElementById("appSearchInput")?.value.trim().length > 0;
+        const prefix = (currentCategory === "all" && !isSearching) ? "Все " : "Доступно: ";
+        counterElement.textContent = `${prefix}${visibleApps} ${word}`;
     }
 }
 
@@ -959,9 +969,10 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
 
         applyAppsVisibility();
-        updateAppCounter();
+        filterApps();
     }
 
+    // Следим за состоянием сайта
     supabaseClient
         .channel('public:site_status')
         .on('postgres_changes', { event: '*', schema: 'public', table: 'site_status' }, payload => {
@@ -974,6 +985,26 @@ document.addEventListener("DOMContentLoaded", async function() {
             }
         })
         .subscribe();
+
+    // Следим за изменениями настроек и видимости приложений в Supabase
+    supabaseClient
+        .channel('public:settings')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'settings' }, async () => {
+            remoteConfig = await fetchSupabaseSettings();
+            applyAppsVisibility();
+            filterApps();
+        })
+        .subscribe();
+
+    // Следим за динамическим добавлением/удалением новых приложений в DOM
+    const sheetList = document.querySelector('.sheet-list');
+    if (sheetList) {
+        const observer = new MutationObserver(() => {
+            applyAppsVisibility();
+            filterApps();
+        });
+        observer.observe(sheetList, { childList: true, subtree: true });
+    }
 
     document.getElementById("passInput").addEventListener("keydown", e => { if (e.key === "Enter") submitPassword(); });
     document.getElementById("appPassInput").addEventListener("keydown", e => { if (e.key === "Enter") submitAppPassword(); });
@@ -1001,7 +1032,7 @@ async function submitPassword() {
 
     remoteConfig = await fetchSupabaseSettings();
     applyAppsVisibility();
-    updateAppCounter();
+    filterApps();
 
     if (input.value.trim() === getSitePassword()) {
         sessionStorage.setItem("site_access", "true");
@@ -1015,11 +1046,10 @@ async function submitPassword() {
 }
 
 async function openSheet() {
-    if (isSheetClosing) return; // Если окно еще закрывается анимацией, блокируем повторный открывающий клик
+    if (isSheetClosing) return;
 
     remoteConfig = await fetchSupabaseSettings();
     applyAppsVisibility();
-    updateAppCounter();
 
     const searchInput = document.getElementById("appSearchInput");
     if (searchInput) {
@@ -1028,7 +1058,6 @@ async function openSheet() {
         if (searchClear) searchClear.classList.remove("visible");
     }
 
-    // Снимаем фокус с любых активных элементов перед открытием
     if (document.activeElement) {
         document.activeElement.blur();
     }
@@ -1053,14 +1082,12 @@ function closeSheet() {
     const sheetOverlay = document.getElementById("sheetOverlay");
     if (sheetOverlay) sheetOverlay.classList.remove("active");
 
-    // Снимаем выбор со всех элементов внутри модалки во время закрытия, чтобы исключить фантомные подстановки
     document.querySelectorAll(".sheet-item").forEach(item => {
         item.blur();
     });
 
     filterApps();
 
-    // Сбрасываем флаг блокировки после завершения анимации закрытия
     setTimeout(() => {
         isSheetClosing = false;
     }, 400);
@@ -1135,6 +1162,8 @@ function filterApps() {
     if (emptyMessage) {
         emptyMessage.style.display = visibleCount === 0 ? "block" : "none";
     }
+
+    updateAppCounter(visibleCount);
 }
 
 function clearAppSearch() {
@@ -1177,7 +1206,7 @@ async function startInstallation() {
 
     remoteConfig = await fetchSupabaseSettings();
     applyAppsVisibility();
-    updateAppCounter();
+    filterApps();
 
     if (getAppPasswords()[selectedAppKey]) {
         document.getElementById("appPassError").style.display = "none";
@@ -1366,7 +1395,7 @@ function executeDownload() {
             <div class="info-card app-status-card">
                 <div class="pulse-dot"></div>
                 <div class="info-text">
-                    <span class="info-title" id="app-counter-text">Все приложения активны</span>
+                    <span class="info-title" id="app-counter-text">Загрузка...</span>
                     <span class="info-subtitle">Работают стабильно</span>
                 </div>
             </div>
