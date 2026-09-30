@@ -1598,39 +1598,47 @@ function executeDownload() {
     </div>
 </div>
 
+<!-- GUIDE SHEET / MODAL -->
 <div class="sheet-overlay" id="guideOverlay" onclick="closeGuideSheet()">
     <div class="sheet-modal guide-modal" onclick="event.stopPropagation()">
         <div class="sheet-header">
-            <div class="sheet-title">Инструкция по установке</div>
+            <div class="sheet-title">Как это работает</div>
             <button type="button" class="sheet-close" onclick="closeGuideSheet()">✕</button>
         </div>
 
-        <div class="guide-content">
+        <div class="guide-content sheet-list">
             <div class="guide-step">
                 <div class="guide-step-number">1</div>
                 <div class="guide-step-text">
-                    Нажмите кнопку <strong>«Выберите приложение»</strong> и найдите нужное вам ПО в каталоге.
+                    Выберите нужное приложение в списке, нажав на поле выбора, и нажмите кнопку <strong>«Установить»</strong>. После этого <strong>введите пароль для установки, который Вам выдаст администратор</strong> и подтвердите установку в системном окне iOS для запуска процесса загрузки приложения на устройство.
                 </div>
             </div>
 
             <div class="guide-step">
                 <div class="guide-step-number">2</div>
                 <div class="guide-step-text">
-                    Нажмите кнопку <strong>«Установить»</strong> и дождитесь окончания процесса установки.
+                    Дождитесь окончания загрузки и появления иконки приложения на экране «Домой».
                 </div>
             </div>
 
             <div class="guide-step">
                 <div class="guide-step-number">3</div>
                 <div class="guide-step-text">
-                    После загрузки приложения на устройство перейдите в <em>«Настройки» → «Основные» → «VPN и управление устройством»</em> и доверьтесь сертификату разработчика.
+                    Если при открытии приложения происходит вылет (краш), <strong>обратитесь к администратору</strong> для получения временного аккаунта AppStore.
                 </div>
             </div>
 
             <div class="guide-step">
                 <div class="guide-step-number">4</div>
                 <div class="guide-step-text">
-                    Если приложение не запускается или требует обновления, вернитесь в каталог и повторите установку актуальной версии.
+                    Перейдите в <em>Настройки</em> — тапните <em>по вашему имени (Apple ID)</em> — выберите <em>«Контент и покупки»</em> (на старых версиях iOS — <em>iTunes Store и App Store</em>) и авторизуйтесь с данными, которые выдал администратор. Если потребуется код подтверждения, запросите его у администратора. <em>Ни в коем случае не вводите данные вверху в разделе «iCloud»!</em>
+                </div>
+            </div>
+
+            <div class="guide-step">
+                <div class="guide-step-number">5</div>
+                <div class="guide-step-text">
+                    После успешного входа запустите приложение — оно заработает. Как только приложение откроется, обязательно выйдите из аккаунта в разделе <strong>Контент и покупки</strong>.
                 </div>
             </div>
         </div>
