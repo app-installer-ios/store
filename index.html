@@ -246,10 +246,10 @@ body {
     box-shadow: 0 0 35px rgba(15, 118, 110, 0.15), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.12);
 }
 
-/* Класс для зеленого свечения карточки в самом конце установки */
+/* Яркое зеленое свечение карточки в самом конце установки */
 .card.install-finished {
-    border-color: rgba(52, 211, 153, 0.8) !important;
-    box-shadow: 0 0 45px rgba(52, 211, 153, 0.35), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.2) !important;
+    border-color: rgba(52, 211, 153, 1) !important;
+    box-shadow: 0 0 60px rgba(52, 211, 153, 0.6), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.3) !important;
 }
 
 label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
@@ -395,7 +395,6 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     pointer-events: none;
 }
 
-/* Улучшенный дизайн блока прогресса */
 .progress-container {
     width: 100%;
     max-height: 0;
@@ -404,7 +403,7 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     display: flex;
     flex-direction: column;
     gap: 12px;
-    padding: 4px 2px;
+    padding: 0 2px;
     background: rgba(15, 23, 42, 0.4);
     border-radius: 20px;
     border: 1px solid rgba(255, 255, 255, 0.04);
@@ -1712,7 +1711,6 @@ function executeDownload() {
     </div>
 </div>
 
-<!-- GUIDE SHEET / MODAL -->
 <div class="sheet-overlay" id="guideOverlay" onclick="closeGuideSheet()">
     <div class="sheet-modal guide-modal" onclick="event.stopPropagation()">
         <div class="sheet-header">
