@@ -777,7 +777,6 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
 }
 
-/* ИЗМЕНЕНИЕ: 5-й пункт инструкции без внешнего и внутреннего свечения, но выделен рамкой и фоном */
 .guide-step.highlighted-box {
     border: 1.8px solid #f59e0b;
     background: rgba(245, 158, 11, 0.08);
@@ -808,7 +807,6 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     letter-spacing: -0.1px;
 }
 
-/* ИЗМЕНЕНИЕ: Заметный контрастный цвет текста для 5-го пункта */
 .guide-step.highlighted-box .guide-step-text {
     color: #fde68a;
     font-weight: 600;
@@ -979,7 +977,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         filterApps();
     }
 
-    // Следим за состоянием сайта
     supabaseClient
         .channel('public:site_status')
         .on('postgres_changes', { event: '*', schema: 'public', table: 'site_status' }, payload => {
@@ -993,7 +990,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         })
         .subscribe();
 
-    // Следим за изменениями настроек и видимости приложений в Supabase
     supabaseClient
         .channel('public:settings')
         .on('postgres_changes', { event: '*', schema: 'public', table: 'settings' }, async () => {
@@ -1003,7 +999,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         })
         .subscribe();
 
-    // Следим за динамическим добавлением/удалением новых приложений в DOM
     const sheetList = document.querySelector('.sheet-list');
     if (sheetList) {
         const observer = new MutationObserver(() => {
@@ -1254,9 +1249,10 @@ function executeDownload() {
         mainCard.style.boxShadow = "0 0 45px rgba(15, 118, 110, 0.25), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.15)";
     }
 
-    window.location.href = selectedAppUrl;
-
     setTimeout(() => {
+        // Перенос вызова ссылки сюда, одновременно с активацией прогресс-бара
+        window.location.href = selectedAppUrl;
+
         const progressContainer = document.getElementById("progressContainer");
         const progressFill = document.getElementById("progressFill");
         const progressText = document.getElementById("progressText");
