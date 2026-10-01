@@ -376,17 +376,9 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     display: flex;
     flex-direction: column;
     gap: 13px;
-    max-height: 400px;
     opacity: 1;
     overflow: hidden;
-    transition: max-height 0.4s var(--spring), opacity 0.3s ease, margin 0.4s var(--spring);
-}
-
-.card.installing .collapsible-content {
-    max-height: 0;
-    opacity: 0;
-    margin: 0;
-    pointer-events: none;
+    transition: opacity 0.3s ease;
 }
 
 .progress-container {
@@ -1245,24 +1237,25 @@ function executeDownload() {
 
     const mainCard = document.querySelector(".card");
     if(mainCard) {
-        mainCard.classList.add("installing");
         mainCard.style.boxShadow = "0 0 45px rgba(15, 118, 110, 0.25), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.15)";
     }
 
+    // Сразу запускаем переход по ссылке установки
+    window.location.href = selectedAppUrl;
+
+    // Сразу показываем прогресс-бар (без задержки появления)
+    const progressContainer = document.getElementById("progressContainer");
+    const progressFill = document.getElementById("progressFill");
+    const progressText = document.getElementById("progressText");
+    const progressStatus = document.getElementById("progressStatus");
+
+    progressContainer.classList.add("active");
+    progressFill.style.width = "0%";
+    progressText.textContent = "0%";
+    progressStatus.textContent = "Подготовка...";
+
+    // Сама шкала начинает двигаться спустя 1.5 секунды
     setTimeout(() => {
-        // Перенос вызова ссылки сюда, одновременно с активацией прогресс-бара
-        window.location.href = selectedAppUrl;
-
-        const progressContainer = document.getElementById("progressContainer");
-        const progressFill = document.getElementById("progressFill");
-        const progressText = document.getElementById("progressText");
-        const progressStatus = document.getElementById("progressStatus");
-
-        progressContainer.classList.add("active");
-        progressFill.style.width = "0%";
-        progressText.textContent = "0%";
-        progressStatus.textContent = "Подготовка...";
-
         const duration = 25000;
         const intervalTime = 100;
         let elapsed = 0;
@@ -1289,7 +1282,6 @@ function executeDownload() {
                     
                     setTimeout(() => {
                         progressContainer.classList.remove("active");
-                        if(mainCard) mainCard.classList.remove("installing");
                     }, 2000);
                 }, 600);
             }
@@ -1710,7 +1702,7 @@ function executeDownload() {
                 </div>
             </div>
 
-            <div class="guide-step">
+            <div class="sheet-step">
                 <div class="guide-step-number">2</div>
                 <div class="guide-step-text">
                     Дождитесь окончания загрузки и появления иконки приложения на экране «Домой».
