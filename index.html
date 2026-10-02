@@ -642,6 +642,7 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 
 .info-blocks-container { 
     display: flex; 
+    flex-direction: column;
     gap: 8px; 
     margin: 0 0 10px 0; 
     flex-shrink: 0; 
@@ -650,7 +651,7 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 }
 
 .info-card {
-    flex: 1;
+    width: 100%;
     min-height: 48px;
     padding: 8px 10px;
     border-radius: 12px;
@@ -664,6 +665,29 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 .app-status-card {
     border: 1.8px solid rgba(75, 165, 150, 0.5);
     background: rgba(45, 145, 130, 0.03);
+}
+
+.app-tip-card {
+    border: 1.8px solid rgba(90, 155, 195, 0.45);
+    background: rgba(30, 41, 59, 0.25);
+    padding: 9px 11px;
+    gap: 10px;
+}
+
+.tip-gear-icon {
+    width: 26px;
+    height: 26px;
+    min-width: 26px;
+    min-height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid rgba(195, 115, 115, 0.55);
+    border-radius: 8px;
+    background: rgba(195, 115, 115, 0.08);
+    color: #fca5a5;
+    font-size: 13px;
+    flex-shrink: 0;
 }
 
 .pulse-dot {
@@ -1421,6 +1445,13 @@ function executeDownload() {
                 <div class="info-text">
                     <span class="info-title" id="app-counter-text">Загрузка...</span>
                     <span class="info-subtitle">Работают стабильно</span>
+                </div>
+            </div>
+            <div class="info-card app-tip-card">
+                <div class="tip-gear-icon">⚙</div>
+                <div class="info-text">
+                    <span class="info-title">Быстрый поиск</span>
+                    <span class="info-subtitle">Используйте строку поиска, кнопку шестеренки для выбора категории или листайте список</span>
                 </div>
             </div>
         </div>
