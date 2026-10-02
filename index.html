@@ -690,10 +690,31 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     flex-direction: column;
     gap: 8px;
     overflow-y: auto;
-    padding-right: 0;
+    /* Сдвигаем полоску скролла правее и добавляем отступ, чтобы контент не перекрывался */
+    padding-right: 12px; 
+    margin-right: -4px;
     scrollbar-width: thin;
     width: 100%;
     box-sizing: border-box;
+}
+
+/* Кастомизация скроллбара для аккуратного вида */
+.sheet-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sheet-list::-webkit-scrollbar-track {
+    background: transparent;
+    margin: 4px 0;
+}
+
+.sheet-list::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+.sheet-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.4);
 }
 
 .sheet-item {
