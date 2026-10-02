@@ -1240,10 +1240,8 @@ function executeDownload() {
         mainCard.style.boxShadow = "0 0 45px rgba(15, 118, 110, 0.25), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.15)";
     }
 
-    // Сразу запускаем переход по ссылке установки
     window.location.href = selectedAppUrl;
 
-    // Сразу показываем прогресс-бар (без задержки появления)
     const progressContainer = document.getElementById("progressContainer");
     const progressFill = document.getElementById("progressFill");
     const progressText = document.getElementById("progressText");
@@ -1254,7 +1252,6 @@ function executeDownload() {
     progressText.textContent = "0%";
     progressStatus.textContent = "Подготовка...";
 
-    // Сама шкала начинает двигаться спустя 1.5 секунды
     setTimeout(() => {
         const duration = 25000;
         const intervalTime = 100;
@@ -1702,7 +1699,7 @@ function executeDownload() {
                 </div>
             </div>
 
-            <div class="sheet-step">
+            <div class="guide-step">
                 <div class="guide-step-number">2</div>
                 <div class="guide-step-text">
                     Дождитесь окончания загрузки и появления иконки приложения на экране «Домой».
