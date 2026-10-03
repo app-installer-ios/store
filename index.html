@@ -547,8 +547,8 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margi
     height: 44px;
     padding: 0 42px 0 38px;
     border-radius: 14px;
-    /* Обводка окна поиска */
-    border: 1.8px solid rgba(56, 189, 248, 0.6);
+    /* Обводка окна поиска (уникальный цвет: бирюзово-голубой) */
+    border: 1.8px solid rgba(20, 184, 166, 0.75);
     outline: none;
     background: rgba(30,41,59,.35);
     color: #fff;
@@ -640,7 +640,6 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margi
     color: #9ca3af;
 }
 
-/* Единый фон выбранной категории без переливания */
 .filter-option.active {
     background: rgba(217, 119, 6, 0.35);
     border: none;
@@ -676,7 +675,6 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margi
 }
 
 .app-tip-card {
-    /* Отдельная обводка для окна о быстром поиске */
     border: 1.8px solid rgba(168, 85, 247, 0.6);
     background: rgba(139, 92, 246, 0.05);
     padding: 9px 12px;
@@ -726,7 +724,8 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margi
     align-items: center;
     justify-content: space-between;
     background: rgba(30,41,59,.3);
-    border: 1.8px solid rgba(56, 189, 248, 0.45);
+    /* Обводка окошек приложений (уникальный цвет: мягкий янтарно-золотистый) */
+    border: 1.8px solid rgba(245, 158, 11, 0.55);
     cursor: pointer;
     flex-shrink: 0;
     transition: all 0.25s ease;
@@ -736,7 +735,7 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margi
 
 .sheet-item:hover, .sheet-item.selected {
     background: rgba(51,65,85,.5);
-    border-color: rgba(56, 189, 248, 0.85);
+    border-color: rgba(245, 158, 11, 0.85);
 }
 
 .sheet-item-main { display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1; }
@@ -764,7 +763,8 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margi
     font-weight: 600;
     color: #cbd5e1;
     background: rgba(51,65,85,.4);
-    border: 1px solid rgba(148, 163, 184, 0.3);
+    /* Мягкая отличающаяся обводка для версии iOS внутри приложений (лавандово-розовый оттенок) */
+    border: 1.5px solid rgba(236, 72, 153, 0.55);
     padding: 2px 7px;
     border-radius: 6px;
     flex-shrink: 0;
