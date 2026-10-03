@@ -232,7 +232,7 @@ body {
     padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 16px;
     border-radius: 28px;
     background: linear-gradient(165deg, rgba(17,24,39,.78), rgba(11,15,23,.88));
     backdrop-filter: blur(38px) saturate(165%);
@@ -247,7 +247,7 @@ body {
     box-shadow: 0 0 35px rgba(217, 119, 6, 0.15), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.12);
 }
 
-label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margin-bottom: 2px; }
+label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margin-bottom: 8px; }
 
 .custom-select-btn {
     position: relative;
@@ -403,9 +403,10 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margi
 }
 
 .loading-box.completed-glow #progressStatus {
-    background: linear-gradient(135deg, #ffffff 20%, #4ade80 100%) !important;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    background: none !important;
+    -webkit-background-clip: initial !important;
+    -webkit-text-fill-color: #4ade80 !important;
+    color: #4ade80 !important;
 }
 
 #progressText {
@@ -418,9 +419,10 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margi
 }
 
 .loading-box.completed-glow #progressText {
-    background: linear-gradient(135deg, #4ade80 20%, #22c55e 100%) !important;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    background: none !important;
+    -webkit-background-clip: initial !important;
+    -webkit-text-fill-color: #4ade80 !important;
+    color: #4ade80 !important;
 }
 
 .progress-track {
@@ -550,7 +552,7 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margi
     height: 44px;
     padding: 0 42px 0 38px;
     border-radius: 14px;
-    border: 1.8px solid rgba(217, 160, 115, 0.55);
+    border: 1.8px solid rgba(56, 189, 248, 0.6);
     outline: none;
     background: rgba(30,41,59,.35);
     color: #fff;
@@ -608,10 +610,10 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margi
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1.8px solid rgba(217, 150, 115, 0.55);
+    border: 1.8px solid rgba(56, 189, 248, 0.6);
     border-radius: 10px;
-    background: rgba(217, 150, 115, 0.08);
-    color: #fca5a5;
+    background: rgba(56, 189, 248, 0.1);
+    color: #38bdf8;
     cursor: pointer;
 }
 
@@ -726,7 +728,7 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margi
     align-items: center;
     justify-content: space-between;
     background: rgba(30,41,59,.3);
-    border: 1.8px solid rgba(217, 160, 115, 0.4);
+    border: 1.8px solid rgba(56, 189, 248, 0.45);
     cursor: pointer;
     flex-shrink: 0;
     transition: all 0.25s ease;
@@ -736,7 +738,7 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margi
 
 .sheet-item:hover, .sheet-item.selected {
     background: rgba(51,65,85,.5);
-    border-color: rgba(245, 175, 120, 0.75);
+    border-color: rgba(56, 189, 248, 0.85);
 }
 
 .sheet-item-main { display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1; }
@@ -1284,7 +1286,6 @@ function cancelAppPassword() {
 function executeDownload() {
     isInstalling = true;
 
-    // Переключаемся на отдельный экран загрузки, скрывая основное окно
     switchScreen("loadingScreen");
 
     window.location.href = selectedAppUrl;
@@ -1294,7 +1295,6 @@ function executeDownload() {
     const progressText = document.getElementById("progressText");
     const progressStatus = document.getElementById("progressStatus");
 
-    // Сбрасываем эффекты завершения при новом запуске
     loadingBox.classList.remove("completed-glow");
     progressFill.style.width = "0%";
     progressText.textContent = "0%";
@@ -1321,11 +1321,9 @@ function executeDownload() {
                 clearInterval(timer);
                 isInstalling = false;
 
-                // Добавляем красивую зеленую подсветку и свечение при окончании
                 progressStatus.textContent = "Установка завершена!";
                 loadingBox.classList.add("completed-glow");
 
-                // Возврат на главный экран через несколько секунд после окончания
                 setTimeout(() => {
                     switchScreen("mainApp");
                     loadingBox.classList.remove("completed-glow");
@@ -1415,9 +1413,9 @@ function executeDownload() {
         <div class="version-text">v 3.5 (02.10.2026)</div>
     </div>
     <div class="card">
-        <div class="collapsible-content" style="display: flex; flex-direction: column; gap: 12px;">
+        <div class="collapsible-content" style="display: flex; flex-direction: column; gap: 16px;">
             <div>
-                <label>Выберите приложение</label>
+                <label style="margin-bottom: 12px;">Выберите приложение</label>
                 <button type="button" class="custom-select-btn" onclick="openSheet()">
                     <span id="selectedAppText" style="color:#94a3b8;">Нажмите для выбора приложения</span>
                 </button>
@@ -1788,7 +1786,7 @@ function executeDownload() {
                 </div>
             </div>
 
-            <div class="guide-step">
+            <div class="sheet-step">
                 <div class="guide-step-number">2</div>
                 <div class="guide-step-text">
                     Дождитесь окончания загрузки и появления иконки приложения на экране «Домой».
