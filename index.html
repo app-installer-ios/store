@@ -242,11 +242,6 @@ body {
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.card.app-selected {
-    border-color: rgba(217, 119, 6, 0.65);
-    box-shadow: 0 0 35px rgba(217, 119, 6, 0.15), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.12);
-}
-
 label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margin-bottom: 8px; }
 
 .custom-select-btn {
@@ -552,7 +547,7 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margi
     height: 44px;
     padding: 0 42px 0 38px;
     border-radius: 14px;
-    border: 1.8px solid rgba(56, 189, 248, 0.6);
+    border: 1.8px solid rgba(168, 85, 247, 0.6);
     outline: none;
     background: rgba(30,41,59,.35);
     color: #fff;
@@ -610,10 +605,10 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margi
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1.8px solid rgba(56, 189, 248, 0.6);
+    border: 1.8px solid rgba(168, 85, 247, 0.6);
     border-radius: 10px;
-    background: rgba(56, 189, 248, 0.1);
-    color: #38bdf8;
+    background: rgba(168, 85, 247, 0.1);
+    color: #d8b4fe;
     cursor: pointer;
 }
 
@@ -1234,9 +1229,6 @@ function selectApp(element, url, name, appKey) {
     const customSelectBtn = document.querySelector(".custom-select-btn");
     if (customSelectBtn) customSelectBtn.classList.add("has-selection");
 
-    const mainCard = document.querySelector(".card");
-    if (mainCard) mainCard.classList.add("app-selected");
-
     const appAuthNameEl = document.getElementById("appAuthAppName");
     if (appAuthNameEl) appAuthNameEl.textContent = name;
 
@@ -1786,7 +1778,7 @@ function executeDownload() {
                 </div>
             </div>
 
-            <div class="sheet-step">
+            <div class="guide-step">
                 <div class="guide-step-number">2</div>
                 <div class="guide-step-text">
                     Дождитесь окончания загрузки и появления иконки приложения на экране «Домой».
