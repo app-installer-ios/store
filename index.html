@@ -547,7 +547,8 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margi
     height: 44px;
     padding: 0 42px 0 38px;
     border-radius: 14px;
-    border: 1.8px solid rgba(168, 85, 247, 0.6);
+    /* Обводка окна поиска */
+    border: 1.8px solid rgba(56, 189, 248, 0.6);
     outline: none;
     background: rgba(30,41,59,.35);
     color: #fff;
@@ -605,10 +606,10 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margi
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1.8px solid rgba(168, 85, 247, 0.6);
+    border: 1.8px solid rgba(56, 189, 248, 0.6);
     border-radius: 10px;
-    background: rgba(168, 85, 247, 0.1);
-    color: #d8b4fe;
+    background: rgba(56, 189, 248, 0.1);
+    color: #bae6fd;
     cursor: pointer;
 }
 
@@ -639,9 +640,10 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margi
     color: #9ca3af;
 }
 
+/* Единый фон выбранной категории без переливания */
 .filter-option.active {
-    background: linear-gradient(135deg, rgba(51,65,85,.6), rgba(217,119,6,.3));
-    border-color: rgba(245,158,11,.72);
+    background: rgba(217, 119, 6, 0.35);
+    border: none;
     color: #fff;
     font-weight: 650;
 }
@@ -674,7 +676,8 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margi
 }
 
 .app-tip-card {
-    border: 1.8px solid rgba(139, 92, 246, 0.5);
+    /* Отдельная обводка для окна о быстром поиске */
+    border: 1.8px solid rgba(168, 85, 247, 0.6);
     background: rgba(139, 92, 246, 0.05);
     padding: 9px 12px;
     gap: 0;
@@ -1330,7 +1333,7 @@ function executeDownload() {
     <div class="brand-header">
         <img src="https://github.com/app-installer-ios/store/releases/download/logosite/logosite.jpg" alt="logosite" class="brand-logo">
         <div class="brand-name">AppRestore IOS</div>
-        <div class="version-text">v 3.5 (02.10.2026)</div>
+        <div class="version-text">v 3.6 (04.10.2026)</div>
     </div>
     <div class="auth-box" style="border-color: rgba(239, 68, 68, 0.55); box-shadow: 0 0 30px rgba(239, 68, 68, 0.12), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.08);">
         <div class="auth-description" style="margin-top: 4px; color: #cbd5e1; font-size: 13.5px; line-height: 1.55;">
@@ -1349,7 +1352,7 @@ function executeDownload() {
     <div class="brand-header">
         <img src="https://github.com/app-installer-ios/store/releases/download/logosite/logosite.jpg" alt="logosite" class="brand-logo">
         <div class="brand-name">AppRestore IOS</div>
-        <div class="version-text">v 3.5 (02.10.2026)</div>
+        <div class="version-text">v 3.6 (04.10.2026)</div>
     </div>
     <div class="auth-box">
         <div class="auth-description" style="margin-top: -2px;">Введите пароль для доступа<br>к каталогу</div>
@@ -1366,7 +1369,7 @@ function executeDownload() {
     <div class="brand-header">
         <img src="https://github.com/app-installer-ios/store/releases/download/logosite/logosite.jpg" alt="logosite" class="brand-logo">
         <div class="brand-name">AppRestore IOS</div>
-        <div class="version-text">v 3.5 (02.10.2026)</div>
+        <div class="version-text">v 3.6 (04.10.2026)</div>
     </div>
     <div class="auth-box">
         <div class="auth-title">🔒 Защита установки</div>
@@ -1380,12 +1383,11 @@ function executeDownload() {
     </div>
 </div>
 
-<!-- ЭКРАН 3: ОТДЕЛЬНЫЙ ЭКРАН ЗАГРУЗКИ -->
 <div class="container" id="loadingScreen">
     <div class="brand-header">
         <img src="https://github.com/app-installer-ios/store/releases/download/logosite/logosite.jpg" alt="logosite" class="brand-logo">
         <div class="brand-name">AppRestore IOS</div>
-        <div class="version-text">v 3.5 (02.10.2026)</div>
+        <div class="version-text">v 3.6 (04.10.2026)</div>
     </div>
     <div class="auth-box loading-box" id="loadingBox">
         <div class="progress-info">
@@ -1402,7 +1404,7 @@ function executeDownload() {
     <div class="brand-header">
         <img src="https://github.com/app-installer-ios/store/releases/download/logosite/logosite.jpg" alt="logosite" class="brand-logo">
         <div class="brand-name">AppRestore IOS</div>
-        <div class="version-text">v 3.5 (02.10.2026)</div>
+        <div class="version-text">v 3.6 (04.10.2026)</div>
     </div>
     <div class="card">
         <div class="collapsible-content" style="display: flex; flex-direction: column; gap: 16px;">
