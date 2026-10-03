@@ -351,15 +351,16 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     border-color: rgba(239, 68, 68, 0.8);
 }
 
+/* Изменённое приятное оформление кнопки «Как это работает?» (аккуратный сине-бирюзовый стиль) */
 .btn-guide {
-    background: rgba(239, 68, 68, 0.12);
-    border: 1.8px solid rgba(239, 68, 68, 0.45);
-    color: #fca5a5;
-    box-shadow: 0 8px 20px rgba(239, 68, 68, 0.08);
+    background: rgba(14, 116, 144, 0.15);
+    border: 1.8px solid rgba(45, 212, 191, 0.45);
+    color: #5eead4;
+    box-shadow: 0 8px 20px rgba(14, 116, 144, 0.12);
 }
 .btn-guide:hover {
-    background: rgba(239, 68, 68, 0.22);
-    border-color: rgba(239, 68, 68, 0.65);
+    background: rgba(14, 116, 144, 0.26);
+    border-color: rgba(45, 212, 191, 0.75);
 }
 
 .btn-telegram {
@@ -763,11 +764,12 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 
 .search-empty { display: none; text-align: center; color: #94a3b8; font-size: 13px; padding: 20px 10px; width: 100%; box-sizing: border-box; }
 
+/* Изменённое приятное и гармоничное оформление модального окна «Как это работает?» */
 .guide-modal { 
     height: min(88vh, 680px); 
-    background: linear-gradient(165deg, rgba(16, 26, 20, 0.98), rgba(10, 16, 14, 0.99));
-    border: 1.8px solid rgba(46, 125, 50, 0.55);
-    box-shadow: 0 0 30px rgba(46, 125, 50, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    background: linear-gradient(165deg, rgba(13, 27, 42, 0.98), rgba(11, 18, 32, 0.99));
+    border: 1.8px solid rgba(45, 212, 191, 0.4);
+    box-shadow: 0 0 35px rgba(14, 116, 144, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .guide-content { 
@@ -810,7 +812,7 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 }
 
 .guide-step.highlighted-box {
-    border: 1.8px solid #f59e0b;
+    border: 1.8px solid rgba(245, 158, 11, 0.65);
     background: rgba(245, 158, 11, 0.08);
     box-shadow: none;
 }
@@ -822,14 +824,14 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     width: 28px;
     height: 28px;
     min-width: 28px;
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.18), rgba(239, 68, 68, 0.35));
-    color: #fca5a5;
+    background: linear-gradient(135deg, rgba(14, 116, 144, 0.25), rgba(45, 212, 191, 0.35));
+    color: #5eead4;
     font-size: 13px;
     font-weight: 750;
     border-radius: 50%;
     margin-top: 1px;
-    border: 1px solid rgba(239, 68, 68, 0.45);
-    box-shadow: 0 0 12px rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(45, 212, 191, 0.45);
+    box-shadow: 0 0 12px rgba(45, 212, 191, 0.15);
 }
 
 .guide-step-text { 
@@ -845,12 +847,12 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 }
 
 .guide-step-text strong { 
-    color: #f87171; 
+    color: #5eead4; 
     font-weight: 700; 
 }
 
 .guide-step-text em { 
-    color: #f87171; 
+    color: #5eead4; 
     font-style: normal; 
     font-weight: 700; 
 }
@@ -1396,7 +1398,7 @@ function executeDownload() {
             <button type="button" class="btn" onclick="startInstallation()">Установить</button>
             
             <button type="button" class="btn btn-guide" onclick="openGuideSheet()" style="margin-top: 8px;">
-                <span style="color: #fca5a5; font-weight: 700; margin-right: 4px;">•</span> Как это работает?
+                <span style="color: #5eead4; font-weight: 700; margin-right: 4px;">•</span> Как это работает?
             </button>
 
             <a href="https://t.me/apprestore_ios" target="_blank" rel="noopener noreferrer" class="btn btn-telegram" style="margin-top: 2px;">
