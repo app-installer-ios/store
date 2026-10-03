@@ -232,13 +232,13 @@ body {
     padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 13px;
+    gap: 12px;
     border-radius: 28px;
     background: linear-gradient(165deg, rgba(17,24,39,.78), rgba(11,15,23,.88));
     backdrop-filter: blur(38px) saturate(165%);
     -webkit-backdrop-filter: blur(38px) saturate(165%);
     border: 1.8px solid rgba(217, 180, 140, 0.48);
-    box-shadow: 0 0 28px rgba(217, 180, 140, 0.08), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.08);
+    box-shadow: 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.08);
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -247,7 +247,7 @@ body {
     box-shadow: 0 0 35px rgba(217, 119, 6, 0.15), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.12);
 }
 
-label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
+label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margin-bottom: 2px; }
 
 .custom-select-btn {
     position: relative;
@@ -373,7 +373,7 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 
 .telegram-icon { width: 17px; height: 17px; object-fit: contain; }
 
-/* Экран загрузки (другой цвет шкалы и зеленое свечение в конце) */
+/* Экран загрузки */
 .loading-box {
     border-color: rgba(56, 189, 248, 0.45);
     box-shadow: 0 0 24px rgba(56, 189, 248, 0.08), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.08);
@@ -1415,18 +1415,21 @@ function executeDownload() {
         <div class="version-text">v 3.5 (02.10.2026)</div>
     </div>
     <div class="card">
-        <div class="collapsible-content">
-            <label>Выберите приложение</label>
-            <button type="button" class="custom-select-btn" onclick="openSheet()">
-                <span id="selectedAppText" style="color:#94a3b8;">Нажмите для выбора приложения</span>
-            </button>
+        <div class="collapsible-content" style="display: flex; flex-direction: column; gap: 12px;">
+            <div>
+                <label>Выберите приложение</label>
+                <button type="button" class="custom-select-btn" onclick="openSheet()">
+                    <span id="selectedAppText" style="color:#94a3b8;">Нажмите для выбора приложения</span>
+                </button>
+            </div>
+            
             <button type="button" class="btn" onclick="startInstallation()">Установить</button>
             
-            <button type="button" class="btn btn-guide" onclick="openGuideSheet()" style="margin-top: 8px;">
+            <button type="button" class="btn btn-guide" onclick="openGuideSheet()">
                 <span style="color: #fde68a; font-weight: 700; margin-right: 4px;">•</span> Как это работает?
             </button>
 
-            <a href="https://t.me/apprestore_ios" target="_blank" rel="noopener noreferrer" class="btn btn-telegram" style="margin-top: 2px;">
+            <a href="https://t.me/apprestore_ios" target="_blank" rel="noopener noreferrer" class="btn btn-telegram">
                 <img src="Telegram_logo.svg" alt="Telegram" class="telegram-icon">AppRestore IOS в Telegram!
             </a>
         </div>
