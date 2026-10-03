@@ -107,6 +107,7 @@ body {
     gap: 10px;
     margin-bottom: 20px;
     margin-top: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .brand-logo {
@@ -238,7 +239,7 @@ body {
     -webkit-backdrop-filter: blur(38px) saturate(165%);
     border: 1.8px solid rgba(217, 180, 140, 0.48);
     box-shadow: 0 0 28px rgba(217, 180, 140, 0.08), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.08);
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
 }
 
 .card.app-selected {
@@ -378,66 +379,82 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     gap: 13px;
     opacity: 1;
     overflow: hidden;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
+/* Усовершенствованный изолированный прогресс-бар */
 .progress-container {
-    width: 100%;
-    max-height: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    width: calc(100% - 40px);
+    max-width: 350px;
     opacity: 0;
-    overflow: hidden;
+    pointer-events: none;
     display: flex;
     flex-direction: column;
-    transition: max-height 0.4s var(--spring), opacity 0.3s ease;
+    gap: 16px;
+    padding: 24px 22px;
+    background: linear-gradient(165deg, rgba(15, 23, 42, 0.95), rgba(11, 15, 23, 0.98));
+    backdrop-filter: blur(45px) saturate(190%);
+    -webkit-backdrop-filter: blur(45px) saturate(190%);
+    border: 2px solid rgba(245, 158, 11, 0.45);
+    border-radius: 28px;
+    box-shadow: 0 0 50px rgba(217, 119, 6, 0.25), 0 25px 70px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.15);
+    z-index: 50;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .progress-container.active {
-    max-height: 100px;
     opacity: 1;
+    pointer-events: auto;
+    transform: translate(-50%, -50%) scale(1);
 }
 
 .progress-info {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 13.5px;
-    font-weight: 650;
-    color: #f8fafc;
-    margin-bottom: 10px;
+    font-size: 14.5px;
+    font-weight: 700;
 }
 
 #progressStatus {
-    background: linear-gradient(135deg, #ffffff 20%, #94a3b8 100%);
+    background: linear-gradient(135deg, #ffffff 20%, #cbd5e1 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    font-size: 15px;
+    letter-spacing: -0.2px;
 }
 
 #progressText {
     background: linear-gradient(135deg, #fde68a 20%, #f59e0b 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    font-size: 14px;
-    font-weight: 700;
+    font-size: 16px;
+    font-weight: 800;
 }
 
 .progress-track {
     width: 100%;
-    height: 10px;
-    background: rgba(0, 0, 0, 0.55);
+    height: 12px;
+    background: rgba(0, 0, 0, 0.65);
     border-radius: 999px;
     overflow: hidden;
     position: relative;
-    border: 1px solid rgba(255,255,255,0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .progress-fill {
     position: relative;
     width: 0%;
     height: 100%;
-    background: linear-gradient(90deg, #f59e0b, #fbbf24);
+    background: linear-gradient(90deg, #d97706, #f59e0b, #fbbf24);
     border-radius: 999px;
-    transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 0 12px rgba(245, 158, 11, 0.5);
+    box-shadow: 0 0 15px rgba(245, 158, 11, 0.6);
+    transition: width 0.15s ease-out;
 }
 
 .auth-error {
@@ -1276,9 +1293,18 @@ function cancelAppPassword() {
 function executeDownload() {
     isInstalling = true;
 
-    const mainCard = document.querySelector(".card");
-    if(mainCard) {
-        mainCard.style.boxShadow = "0 0 45px rgba(217, 119, 6, 0.25), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.15)";
+    // Скрываем все окна и элементы экрана, оставляя только прогресс-бар
+    const brandHeader = document.querySelector("#mainApp .brand-header");
+    const collapsibleContent = document.querySelector(".collapsible-content");
+    if (brandHeader) {
+        brandHeader.style.opacity = "0";
+        brandHeader.style.transform = "translateY(-15px)";
+        brandHeader.style.pointerEvents = "none";
+    }
+    if (collapsibleContent) {
+        collapsibleContent.style.opacity = "0";
+        collapsibleContent.style.transform = "scale(0.96)";
+        collapsibleContent.style.pointerEvents = "none";
     }
 
     window.location.href = selectedAppUrl;
@@ -1305,21 +1331,34 @@ function executeDownload() {
             progressFill.style.width = percent + "%";
             progressText.textContent = percent + "%";
 
-            if (percent <= 15) progressStatus.textContent = "Подготовка...";
-            else if (percent <= 50) progressStatus.textContent = "Загрузка...";
+            if (percent <= 17) progressStatus.textContent = "Подготовка...";
+            else if (percent <= 65) progressStatus.textContent = "Загрузка...";
             else if (percent <= 85) progressStatus.textContent = "Распаковка...";
             else if (percent < 100) progressStatus.textContent = "Установка...";
 
             if (elapsed >= duration) {
                 clearInterval(timer);
                 isInstalling = false;
-                if(mainCard) mainCard.style.boxShadow = "";
 
                 setTimeout(() => {
                     progressStatus.textContent = "Установка завершена!";
                     
                     setTimeout(() => {
                         progressContainer.classList.remove("active");
+                        
+                        // Возвращаем видимость элементам интерфейса
+                        setTimeout(() => {
+                            if (brandHeader) {
+                                brandHeader.style.opacity = "1";
+                                brandHeader.style.transform = "translateY(0)";
+                                brandHeader.style.pointerEvents = "auto";
+                            }
+                            if (collapsibleContent) {
+                                collapsibleContent.style.opacity = "1";
+                                collapsibleContent.style.transform = "scale(1)";
+                                collapsibleContent.style.pointerEvents = "auto";
+                            }
+                        }, 300);
                     }, 2000);
                 }, 600);
             }
@@ -1405,6 +1444,7 @@ function executeDownload() {
             </a>
         </div>
 
+        <!-- Усовершенствованный изолированный прогресс-бар -->
         <div class="progress-container" id="progressContainer">
             <div class="progress-info">
                 <span id="progressStatus">Подготовка...</span>
@@ -1754,6 +1794,7 @@ function executeDownload() {
     </div>
 </div>
 
+<!-- GUIDE SHEET / MODAL -->
 <div class="sheet-overlay" id="guideOverlay" onclick="closeGuideSheet()">
     <div class="sheet-modal guide-modal" onclick="event.stopPropagation()">
         <div class="sheet-header">
