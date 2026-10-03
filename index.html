@@ -41,7 +41,7 @@ body {
     color: var(--text);
     background:
         radial-gradient(circle at 18% 8%, rgba(30,58,138,.15), transparent 32%),
-        radial-gradient(circle at 88% 18%, rgba(15,118,110,.12), transparent 30%),
+        radial-gradient(circle at 88% 18%, rgba(217,119,6,.1), transparent 30%),
         radial-gradient(circle at 75% 92%, rgba(51,65,85,.15), transparent 30%),
         #0b0f17;
     display: flex;
@@ -57,7 +57,7 @@ body {
     z-index: -10;
     background:
         radial-gradient(ellipse at 18% 18%, rgba(30,58,138,.18), transparent 35%),
-        radial-gradient(ellipse at 85% 20%, rgba(15,118,110,.14), transparent 35%),
+        radial-gradient(ellipse at 85% 20%, rgba(217,119,6,.12), transparent 35%),
         radial-gradient(ellipse at 70% 85%, rgba(51,65,85,.12), transparent 34%),
         linear-gradient(135deg, #0b0f17 0%, #111827 48%, #0f172a 100%);
     background-size: 160% 160%;
@@ -77,7 +77,7 @@ body {
 }
 
 .glow-1 { top: -120px; left: -110px; background: #1e3a8a; }
-.glow-2 { right: -110px; bottom: -120px; background: #0f766e; }
+.glow-2 { right: -110px; bottom: -120px; background: #d97706; }
 
 .container {
     width: 100%;
@@ -114,7 +114,7 @@ body {
     height: 128px;
     border-radius: 26px;
     object-fit: cover;
-    border: 1.8px solid rgba(110, 160, 135, 0.45);
+    border: 1.8px solid rgba(217, 180, 140, 0.45);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
@@ -142,11 +142,11 @@ body {
     background: linear-gradient(165deg, rgba(17,24,39,.78), rgba(11,15,23,.88));
     backdrop-filter: blur(40px) saturate(170%);
     -webkit-backdrop-filter: blur(40px) saturate(170%);
-    border: 1.8px solid rgba(110, 160, 135, 0.45);
+    border: 1.8px solid rgba(217, 180, 140, 0.45);
     border-radius: 30px;
     padding: 30px 21px 22px;
     text-align: center;
-    box-shadow: 0 0 24px rgba(90, 140, 115, 0.08), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.08);
+    box-shadow: 0 0 24px rgba(217, 180, 140, 0.08), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.08);
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -156,8 +156,8 @@ body {
     gap: 12px;
     padding-top: 26px;
     padding-bottom: 20px;
-    border: 1.8px solid rgba(115, 145, 185, 0.48);
-    box-shadow: 0 0 24px rgba(95, 125, 165, 0.08), 0 25px 70px rgba(0,0,0,.65), inset 0 1px 1px rgba(255,255,255,.08);
+    border: 1.8px solid rgba(217, 180, 140, 0.48);
+    box-shadow: 0 0 24px rgba(217, 180, 140, 0.08), 0 25px 70px rgba(0,0,0,.65), inset 0 1px 1px rgba(255,255,255,.08);
 }
 
 .auth-title {
@@ -184,8 +184,8 @@ body {
     padding: 10px 14px;
     margin-top: 8px;
     border-radius: 14px;
-    background: linear-gradient(135deg, rgba(51, 65, 85, 0.35), rgba(15, 118, 110, 0.2));
-    border: 1.8px solid rgba(115, 145, 135, 0.45);
+    background: linear-gradient(135deg, rgba(51, 65, 85, 0.35), rgba(217, 119, 6, 0.15));
+    border: 1.8px solid rgba(217, 180, 140, 0.45);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
@@ -194,7 +194,7 @@ body {
 .app-badge-box span {
     font-size: 15px;
     font-weight: 700;
-    background: linear-gradient(135deg, #ffffff 15%, #ccfbf1 100%);
+    background: linear-gradient(135deg, #ffffff 15%, #fde68a 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     word-break: break-word;
@@ -204,7 +204,7 @@ body {
     width: 100%;
     height: 52px;
     border-radius: 17px;
-    border: 1.8px solid rgba(120, 165, 135, 0.45);
+    border: 1.8px solid rgba(217, 180, 140, 0.45);
     outline: none;
     background: rgba(30,41,59,.3);
     color: #fff;
@@ -213,16 +213,16 @@ body {
     text-align: center;
     backdrop-filter: blur(22px);
     -webkit-backdrop-filter: blur(22px);
-    box-shadow: 0 0 14px rgba(100, 145, 115, 0.05), inset 0 1px 0 rgba(255,255,255,.045), inset 0 2px 10px rgba(0,0,0,.16);
+    box-shadow: 0 0 14px rgba(217, 180, 140, 0.05), inset 0 1px 0 rgba(255,255,255,.045), inset 0 2px 10px rgba(0,0,0,.16);
     transition: border .2s ease, box-shadow .25s ease, background .25s ease;
 }
 
 .auth-input::placeholder { color: #687386; }
 
 .auth-input:focus {
-    border-color: rgba(145, 190, 160, 0.75);
+    border-color: rgba(245, 158, 11, 0.75);
     background: rgba(30,41,59,.5);
-    box-shadow: 0 0 0 3px rgba(120, 165, 135, 0.12), 0 0 20px rgba(120, 165, 135, 0.15), inset 0 1px 0 rgba(255,255,255,.08);
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.12), 0 0 20px rgba(245, 158, 11, 0.15), inset 0 1px 0 rgba(255,255,255,.08);
 }
 
 .card {
@@ -236,14 +236,14 @@ body {
     background: linear-gradient(165deg, rgba(17,24,39,.78), rgba(11,15,23,.88));
     backdrop-filter: blur(38px) saturate(165%);
     -webkit-backdrop-filter: blur(38px) saturate(165%);
-    border: 1.8px solid rgba(110, 160, 135, 0.48);
-    box-shadow: 0 0 28px rgba(90, 140, 115, 0.08), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.08);
+    border: 1.8px solid rgba(217, 180, 140, 0.48);
+    box-shadow: 0 0 28px rgba(217, 180, 140, 0.08), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.08);
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .card.app-selected {
-    border-color: rgba(15, 118, 110, 0.65);
-    box-shadow: 0 0 35px rgba(15, 118, 110, 0.15), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.12);
+    border-color: rgba(217, 119, 6, 0.65);
+    box-shadow: 0 0 35px rgba(217, 119, 6, 0.15), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.12);
 }
 
 label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
@@ -258,21 +258,21 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     justify-content: space-between;
     text-align: left;
     border-radius: 18px;
-    border: 1.8px solid rgba(185, 160, 110, 0.48);
+    border: 1.8px solid rgba(217, 180, 140, 0.48);
     background: rgba(30,41,59,.35);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     color: #fff;
     outline: none;
-    box-shadow: 0 0 15px rgba(165, 140, 90, 0.06), inset 0 1px 0 rgba(255,255,255,.065);
+    box-shadow: 0 0 15px rgba(217, 180, 140, 0.06), inset 0 1px 0 rgba(255,255,255,.065);
     cursor: pointer;
     transition: transform .2s var(--spring), border .2s ease, background .2s ease, box-shadow .2s ease;
 }
 
 .custom-select-btn.has-selection {
-    border-color: rgba(15, 118, 110, 0.7);
-    background: rgba(15, 118, 110, 0.15);
-    box-shadow: 0 0 20px rgba(15, 118, 110, 0.12), inset 0 1px 0 rgba(255,255,255,.08);
+    border-color: rgba(217, 119, 6, 0.7);
+    background: rgba(217, 119, 6, 0.12);
+    box-shadow: 0 0 20px rgba(217, 119, 6, 0.12), inset 0 1px 0 rgba(255,255,255,.08);
 }
 
 .custom-select-btn span { font-size: 14px; }
@@ -295,8 +295,8 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 
 .custom-select-btn:hover {
     background: rgba(51,65,85,.4);
-    border-color: rgba(195, 170, 120, 0.7);
-    box-shadow: 0 0 22px rgba(165, 140, 90, 0.1);
+    border-color: rgba(230, 195, 150, 0.7);
+    box-shadow: 0 0 22px rgba(217, 180, 140, 0.1);
 }
 
 .custom-select-btn:active { transform: scale(.975); }
@@ -351,16 +351,16 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     border-color: rgba(239, 68, 68, 0.8);
 }
 
-/* Изменённое приятное оформление кнопки «Как это работает?» (аккуратный сине-бирюзовый стиль) */
+/* Оформление кнопки «Как это работает?» с мягким акцентным цветом */
 .btn-guide {
-    background: rgba(14, 116, 144, 0.15);
-    border: 1.8px solid rgba(45, 212, 191, 0.45);
-    color: #5eead4;
-    box-shadow: 0 8px 20px rgba(14, 116, 144, 0.12);
+    background: rgba(217, 119, 6, 0.12);
+    border: 1.8px solid rgba(245, 158, 11, 0.45);
+    color: #fde68a;
+    box-shadow: 0 8px 20px rgba(217, 119, 6, 0.1);
 }
 .btn-guide:hover {
-    background: rgba(14, 116, 144, 0.26);
-    border-color: rgba(45, 212, 191, 0.75);
+    background: rgba(217, 119, 6, 0.22);
+    border-color: rgba(245, 158, 11, 0.75);
 }
 
 .btn-telegram {
@@ -414,7 +414,7 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 }
 
 #progressText {
-    background: linear-gradient(135deg, #7dd3fc 20%, #2dd4bf 100%);
+    background: linear-gradient(135deg, #fde68a 20%, #f59e0b 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     font-size: 14px;
@@ -435,7 +435,7 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     position: relative;
     width: 0%;
     height: 100%;
-    background: #0f766e;
+    background: #d97706;
     border-radius: 999px;
     transition: width 0.15s ease-out;
 }
@@ -485,8 +485,8 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     background: linear-gradient(165deg, rgba(17,24,39,.96), rgba(11,15,23,.98));
     backdrop-filter: blur(40px) saturate(170%);
     -webkit-backdrop-filter: blur(40px) saturate(170%);
-    border: 1.8px solid rgba(195, 115, 115, 0.5);
-    box-shadow: 0 0 28px rgba(175, 95, 95, 0.08), 0 25px 70px rgba(0,0,0,.70);
+    border: 1.8px solid rgba(217, 150, 115, 0.5);
+    box-shadow: 0 0 28px rgba(217, 115, 115, 0.08), 0 25px 70px rgba(0,0,0,.70);
     transform: translateY(24px) scale(.95);
     opacity: 0;
     transition: transform .45s var(--spring), opacity .35s ease;
@@ -542,7 +542,7 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     height: 44px;
     padding: 0 42px 0 38px;
     border-radius: 14px;
-    border: 1.8px solid rgba(90, 155, 195, 0.55);
+    border: 1.8px solid rgba(217, 160, 115, 0.55);
     outline: none;
     background: rgba(30,41,59,.35);
     color: #fff;
@@ -600,9 +600,9 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1.8px solid rgba(195, 115, 115, 0.55);
+    border: 1.8px solid rgba(217, 150, 115, 0.55);
     border-radius: 10px;
-    background: rgba(195, 115, 115, 0.08);
+    background: rgba(217, 150, 115, 0.08);
     color: #fca5a5;
     cursor: pointer;
 }
@@ -613,7 +613,7 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     right: 0;
     width: 190px;
     background: rgba(17,24,39,.95);
-    border: 1.8px solid rgba(185, 160, 110, 0.55);
+    border: 1.8px solid rgba(217, 180, 110, 0.55);
     border-radius: 14px;
     padding: 6px;
     display: none;
@@ -635,8 +635,8 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 }
 
 .filter-option.active {
-    background: linear-gradient(135deg, rgba(51,65,85,.6), rgba(15,118,110,.4));
-    border-color: rgba(45,212,191,.72);
+    background: linear-gradient(135deg, rgba(51,65,85,.6), rgba(217,119,6,.3));
+    border-color: rgba(245,158,11,.72);
     color: #fff;
     font-weight: 650;
 }
@@ -664,8 +664,8 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 }
 
 .app-status-card {
-    border: 1.8px solid rgba(75, 165, 150, 0.5);
-    background: rgba(45, 145, 130, 0.03);
+    border: 1.8px solid rgba(217, 160, 115, 0.5);
+    background: rgba(217, 140, 70, 0.03);
 }
 
 .app-tip-card {
@@ -678,16 +678,16 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 .pulse-dot {
     width: 8px;
     height: 8px;
-    background-color: #34d399;
+    background-color: #f59e0b;
     border-radius: 50%;
-    box-shadow: 0 0 6px #34d399;
+    box-shadow: 0 0 6px #f59e0b;
     animation: pulse-animation 2s infinite;
 }
 
 @keyframes pulse-animation {
-    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.5); }
-    70% { transform: scale(1); box-shadow: 0 0 0 4px rgba(52, 211, 153, 0); }
-    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.5); }
+    70% { transform: scale(1); box-shadow: 0 0 0 4px rgba(245, 158, 11, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
 }
 
 .info-text { display: flex; flex-direction: column; justify-content: center; min-width: 0; }
@@ -718,7 +718,7 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     align-items: center;
     justify-content: space-between;
     background: rgba(30,41,59,.3);
-    border: 1.8px solid rgba(75, 165, 150, 0.4);
+    border: 1.8px solid rgba(217, 160, 115, 0.4);
     cursor: pointer;
     flex-shrink: 0;
     transition: all 0.25s ease;
@@ -728,7 +728,7 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 
 .sheet-item:hover, .sheet-item.selected {
     background: rgba(51,65,85,.5);
-    border-color: rgba(95, 195, 175, 0.75);
+    border-color: rgba(245, 175, 120, 0.75);
 }
 
 .sheet-item-main { display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1; }
@@ -764,12 +764,12 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 
 .search-empty { display: none; text-align: center; color: #94a3b8; font-size: 13px; padding: 20px 10px; width: 100%; box-sizing: border-box; }
 
-/* Изменённое приятное и гармоничное оформление модального окна «Как это работает?» */
+/* Оформление модального окна «Как это работает?» под мягкий акцент */
 .guide-modal { 
     height: min(88vh, 680px); 
-    background: linear-gradient(165deg, rgba(13, 27, 42, 0.98), rgba(11, 18, 32, 0.99));
-    border: 1.8px solid rgba(45, 212, 191, 0.4);
-    box-shadow: 0 0 35px rgba(14, 116, 144, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    background: linear-gradient(165deg, rgba(28, 25, 23, 0.98), rgba(15, 13, 11, 0.99));
+    border: 1.8px solid rgba(245, 158, 11, 0.4);
+    box-shadow: 0 0 35px rgba(217, 119, 6, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .guide-content { 
@@ -794,7 +794,7 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     gap: 14px;
     padding: 16px;
     background: linear-gradient(145deg, rgba(30, 41, 59, 0.4), rgba(17, 24, 39, 0.6));
-    border: 1px solid rgba(80, 160, 200, 0.22);
+    border: 1px solid rgba(217, 160, 115, 0.22);
     border-radius: 20px;
     flex-shrink: 0;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
@@ -806,7 +806,7 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 
 .guide-step:hover {
     background: linear-gradient(145deg, rgba(30, 41, 59, 0.6), rgba(17, 24, 39, 0.8));
-    border-color: rgba(80, 160, 200, 0.45);
+    border-color: rgba(217, 160, 115, 0.45);
     transform: translateY(-2px);
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
 }
@@ -824,14 +824,14 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     width: 28px;
     height: 28px;
     min-width: 28px;
-    background: linear-gradient(135deg, rgba(14, 116, 144, 0.25), rgba(45, 212, 191, 0.35));
-    color: #5eead4;
+    background: linear-gradient(135deg, rgba(217, 119, 6, 0.25), rgba(245, 158, 11, 0.35));
+    color: #fde68a;
     font-size: 13px;
     font-weight: 750;
     border-radius: 50%;
     margin-top: 1px;
-    border: 1px solid rgba(45, 212, 191, 0.45);
-    box-shadow: 0 0 12px rgba(45, 212, 191, 0.15);
+    border: 1px solid rgba(245, 158, 11, 0.45);
+    box-shadow: 0 0 12px rgba(245, 158, 11, 0.15);
 }
 
 .guide-step-text { 
@@ -847,12 +847,12 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 }
 
 .guide-step-text strong { 
-    color: #5eead4; 
+    color: #fde68a; 
     font-weight: 700; 
 }
 
 .guide-step-text em { 
-    color: #5eead4; 
+    color: #fde68a; 
     font-style: normal; 
     font-weight: 700; 
 }
@@ -1279,7 +1279,7 @@ function executeDownload() {
 
     const mainCard = document.querySelector(".card");
     if(mainCard) {
-        mainCard.style.boxShadow = "0 0 45px rgba(15, 118, 110, 0.25), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.15)";
+        mainCard.style.boxShadow = "0 0 45px rgba(217, 119, 6, 0.25), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.15)";
     }
 
     window.location.href = selectedAppUrl;
@@ -1398,7 +1398,7 @@ function executeDownload() {
             <button type="button" class="btn" onclick="startInstallation()">Установить</button>
             
             <button type="button" class="btn btn-guide" onclick="openGuideSheet()" style="margin-top: 8px;">
-                <span style="color: #5eead4; font-weight: 700; margin-right: 4px;">•</span> Как это работает?
+                <span style="color: #fde68a; font-weight: 700; margin-right: 4px;">•</span> Как это работает?
             </button>
 
             <a href="https://t.me/apprestore_ios" target="_blank" rel="noopener noreferrer" class="btn btn-telegram" style="margin-top: 2px;">
