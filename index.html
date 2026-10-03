@@ -150,6 +150,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 15px;
+    transition: all 0.4s ease;
 }
 
 #appAuthApp .auth-box {
@@ -351,7 +352,6 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     border-color: rgba(239, 68, 68, 0.8);
 }
 
-/* Оформление кнопки «Как это работает?» с мягким акцентным цветом */
 .btn-guide {
     background: rgba(217, 119, 6, 0.12);
     border: 1.8px solid rgba(245, 158, 11, 0.45);
@@ -373,71 +373,79 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 
 .telegram-icon { width: 17px; height: 17px; object-fit: contain; }
 
-.collapsible-content {
-    display: flex;
-    flex-direction: column;
-    gap: 13px;
-    opacity: 1;
-    overflow: hidden;
-    transition: opacity 0.3s ease;
+/* Экран загрузки (другой цвет шкалы и зеленое свечение в конце) */
+.loading-box {
+    border-color: rgba(56, 189, 248, 0.45);
+    box-shadow: 0 0 24px rgba(56, 189, 248, 0.08), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.08);
+    transition: all 0.5s ease;
 }
 
-.progress-container {
-    width: 100%;
-    max-height: 0;
-    opacity: 0;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    transition: max-height 0.4s var(--spring), opacity 0.3s ease;
-}
-
-.progress-container.active {
-    max-height: 100px;
-    opacity: 1;
+.loading-box.completed-glow {
+    border-color: rgba(34, 197, 94, 0.85) !important;
+    box-shadow: 0 0 45px rgba(34, 197, 94, 0.45), 0 25px 70px rgba(0,0,0,.7), inset 0 1px 15px rgba(34, 197, 94, 0.2) !important;
 }
 
 .progress-info {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 13.5px;
+    font-size: 14px;
     font-weight: 650;
     color: #f8fafc;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 #progressStatus {
-    background: linear-gradient(135deg, #ffffff 20%, #94a3b8 100%);
+    background: linear-gradient(135deg, #ffffff 20%, #38bdf8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: all 0.3s ease;
+}
+
+.loading-box.completed-glow #progressStatus {
+    background: linear-gradient(135deg, #ffffff 20%, #4ade80 100%) !important;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
 #progressText {
-    background: linear-gradient(135deg, #fde68a 20%, #f59e0b 100%);
+    background: linear-gradient(135deg, #38bdf8 20%, #0284c7 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 700;
+    transition: all 0.3s ease;
+}
+
+.loading-box.completed-glow #progressText {
+    background: linear-gradient(135deg, #4ade80 20%, #22c55e 100%) !important;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .progress-track {
     width: 100%;
-    height: 10px;
+    height: 12px;
     background: rgba(0, 0, 0, 0.55);
     border-radius: 999px;
     overflow: hidden;
     position: relative;
-    border: 1px solid rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
 }
 
 .progress-fill {
     position: relative;
     width: 0%;
     height: 100%;
-    background: #d97706;
+    background: linear-gradient(90deg, #0284c7, #38bdf8);
     border-radius: 999px;
-    transition: width 0.15s ease-out;
+    transition: width 0.15s ease-out, background 0.4s ease;
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
+}
+
+.loading-box.completed-glow .progress-fill {
+    background: linear-gradient(90deg, #16a34a, #4ade80) !important;
+    box-shadow: 0 0 20px rgba(74, 222, 128, 0.8) !important;
 }
 
 .auth-error {
@@ -764,7 +772,6 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 
 .search-empty { display: none; text-align: center; color: #94a3b8; font-size: 13px; padding: 20px 10px; width: 100%; box-sizing: border-box; }
 
-/* Оформление модального окна «Как это работает?» под мягкий акцент */
 .guide-modal { 
     height: min(88vh, 680px); 
     background: linear-gradient(165deg, rgba(28, 25, 23, 0.98), rgba(15, 13, 11, 0.99));
@@ -1277,19 +1284,18 @@ function cancelAppPassword() {
 function executeDownload() {
     isInstalling = true;
 
-    const mainCard = document.querySelector(".card");
-    if(mainCard) {
-        mainCard.style.boxShadow = "0 0 45px rgba(217, 119, 6, 0.25), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.15)";
-    }
+    // Переключаемся на отдельный экран загрузки, скрывая основное окно
+    switchScreen("loadingScreen");
 
     window.location.href = selectedAppUrl;
 
-    const progressContainer = document.getElementById("progressContainer");
+    const loadingBox = document.getElementById("loadingBox");
     const progressFill = document.getElementById("progressFill");
     const progressText = document.getElementById("progressText");
     const progressStatus = document.getElementById("progressStatus");
 
-    progressContainer.classList.add("active");
+    // Сбрасываем эффекты завершения при новом запуске
+    loadingBox.classList.remove("completed-glow");
     progressFill.style.width = "0%";
     progressText.textContent = "0%";
     progressStatus.textContent = "Подготовка...";
@@ -1314,15 +1320,16 @@ function executeDownload() {
             if (elapsed >= duration) {
                 clearInterval(timer);
                 isInstalling = false;
-                if(mainCard) mainCard.style.boxShadow = "";
 
+                // Добавляем красивую зеленую подсветку и свечение при окончании
+                progressStatus.textContent = "Установка завершена!";
+                loadingBox.classList.add("completed-glow");
+
+                // Возврат на главный экран через несколько секунд после окончания
                 setTimeout(() => {
-                    progressStatus.textContent = "Установка завершена!";
-                    
-                    setTimeout(() => {
-                        progressContainer.classList.remove("active");
-                    }, 2000);
-                }, 600);
+                    switchScreen("mainApp");
+                    loadingBox.classList.remove("completed-glow");
+                }, 3500);
             }
         }, intervalTime);
     }, 1500);
@@ -1383,6 +1390,24 @@ function executeDownload() {
     </div>
 </div>
 
+<!-- ЭКРАН 3: ОТДЕЛЬНЫЙ ЭКРАН ЗАГРУЗКИ -->
+<div class="container" id="loadingScreen">
+    <div class="brand-header">
+        <img src="https://github.com/app-installer-ios/store/releases/download/logosite/logosite.jpg" alt="logosite" class="brand-logo">
+        <div class="brand-name">AppRestore IOS</div>
+        <div class="version-text">v 3.5 (02.10.2026)</div>
+    </div>
+    <div class="auth-box loading-box" id="loadingBox">
+        <div class="progress-info">
+            <span id="progressStatus">Подготовка...</span>
+            <span id="progressText">0%</span>
+        </div>
+        <div class="progress-track">
+            <div id="progressFill" class="progress-fill"></div>
+        </div>
+    </div>
+</div>
+
 <div class="container" id="mainApp" style="padding-bottom:30px;">
     <div class="brand-header">
         <img src="https://github.com/app-installer-ios/store/releases/download/logosite/logosite.jpg" alt="logosite" class="brand-logo">
@@ -1404,16 +1429,6 @@ function executeDownload() {
             <a href="https://t.me/apprestore_ios" target="_blank" rel="noopener noreferrer" class="btn btn-telegram" style="margin-top: 2px;">
                 <img src="Telegram_logo.svg" alt="Telegram" class="telegram-icon">AppRestore IOS в Telegram!
             </a>
-        </div>
-
-        <div class="progress-container" id="progressContainer">
-            <div class="progress-info">
-                <span id="progressStatus">Подготовка...</span>
-                <span id="progressText">0%</span>
-            </div>
-            <div class="progress-track">
-                <div id="progressFill" class="progress-fill"></div>
-            </div>
         </div>
     </div>
 </div>
@@ -1755,7 +1770,6 @@ function executeDownload() {
     </div>
 </div>
 
-<!-- GUIDE SHEET / MODAL -->
 <div class="sheet-overlay" id="guideOverlay" onclick="closeGuideSheet()">
     <div class="sheet-modal guide-modal" onclick="event.stopPropagation()">
         <div class="sheet-header">
