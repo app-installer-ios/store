@@ -351,7 +351,6 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     border-color: rgba(239, 68, 68, 0.8);
 }
 
-/* Оформление кнопки «Как это работает?» с мягким акцентным цветом */
 .btn-guide {
     background: rgba(217, 119, 6, 0.12);
     border: 1.8px solid rgba(245, 158, 11, 0.45);
@@ -435,9 +434,10 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
     position: relative;
     width: 0%;
     height: 100%;
-    background: #d97706;
+    background: linear-gradient(90deg, #f59e0b, #fbbf24);
     border-radius: 999px;
-    transition: width 0.15s ease-out;
+    transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 12px rgba(245, 158, 11, 0.5);
 }
 
 .auth-error {
@@ -764,7 +764,6 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; }
 
 .search-empty { display: none; text-align: center; color: #94a3b8; font-size: 13px; padding: 20px 10px; width: 100%; box-sizing: border-box; }
 
-/* Оформление модального окна «Как это работает?» под мягкий акцент */
 .guide-modal { 
     height: min(88vh, 680px); 
     background: linear-gradient(165deg, rgba(28, 25, 23, 0.98), rgba(15, 13, 11, 0.99));
@@ -1306,8 +1305,8 @@ function executeDownload() {
             progressFill.style.width = percent + "%";
             progressText.textContent = percent + "%";
 
-            if (percent <= 17) progressStatus.textContent = "Подготовка...";
-            else if (percent <= 65) progressStatus.textContent = "Загрузка...";
+            if (percent <= 15) progressStatus.textContent = "Подготовка...";
+            else if (percent <= 50) progressStatus.textContent = "Загрузка...";
             else if (percent <= 85) progressStatus.textContent = "Распаковка...";
             else if (percent < 100) progressStatus.textContent = "Установка...";
 
@@ -1755,7 +1754,6 @@ function executeDownload() {
     </div>
 </div>
 
-<!-- GUIDE SHEET / MODAL -->
 <div class="sheet-overlay" id="guideOverlay" onclick="closeGuideSheet()">
     <div class="sheet-modal guide-modal" onclick="event.stopPropagation()">
         <div class="sheet-header">
