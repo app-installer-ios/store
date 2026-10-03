@@ -1293,7 +1293,7 @@ function cancelAppPassword() {
 function executeDownload() {
     isInstalling = true;
 
-    // Скрываем все окна и элементы экрана, оставляя только прогресс-бар
+    // Скрываем элементы экрана, оставляя прогресс-бар видимым
     const brandHeader = document.querySelector("#mainApp .brand-header");
     const collapsibleContent = document.querySelector(".collapsible-content");
     if (brandHeader) {
