@@ -368,7 +368,6 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margi
 
 .telegram-icon { width: 17px; height: 17px; object-fit: contain; }
 
-/* Экран загрузки */
 .loading-box {
     border-color: rgba(56, 189, 248, 0.45);
     box-shadow: 0 0 24px rgba(56, 189, 248, 0.08), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.08);
@@ -547,7 +546,6 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margi
     height: 44px;
     padding: 0 42px 0 38px;
     border-radius: 14px;
-    /* Обводка окна поиска (уникальный цвет: бирюзово-голубой) */
     border: 1.8px solid rgba(20, 184, 166, 0.75);
     outline: none;
     background: rgba(30,41,59,.35);
@@ -724,7 +722,6 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margi
     align-items: center;
     justify-content: space-between;
     background: rgba(30,41,59,.3);
-    /* Обводка окошек приложений (уникальный цвет: мягкий янтарно-золотистый) */
     border: 1.8px solid rgba(245, 158, 11, 0.55);
     cursor: pointer;
     flex-shrink: 0;
@@ -763,7 +760,6 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margi
     font-weight: 600;
     color: #cbd5e1;
     background: rgba(51,65,85,.4);
-    /* Мягкая отличающаяся обводка для версии iOS внутри приложений (лавандово-розовый оттенок) */
     border: 1.5px solid rgba(236, 72, 153, 0.55);
     padding: 2px 7px;
     border-radius: 6px;
@@ -853,15 +849,10 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margi
     font-weight: 600;
 }
 
-.guide-step-text strong { 
+.guide-step-text strong, .guide-step-text em { 
     color: #fde68a; 
     font-weight: 700; 
-}
-
-.guide-step-text em { 
-    color: #fde68a; 
-    font-style: normal; 
-    font-weight: 700; 
+    font-style: normal;
 }
 </style>
 </head>
@@ -878,21 +869,25 @@ const SUPABASE_KEY = "sb_publishable_oUDovfvWL6iioG6N5Xd_QQ_8KYezq8g";
 
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+let remoteConfig = { sitePassword: "", appPasswords: {}, appVisibility: {} };
+let selectedAppUrl = "";
+let selectedAppKey = "";
+let isInstalling = false;
+let currentCategory = "all";
+let isSheetClosing = false;
+
 async function checkSiteStatus() {
     try {
-        let response = await fetch(`${SUPABASE_URL}/rest/v1/site_status?select=is_enabled&id=eq.1&limit=1`, {
-            headers: {
-                "apikey": SUPABASE_KEY,
-                "Authorization": `Bearer ${SUPABASE_KEY}`
-            }
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/site_status?select=is_enabled&id=eq.1&limit=1`, {
+            headers: { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` }
         });
-        if (!response.ok) throw new Error("Не удалось проверить статус сайта");
-        let data = await response.json();
+        if (!response.ok) throw new Error("Не удалось проверить статус");
+        const data = await response.json();
         if (Array.isArray(data) && data.length > 0) {
             return data[0].is_enabled;
         }
     } catch (e) {
-        console.error("Ошибка при проверке статуса сайта:", e);
+        console.error("Ошибка проверки статуса:", e);
     }
     return true;
 }
@@ -905,33 +900,23 @@ async function checkSiteStatusManual() {
     }
 
     const isEnabled = await checkSiteStatus();
-
     if (isEnabled) {
         location.reload();
-    } else {
-        if (btn) {
-            btn.style.opacity = "1";
-            btn.textContent = "Проверить снова";
-        }
+    } else if (btn) {
+        btn.style.opacity = "1";
+        btn.textContent = "Проверить снова";
     }
 }
 
 async function fetchSupabaseSettings() {
     try {
-        let response = await fetch(`${SUPABASE_URL}/rest/v1/settings?select=*`, {
-            headers: {
-                "apikey": SUPABASE_KEY,
-                "Authorization": `Bearer ${SUPABASE_KEY}`
-            }
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/settings?select=*`, {
+            headers: { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` }
         });
         if (!response.ok) throw new Error("Ошибка загрузки");
-        let data = await response.json();
+        const data = await response.json();
         
-        let config = {
-            sitePassword: "",
-            appPasswords: {},
-            appVisibility: {}
-        };
+        const config = { sitePassword: "", appPasswords: {}, appVisibility: {} };
 
         data.forEach(item => {
             if (item.key === 'site_password') {
@@ -944,17 +929,10 @@ async function fetchSupabaseSettings() {
         });
         return config;
     } catch (e) {
-        console.error("Ошибка загрузки настроек, используются дефолтные:", e);
+        console.error("Ошибка настроек:", e);
         return { sitePassword: "", appPasswords: {}, appVisibility: {} };
     }
 }
-
-let remoteConfig = { sitePassword: "", appPasswords: {}, appVisibility: {} };
-let selectedAppUrl = "";
-let selectedAppKey = "";
-let isInstalling = false;
-let currentCategory = "all";
-let isSheetClosing = false;
 
 function getAppPasswords() { return remoteConfig.appPasswords; }
 function getSitePassword() { return remoteConfig.sitePassword; }
@@ -974,17 +952,11 @@ function switchScreen(screenId) {
 }
 
 function updateAppCounter(count) {
-    let visibleApps;
-    if (typeof count === 'number') {
-        visibleApps = count;
-    } else {
-        visibleApps = Array.from(document.querySelectorAll('.sheet-list .sheet-item')).filter(item => {
-            return item.getAttribute('data-visible') !== 'false' && getComputedStyle(item).display !== 'none';
-        }).length;
-    }
+    let visibleApps = typeof count === 'number' ? count : Array.from(document.querySelectorAll('.sheet-list .sheet-item')).filter(item => {
+        return item.getAttribute('data-visible') !== 'false' && getComputedStyle(item).display !== 'none';
+    }).length;
 
     const counterElement = document.getElementById('app-counter-text');
-    
     if (counterElement) {
         let word = 'приложений';
         const lastDigit = visibleApps % 10;
@@ -995,9 +967,7 @@ function updateAppCounter(count) {
             else if (lastDigit >= 2 && lastDigit <= 4) word = 'приложения';
         }
 
-        const isSearching = document.getElementById("appSearchInput")?.value.trim().length > 0;
-        const prefix = (currentCategory === "all" && !isSearching) ? "Все " : "Все ";
-        counterElement.textContent = `${prefix}${visibleApps} ${word}`;
+        counterElement.textContent = `Все ${visibleApps} ${word}`;
     }
 }
 
@@ -1040,17 +1010,8 @@ document.addEventListener("DOMContentLoaded", async function() {
         })
         .subscribe();
 
-    const sheetList = document.querySelector('.sheet-list');
-    if (sheetList) {
-        const observer = new MutationObserver(() => {
-            applyAppsVisibility();
-            filterApps();
-        });
-        observer.observe(sheetList, { childList: true, subtree: true });
-    }
-
-    document.getElementById("passInput").addEventListener("keydown", e => { if (e.key === "Enter") submitPassword(); });
-    document.getElementById("appPassInput").addEventListener("keydown", e => { if (e.key === "Enter") submitAppPassword(); });
+    document.getElementById("passInput")?.addEventListener("keydown", e => { if (e.key === "Enter") submitPassword(); });
+    document.getElementById("appPassInput")?.addEventListener("keydown", e => { if (e.key === "Enter") submitAppPassword(); });
 
     const searchInput = document.getElementById("appSearchInput");
     if (searchInput) {
@@ -1069,13 +1030,9 @@ document.addEventListener("DOMContentLoaded", async function() {
     });
 });
 
-async function submitPassword() {
+function submitPassword() {
     const input = document.getElementById("passInput");
     const errorMsg = document.getElementById("authError");
-
-    remoteConfig = await fetchSupabaseSettings();
-    applyAppsVisibility();
-    filterApps();
 
     if (input.value.trim() === getSitePassword()) {
         sessionStorage.setItem("site_access", "true");
@@ -1088,10 +1045,9 @@ async function submitPassword() {
     input.focus();
 }
 
-async function openSheet() {
+function openSheet() {
     if (isSheetClosing) return;
 
-    remoteConfig = await fetchSupabaseSettings();
     applyAppsVisibility();
 
     const searchInput = document.getElementById("appSearchInput");
@@ -1101,9 +1057,7 @@ async function openSheet() {
         if (searchClear) searchClear.classList.remove("visible");
     }
 
-    if (document.activeElement) {
-        document.activeElement.blur();
-    }
+    if (document.activeElement) document.activeElement.blur();
 
     filterApps();
     document.getElementById("sheetOverlay").classList.add("active");
@@ -1119,21 +1073,13 @@ function closeSheet() {
         searchInput.blur(); 
     }
     
-    const filterDropdown = document.getElementById("filterDropdown");
-    if (filterDropdown) filterDropdown.classList.remove("active");
+    document.getElementById("filterDropdown")?.classList.remove("active");
+    document.getElementById("sheetOverlay")?.classList.remove("active");
 
-    const sheetOverlay = document.getElementById("sheetOverlay");
-    if (sheetOverlay) sheetOverlay.classList.remove("active");
-
-    document.querySelectorAll(".sheet-item").forEach(item => {
-        item.blur();
-    });
-
+    document.querySelectorAll(".sheet-item").forEach(item => item.blur());
     filterApps();
 
-    setTimeout(() => {
-        isSheetClosing = false;
-    }, 400);
+    setTimeout(() => { isSheetClosing = false; }, 400);
 }
 
 function openGuideSheet() {
@@ -1172,8 +1118,7 @@ function filterApps() {
     const emptyMessage = document.getElementById("searchEmpty");
 
     if (clearBtn) {
-        if (query) clearBtn.classList.add("visible");
-        else clearBtn.classList.remove("visible");
+        clearBtn.classList.toggle("visible", query.length > 0);
     }
 
     let visibleCount = 0;
@@ -1229,8 +1174,7 @@ function selectApp(element, url, name, appKey) {
         selectedAppText.style.color = "#ffffff";
     }
 
-    const customSelectBtn = document.querySelector(".custom-select-btn");
-    if (customSelectBtn) customSelectBtn.classList.add("has-selection");
+    document.querySelector(".custom-select-btn")?.classList.add("has-selection");
 
     const appAuthNameEl = document.getElementById("appAuthAppName");
     if (appAuthNameEl) appAuthNameEl.textContent = name;
@@ -1241,12 +1185,8 @@ function selectApp(element, url, name, appKey) {
     closeSheet();
 }
 
-async function startInstallation() {
+function startInstallation() {
     if (!selectedAppUrl || isInstalling) return;
-
-    remoteConfig = await fetchSupabaseSettings();
-    applyAppsVisibility();
-    filterApps();
 
     if (getAppPasswords()[selectedAppKey]) {
         document.getElementById("appPassError").style.display = "none";
@@ -1282,7 +1222,6 @@ function executeDownload() {
     isInstalling = true;
 
     switchScreen("loadingScreen");
-
     window.location.href = selectedAppUrl;
 
     const loadingBox = document.getElementById("loadingBox");
@@ -1302,7 +1241,7 @@ function executeDownload() {
 
         const timer = setInterval(() => {
             elapsed += intervalTime;
-            let percent = Math.min(Math.floor((elapsed / duration) * 100), 100);
+            const percent = Math.min(Math.floor((elapsed / duration) * 100), 100);
 
             progressFill.style.width = percent + "%";
             progressText.textContent = percent + "%";
@@ -1586,7 +1525,7 @@ function executeDownload() {
                 <span class="ios-badge">iOS 16.0+</span>
             </div>
 
-             <div class="sheet-item" data-key="yla" data-category="other" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/yla.plist', 'Юла', 'yla')">
+            <div class="sheet-item" data-key="yla" data-category="other" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/yla.plist', 'Юла', 'yla')">
                 <div class="sheet-item-main">
                     <div class="app-icon"><img src="https://avatars.mds.yandex.net/i?id=de2c57353882125853f6d024be2789d7_l-5209452-images-thumbs&n=13" alt="Юла"></div>
                     <div class="sheet-info-box"><span class="app-name">Юла</span></div>
@@ -1626,7 +1565,7 @@ function executeDownload() {
                 <span class="ios-badge">iOS 15.0+</span>
             </div>
 
-             <div class="sheet-item" data-key="ubrir-rubli" data-category="banks" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/ubrir_rubli.plist', 'УБРиР (РУбли)', 'ubrir-rubli')">
+            <div class="sheet-item" data-key="ubrir-rubli" data-category="banks" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/ubrir_rubli.plist', 'УБРиР (РУбли)', 'ubrir-rubli')">
                 <div class="sheet-item-main">
                     <div class="app-icon"><img src="https://banki.loans/storage/posts/June2021/2NH4l0w4DiKbR77CudHS.png" alt="УБРиР (РУбли)"></div>
                     <div class="sheet-info-box"><span class="app-name">УБРиР (РУбли)</span></div>
@@ -1698,7 +1637,7 @@ function executeDownload() {
                 <span class="ios-badge">iOS 15.0+</span>
             </div>
 
-             <div class="sheet-item" data-key="chatgpt" data-category="other" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/chatgpt.plist', 'ChatGPT', 'chatgpt')">
+            <div class="sheet-item" data-key="chatgpt" data-category="other" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/chatgpt.plist', 'ChatGPT', 'chatgpt')">
                 <div class="sheet-item-main">
                     <div class="app-icon"><img src="https://i.kod.ru/unsafe/rs:fill:1200:630:1/q:85/plain/https%3A%2F%2Fapi.kod.ru%2Fcontent%2Fimages%2F2026%2F03%2FIMG_3113-1.webp" alt="ChatGPT"></div>
                     <div class="sheet-info-box"><span class="app-name">ChatGPT</span></div>
@@ -1730,7 +1669,7 @@ function executeDownload() {
                 <span class="ios-badge">iOS 13.0+</span>
             </div>
 
-             <div class="sheet-item" data-key="yota_atoy" data-category="other" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/yota_atoy.plist', 'YOTA (Atoy)', 'yota_atoy')">
+            <div class="sheet-item" data-key="yota_atoy" data-category="other" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/yota_atoy.plist', 'YOTA (Atoy)', 'yota_atoy')">
                 <div class="sheet-item-main">
                     <div class="app-icon"><img src="https://cdn1.ozonusercontent.com/s3/product-service-meta-media/c63bbaf2-9af4-47dd-a5c8-a6aba2540d43.jpg" alt="YOTA (Atoy)"></div>
                     <div class="sheet-info-box"><span class="app-name">YOTA (Atoy)</span></div>
