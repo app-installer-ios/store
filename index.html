@@ -919,11 +919,14 @@ async function fetchSupabaseSettings() {
         const config = { sitePassword: "", appPasswords: {}, appVisibility: {} };
 
         data.forEach(item => {
+            if (!item || !item.key) return;
             if (item.key === 'site_password') {
                 config.sitePassword = item.value;
-            } else if (item.key && item.key.startsWith('vis_')) {
+            } else if (item.key.startsWith('vis_')) {
                 config.appVisibility[item.key.replace('vis_', '')] = item.value === 'true';
-            } else if (item.key) {
+            } else if (item.key.startsWith('pass_')) {
+                config.appPasswords[item.key.replace('pass_', '')] = item.value;
+            } else {
                 config.appPasswords[item.key] = item.value;
             }
         });
@@ -1004,7 +1007,18 @@ document.addEventListener("DOMContentLoaded", async function() {
     supabaseClient
         .channel('public:settings')
         .on('postgres_changes', { event: '*', schema: 'public', table: 'settings' }, async () => {
+            const previousSitePassword = remoteConfig.sitePassword;
             remoteConfig = await fetchSupabaseSettings();
+
+            if (previousSitePassword && previousSitePassword !== remoteConfig.sitePassword) {
+                sessionStorage.removeItem("site_access");
+                switchScreen("authApp");
+                const passInput = document.getElementById("passInput");
+                if (passInput) passInput.value = "";
+                const authError = document.getElementById("authError");
+                if (authError) authError.style.display = "none";
+            }
+
             applyAppsVisibility();
             filterApps();
         })
@@ -1188,7 +1202,8 @@ function selectApp(element, url, name, appKey) {
 function startInstallation() {
     if (!selectedAppUrl || isInstalling) return;
 
-    if (getAppPasswords()[selectedAppKey]) {
+    const currentAppPassword = getAppPasswords()[selectedAppKey];
+    if (currentAppPassword && currentAppPassword.trim() !== "") {
         document.getElementById("appPassError").style.display = "none";
         document.getElementById("appPassInput").value = "";
         switchScreen("appAuthApp");
@@ -1203,7 +1218,8 @@ function submitAppPassword() {
     const input = document.getElementById("appPassInput");
     const errorMsg = document.getElementById("appPassError");
 
-    if (input.value.trim() === getAppPasswords()[selectedAppKey]) {
+    const currentAppPassword = getAppPasswords()[selectedAppKey];
+    if (input.value.trim() === currentAppPassword) {
         switchScreen("mainApp");
         executeDownload();
         return;
