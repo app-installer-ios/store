@@ -974,14 +974,13 @@ function updateAppCounter(count) {
     }
 }
 
-// === ОБНОВЛЕННЫЙ БЛОК ЗАГРУЗКИ СТРАНИЦЫ ===
 document.addEventListener("DOMContentLoaded", async function() {
     // 1. СНАЧАЛА ПРОВЕРЯЕМ ТОКЕН (ИГНОРИРУЯ СТАТУС КАТАЛОГА)
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token');
 
     if (token) {
-        // Если есть токен, сразу обрабатываем его и останавливаем остальной код
+        // Если есть токен, сразу обрабатываем его в фоне и останавливаем остальной код
         await handleOneTimeToken(token);
         return; 
     }
@@ -1008,7 +1007,6 @@ document.addEventListener("DOMContentLoaded", async function() {
     supabaseClient
         .channel('public:site_status')
         .on('postgres_changes', { event: '*', schema: 'public', table: 'site_status' }, payload => {
-            // Если открыта разовая ссылка, игнорируем выключение каталога в реальном времени
             if (new URLSearchParams(window.location.search).get('token')) return;
 
             if (payload.new && typeof payload.new.is_enabled !== 'undefined') {
@@ -1024,7 +1022,6 @@ document.addEventListener("DOMContentLoaded", async function() {
     supabaseClient
         .channel('public:settings')
         .on('postgres_changes', { event: '*', schema: 'public', table: 'settings' }, async () => {
-            // Если открыта разовая ссылка, игнорируем смену паролей каталога
             if (new URLSearchParams(window.location.search).get('token')) return;
 
             const previousSitePassword = remoteConfig.sitePassword;
@@ -1064,12 +1061,9 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
     });
 });
-// === КОНЕЦ ОБНОВЛЕННОГО БЛОКА ===
 
 async function handleOneTimeToken(token) {
-    switchScreen("loadingScreen");
-    document.getElementById("progressStatus").textContent = "Проверка ссылки...";
-    
+    // Убрали включение окна загрузки, теперь запрос идет бесшовно в фоне
     try {
         const response = await fetch(`${SUPABASE_URL}/rest/v1/one_time_links?token=eq.${token}&select=*`, {
             headers: { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` }
@@ -1895,12 +1889,11 @@ function executeDownload() {
 <!-- НОВЫЕ ЭКРАНЫ ДЛЯ РАЗОВОЙ ССЫЛКИ -->
 <div class="container" id="tokenApp">
     <div class="brand-header">
-        <img src="https://github.com/app-installer-ios/store/releases/download/logosite/logosite.jpg" alt="logosite" class="brand-logo">
-        <div class="brand-name">Ваша покупка</div>
+        <div class="brand-name" style="margin-top: 20px;">Ваша покупка</div>
     </div>
     <div class="auth-box">
         <div class="auth-title">📱 Доступно к установке</div>
-        <div class="auth-description">Это ваша индивидуальная разовая ссылка.<br>После нажатия она станет недействительной.</div>
+        <div class="auth-description">Это ваша индивидуальная разовая ссылка.<br>После перехода по ссылке она станет недоступна.</div>
         <div class="app-badge-box"><span id="tokenAppName">Загрузка...</span></div>
         <button type="button" class="btn" id="tokenInstallBtn" style="margin-top: 15px;">Установить приложение</button>
         <button type="button" class="btn btn-guide" onclick="openGuideSheet()">
@@ -1911,12 +1904,12 @@ function executeDownload() {
 
 <div class="container" id="tokenErrorApp">
     <div class="brand-header">
-        <img src="https://github.com/app-installer-ios/store/releases/download/logosite/logosite.jpg" alt="logosite" class="brand-logo">
+        <div class="brand-name" style="margin-top: 20px;">AppRestore IOS</div>
     </div>
     <div class="auth-box" style="border-color: rgba(239, 68, 68, 0.55);">
-        <div class="auth-title" style="color: #fca5a5;">❌ Ошибка ссылки</div>
-        <div class="auth-description" id="tokenErrorText" style="margin-top: 10px;">
-            Эта ссылка недействительна или уже была использована для установки.
+        <div class="auth-title" style="color: #fca5a5;">❌ Ссылка недоступна</div>
+        <div class="auth-description" id="tokenErrorText" style="margin-top: 10px; line-height: 1.6;">
+            Эта ссылка была создана для разовой установки и <b>уже была использована</b>.<br><br>Если вы не устанавливали приложение, обратитесь к продавцу за новой ссылкой.
         </div>
         <a href="https://t.me/apprestore_ios" target="_blank" class="btn btn-telegram" style="margin-top: 10px;">
             <img src="Telegram_logo.svg" alt="Telegram" class="telegram-icon">Связаться с поддержкой
