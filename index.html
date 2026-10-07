@@ -974,8 +974,19 @@ function updateAppCounter(count) {
     }
 }
 
-// === НОВЫЙ БЛОК ДЛЯ РАБОТЫ С ТОКЕНАМИ ===
+// === ОБНОВЛЕННЫЙ БЛОК ЗАГРУЗКИ СТРАНИЦЫ ===
 document.addEventListener("DOMContentLoaded", async function() {
+    // 1. СНАЧАЛА ПРОВЕРЯЕМ ТОКЕН (ИГНОРИРУЯ СТАТУС КАТАЛОГА)
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+
+    if (token) {
+        // Если есть токен, сразу обрабатываем его и останавливаем остальной код
+        await handleOneTimeToken(token);
+        return; 
+    }
+
+    // 2. ЕСЛИ ТОКЕНА НЕТ — ЗАПУСКАЕМ ОБЫЧНУЮ ЛОГИКУ КАТАЛОГА
     const isSiteEnabled = await checkSiteStatus();
     if (!isSiteEnabled) {
         switchScreen("maintenanceApp");
@@ -985,25 +996,21 @@ document.addEventListener("DOMContentLoaded", async function() {
     remoteConfig = await fetchSupabaseSettings();
     applyAppsVisibility();
 
-    // ПРОВЕРКА НАЛИЧИЯ РАЗОВОГО ТОКЕНА В URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get('token');
-
-    if (token) {
-        await handleOneTimeToken(token);
+    if (sessionStorage.getItem("site_access") === "true") {
+        switchScreen("mainApp");
     } else {
-        // Если токена нет — работаем как обычный каталог
-        if (sessionStorage.getItem("site_access") === "true") {
-            switchScreen("mainApp");
-        } else {
-            switchScreen("authApp");
-        }
-        filterApps();
+        switchScreen("authApp");
     }
 
+    filterApps();
+
+    // 3. ПОДПИСКИ SUPABASE (С ЗАЩИТОЙ ДЛЯ РАЗОВЫХ ССЫЛОК)
     supabaseClient
         .channel('public:site_status')
         .on('postgres_changes', { event: '*', schema: 'public', table: 'site_status' }, payload => {
+            // Если открыта разовая ссылка, игнорируем выключение каталога в реальном времени
+            if (new URLSearchParams(window.location.search).get('token')) return;
+
             if (payload.new && typeof payload.new.is_enabled !== 'undefined') {
                 if (payload.new.is_enabled === false) {
                     switchScreen("maintenanceApp");
@@ -1017,26 +1024,27 @@ document.addEventListener("DOMContentLoaded", async function() {
     supabaseClient
         .channel('public:settings')
         .on('postgres_changes', { event: '*', schema: 'public', table: 'settings' }, async () => {
+            // Если открыта разовая ссылка, игнорируем смену паролей каталога
+            if (new URLSearchParams(window.location.search).get('token')) return;
+
             const previousSitePassword = remoteConfig.sitePassword;
             remoteConfig = await fetchSupabaseSettings();
 
             if (previousSitePassword && previousSitePassword !== remoteConfig.sitePassword) {
                 sessionStorage.removeItem("site_access");
-                // Обновляем экран пароля только если мы в каталоге, а не по разовой ссылке
-                if (!urlParams.get('token')) {
-                    switchScreen("authApp");
-                    const passInput = document.getElementById("passInput");
-                    if (passInput) passInput.value = "";
-                    const authError = document.getElementById("authError");
-                    if (authError) authError.style.display = "none";
-                }
+                switchScreen("authApp");
+                const passInput = document.getElementById("passInput");
+                if (passInput) passInput.value = "";
+                const authError = document.getElementById("authError");
+                if (authError) authError.style.display = "none";
             }
 
             applyAppsVisibility();
-            if (!urlParams.get('token')) filterApps();
+            filterApps();
         })
         .subscribe();
 
+    // 4. СЛУШАТЕЛИ СОБЫТИЙ ДЛЯ ИНТЕРФЕЙСА
     document.getElementById("passInput")?.addEventListener("keydown", e => { if (e.key === "Enter") submitPassword(); });
     document.getElementById("appPassInput")?.addEventListener("keydown", e => { if (e.key === "Enter") submitAppPassword(); });
 
@@ -1056,6 +1064,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
     });
 });
+// === КОНЕЦ ОБНОВЛЕННОГО БЛОКА ===
 
 async function handleOneTimeToken(token) {
     switchScreen("loadingScreen");
@@ -1134,7 +1143,6 @@ async function handleOneTimeToken(token) {
         switchScreen("tokenErrorApp");
     }
 }
-// === КОНЕЦ НОВОГО БЛОКА ===
 
 function submitPassword() {
     const input = document.getElementById("passInput");
