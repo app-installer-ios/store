@@ -1908,16 +1908,13 @@ function executeDownload() {
         <div class="brand-name">AppRestore IOS</div>
         <div class="version-text">v 3.6 (04.10.2026)</div>
     </div>
-    <div class="auth-box">
+    <div class="auth-box" style="border-color: rgba(239, 68, 68, 0.65); box-shadow: 0 0 30px rgba(239, 68, 68, 0.15), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.08);">
         <div class="auth-title">Ваша покупка</div>
-        <div class="token-highlight-box">
+        <div class="app-badge-box" style="margin-top: 2px;"><span id="tokenAppName">Загрузка...</span></div>
+        <div class="token-highlight-box" style="margin-top: 2px;">
             <div class="token-highlight-text">Это ваша индивидуальная ссылка. Данная ссылка действительна для одной установки на одно устройство!</div>
         </div>
-        <div style="margin-top: 5px;">
-            <label style="text-align: center; margin-bottom: 6px;">Купленное приложение:</label>
-            <div class="app-badge-box" style="margin-top: 0;"><span id="tokenAppName">Загрузка...</span></div>
-        </div>
-        <button type="button" class="btn" id="tokenInstallBtn" style="margin-top: 15px;">Установить приложение</button>
+        <button type="button" class="btn" id="tokenInstallBtn" style="margin-top: 5px;">Установить приложение</button>
         <button type="button" class="btn btn-guide" onclick="openGuideSheet()">
             <span style="color: #fde68a; font-weight: 700; margin-right: 4px;">•</span> Инструкция по установке
         </button>
