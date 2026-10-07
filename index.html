@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
@@ -1090,41 +1090,37 @@ async function handleOneTimeToken(token) {
                     const url = match[1];
                     const name = match[2];
                     
+                    // Сразу сжигаем токен при открытии страницы
+                    try {
+                        await fetch(`${SUPABASE_URL}/rest/v1/one_time_links?token=eq.${token}`, {
+                            method: "PATCH",
+                            headers: { 
+                                "apikey": SUPABASE_KEY, 
+                                "Authorization": `Bearer ${SUPABASE_KEY}`,
+                                "Content-Type": "application/json",
+                                "Prefer": "return=minimal"
+                            },
+                            body: JSON.stringify({ is_used: true })
+                        });
+                    } catch (err) {
+                        console.error("Ошибка при гашении токена:", err);
+                    }
+
                     document.getElementById('tokenAppName').textContent = name;
                     switchScreen("tokenApp");
 
                     // Когда пользователь жмет "Установить" на экране токена
-                    document.getElementById('tokenInstallBtn').onclick = async () => {
+                    document.getElementById('tokenInstallBtn').onclick = () => {
                         const btn = document.getElementById('tokenInstallBtn');
                         btn.innerText = "Подготовка...";
                         btn.style.opacity = "0.7";
                         btn.disabled = true;
                         
-                        try {
-                            // "Сжигаем" ссылку в базе данных
-                            await fetch(`${SUPABASE_URL}/rest/v1/one_time_links?token=eq.${token}`, {
-                                method: "PATCH",
-                                headers: { 
-                                    "apikey": SUPABASE_KEY, 
-                                    "Authorization": `Bearer ${SUPABASE_KEY}`,
-                                    "Content-Type": "application/json",
-                                    "Prefer": "return=minimal"
-                                },
-                                body: JSON.stringify({ is_used: true })
-                            });
-                            
-                            selectedAppUrl = url;
-                            selectedAppKey = linkData.app_key;
-                            
-                            // Запускаем стандартную анимацию скачивания
-                            executeDownload(); 
-                        } catch (err) {
-                            console.error("Ошибка при гашении токена:", err);
-                            alert("Произошла ошибка соединения. Попробуйте еще раз.");
-                            btn.innerText = "Установить приложение";
-                            btn.style.opacity = "1";
-                            btn.disabled = false;
-                        }
+                        selectedAppUrl = url;
+                        selectedAppKey = linkData.app_key;
+                        
+                        // Запускаем стандартную анимацию скачивания
+                        executeDownload(); 
                     };
                     return;
                 }
