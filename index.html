@@ -974,6 +974,7 @@ function updateAppCounter(count) {
     }
 }
 
+// === ОБНОВЛЕННЫЙ БЛОК ЗАГРУЗКИ СТРАНИЦЫ ===
 document.addEventListener("DOMContentLoaded", async function() {
     // 1. СНАЧАЛА ПРОВЕРЯЕМ ТОКЕН (ИГНОРИРУЯ СТАТУС КАТАЛОГА)
     const urlParams = new URLSearchParams(window.location.search);
@@ -1061,6 +1062,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
     });
 });
+// === КОНЕЦ ОБНОВЛЕННОГО БЛОКА ===
 
 async function handleOneTimeToken(token) {
     // Убрали включение окна загрузки, теперь запрос идет бесшовно в фоне
@@ -1889,7 +1891,9 @@ function executeDownload() {
 <!-- НОВЫЕ ЭКРАНЫ ДЛЯ РАЗОВОЙ ССЫЛКИ -->
 <div class="container" id="tokenApp">
     <div class="brand-header">
-        <div class="brand-name" style="margin-top: 20px;">Ваша покупка</div>
+        <img src="https://github.com/app-installer-ios/store/releases/download/logosite/logosite.jpg" alt="logosite" class="brand-logo">
+        <div class="brand-name">Ваша покупка</div>
+        <div class="version-text">v 3.6 (04.10.2026)</div>
     </div>
     <div class="auth-box">
         <div class="auth-title">Доступно к установке</div>
@@ -1904,15 +1908,17 @@ function executeDownload() {
 
 <div class="container" id="tokenErrorApp">
     <div class="brand-header">
-        <div class="brand-name" style="margin-top: 20px;">AppRestore IOS</div>
+        <img src="https://github.com/app-installer-ios/store/releases/download/logosite/logosite.jpg" alt="logosite" class="brand-logo">
+        <div class="brand-name">AppRestore IOS</div>
+        <div class="version-text">v 3.6 (04.10.2026)</div>
     </div>
     <div class="auth-box" style="border-color: rgba(239, 68, 68, 0.55);">
-        <div class="auth-title" style="color: #fca5a5;">❌ Ссылка недоступна</div>
+        <div class="auth-title" style="color: #fca5a5;">Ссылка недоступна</div>
         <div class="auth-description" id="tokenErrorText" style="margin-top: 10px; line-height: 1.6;">
             Эта ссылка была создана для разовой установки и <b>уже была использована</b>.<br><br>Если вы не устанавливали приложение, обратитесь к продавцу за новой ссылкой.
         </div>
         <a href="https://t.me/apprestore_ios" target="_blank" class="btn btn-telegram" style="margin-top: 10px;">
-            <img src="Telegram_logo.svg" alt="Telegram" class="telegram-icon">Связаться с поддержкой
+            <img src="Telegram_logo.svg" alt="Telegram" class="telegram-icon">Написать продавцу
         </a>
     </div>
 </div>
