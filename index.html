@@ -374,76 +374,6 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margi
     transition: all 0.5s ease;
 }
 
-.loading-box.completed-glow {
-    border-color: rgba(34, 197, 94, 0.85) !important;
-    box-shadow: 0 0 45px rgba(34, 197, 94, 0.45), 0 25px 70px rgba(0,0,0,.7), inset 0 1px 15px rgba(34, 197, 94, 0.2) !important;
-}
-
-.progress-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 14px;
-    font-weight: 650;
-    color: #f8fafc;
-    margin-bottom: 12px;
-}
-
-#progressStatus {
-    background: linear-gradient(135deg, #ffffff 20%, #38bdf8 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    transition: all 0.3s ease;
-}
-
-.loading-box.completed-glow #progressStatus {
-    background: none !important;
-    -webkit-background-clip: initial !important;
-    -webkit-text-fill-color: #4ade80 !important;
-    color: #4ade80 !important;
-}
-
-#progressText {
-    background: linear-gradient(135deg, #38bdf8 20%, #0284c7 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    font-size: 15px;
-    font-weight: 700;
-    transition: all 0.3s ease;
-}
-
-.loading-box.completed-glow #progressText {
-    background: none !important;
-    -webkit-background-clip: initial !important;
-    -webkit-text-fill-color: #4ade80 !important;
-    color: #4ade80 !important;
-}
-
-.progress-track {
-    width: 100%;
-    height: 12px;
-    background: rgba(0, 0, 0, 0.55);
-    border-radius: 999px;
-    overflow: hidden;
-    position: relative;
-    border: 1px solid rgba(255,255,255,0.08);
-}
-
-.progress-fill {
-    position: relative;
-    width: 0%;
-    height: 100%;
-    background: linear-gradient(90deg, #0284c7, #38bdf8);
-    border-radius: 999px;
-    transition: width 0.15s ease-out, background 0.4s ease;
-    box-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
-}
-
-.loading-box.completed-glow .progress-fill {
-    background: linear-gradient(90deg, #16a34a, #4ade80) !important;
-    box-shadow: 0 0 20px rgba(74, 222, 128, 0.8) !important;
-}
-
 .auth-error {
     display: none;
     margin-top: -5px;
@@ -977,7 +907,6 @@ let isInstalling = false;
 let currentCategory = "all";
 let isSheetClosing = false;
 let currentToken = null;
-let installTimer = null;
 
 async function checkSiteStatus() {
     try {
@@ -1253,75 +1182,50 @@ function startTokenInstall(btn, url, appKey) {
 }
 
 function executeTokenDownload() {
+    if (isInstalling) return;
     isInstalling = true;
 
     document.querySelectorAll(".container").forEach(el => el.classList.remove("active-screen"));
     const loadingScreen = document.getElementById("loadingScreen");
     loadingScreen.classList.add("active-screen");
     
-    const backBtn = document.getElementById("tokenLoadingBackBtn");
-    if(backBtn) backBtn.style.display = "flex";
+    const tokenBackBtn = document.getElementById("tokenLoadingBackBtn");
+    if(tokenBackBtn) tokenBackBtn.style.display = "flex";
+    
+    const mainBackBtn = document.getElementById("mainLoadingBackBtn");
+    if(mainBackBtn) mainBackBtn.style.display = "none";
 
     window.location.href = selectedAppUrl;
 
-    const loadingBox = document.getElementById("loadingBox");
-    const progressFill = document.getElementById("progressFill");
-    const progressText = document.getElementById("progressText");
-    const progressStatus = document.getElementById("progressStatus");
+    setTimeout(() => {
+        isInstalling = false;
+    }, 1500);
+}
 
-    loadingBox.classList.remove("completed-glow");
-    progressFill.style.width = "0%";
-    progressText.textContent = "0%";
-    progressStatus.textContent = "Подготовка...";
+function executeDownload() {
+    if (isInstalling) return;
+    isInstalling = true;
+
+    document.querySelectorAll(".container").forEach(el => el.classList.remove("active-screen"));
+    const loadingScreen = document.getElementById("loadingScreen");
+    loadingScreen.classList.add("active-screen");
+    
+    const tokenBackBtn = document.getElementById("tokenLoadingBackBtn");
+    if(tokenBackBtn) tokenBackBtn.style.display = "none";
+    
+    const mainBackBtn = document.getElementById("mainLoadingBackBtn");
+    if(mainBackBtn) mainBackBtn.style.display = "flex";
+
+    window.location.href = selectedAppUrl;
 
     setTimeout(() => {
-        const duration = 25000;
-        const intervalTime = 100;
-        let elapsed = 0;
-
-        installTimer = setInterval(() => {
-            elapsed += intervalTime;
-            const percent = Math.min(Math.floor((elapsed / duration) * 100), 100);
-
-            progressFill.style.width = percent + "%";
-            progressText.textContent = percent + "%";
-
-            if (percent <= 17) progressStatus.textContent = "Подготовка...";
-            else if (percent <= 65) progressStatus.textContent = "Загрузка...";
-            else if (percent <= 85) progressStatus.textContent = "Распаковка...";
-            else if (percent < 100) progressStatus.textContent = "Установка...";
-
-            if (elapsed >= duration) {
-                clearInterval(installTimer);
-                isInstalling = false;
-
-                progressStatus.textContent = "Установка завершена!";
-                loadingBox.classList.add("completed-glow");
-
-                setTimeout(() => {
-                    if (loadingScreen.classList.contains("active-screen")) {
-                        loadingScreen.classList.remove("active-screen");
-                        document.getElementById("tokenApp").classList.add("active-screen");
-                        loadingBox.classList.remove("completed-glow");
-                        
-                        const allButtons = document.querySelectorAll('.token-install-btn');
-                        const installedButtons = document.querySelectorAll('.token-install-btn.installed');
-                        
-                        if (allButtons.length > 0 && allButtons.length === installedButtons.length) {
-                            switchScreen("tokenSuccessApp");
-                        }
-                    }
-                }, 2000);
-            }
-        }, intervalTime);
+        isInstalling = false;
     }, 1500);
 }
 
 function goBackToTokenApps() {
-    if (installTimer) clearInterval(installTimer);
     isInstalling = false;
     
-    document.getElementById("loadingBox").classList.remove("completed-glow");
     switchScreen("tokenApp");
     
     const allButtons = document.querySelectorAll('.token-install-btn');
@@ -1521,65 +1425,6 @@ function submitAppPassword() {
 function cancelAppPassword() {
     switchScreen("mainApp");
 }
-
-function executeDownload() {
-    isInstalling = true;
-
-    const backBtn = document.getElementById("tokenLoadingBackBtn");
-    if(backBtn) backBtn.style.display = "none";
-
-    switchScreen("loadingScreen");
-    window.location.href = selectedAppUrl;
-
-    const loadingBox = document.getElementById("loadingBox");
-    const progressFill = document.getElementById("progressFill");
-    const progressText = document.getElementById("progressText");
-    const progressStatus = document.getElementById("progressStatus");
-
-    loadingBox.classList.remove("completed-glow");
-    progressFill.style.width = "0%";
-    progressText.textContent = "0%";
-    progressStatus.textContent = "Подготовка...";
-
-    setTimeout(() => {
-        const duration = 25000;
-        const intervalTime = 100;
-        let elapsed = 0;
-
-        installTimer = setInterval(() => {
-            elapsed += intervalTime;
-            const percent = Math.min(Math.floor((elapsed / duration) * 100), 100);
-
-            progressFill.style.width = percent + "%";
-            progressText.textContent = percent + "%";
-
-            if (percent <= 17) progressStatus.textContent = "Подготовка...";
-            else if (percent <= 65) progressStatus.textContent = "Загрузка...";
-            else if (percent <= 85) progressStatus.textContent = "Распаковка...";
-            else if (percent < 100) progressStatus.textContent = "Установка...";
-
-            if (elapsed >= duration) {
-                clearInterval(installTimer);
-                isInstalling = false;
-
-                progressStatus.textContent = "Установка завершена!";
-                loadingBox.classList.add("completed-glow");
-
-                const urlParams = new URLSearchParams(window.location.search);
-                const isToken = !!urlParams.get('token');
-
-                setTimeout(() => {
-                    if (isToken) {
-                        switchScreen("tokenSuccessApp");
-                    } else {
-                        switchScreen("mainApp");
-                    }
-                    loadingBox.classList.remove("completed-glow");
-                }, 3500);
-            }
-        }, intervalTime);
-    }, 1500);
-}
 </script>
 
 <div class="container" id="maintenanceApp">
@@ -1642,16 +1487,14 @@ function executeDownload() {
         <div class="brand-name">AppRestore IOS</div>
         <div class="version-text">v 4.0 (08.10.2026)</div>
     </div>
-    <div class="auth-box loading-box" id="loadingBox">
-        <div class="progress-info">
-            <span id="progressStatus">Подготовка...</span>
-            <span id="progressText">0%</span>
-        </div>
-        <div class="progress-track">
-            <div id="progressFill" class="progress-fill"></div>
+    <div class="auth-box loading-box" id="loadingBox" style="border-color: rgba(56, 189, 248, 0.45);">
+        <div class="auth-title" style="color: #38bdf8; font-size: 20px;">Загрузка началась!</div>
+        <div class="auth-description" style="margin-top: 10px; line-height: 1.6; font-size: 14px;">
+            Система начала установку приложения.<br>Вы можете свернуть браузер и проверить статус на экране «Домой».
         </div>
         
         <button type="button" class="btn btn-secondary" id="tokenLoadingBackBtn" onclick="goBackToTokenApps()" style="display: none; margin-top: 16px;">◀ Назад к списку</button>
+        <button type="button" class="btn btn-secondary" id="mainLoadingBackBtn" onclick="switchScreen('mainApp')" style="display: none; margin-top: 16px;">◀ Назад в меню</button>
     </div>
 </div>
 
@@ -2101,7 +1944,7 @@ function executeDownload() {
         
         <div class="token-highlight-box" style="margin-top: 4px; margin-bottom: 6px; padding: 12px 14px;">
             <div class="token-highlight-text" style="font-size: 12px; line-height: 1.4;">
-                Ссылка одноразовая и действует только для <b>одной</b> установки на <b>одно</b> устройство!<br><br>Не закрывайте и не сворачивайте эту страницу до полного завершения загрузки всех приложений.
+                ⚠️ <b>ВНИМАНИЕ:</b> Ссылка одноразовая и действует только для <b>одной</b> установки на <b>одно</b> устройство!<br><br>Не закрывайте и не сворачивайте эту страницу до полного завершения загрузки всех приложений.
             </div>
         </div>
 
