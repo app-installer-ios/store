@@ -878,6 +878,79 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margi
     text-align: center;
     letter-spacing: -0.1px;
 }
+
+/* Стили для списка приложений токена */
+.token-apps-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+    max-height: 250px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.token-apps-list::-webkit-scrollbar {
+    width: 4px;
+}
+.token-apps-list::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+.token-app-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, rgba(51, 65, 85, 0.35), rgba(217, 119, 6, 0.15));
+    border: 1.8px solid rgba(217, 180, 140, 0.45);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.token-app-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.token-app-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.token-app-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #f1f5f9;
+}
+
+.token-install-btn {
+    padding: 6px 12px;
+    border-radius: 10px;
+    background: rgba(245, 158, 11, 0.2);
+    border: 1px solid rgba(245, 158, 11, 0.6);
+    color: #fde68a;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.token-install-btn:hover {
+    background: rgba(245, 158, 11, 0.3);
+}
+
+.token-install-btn.installed {
+    background: rgba(34, 197, 94, 0.2);
+    border-color: rgba(34, 197, 94, 0.6);
+    color: #4ade80;
+    pointer-events: none;
+}
 </style>
 </head>
 
@@ -899,6 +972,7 @@ let selectedAppKey = "";
 let isInstalling = false;
 let currentCategory = "all";
 let isSheetClosing = false;
+let currentToken = null;
 
 async function checkSiteStatus() {
     try {
@@ -999,17 +1073,15 @@ function updateAppCounter(count) {
 }
 
 document.addEventListener("DOMContentLoaded", async function() {
-    // 1. СНАЧАЛА ПРОВЕРЯЕМ ТОКЕН (ИГНОРИРУЯ СТАТУС КАТАЛОГА)
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token');
 
     if (token) {
-        // Если есть токен, сразу обрабатываем его в фоне и останавливаем остальной код
+        currentToken = token;
         await handleOneTimeToken(token);
         return; 
     }
 
-    // 2. ЕСЛИ ТОКЕНА НЕТ — ЗАПУСКАЕМ ОБЫЧНУЮ ЛОГИКУ КАТАЛОГА
     const isSiteEnabled = await checkSiteStatus();
     if (!isSiteEnabled) {
         switchScreen("maintenanceApp");
@@ -1027,7 +1099,6 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     filterApps();
 
-    // 3. ПОДПИСКИ SUPABASE (С ЗАЩИТОЙ ДЛЯ РАЗОВЫХ ССЫЛОК)
     supabaseClient
         .channel('public:site_status')
         .on('postgres_changes', { event: '*', schema: 'public', table: 'site_status' }, payload => {
@@ -1065,7 +1136,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         })
         .subscribe();
 
-    // 4. СЛУШАТЕЛИ СОБЫТИЙ ДЛЯ ИНТЕРФЕЙСА
     document.getElementById("passInput")?.addEventListener("keydown", e => { if (e.key === "Enter") submitPassword(); });
     document.getElementById("appPassInput")?.addEventListener("keydown", e => { if (e.key === "Enter") submitAppPassword(); });
 
@@ -1098,75 +1168,143 @@ async function handleOneTimeToken(token) {
 
         if (data && data.length > 0) {
             const linkData = data[0];
+            
             if (linkData.is_used) {
                 switchScreen("tokenErrorApp");
                 return;
             }
 
-            // Находим информацию о приложении в списке HTML по ключу
-            const appElement = document.querySelector(`.sheet-item[data-key="${linkData.app_key}"]`);
-            if (appElement) {
-                const onclickStr = appElement.getAttribute('onclick');
-                // Извлекаем URL и ИМЯ из атрибута onclick
-                const match = onclickStr.match(/selectApp\(this,\s*'([^']+)',\s*'([^']+)'/);
-                
-                if (match) {
-                    const url = match[1];
-                    const name = match[2];
-                    
-                    // Сразу сжигаем токен при открытии страницы
-                    try {
-                        await fetch(`${SUPABASE_URL}/rest/v1/one_time_links?token=eq.${token}`, {
-                            method: "PATCH",
-                            headers: { 
-                                "apikey": SUPABASE_KEY, 
-                                "Authorization": `Bearer ${SUPABASE_KEY}`,
-                                "Content-Type": "application/json",
-                                "Prefer": "return=minimal"
-                            },
-                            body: JSON.stringify({ is_used: true })
-                        });
-                    } catch (err) {
-                        console.error("Ошибка при гашении токена:", err);
-                    }
-
-                    document.getElementById('tokenAppName').textContent = name;
-                    
-                    // ДОБАВЛЕНО: Извлекаем иконку приложения
-                    const appIconImg = appElement.querySelector('.app-icon img');
-                    if (appIconImg) {
-                        const tokenIconContainer = document.getElementById('tokenAppIconContainer');
-                        const tokenIcon = document.getElementById('tokenAppIcon');
-                        if (tokenIconContainer && tokenIcon) {
-                            tokenIcon.src = appIconImg.src;
-                            tokenIconContainer.style.display = 'flex';
-                        }
-                    }
-
-                    switchScreen("tokenApp");
-
-                    // Когда пользователь жмет "Установить" на экране токена
-                    document.getElementById('tokenInstallBtn').onclick = () => {
-                        const btn = document.getElementById('tokenInstallBtn');
-                        btn.innerText = "Подготовка...";
-                        btn.style.opacity = "0.7";
-                        btn.disabled = true;
-                        
-                        selectedAppUrl = url;
-                        selectedAppKey = linkData.app_key;
-                        
-                        // Запускаем стандартную анимацию скачивания
-                        executeDownload(); 
-                    };
-                    return;
-                }
+            const appKeys = linkData.app_keys || (linkData.app_key ? [linkData.app_key] : []);
+            
+            if (appKeys.length === 0) {
+                switchScreen("tokenErrorApp");
+                return;
             }
+
+            try {
+                await fetch(`${SUPABASE_URL}/rest/v1/one_time_links?token=eq.${token}`, {
+                    method: "PATCH",
+                    headers: { 
+                        "apikey": SUPABASE_KEY, 
+                        "Authorization": `Bearer ${SUPABASE_KEY}`,
+                        "Content-Type": "application/json",
+                        "Prefer": "return=minimal"
+                    },
+                    body: JSON.stringify({ is_used: true })
+                });
+            } catch (err) {
+                console.error("Ошибка при гашении токена:", err);
+            }
+
+            const tokenAppsContainer = document.getElementById('tokenAppsContainer');
+            tokenAppsContainer.innerHTML = ''; 
+
+            appKeys.forEach(appKey => {
+                const appElement = document.querySelector(`.sheet-item[data-key="${appKey}"]`);
+                if (appElement) {
+                    const onclickStr = appElement.getAttribute('onclick');
+                    const match = onclickStr.match(/selectApp\(this,\s*'([^']+)',\s*'([^']+)'/);
+                    
+                    if (match) {
+                        const url = match[1];
+                        const name = match[2];
+                        const appIconImg = appElement.querySelector('.app-icon img');
+                        const iconSrc = appIconImg ? appIconImg.src : '';
+
+                        const appCard = document.createElement('div');
+                        appCard.className = 'token-app-card';
+                        appCard.innerHTML = `
+                            <div class="token-app-info">
+                                <img src="${iconSrc}" class="token-app-icon" alt="${name}">
+                                <span class="token-app-name">${name}</span>
+                            </div>
+                            <button type="button" class="token-install-btn" onclick="startTokenInstall(this, '${url}', '${appKey}')">Установить</button>
+                        `;
+                        tokenAppsContainer.appendChild(appCard);
+                    }
+                }
+            });
+
+            switchScreen("tokenApp");
+            return;
         }
         switchScreen("tokenErrorApp");
     } catch (e) {
         console.error("Ошибка проверки токена:", e);
         switchScreen("tokenErrorApp");
     }
+}
+
+function startTokenInstall(btn, url, appKey) {
+    if (isInstalling) return;
+    
+    btn.textContent = "Установлено";
+    btn.classList.add("installed");
+
+    selectedAppUrl = url;
+    selectedAppKey = appKey;
+    
+    executeTokenDownload(); 
+}
+
+function executeTokenDownload() {
+    isInstalling = true;
+
+    document.querySelectorAll(".container").forEach(el => el.classList.remove("active-screen"));
+    const loadingScreen = document.getElementById("loadingScreen");
+    loadingScreen.classList.add("active-screen");
+
+    window.location.href = selectedAppUrl;
+
+    const loadingBox = document.getElementById("loadingBox");
+    const progressFill = document.getElementById("progressFill");
+    const progressText = document.getElementById("progressText");
+    const progressStatus = document.getElementById("progressStatus");
+
+    loadingBox.classList.remove("completed-glow");
+    progressFill.style.width = "0%";
+    progressText.textContent = "0%";
+    progressStatus.textContent = "Подготовка...";
+
+    setTimeout(() => {
+        const duration = 25000;
+        const intervalTime = 100;
+        let elapsed = 0;
+
+        const timer = setInterval(() => {
+            elapsed += intervalTime;
+            const percent = Math.min(Math.floor((elapsed / duration) * 100), 100);
+
+            progressFill.style.width = percent + "%";
+            progressText.textContent = percent + "%";
+
+            if (percent <= 17) progressStatus.textContent = "Подготовка...";
+            else if (percent <= 65) progressStatus.textContent = "Загрузка...";
+            else if (percent <= 85) progressStatus.textContent = "Распаковка...";
+            else if (percent < 100) progressStatus.textContent = "Установка...";
+
+            if (elapsed >= duration) {
+                clearInterval(timer);
+                isInstalling = false;
+
+                progressStatus.textContent = "Установка завершена!";
+                loadingBox.classList.add("completed-glow");
+
+                setTimeout(() => {
+                    loadingScreen.classList.remove("active-screen");
+                    document.getElementById("tokenApp").classList.add("active-screen");
+                    loadingBox.classList.remove("completed-glow");
+                    
+                    const allButtons = document.querySelectorAll('.token-install-btn');
+                    const installedButtons = document.querySelectorAll('.token-install-btn.installed');
+                    
+                    if (allButtons.length > 0 && allButtons.length === installedButtons.length) {
+                        switchScreen("tokenSuccessApp");
+                    }
+                }, 2000);
+            }
+        }, intervalTime);
+    }, 1500);
 }
 
 function submitPassword() {
@@ -1409,7 +1547,7 @@ function executeDownload() {
                         switchScreen("mainApp");
                     }
                     loadingBox.classList.remove("completed-glow");
-                }, isToken ? 1500 : 3500);
+                }, 3500);
             }
         }, intervalTime);
     }, 1500);
@@ -1928,19 +2066,18 @@ function executeDownload() {
         <div class="brand-name">AppRestore IOS</div>
         <div class="version-text">v 4.0 (08.10.2026)</div>
     </div>
-    <div class="auth-box" style="border-color: rgba(239, 68, 68, 0.65); box-shadow: 0 0 30px rgba(239, 68, 68, 0.15), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.08);">
-        <div class="auth-title">Выбранное приложение</div>
-        <div class="app-badge-box" style="margin-top: 2px; gap: 8px;">
-            <div class="app-icon" id="tokenAppIconContainer" style="display: none; width: 26px; height: 26px; min-width: 26px; min-height: 26px; border: 1px solid rgba(255, 255, 255, 0.18);">
-                <img id="tokenAppIcon" src="" alt="App Icon">
-            </div>
-            <span id="tokenAppName">Загрузка...</span>
+    <div class="auth-box" style="border-color: rgba(239, 68, 68, 0.65); box-shadow: 0 0 30px rgba(239, 68, 68, 0.15), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.08); padding-bottom: 16px;">
+        <div class="auth-title">Доступные приложения</div>
+        
+        <div class="token-highlight-box" style="margin-top: 4px; margin-bottom: 6px; padding: 12px 14px;">
+            <div class="token-highlight-text" style="font-size: 12px;">Установите приложения ниже. Ссылка сгорит после закрытия страницы!</div>
         </div>
-        <div class="token-highlight-box" style="margin-top: 2px;">
-            <div class="token-highlight-text">Данная ссылка действительна для одной установки на одно устройство!</div>
+
+        <div id="tokenAppsContainer" class="token-apps-list">
+            <!-- Сюда динамически добавляются карточки приложений -->
         </div>
-        <button type="button" class="btn" id="tokenInstallBtn" style="margin-top: 5px;">Установить приложение</button>
-        <button type="button" class="btn btn-guide" onclick="openGuideSheet()">
+
+        <button type="button" class="btn btn-guide" onclick="openGuideSheet()" style="margin-top: 12px;">
             <span style="color: #fde68a; font-weight: 700; margin-right: 4px;">•</span> Инструкция по установке
         </button>
     </div>
@@ -1953,9 +2090,9 @@ function executeDownload() {
         <div class="version-text">v 4.0 (08.10.2026)</div>
     </div>
     <div class="auth-box" style="border-color: rgba(34, 197, 94, 0.6);">
-        <div class="auth-title" style="color: #4ade80;">Установка завершена!</div>
+        <div class="auth-title" style="color: #4ade80;">Все приложения установлены!</div>
         <div class="auth-description" style="margin-top: 10px; line-height: 1.6;">
-            Для работы приложения обратитесь к продавцу.
+            Для работы приложений обратитесь к продавцу.
         </div>
         <a href="https://t.me/dizabled" target="_blank" class="btn btn-telegram" style="margin-top: 10px;">
             <img src="Telegram_logo.svg" alt="Telegram" class="telegram-icon">Написать продавцу
