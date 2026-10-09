@@ -368,12 +368,6 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margi
 
 .telegram-icon { width: 17px; height: 17px; object-fit: contain; }
 
-.loading-box {
-    border-color: rgba(56, 189, 248, 0.45);
-    box-shadow: 0 0 24px rgba(56, 189, 248, 0.08), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.08);
-    transition: all 0.5s ease;
-}
-
 .auth-error {
     display: none;
     margin-top: -5px;
@@ -903,7 +897,6 @@ const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 let remoteConfig = { sitePassword: "", appPasswords: {}, appVisibility: {} };
 let selectedAppUrl = "";
 let selectedAppKey = "";
-let isInstalling = false;
 let currentCategory = "all";
 let isSheetClosing = false;
 let currentToken = null;
@@ -1170,69 +1163,18 @@ async function handleOneTimeToken(token) {
 }
 
 function startTokenInstall(btn, url, appKey) {
-    if (isInstalling) return;
-    
     btn.textContent = "Установлено";
     btn.classList.add("installed");
 
-    selectedAppUrl = url;
-    selectedAppKey = appKey;
-    
-    executeTokenDownload(); 
-}
+    window.location.href = url;
 
-function executeTokenDownload() {
-    if (isInstalling) return;
-    isInstalling = true;
-
-    document.querySelectorAll(".container").forEach(el => el.classList.remove("active-screen"));
-    const loadingScreen = document.getElementById("loadingScreen");
-    loadingScreen.classList.add("active-screen");
-    
-    const tokenBackBtn = document.getElementById("tokenLoadingBackBtn");
-    if(tokenBackBtn) tokenBackBtn.style.display = "flex";
-    
-    const mainBackBtn = document.getElementById("mainLoadingBackBtn");
-    if(mainBackBtn) mainBackBtn.style.display = "none";
-
-    window.location.href = selectedAppUrl;
-
-    setTimeout(() => {
-        isInstalling = false;
-    }, 1500);
-}
-
-function executeDownload() {
-    if (isInstalling) return;
-    isInstalling = true;
-
-    document.querySelectorAll(".container").forEach(el => el.classList.remove("active-screen"));
-    const loadingScreen = document.getElementById("loadingScreen");
-    loadingScreen.classList.add("active-screen");
-    
-    const tokenBackBtn = document.getElementById("tokenLoadingBackBtn");
-    if(tokenBackBtn) tokenBackBtn.style.display = "none";
-    
-    const mainBackBtn = document.getElementById("mainLoadingBackBtn");
-    if(mainBackBtn) mainBackBtn.style.display = "flex";
-
-    window.location.href = selectedAppUrl;
-
-    setTimeout(() => {
-        isInstalling = false;
-    }, 1500);
-}
-
-function goBackToTokenApps() {
-    isInstalling = false;
-    
-    switchScreen("tokenApp");
-    
     const allButtons = document.querySelectorAll('.token-install-btn');
     const installedButtons = document.querySelectorAll('.token-install-btn.installed');
     
     if (allButtons.length > 0 && allButtons.length === installedButtons.length) {
-        switchScreen("tokenSuccessApp");
+        setTimeout(() => {
+            switchScreen("tokenSuccessApp");
+        }, 1500);
     }
 }
 
@@ -1392,7 +1334,7 @@ function selectApp(element, url, name, appKey) {
 }
 
 function startInstallation() {
-    if (!selectedAppUrl || isInstalling) return;
+    if (!selectedAppUrl) return;
 
     const currentAppPassword = getAppPasswords()[selectedAppKey];
     if (currentAppPassword && currentAppPassword.trim() !== "") {
@@ -1403,7 +1345,7 @@ function startInstallation() {
         return;
     }
 
-    executeDownload();
+    window.location.href = selectedAppUrl;
 }
 
 function submitAppPassword() {
@@ -1413,7 +1355,7 @@ function submitAppPassword() {
     const currentAppPassword = getAppPasswords()[selectedAppKey];
     if (input.value.trim() === currentAppPassword) {
         switchScreen("mainApp");
-        executeDownload();
+        window.location.href = selectedAppUrl;
         return;
     }
 
@@ -1478,23 +1420,6 @@ function cancelAppPassword() {
         <div id="appPassError" class="auth-error">Неверный пароль</div>
         <button type="button" class="btn" onclick="submitAppPassword()">Подтвердить</button>
         <button type="button" class="btn btn-secondary" onclick="cancelAppPassword()">Назад</button>
-    </div>
-</div>
-
-<div class="container" id="loadingScreen">
-    <div class="brand-header">
-        <img src="https://github.com/app-installer-ios/store/releases/download/logosite/logosite.jpg" alt="logosite" class="brand-logo">
-        <div class="brand-name">AppRestore IOS</div>
-        <div class="version-text">v 4.0 (08.10.2026)</div>
-    </div>
-    <div class="auth-box loading-box" id="loadingBox" style="border-color: rgba(56, 189, 248, 0.45);">
-        <div class="auth-title" style="color: #38bdf8; font-size: 20px;">Загрузка началась!</div>
-        <div class="auth-description" style="margin-top: 10px; line-height: 1.6; font-size: 14px;">
-            Система начала установку приложения.<br>Вы можете свернуть браузер и проверить статус на экране «Домой».
-        </div>
-        
-        <button type="button" class="btn btn-secondary" id="tokenLoadingBackBtn" onclick="goBackToTokenApps()" style="display: none; margin-top: 16px;">◀ Назад к списку</button>
-        <button type="button" class="btn btn-secondary" id="mainLoadingBackBtn" onclick="switchScreen('mainApp')" style="display: none; margin-top: 16px;">◀ Назад в меню</button>
     </div>
 </div>
 
@@ -1965,9 +1890,9 @@ function cancelAppPassword() {
         <div class="version-text">v 4.0 (08.10.2026)</div>
     </div>
     <div class="auth-box" style="border-color: rgba(34, 197, 94, 0.6);">
-        <div class="auth-title" style="color: #4ade80;">Все приложения установлены!</div>
+        <div class="auth-title" style="color: #4ade80;">Установка завершена!</div>
         <div class="auth-description" style="margin-top: 10px; line-height: 1.6;">
-            Для работы приложений обратитесь к продавцу.
+            Все выбранные приложения были успешно установлены.<br><br>Вы можете закрыть эту страницу. Для работы приложений обратитесь к продавцу.
         </div>
         <a href="https://t.me/dizabled" target="_blank" class="btn btn-telegram" style="margin-top: 10px;">
             <img src="Telegram_logo.svg" alt="Telegram" class="telegram-icon">Написать продавцу
