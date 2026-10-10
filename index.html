@@ -761,93 +761,6 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margi
     pointer-events: none;
 }
 
-.guide-modal { 
-    height: min(88vh, 680px); 
-    background: linear-gradient(165deg, rgba(28, 25, 23, 0.98), rgba(15, 13, 11, 0.99));
-    border: 1.8px solid rgba(245, 158, 11, 0.4);
-    box-shadow: 0 0 35px rgba(217, 119, 6, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-}
-
-.guide-content { 
-    display: flex; 
-    flex-direction: column; 
-    gap: 12px; 
-    padding: 6px 2px 10px 2px;
-    overflow-y: auto;
-    scrollbar-width: none !important;
-    -ms-overflow-style: none;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.guide-content::-webkit-scrollbar {
-    display: none;
-}
-
-.guide-step {
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-    padding: 16px;
-    background: linear-gradient(145deg, rgba(30, 41, 59, 0.4), rgba(17, 24, 39, 0.6));
-    border: 1px solid rgba(217, 160, 115, 0.22);
-    border-radius: 20px;
-    flex-shrink: 0;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
-    backdrop-filter: blur(12px);
-    transition: all 0.25s ease;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.guide-step:hover {
-    background: linear-gradient(145deg, rgba(30, 41, 59, 0.6), rgba(17, 24, 39, 0.8));
-    border-color: rgba(217, 160, 115, 0.45);
-    transform: translateY(-2px);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
-}
-
-.guide-step.highlighted-box {
-    border: 1.8px solid rgba(245, 158, 11, 0.65);
-    background: rgba(245, 158, 11, 0.08);
-    box-shadow: none;
-}
-
-.guide-step-number {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    min-width: 28px;
-    background: linear-gradient(135deg, rgba(217, 119, 6, 0.25), rgba(245, 158, 11, 0.35));
-    color: #fde68a;
-    font-size: 13px;
-    font-weight: 750;
-    border-radius: 50%;
-    margin-top: 1px;
-    border: 1px solid rgba(245, 158, 11, 0.45);
-    box-shadow: 0 0 12px rgba(245, 158, 11, 0.15);
-}
-
-.guide-step-text { 
-    font-size: 13.5px; 
-    color: #cbd5e1; 
-    line-height: 1.6; 
-    letter-spacing: -0.1px;
-}
-
-.guide-step.highlighted-box .guide-step-text {
-    color: #fde68a;
-    font-weight: 600;
-}
-
-.guide-step-text strong, .guide-step-text em { 
-    color: #fde68a; 
-    font-weight: 700; 
-    font-style: normal;
-}
-
 /* Стили для премиального светящегося бокса с текстом */
 .token-highlight-box {
     position: relative;
@@ -1136,8 +1049,12 @@ async function handleOneTimeToken(token) {
                 console.error("Ошибка при гашении токена:", err);
             }
 
+            const singleTokenAppContainer = document.getElementById('singleTokenAppContainer');
             const tokenAppsContainer = document.getElementById('tokenAppsContainer');
-            tokenAppsContainer.innerHTML = ''; 
+            if (singleTokenAppContainer) singleTokenAppContainer.innerHTML = '';
+            if (tokenAppsContainer) tokenAppsContainer.innerHTML = ''; 
+
+            const targetContainer = appKeys.length >= 2 ? tokenAppsContainer : singleTokenAppContainer;
 
             appKeys.forEach(appKey => {
                 const appElement = document.querySelector(`.sheet-item[data-key="${appKey}"]`);
@@ -1166,22 +1083,20 @@ async function handleOneTimeToken(token) {
                                 </svg>
                             </button>
                         `;
-                        tokenAppsContainer.appendChild(appCard);
+                        if(targetContainer) targetContainer.appendChild(appCard);
                     }
                 }
             });
 
             const showAppsBtn = document.getElementById('showAppsBtn');
             if (appKeys.length >= 2) {
-                tokenAppsContainer.style.display = 'none';
-                showAppsBtn.style.display = 'flex';
-                showAppsBtn.innerHTML = `Показать список приложений (${appKeys.length})`;
-                showAppsBtn.onclick = function() {
-                    tokenAppsContainer.style.display = 'flex';
-                    showAppsBtn.style.display = 'none';
-                };
+                if (singleTokenAppContainer) singleTokenAppContainer.style.display = 'none';
+                if (showAppsBtn) {
+                    showAppsBtn.style.display = 'flex';
+                    showAppsBtn.innerHTML = `Показать список приложений (${appKeys.length})`;
+                }
             } else {
-                tokenAppsContainer.style.display = 'flex';
+                if (singleTokenAppContainer) singleTokenAppContainer.style.display = 'flex';
                 if (showAppsBtn) showAppsBtn.style.display = 'none';
             }
 
@@ -1211,6 +1126,7 @@ function startTokenInstall(btn, url, appKey) {
     
     if (allButtons.length > 0 && allButtons.length === installedButtons.length) {
         setTimeout(() => {
+            closeTokenAppsSheet();
             switchScreen("tokenSuccessApp");
         }, 1500);
     }
@@ -1266,14 +1182,6 @@ function closeSheet() {
     filterApps();
 
     setTimeout(() => { isSheetClosing = false; }, 400);
-}
-
-function openGuideSheet() {
-    document.getElementById("guideOverlay").classList.add("active");
-}
-
-function closeGuideSheet() {
-    document.getElementById("guideOverlay").classList.remove("active");
 }
 
 function toggleFilterMenu() {
@@ -1404,6 +1312,16 @@ function submitAppPassword() {
 
 function cancelAppPassword() {
     switchScreen("mainApp");
+}
+
+function openTokenAppsSheet() {
+    const sheet = document.getElementById("tokenAppsSheetOverlay");
+    if (sheet) sheet.classList.add("active");
+}
+
+function closeTokenAppsSheet() {
+    const sheet = document.getElementById("tokenAppsSheetOverlay");
+    if (sheet) sheet.classList.remove("active");
 }
 </script>
 
@@ -1841,7 +1759,7 @@ function cancelAppPassword() {
         </div>
     </div>
 </div>
-    
+
 <!-- НОВЫЕ ЭКРАНЫ ДЛЯ РАЗОВОЙ ССЫЛКИ -->
 <div class="container" id="tokenApp">
     <div class="brand-header">
@@ -1858,10 +1776,10 @@ function cancelAppPassword() {
             </div>
         </div>
 
-        <button type="button" class="btn" id="showAppsBtn" style="display: none; margin-top: 12px; background: rgba(217, 119, 6, 0.15); border: 1.8px solid rgba(245, 158, 11, 0.45); color: #fde68a;">Показать список</button>
+        <button type="button" class="btn" id="showAppsBtn" style="display: none; margin-top: 12px; background: rgba(217, 119, 6, 0.15); border: 1.8px solid rgba(245, 158, 11, 0.45); color: #fde68a;" onclick="openTokenAppsSheet()">Показать список</button>
 
-        <div id="tokenAppsContainer" class="token-apps-list" style="margin-top: 8px;">
-            <!-- Сюда динамически добавляются карточки приложений -->
+        <div id="singleTokenAppContainer" class="token-apps-list" style="margin-top: 8px;">
+            <!-- Сюда динамически добавляются карточки приложений (если 1 приложение) -->
         </div>
     </div>
 </div>
@@ -1902,6 +1820,20 @@ function cancelAppPassword() {
         <a href="https://t.me/dizabled" target="_blank" class="btn btn-telegram" style="margin-top: 10px;">
             <img src="Telegram_logo.svg" alt="Telegram" class="telegram-icon">Написать продавцу
         </a>
+    </div>
+</div>
+
+<div class="sheet-overlay" id="tokenAppsSheetOverlay" onclick="closeTokenAppsSheet()">
+    <div class="sheet-modal" onclick="event.stopPropagation()" style="height: auto; max-height: 85vh;">
+        <div class="sheet-header">
+            <div class="sheet-title">Список приложений</div>
+            <button type="button" class="sheet-close" onclick="closeTokenAppsSheet()">✕</button>
+        </div>
+        <div class="sheet-list" style="padding-top: 4px;">
+            <div id="tokenAppsContainer" class="token-apps-list" style="margin-top: 0; max-height: none; padding-right: 4px; margin-right: 0;">
+                <!-- Сюда динамически добавляются карточки приложений (если 2 и более) -->
+            </div>
+        </div>
     </div>
 </div>
 
