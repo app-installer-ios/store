@@ -1439,14 +1439,6 @@ function cancelAppPassword() {
             </div>
             
             <button type="button" class="btn" onclick="startInstallation()">Установить</button>
-            
-            <button type="button" class="btn btn-guide" onclick="openGuideSheet()">
-                <span style="color: #fde68a; font-weight: 700; margin-right: 4px;">•</span> Как это работает?
-            </button>
-
-            <a href="https://t.me/apprestore_ios" target="_blank" rel="noopener noreferrer" class="btn btn-telegram">
-                <img src="Telegram_logo.svg" alt="Telegram" class="telegram-icon">AppRestore IOS в Telegram!
-            </a>
         </div>
     </div>
 </div>
@@ -1812,59 +1804,6 @@ function cancelAppPassword() {
     </div>
 </div>
 
-<div class="sheet-overlay" id="guideOverlay" onclick="closeGuideSheet()">
-    <div class="sheet-modal guide-modal" onclick="event.stopPropagation()">
-        <div class="sheet-header">
-            <div class="sheet-title">Инструкция по установке</div>
-            <button type="button" class="sheet-close" onclick="closeGuideSheet()">✕</button>
-        </div>
-
-        <div class="guide-content sheet-list">
-            <div class="guide-step">
-                <div class="guide-step-number">1</div>
-                <div class="guide-step-text">
-                    Выберите нужное приложение в списке, нажав на поле выбора, и нажмите кнопку <strong>«Установить»</strong>. После этого <strong>введите пароль для установки, который Вам выдаст администратор</strong> и подтвердите установку в системном окне iOS для запуска процесса загрузки приложения на устройство.
-                </div>
-            </div>
-
-            <div class="guide-step">
-                <div class="guide-step-number">2</div>
-                <div class="guide-step-text">
-                    Дождитесь окончания загрузки и появления иконки приложения на экране «Домой».
-                </div>
-            </div>
-
-            <div class="guide-step">
-                <div class="guide-step-number">3</div>
-                <div class="guide-step-text">
-                    Если при открытии приложения происходит вылет (краш), <strong>обратитесь к администратору</strong> для получения временного аккаунта AppStore.
-                </div>
-            </div>
-
-            <div class="guide-step">
-                <div class="guide-step-number">4</div>
-                <div class="guide-step-text">
-                    Перейдите в <em>Настройки</em> — тапните <em>по вашему имени (Apple ID)</em> — выберите <em>«Контент и покупки»</em> (на старых версиях iOS — <em>iTunes Store и App Store</em>) и авторизуйтесь с данными, которые выдал администратор. Если потребуется код подтверждения, запросите его у администратора.
-                </div>
-            </div>
-
-            <div class="guide-step highlighted-box">
-                <div class="guide-step-number">5</div>
-                <div class="guide-step-text">
-                    <em>Ни в коем случае не вводите данные вверху в разделе «iCloud»!</em>
-                </div>
-            </div>
-
-            <div class="guide-step">
-                <div class="guide-step-number">6</div>
-                <div class="guide-step-text">
-                    После успешного входа запустите приложение — оно заработает. Как только приложение откроется, обязательно выйдите из аккаунта в разделе <strong>Контент и покупки</strong>.
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- НОВЫЕ ЭКРАНЫ ДЛЯ РАЗОВОЙ ССЫЛКИ -->
 <div class="container" id="tokenApp">
     <div class="brand-header">
@@ -1872,16 +1811,16 @@ function cancelAppPassword() {
         <div class="brand-name">AppRestore IOS</div>
         <div class="version-text">v 4.0 (08.10.2026)</div>
     </div>
-    <div class="auth-box" style="border-color: rgba(239, 68, 68, 0.65); box-shadow: 0 0 30px rgba(239, 68, 68, 0.15), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.08); padding-bottom: 16px;">
+    <div class="auth-box" style="border-color: rgba(239, 68, 68, 0.65); box-shadow: 0 0 30px rgba(239, 68, 68, 0.15), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.08); padding: 22px;">
         <div class="auth-title">Ваши приложения</div>
         
-        <div class="token-highlight-box" style="margin-top: 4px; margin-bottom: 6px; padding: 12px 14px;">
+        <div class="token-highlight-box" style="margin-top: 8px; padding: 14px;">
             <div class="token-highlight-text" style="font-size: 13px; line-height: 1.4;">
-                Ссылка действует <b>один раз</b> на <b>одном устройстве</b>.<br><br>iPhone спросит подтверждение — нажмите <b>«Установить»</b>, и приложение начнёт загружаться на рабочем столе.
+                Ссылка действует <b>один раз</b> на <b>одном устройстве</b>.<br>iPhone спросит подтверждение — нажмите <b>«Установить»</b>, и приложение начнёт загружаться на рабочем столе.
             </div>
         </div>
 
-        <div id="tokenAppsContainer" class="token-apps-list">
+        <div id="tokenAppsContainer" class="token-apps-list" style="margin-top: 8px;">
             <!-- Сюда динамически добавляются карточки приложений -->
         </div>
     </div>
@@ -1893,19 +1832,19 @@ function cancelAppPassword() {
         <div class="brand-name">AppRestore IOS</div>
         <div class="version-text">v 4.0 (08.10.2026)</div>
     </div>
-    <div class="auth-box" style="border-color: rgba(59, 130, 246, 0.6); box-shadow: 0 0 30px rgba(59, 130, 246, 0.15), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.08); padding: 24px 20px;">
-        <div style="font-size: 34px; margin-bottom: 4px;">📲</div>
+    <div class="auth-box" style="border-color: rgba(59, 130, 246, 0.6); box-shadow: 0 0 30px rgba(59, 130, 246, 0.15), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.08); padding: 22px 20px;">
+        <div style="font-size: 30px; margin-bottom: 2px;">📲</div>
         <div class="auth-title" style="color: #f8fafc; font-size: 21px;">Установка началась!</div>
         
-        <div class="auth-description" style="margin-top: 12px; line-height: 1.5; font-size: 13.5px; color: #cbd5e1;">
-            Сверните Safari — на рабочем столе появилась иконка с загрузкой.<br><br>Подождите 1–3 минуты до её завершения. Приложение откроется само.
+        <div class="auth-description" style="margin-top: 8px; line-height: 1.4; font-size: 13.5px; color: #cbd5e1;">
+            Сверните Safari — на рабочем столе появилась иконка с загрузкой. Подождите 1–3 минуты до её завершения. Приложение откроется само.
         </div>
 
-        <div style="margin-top: 16px; padding: 12px 14px; background: rgba(30, 41, 59, 0.4); border-radius: 12px; border: 1px solid rgba(148, 163, 184, 0.15); font-size: 11.5px; color: #94a3b8; line-height: 1.5;">
+        <div style="margin-top: 12px; padding: 10px 14px; background: rgba(30, 41, 59, 0.4); border-radius: 12px; border: 1px solid rgba(148, 163, 184, 0.15); font-size: 11.5px; color: #94a3b8; line-height: 1.4;">
             После установки приложения для его работы свяжитесь с продавцом!
         </div>
 
-        <button type="button" class="btn" style="margin-top: 16px; background: #2563eb; color: #ffffff; font-size: 15px; border-radius: 14px; min-height: 48px; border: none; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);" onclick="window.location.href='https://t.me/dizabled'">Написать продавцу</button>
+        <button type="button" class="btn" style="margin-top: 12px; background: #2563eb; color: #ffffff; font-size: 15px; border-radius: 14px; min-height: 48px; border: none; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);" onclick="window.location.href='https://t.me/dizabled'">Написать продавцу</button>
     </div>
 </div>
 
