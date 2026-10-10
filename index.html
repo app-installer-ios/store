@@ -692,6 +692,74 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margi
 
 .search-empty { display: none; text-align: center; color: #94a3b8; font-size: 13px; padding: 20px 10px; width: 100%; box-sizing: border-box; }
 
+/* Стили для карточки приложения в окне разовой установки */
+.token-app-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, rgba(51, 65, 85, 0.35), rgba(217, 119, 6, 0.15));
+    border: 1.8px solid rgba(217, 180, 140, 0.45);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease, border-color 0.2s ease;
+    gap: 10px;
+}
+
+.token-app-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 0; 
+}
+
+.token-app-icon {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    min-height: 32px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+/* Убрано многоточие, разрешен перенос слов на новую строку */
+.token-app-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #f1f5f9;
+    line-height: 1.3;
+    white-space: normal;
+    word-break: break-word;
+}
+
+.token-install-btn {
+    padding: 6px 12px;
+    border-radius: 10px;
+    background: rgba(245, 158, 11, 0.2);
+    border: 1px solid rgba(245, 158, 11, 0.6);
+    color: #fde68a;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0; /* Чтобы кнопка не сужалась */
+    white-space: nowrap; /* Чтобы текст кнопки оставался на одной строке */
+}
+
+.token-install-btn:hover {
+    background: rgba(245, 158, 11, 0.3);
+}
+
+.token-install-btn.installed {
+    background: rgba(180, 83, 9, 0.25);
+    border-color: rgba(180, 83, 9, 0.5);
+    color: #f59e0b;
+    pointer-events: none;
+}
+
 .guide-modal { 
     height: min(88vh, 680px); 
     background: linear-gradient(165deg, rgba(28, 25, 23, 0.98), rgba(15, 13, 11, 0.99));
@@ -822,63 +890,6 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margi
     border-radius: 4px;
 }
 
-.token-app-card {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 14px;
-    border-radius: 14px;
-    background: linear-gradient(135deg, rgba(51, 65, 85, 0.35), rgba(217, 119, 6, 0.15));
-    border: 1.8px solid rgba(217, 180, 140, 0.45);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    transition: transform 0.2s ease, border-color 0.2s ease;
-}
-
-.token-app-info {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.token-app-icon {
-    width: 32px;
-    height: 32px;
-    min-width: 32px;
-    min-height: 32px;
-    border-radius: 50%;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    object-fit: cover;
-    flex-shrink: 0;
-}
-
-.token-app-name {
-    font-size: 14px;
-    font-weight: 600;
-    color: #f1f5f9;
-}
-
-.token-install-btn {
-    padding: 6px 12px;
-    border-radius: 10px;
-    background: rgba(245, 158, 11, 0.2);
-    border: 1px solid rgba(245, 158, 11, 0.6);
-    color: #fde68a;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.token-install-btn:hover {
-    background: rgba(245, 158, 11, 0.3);
-}
-
-.token-install-btn.installed {
-    background: rgba(180, 83, 9, 0.25);
-    border-color: rgba(180, 83, 9, 0.5);
-    color: #f59e0b;
-    pointer-events: none;
-}
 </style>
 </head>
 
@@ -1803,6 +1814,7 @@ function cancelAppPassword() {
         </div>
     </div>
 </div>
+
 <!-- НОВЫЕ ЭКРАНЫ ДЛЯ РАЗОВОЙ ССЫЛКИ -->
 <div class="container" id="tokenApp">
     <div class="brand-header">
