@@ -1876,8 +1876,8 @@ function cancelAppPassword() {
         <div class="auth-title">Ваши приложения</div>
         
         <div class="token-highlight-box" style="margin-top: 4px; margin-bottom: 6px; padding: 12px 14px;">
-            <div class="token-highlight-text" style="font-size: 12px; line-height: 1.4;">
-                Ссылка одноразовая и действует только для <b>одной</b> установки на <b>одно</b> устройство!<br><br>Не закрывайте и не сворачивайте эту страницу до полного завершения загрузки всех приложений.
+            <div class="token-highlight-text" style="font-size: 13px; line-height: 1.4;">
+                Ссылка действует <b>один раз</b> на <b>одном устройстве</b>.<br><br>iPhone спросит подтверждение — нажмите <b>«Установить»</b>, и приложение начнёт загружаться на рабочем столе.
             </div>
         </div>
 
@@ -1897,14 +1897,21 @@ function cancelAppPassword() {
         <div class="brand-name">AppRestore IOS</div>
         <div class="version-text">v 4.0 (08.10.2026)</div>
     </div>
-    <div class="auth-box" style="border-color: rgba(34, 197, 94, 0.6);">
-        <div class="auth-title" style="color: #4ade80;">Установка завершена!</div>
-        <div class="auth-description" style="margin-top: 10px; line-height: 1.6;">
-            Все выбранные приложения были успешно установлены. За процессом загрузке можно следить на домашнем экране IPhone.<br><br>Вы можете закрыть эту страницу. Для работы приложений обратитесь к продавцу.
+    <div class="auth-box" style="border-color: rgba(59, 130, 246, 0.6); box-shadow: 0 0 30px rgba(59, 130, 246, 0.15), 0 25px 70px rgba(0,0,0,.62), inset 0 1px 1px rgba(255,255,255,.08); padding: 24px 20px;">
+        <div style="font-size: 34px; margin-bottom: 4px;">📲</div>
+        <div class="auth-title" style="color: #f8fafc; font-size: 21px;">Установка началась!</div>
+        
+        <div class="auth-description" style="margin-top: 12px; line-height: 1.5; font-size: 13.5px; color: #cbd5e1;">
+            Сверните Safari и посмотрите на рабочий стол — там уже появилась иконка приложения с кружком загрузки.
+            <br><br>
+            Подождите, пока кружок дозаполнится — обычно 1–3 минуты. Приложение откроется само.
         </div>
-        <a href="https://t.me/dizabled" target="_blank" class="btn btn-telegram" style="margin-top: 10px;">
-            <img src="Telegram_logo.svg" alt="Telegram" class="telegram-icon">Написать продавцу
-        </a>
+
+        <div style="margin-top: 16px; padding: 12px 14px; background: rgba(30, 41, 59, 0.4); border-radius: 12px; border: 1px solid rgba(148, 163, 184, 0.15); font-size: 11.5px; color: #94a3b8; line-height: 1.5;">
+            Wi-Fi виснет → мобильный интернет; и там виснет → VPN.
+        </div>
+
+        <button type="button" class="btn" style="margin-top: 16px; background: #2563eb; color: #ffffff; font-size: 15px; border-radius: 14px; min-height: 48px; border: none; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);" onclick="window.location.href='https://t.me/apprestore_ios'">Понятно</button>
     </div>
 </div>
 
