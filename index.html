@@ -874,9 +874,9 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margi
 }
 
 .token-install-btn.installed {
-    background: rgba(34, 197, 94, 0.2);
-    border-color: rgba(34, 197, 94, 0.6);
-    color: #4ade80;
+    background: rgba(180, 83, 9, 0.25);
+    border-color: rgba(180, 83, 9, 0.5);
+    color: #f59e0b;
     pointer-events: none;
 }
 </style>
@@ -1163,7 +1163,7 @@ async function handleOneTimeToken(token) {
 }
 
 function startTokenInstall(btn, url, appKey) {
-    btn.textContent = "Установлено";
+    btn.textContent = "Устанавливается";
     btn.classList.add("installed");
 
     window.location.href = url;
@@ -1803,7 +1803,6 @@ function cancelAppPassword() {
         </div>
     </div>
 </div>
-
 <!-- НОВЫЕ ЭКРАНЫ ДЛЯ РАЗОВОЙ ССЫЛКИ -->
 <div class="container" id="tokenApp">
     <div class="brand-header">
