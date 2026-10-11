@@ -13,7 +13,6 @@
 
 button, input, .btn, .custom-select-btn, .sheet-close, .search-clear, .search-filter-btn, .filter-option {
     touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
 }
 
 html, body {
@@ -305,7 +304,6 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margi
     cursor: pointer;
     box-shadow: 0 10px 25px rgba(51, 65, 85, 0.25), inset 0 1px 0 rgba(255,255,255,0.2);
     transition: transform .2s var(--spring), background-color .2s ease, filter .2s ease, box-shadow .2s ease;
-    -webkit-tap-highlight-color: transparent;
     outline: none;
 }
 
@@ -318,7 +316,6 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margi
     transform: scale(.975); 
     filter: brightness(.95); 
     outline: none;
-    -webkit-tap-highlight-color: transparent;
 }
 
 .btn-secondary {
@@ -360,7 +357,6 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margi
     border: 1.8px solid rgba(148, 163, 184, 0.2);
     color: #cbd5e1;
     box-shadow: none;
-    -webkit-tap-highlight-color: transparent;
     outline: none;
 }
 
@@ -368,15 +364,6 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margi
     background: rgba(30, 41, 59, 0.75);
     border-color: rgba(148, 163, 184, 0.4);
     color: #f8fafc;
-}
-
-.btn-telegram:active, .btn-telegram:focus {
-    background: rgba(30, 41, 59, 0.75);
-    border-color: rgba(148, 163, 184, 0.4);
-    color: #f8fafc;
-    outline: none;
-    box-shadow: none;
-    -webkit-tap-highlight-color: transparent;
 }
 
 .telegram-icon { width: 17px; height: 17px; object-fit: contain; }
