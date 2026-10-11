@@ -267,7 +267,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     });
 });
 
-// Моментальное обновление при возврате на вкладку (из прошлого фикса)
+// Моментальное обновление при возврате на вкладку
 document.addEventListener("visibilitychange", async () => {
     if (document.visibilityState === "visible") {
         const previousSitePassword = remoteConfig.sitePassword;
@@ -290,6 +290,7 @@ document.addEventListener("visibilitychange", async () => {
 
 async function handleOneTimeToken(token) {
     try {
+        // 1. Делаем запрос на получение данных токена
         const response = await fetch(`${SUPABASE_URL}/rest/v1/one_time_links?token=eq.${token}&select=*`, {
             headers: { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` }
         });
@@ -313,21 +314,7 @@ async function handleOneTimeToken(token) {
                 return;
             }
 
-            try {
-                await fetch(`${SUPABASE_URL}/rest/v1/one_time_links?token=eq.${token}`, {
-                    method: "PATCH",
-                    headers: { 
-                        "apikey": SUPABASE_KEY, 
-                        "Authorization": `Bearer ${SUPABASE_KEY}`,
-                        "Content-Type": "application/json",
-                        "Prefer": "return=minimal"
-                    },
-                    body: JSON.stringify({ is_used: true })
-                });
-            } catch (err) {
-                console.error("Ошибка при гашении токена:", err);
-            }
-
+            // 2. СРАЗУ отрисовываем интерфейс, не дожидаясь ответа от PATCH запроса
             const singleTokenAppContainer = document.getElementById('singleTokenAppContainer');
             const tokenAppsContainer = document.getElementById('tokenAppsContainer');
             if (singleTokenAppContainer) singleTokenAppContainer.innerHTML = '';
@@ -369,7 +356,23 @@ async function handleOneTimeToken(token) {
                 if (showAppsBtn) showAppsBtn.style.display = 'none';
             }
 
+            // Мгновенно переключаем экран
             switchScreen("tokenApp");
+
+            // 3. Гасим токен в ФОНОВОМ режиме
+            fetch(`${SUPABASE_URL}/rest/v1/one_time_links?token=eq.${token}`, {
+                method: "PATCH",
+                headers: { 
+                    "apikey": SUPABASE_KEY, 
+                    "Authorization": `Bearer ${SUPABASE_KEY}`,
+                    "Content-Type": "application/json",
+                    "Prefer": "return=minimal"
+                },
+                body: JSON.stringify({ is_used: true })
+            }).catch(err => {
+                console.error("Ошибка при фоновом гашении токена:", err);
+            });
+
             return;
         }
         switchScreen("tokenErrorApp");
@@ -485,7 +488,7 @@ function setCategory(cat, element) {
 let searchTimeout = null;
 function filterAppsDebounced() {
     clearTimeout(searchTimeout);
-    searchTimeout = setTimeout(filterApps, 150); // Ждем 150мс после последнего нажатия клавиши
+    searchTimeout = setTimeout(filterApps, 150);
 }
 
 function filterApps() {
