@@ -907,7 +907,7 @@ const SUPABASE_KEY = "sb_publishable_oUDovfvWL6iioG6N5Xd_QQ_8KYezq8g";
 
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-let remoteConfig = { appVisibility: {} };
+let remoteConfig = { sitePassword: "", appPasswords: {}, appVisibility: {} };
 let selectedAppUrl = "";
 let selectedAppKey = "";
 let currentCategory = "all";
@@ -948,24 +948,35 @@ async function checkSiteStatusManual() {
 
 async function fetchSupabaseSettings() {
     try {
-        const { data, error } = await supabaseClient
-            .from('settings')
-            .select('*');
-            
-        if (error) throw error;
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/settings?select=*`, {
+            headers: { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` }
+        });
+        if (!response.ok) throw new Error("Ошибка загрузки");
+        const data = await response.json();
         
-        const config = { appVisibility: {} };
+        const config = { sitePassword: "", appPasswords: {}, appVisibility: {} };
+
         data.forEach(item => {
-            if (item.key && item.key.startsWith('vis_')) {
+            if (!item || !item.key) return;
+            if (item.key === 'site_password') {
+                config.sitePassword = item.value;
+            } else if (item.key.startsWith('vis_')) {
                 config.appVisibility[item.key.replace('vis_', '')] = item.value === 'true';
+            } else if (item.key.startsWith('pass_')) {
+                config.appPasswords[item.key.replace('pass_', '')] = item.value;
+            } else {
+                config.appPasswords[item.key] = item.value;
             }
         });
         return config;
     } catch (e) {
-        console.error("Ошибка загрузки настроек:", e);
-        return { appVisibility: {} };
+        console.error("Ошибка настроек:", e);
+        return { sitePassword: "", appPasswords: {}, appVisibility: {} };
     }
 }
+
+function getAppPasswords() { return remoteConfig.appPasswords; }
+function getSitePassword() { return remoteConfig.sitePassword; }
 
 function applyAppsVisibility() {
     document.querySelectorAll('.sheet-list .sheet-item').forEach(item => {
@@ -1048,7 +1059,18 @@ document.addEventListener("DOMContentLoaded", async function() {
         .on('postgres_changes', { event: '*', schema: 'public', table: 'settings' }, async () => {
             if (new URLSearchParams(window.location.search).get('token')) return;
 
+            const previousSitePassword = remoteConfig.sitePassword;
             remoteConfig = await fetchSupabaseSettings();
+
+            if (previousSitePassword && previousSitePassword !== remoteConfig.sitePassword) {
+                sessionStorage.removeItem("site_access");
+                switchScreen("authApp");
+                const passInput = document.getElementById("passInput");
+                if (passInput) passInput.value = "";
+                const authError = document.getElementById("authError");
+                if (authError) authError.style.display = "none";
+            }
+
             applyAppsVisibility();
             filterApps();
         })
@@ -1076,82 +1098,107 @@ document.addEventListener("DOMContentLoaded", async function() {
 
 async function handleOneTimeToken(token) {
     try {
-        const { data, error } = await supabaseClient.rpc('redeem_one_time_token', {
-            input_token: token
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/one_time_links?token=eq.${token}&select=*`, {
+            headers: { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` }
         });
-
-        if (error || !data || !data.success) {
-            switchScreen("tokenErrorApp");
-            return;
-        }
-
-        const appKeys = data.app_keys || (data.app_key ? [data.app_key] : []);
         
-        if (appKeys.length === 0) {
-            switchScreen("tokenErrorApp");
+        if (!response.ok) throw new Error("Ошибка проверки токена");
+        
+        const data = await response.json();
+
+        if (data && data.length > 0) {
+            const linkData = data[0];
+            
+            if (linkData.is_used) {
+                switchScreen("tokenErrorApp");
+                return;
+            }
+
+            const appKeys = linkData.app_keys || (linkData.app_key ? [linkData.app_key] : []);
+            
+            if (appKeys.length === 0) {
+                switchScreen("tokenErrorApp");
+                return;
+            }
+
+            try {
+                await fetch(`${SUPABASE_URL}/rest/v1/one_time_links?token=eq.${token}`, {
+                    method: "PATCH",
+                    headers: { 
+                        "apikey": SUPABASE_KEY, 
+                        "Authorization": `Bearer ${SUPABASE_KEY}`,
+                        "Content-Type": "application/json",
+                        "Prefer": "return=minimal"
+                    },
+                    body: JSON.stringify({ is_used: true })
+                });
+            } catch (err) {
+                console.error("Ошибка при гашении токена:", err);
+            }
+
+            const singleTokenAppContainer = document.getElementById('singleTokenAppContainer');
+            const tokenAppsContainer = document.getElementById('tokenAppsContainer');
+            if (singleTokenAppContainer) singleTokenAppContainer.innerHTML = '';
+            if (tokenAppsContainer) tokenAppsContainer.innerHTML = ''; 
+
+            const targetContainer = appKeys.length >= 2 ? tokenAppsContainer : singleTokenAppContainer;
+
+            appKeys.forEach(appKey => {
+                const appElement = document.querySelector(`.sheet-item[data-key="${appKey}"]`);
+                if (appElement) {
+                    const onclickStr = appElement.getAttribute('onclick');
+                    const match = onclickStr.match(/selectApp\(this,\s*'([^']+)',\s*'([^']+)'/);
+                    
+                    if (match) {
+                        const url = match[1];
+                        const name = match[2];
+                        const appIconImg = appElement.querySelector('.app-icon img');
+                        const iconSrc = appIconImg ? appIconImg.src : '';
+
+                        const appCard = document.createElement('div');
+                        appCard.className = 'token-app-card';
+                        appCard.innerHTML = `
+                            <div class="token-app-info">
+                                <img src="${iconSrc}" class="token-app-icon" alt="${name}">
+                                <span class="token-app-name">${name}</span>
+                            </div>
+                            <button type="button" class="token-install-btn" onclick="startTokenInstall(this, '${url}', '${appKey}')" title="Установить">
+                                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="7 10 12 15 17 10"></polyline>
+                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                </svg>
+                            </button>
+                        `;
+                        if(targetContainer) targetContainer.appendChild(appCard);
+                    }
+                }
+            });
+
+            const showAppsBtn = document.getElementById('showAppsBtn');
+            if (appKeys.length >= 2) {
+                if (singleTokenAppContainer) singleTokenAppContainer.style.display = 'none';
+                if (showAppsBtn) {
+                    showAppsBtn.style.display = 'flex';
+                    showAppsBtn.innerHTML = `Показать список приложений (${appKeys.length})`;
+                }
+            } else {
+                if (singleTokenAppContainer) singleTokenAppContainer.style.display = 'flex';
+                if (showAppsBtn) showAppsBtn.style.display = 'none';
+            }
+
+            switchScreen("tokenApp");
             return;
         }
-
-        const singleTokenAppContainer = document.getElementById('singleTokenAppContainer');
-        const tokenAppsContainer = document.getElementById('tokenAppsContainer');
-        if (singleTokenAppContainer) singleTokenAppContainer.innerHTML = '';
-        if (tokenAppsContainer) tokenAppsContainer.innerHTML = ''; 
-
-        const targetContainer = appKeys.length >= 2 ? tokenAppsContainer : singleTokenAppContainer;
-
-        appKeys.forEach(appKey => {
-            const appElement = document.querySelector(`.sheet-item[data-key="${appKey}"]`);
-            if (appElement) {
-                const onclickStr = appElement.getAttribute('onclick');
-                const match = onclickStr.match(/selectApp\(this,\s*'([^']+)',\s*'([^']+)'/);
-                
-                if (match) {
-                    const url = match[1];
-                    const name = match[2];
-                    const appIconImg = appElement.querySelector('.app-icon img');
-                    const iconSrc = appIconImg ? appIconImg.src : '';
-
-                    const appCard = document.createElement('div');
-                    appCard.className = 'token-app-card';
-                    appCard.innerHTML = `
-                        <div class="token-app-info">
-                            <img src="${iconSrc}" class="token-app-icon" alt="${name}">
-                            <span class="token-app-name">${name}</span>
-                        </div>
-                        <button type="button" class="token-install-btn" onclick="startTokenInstall(this, '${url}', '${appKey}')" title="Установить">
-                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                <polyline points="7 10 12 15 17 10"></polyline>
-                                <line x1="12" y1="15" x2="12" y2="3"></line>
-                            </svg>
-                        </button>
-                    `;
-                    if(targetContainer) targetContainer.appendChild(appCard);
-                }
-            }
-        });
-
-        const showAppsBtn = document.getElementById('showAppsBtn');
-        if (appKeys.length >= 2) {
-            if (singleTokenAppContainer) singleTokenAppContainer.style.display = 'none';
-            if (showAppsBtn) {
-                showAppsBtn.style.display = 'flex';
-                showAppsBtn.innerHTML = `Показать список приложений (${appKeys.length})`;
-            }
-        } else {
-            if (singleTokenAppContainer) singleTokenAppContainer.style.display = 'flex';
-            if (showAppsBtn) showAppsBtn.style.display = 'none';
-        }
-
-        switchScreen("tokenApp");
-
+        switchScreen("tokenErrorApp");
     } catch (e) {
-        console.error("Ошибка обработки токена:", e);
+        console.error("Ошибка проверки токена:", e);
         switchScreen("tokenErrorApp");
     }
 }
 
 function startTokenInstall(btn, url, appKey) {
+    // Заменяем иконку скачивания на галочку
     btn.innerHTML = `
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="20 6 9 17 4 12"></polyline>
@@ -1172,38 +1219,19 @@ function startTokenInstall(btn, url, appKey) {
     }
 }
 
-async function submitPassword() {
+function submitPassword() {
     const input = document.getElementById("passInput");
     const errorMsg = document.getElementById("authError");
-    const password = input.value.trim();
-    
-    const btn = document.querySelector("#authApp .btn");
-    const originalText = btn.textContent;
-    btn.textContent = "Проверка...";
-    btn.style.opacity = "0.7";
-    btn.style.pointerEvents = "none";
 
-    try {
-        const { data: isValid, error } = await supabaseClient.rpc('verify_site_password', {
-            input_password: password
-        });
-
-        if (isValid === true) {
-            sessionStorage.setItem("site_access", "true");
-            switchScreen("mainApp");
-        } else {
-            errorMsg.style.display = "block";
-            input.value = "";
-            input.focus();
-        }
-    } catch (e) {
-        console.error("Ошибка авторизации:", e);
-        errorMsg.style.display = "block";
-    } finally {
-        btn.textContent = originalText;
-        btn.style.opacity = "1";
-        btn.style.pointerEvents = "auto";
+    if (input.value.trim() === getSitePassword()) {
+        sessionStorage.setItem("site_access", "true");
+        switchScreen("mainApp");
+        return;
     }
+
+    errorMsg.style.display = "block";
+    input.value = "";
+    input.focus();
 }
 
 function openSheet() {
@@ -1346,71 +1374,35 @@ function selectApp(element, url, name, appKey) {
     closeSheet();
 }
 
-async function startInstallation() {
+function startInstallation() {
     if (!selectedAppUrl) return;
 
-    const btn = document.querySelector("#mainApp .btn");
-    const originalText = btn.textContent;
-    btn.textContent = "Проверка...";
-    btn.style.opacity = "0.7";
-    btn.style.pointerEvents = "none";
-
-    try {
-        const { data: noPasswordRequired, error } = await supabaseClient.rpc('verify_app_password', {
-            app_key: selectedAppKey,
-            input_password: ''
-        });
-
-        if (noPasswordRequired === true) {
-            window.location.href = selectedAppUrl;
-        } else {
-            document.getElementById("appPassError").style.display = "none";
-            document.getElementById("appPassInput").value = "";
-            switchScreen("appAuthApp");
-            document.getElementById("appPassInput").focus();
-        }
-    } catch (e) {
-        console.error("Ошибка проверки защиты приложения:", e);
-    } finally {
-        btn.textContent = originalText;
-        btn.style.opacity = "1";
-        btn.style.pointerEvents = "auto";
+    const currentAppPassword = getAppPasswords()[selectedAppKey];
+    if (currentAppPassword && currentAppPassword.trim() !== "") {
+        document.getElementById("appPassError").style.display = "none";
+        document.getElementById("appPassInput").value = "";
+        switchScreen("appAuthApp");
+        document.getElementById("appPassInput").focus();
+        return;
     }
+
+    window.location.href = selectedAppUrl;
 }
 
-async function submitAppPassword() {
+function submitAppPassword() {
     const input = document.getElementById("appPassInput");
     const errorMsg = document.getElementById("appPassError");
-    const password = input.value.trim();
 
-    const btn = document.querySelector("#appAuthApp .btn");
-    const originalText = btn.textContent;
-    btn.textContent = "Проверка...";
-    btn.style.opacity = "0.7";
-    btn.style.pointerEvents = "none";
-
-    try {
-        const { data: isValid, error } = await supabaseClient.rpc('verify_app_password', {
-            app_key: selectedAppKey,
-            input_password: password
-        });
-
-        if (isValid === true) {
-            switchScreen("mainApp");
-            window.location.href = selectedAppUrl;
-            input.value = "";
-        } else {
-            errorMsg.style.display = "block";
-            input.value = "";
-            input.focus();
-        }
-    } catch (e) {
-        console.error("Ошибка авторизации приложения:", e);
-    } finally {
-        btn.textContent = originalText;
-        btn.style.opacity = "1";
-        btn.style.pointerEvents = "auto";
+    const currentAppPassword = getAppPasswords()[selectedAppKey];
+    if (input.value.trim() === currentAppPassword) {
+        switchScreen("mainApp");
+        window.location.href = selectedAppUrl;
+        return;
     }
+
+    errorMsg.style.display = "block";
+    input.value = "";
+    input.focus();
 }
 
 function cancelAppPassword() {
@@ -1550,7 +1542,7 @@ function closeTokenAppsSheet() {
         <div class="sheet-list">
             <div class="sheet-item" data-key="vk" data-category="social" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk.plist', 'ВКонтакте', 'vk')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://i.pinimg.com/736x/92/a9/dc/92a9dc918ad00d529922958f603ede6d.jpg" alt="ВК"></div>
+                    <div class="app-icon"><img src="https://i.pinimg.com/736x/92/a9/dc/92a9dc918ad00d529922958f603ede6d.jpg" alt="ВК"></div>
                     <div class="sheet-info-box"><span class="app-name">ВКонтакте</span></div>
                 </div>
                 <span class="ios-badge">iOS 17.6+</span>
@@ -1558,7 +1550,7 @@ function closeTokenAppsSheet() {
             
             <div class="sheet-item" data-key="max" data-category="social" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/max.plist', 'MAX', 'max')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://mari-el.gov.ru/upload/iblock/ff2/wiu6p92d5b9r5t9cr4tvv8dwbt3iwiej.png" alt="Макс"></div>
+                    <div class="app-icon"><img src="https://mari-el.gov.ru/upload/iblock/ff2/wiu6p92d5b9r5t9cr4tvv8dwbt3iwiej.png" alt="Макс"></div>
                     <div class="sheet-info-box"><span class="app-name">MAX</span></div>
                 </div>
                 <span class="ios-badge">iOS 15.5+</span>
@@ -1566,7 +1558,7 @@ function closeTokenAppsSheet() {
 
             <div class="sheet-item" data-key="vk-video" data-category="social" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk-video.plist', 'VK Видео', 'vk-video')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://cdn.shazoo.ru/c1240x645/866526_IsBrEl5_vk.jpg" alt="VK Видео"></div>
+                    <div class="app-icon"><img src="https://cdn.shazoo.ru/c1240x645/866526_IsBrEl5_vk.jpg" alt="VK Видео"></div>
                     <div class="sheet-info-box"><span class="app-name">VK Видео</span></div>
                 </div>
                 <span class="ios-badge">iOS 17.6+</span>
@@ -1574,7 +1566,7 @@ function closeTokenAppsSheet() {
       
             <div class="sheet-item" data-key="vk-clips" data-category="social" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk-clips.plist', 'VK Клипы', 'vk-clips')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://freesoft.ru/storage/images/759/7588/758713/758713_normal.png" alt="VK Клипы"></div>
+                    <div class="app-icon"><img src="https://freesoft.ru/storage/images/759/7588/758713/758713_normal.png" alt="VK Клипы"></div>
                     <div class="sheet-info-box"><span class="app-name">VK Клипы</span></div>
                 </div>
                 <span class="ios-badge">iOS 14.0+</span>
@@ -1582,7 +1574,7 @@ function closeTokenAppsSheet() {
 
             <div class="sheet-item" data-key="vk_massanger" data-category="social" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vk_massanger.plist', 'VK Мессенджер', 'vk_massanger')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://www.iguides.ru/upload/iblock/210/s94o3au4qff3sawwq34yksmr7ux2qi8i.jpeg" alt="VK Мессенджер"></div>
+                    <div class="app-icon"><img src="https://www.iguides.ru/upload/iblock/210/s94o3au4qff3sawwq34yksmr7ux2qi8i.jpeg" alt="VK Мессенджер"></div>
                     <div class="sheet-info-box"><span class="app-name">VK Мессенджер</span></div>
                 </div>
                 <span class="ios-badge">iOS 15.0+</span>
@@ -1590,7 +1582,7 @@ function closeTokenAppsSheet() {
 
             <div class="sheet-item" data-key="vkmusic" data-category="social" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vkmusic.plist', 'VK Музыка', 'vkmusic')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/4f/e6/c2/4fe6c2fd-782e-6c4b-0ded-1f18e7a436a0/Placeholder.mill/1200x630wa.jpg" alt="VK Музыка"></div>
+                    <div class="app-icon"><img src="https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/4f/e6/c2/4fe6c2fd-782e-6c4b-0ded-1f18e7a436a0/Placeholder.mill/1200x630wa.jpg" alt="VK Музыка"></div>
                     <div class="sheet-info-box"><span class="app-name">VK Музыка</span></div>
                 </div>
                 <span class="ios-badge">iOS 15.0+</span>
@@ -1598,7 +1590,7 @@ function closeTokenAppsSheet() {
             
             <div class="sheet-item" data-key="sberfinansy" data-category="banks" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sberfinansy.plist', 'СберБанк (Финансы Онлайн)', 'sberfinansy')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://avatars.mds.yandex.net/i?id=e136f957340f46f667209074aaded2ae_l-4079503-images-thumbs&n=13" alt="Сбербанк"></div>
+                    <div class="app-icon"><img src="https://avatars.mds.yandex.net/i?id=e136f957340f46f667209074aaded2ae_l-4079503-images-thumbs&n=13" alt="Сбербанк"></div>
                     <div class="sheet-info-box"><span class="app-name">СберБанк (Финансы Онлайн)</span></div>
                 </div>
                 <span class="ios-badge">iOS 15.0+</span>
@@ -1606,7 +1598,7 @@ function closeTokenAppsSheet() {
 
             <div class="sheet-item" data-key="avito" data-category="other" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/avito.plist', 'Авито', 'avito')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://images.meme-arsenal.com/831d76849c248c4785c163219dda744b.jpg" alt="Авито"></div>
+                    <div class="app-icon"><img src="https://images.meme-arsenal.com/831d76849c248c4785c163219dda744b.jpg" alt="Авито"></div>
                     <div class="sheet-info-box"><span class="app-name">Авито</span></div>
                 </div>
                 <span class="ios-badge">iOS 16.0+</span>
@@ -1614,7 +1606,7 @@ function closeTokenAppsSheet() {
       
             <div class="sheet-item" data-key="sovkombank-vsekarty" data-category="banks" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sovkombank-vsekarty.plist', 'Совкомбанк (Все карты MDS)', 'sovkombank-vsekarty')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://github.com/app-installer-ios/store/releases/download/Sovkom-SCBNotes/2026-10-10_22-44-26.png" alt="Все Карты MDS"></div>
+                    <div class="app-icon"><img src="https://github.com/app-installer-ios/store/releases/download/Sovkom-SCBNotes/2026-10-10_22-44-26.png" alt="Все Карты MDS"></div>
                     <div class="sheet-info-box"><span class="app-name">Совкомбанк (Все карты MDS)</span></div>
                 </div>
                 <span class="ios-badge">iOS 17.0+</span>
@@ -1622,7 +1614,7 @@ function closeTokenAppsSheet() {
 
             <div class="sheet-item" data-key="tbank" data-category="banks" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/tbank.plist', 'Т-Банк(8PRO)', 'tbank')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://static6.tgstat.ru/channels/_50/cc/ccbdee27cc3ba4234ebf990580c1e00f.jpg" alt="Т-Банк (8PRO)"></div>
+                    <div class="app-icon"><img src="https://static6.tgstat.ru/channels/_50/cc/ccbdee27cc3ba4234ebf990580c1e00f.jpg" alt="Т-Банк (8PRO)"></div>
                     <div class="sheet-info-box"><span class="app-name">Т-Банк (8PRO)</span></div>
                 </div>
                 <span class="ios-badge">iOS 16.0+</span>
@@ -1630,7 +1622,7 @@ function closeTokenAppsSheet() {
       
             <div class="sheet-item" data-key="sovkombank-sinoptik" data-category="banks" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sovkombank-sinoptik.plist', 'Совкомбанк (Синоптик+)', 'sovkombank-sinoptik')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://github.com/app-installer-ios/store/releases/download/Sovkom-SCBNotes/2026-10-10_22-44-26.png" alt="Синоптик+"></div>
+                    <div class="app-icon"><img src="https://github.com/app-installer-ios/store/releases/download/Sovkom-SCBNotes/2026-10-10_22-44-26.png" alt="Синоптик+"></div>
                     <div class="sheet-info-box"><span class="app-name">Совкомбанк (Синоптик+)</span></div>
                 </div>
                 <span class="ios-badge">iOS 17.0+</span>
@@ -1638,7 +1630,7 @@ function closeTokenAppsSheet() {
 
             <div class="sheet-item" data-key="spotluma" data-category="banks" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/spotluma.plist', 'Т-Банк (Spotluma)', 'spotluma')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://static6.tgstat.ru/channels/_50/cc/ccbdee27cc3ba4234ebf990580c1e00f.jpg" alt="Т-Банк (Spotluma)"></div>
+                    <div class="app-icon"><img src="https://static6.tgstat.ru/channels/_50/cc/ccbdee27cc3ba4234ebf990580c1e00f.jpg" alt="Т-Банк (Spotluma)"></div>
                     <div class="sheet-info-box"><span class="app-name">Т-Банк (Spotluma)</span></div>
                 </div>
                 <span class="ios-badge">iOS 16.0+</span>
@@ -1646,7 +1638,7 @@ function closeTokenAppsSheet() {
 
             <div class="sheet-item" data-key="lenta" data-category="other" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/lenta.plist', 'Лента', 'lenta')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://i.taplink.st/a/1/4/7/e/15bb4a.jpg?139" alt="Лента"></div>
+                    <div class="app-icon"><img src="https://i.taplink.st/a/1/4/7/e/15bb4a.jpg?139" alt="Лента"></div>
                     <div class="sheet-info-box"><span class="app-name">Лента</span></div>
                 </div>
                 <span class="ios-badge">iOS 16.0+</span>
@@ -1654,7 +1646,7 @@ function closeTokenAppsSheet() {
       
             <div class="sheet-item" data-key="yandex-pay" data-category="banks" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/yandex-pay.plist', 'Яндекс Пэй', 'yandex-pay')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://avatars.mds.yandex.net/get-altay/16329243/2a0000019bc0e7a55b0eaa0dcc6b77eca410/XL" alt="yandex pay"></div>
+                    <div class="app-icon"><img src="https://avatars.mds.yandex.net/get-altay/16329243/2a0000019bc0e7a55b0eaa0dcc6b77eca410/XL" alt="yandex pay"></div>
                     <div class="sheet-info-box"><span class="app-name">Яндекс Пэй</span></div>
                 </div>
                 <span class="ios-badge">iOS 16.0+</span>
@@ -1662,7 +1654,7 @@ function closeTokenAppsSheet() {
 
             <div class="sheet-item" data-key="2gis" data-category="other" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/2gis.plist', '2ГИС', '2gis')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://avatars.mds.yandex.net/i?id=55fe61e4c88acc4ce04bdd4b010fe649cecd5944-5233671-images-thumbs&n=13" alt="2gis"></div>
+                    <div class="app-icon"><img src="https://avatars.mds.yandex.net/i?id=55fe61e4c88acc4ce04bdd4b010fe649cecd5944-5233671-images-thumbs&n=13" alt="2gis"></div>
                     <div class="sheet-info-box"><span class="app-name">2ГИС</span></div>
                 </div>
                 <span class="ios-badge">iOS 16.0+</span>
@@ -1670,7 +1662,7 @@ function closeTokenAppsSheet() {
 
             <div class="sheet-item" data-key="yla" data-category="other" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/yla.plist', 'Юла', 'yla')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://avatars.mds.yandex.net/i?id=de2c57353882125853f6d024be2789d7_l-5209452-images-thumbs&n=13" alt="Юла"></div>
+                    <div class="app-icon"><img src="https://avatars.mds.yandex.net/i?id=de2c57353882125853f6d024be2789d7_l-5209452-images-thumbs&n=13" alt="Юла"></div>
                     <div class="sheet-info-box"><span class="app-name">Юла</span></div>
                 </div>
                 <span class="ios-badge">iOS 15.6+</span>
@@ -1678,7 +1670,7 @@ function closeTokenAppsSheet() {
 
             <div class="sheet-item" data-key="psb" data-category="banks" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/psb.plist', 'ПСБ (Чайная Церемония)', 'psb')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://avatars.mds.yandex.net/i?id=8ee36645ffa71da6eb92a8fe9278eca3_l-5358567-images-thumbs&n=13" alt="psb"></div>
+                    <div class="app-icon"><img src="https://avatars.mds.yandex.net/i?id=8ee36645ffa71da6eb92a8fe9278eca3_l-5358567-images-thumbs&n=13" alt="psb"></div>
                     <div class="sheet-info-box"><span class="app-name">ПСБ (Чайная Церемония)</span></div>
                 </div>
                 <span class="ios-badge">iOS 15.0+</span>
@@ -1686,7 +1678,7 @@ function closeTokenAppsSheet() {
 
             <div class="sheet-item" data-key="kuper" data-category="other" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/kuper.plist', 'Купер', 'kuper')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://60.img.avito.st/image/1/1.0dwn5ba1fTU9QtMzCbrPvnxEfzWZTtMzPUJ_Nw.j26nxCmZQ8VWkUMP7X-DLKRbPztCEmtRQ9pGUH_DqPY" alt="Купер"></div>
+                    <div class="app-icon"><img src="https://60.img.avito.st/image/1/1.0dwn5ba1fTU9QtMzCbrPvnxEfzWZTtMzPUJ_Nw.j26nxCmZQ8VWkUMP7X-DLKRbPztCEmtRQ9pGUH_DqPY" alt="Купер"></div>
                     <div class="sheet-info-box"><span class="app-name">Купер</span></div>
                 </div>
                 <span class="ios-badge">iOS 15.0+</span>
@@ -1694,7 +1686,7 @@ function closeTokenAppsSheet() {
 
             <div class="sheet-item" data-key="rutube" data-category="social" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/rutube.plist', 'Rutube', 'rutube')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://azecsuwvwypwnkgobujn.supabase.co/storage/v1/object/public/avatars/company-logos/b341fde4-0bb0-4361-8104-81c7a384f66f.png" alt="Rutube"></div>
+                    <div class="app-icon"><img src="https://azecsuwvwypwnkgobujn.supabase.co/storage/v1/object/public/avatars/company-logos/b341fde4-0bb0-4361-8104-81c7a384f66f.png" alt="Rutube"></div>
                     <div class="sheet-info-box"><span class="app-name">Rutube (Starship Battle)</span></div>
                 </div>
                 <span class="ios-badge">iOS 16.0+</span>
@@ -1702,7 +1694,7 @@ function closeTokenAppsSheet() {
 
             <div class="sheet-item" data-key="mobio" data-category="other" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/mobio.plist', 'СберМобайл (Мобио)', 'mobio')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://web.archive.org/web/20230220074655im_/https://sbermobile.ru/favicons/ICON_sbermobile-long.jpg?v=2" alt="СберМобайл"></div>
+                    <div class="app-icon"><img src="https://web.archive.org/web/20230220074655im_/https://sbermobile.ru/favicons/ICON_sbermobile-long.jpg?v=2" alt="СберМобайл"></div>
                     <div class="sheet-info-box"><span class="app-name">СберМобайл (Мобио)</span></div>
                 </div>
                 <span class="ios-badge">iOS 15.0+</span>
@@ -1710,7 +1702,7 @@ function closeTokenAppsSheet() {
 
             <div class="sheet-item" data-key="tmobail" data-category="other" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/tinkoffmobail.plist', 'Т-Мобайл', 'tmobail')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://github.com/app-installer-ios/store/releases/download/tinkoffmobail/2026-10-10_22-42-15.png" alt="Т-Мобайл"></div>
+                    <div class="app-icon"><img src="https://github.com/app-installer-ios/store/releases/download/tinkoffmobail/2026-10-10_22-42-15.png" alt="Т-Мобайл"></div>
                     <div class="sheet-info-box"><span class="app-name">Т-Мобайл</span></div>
                 </div>
                 <span class="ios-badge">iOS 16.0+</span>
@@ -1718,7 +1710,7 @@ function closeTokenAppsSheet() {
             
             <div class="sheet-item" data-key="ubrir-rubli" data-category="banks" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/ubrir_rubli.plist', 'УБРиР (РУбли)', 'ubrir-rubli')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://banki.loans/storage/posts/June2021/2NH4l0w4DiKbR77CudHS.png" alt="УБРиР (РУбли)"></div>
+                    <div class="app-icon"><img src="https://banki.loans/storage/posts/June2021/2NH4l0w4DiKbR77CudHS.png" alt="УБРиР (РУбли)"></div>
                     <div class="sheet-info-box"><span class="app-name">УБРиР (РУбли)</span></div>
                 </div>
                 <span class="ios-badge">iOS 15.0+</span>
@@ -1726,7 +1718,7 @@ function closeTokenAppsSheet() {
             
             <div class="sheet-item" data-key="sberkids" data-category="banks" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sberkids.plist', 'СберKids (SpeakaBoo)','sberkids')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://avatars.mds.yandex.net/i?id=b6df7c45dd50f80955f038e2372136cf_l-5339410-images-thumbs&n=13" alt="СберKids"></div>
+                    <div class="app-icon"><img src="https://avatars.mds.yandex.net/i?id=b6df7c45dd50f80955f038e2372136cf_l-5339410-images-thumbs&n=13" alt="СберKids"></div>
                     <div class="sheet-info-box"><span class="app-name">СберKids (SpeakaBoo)</span></div>
                 </div>
                 <span class="ios-badge">iOS 15.0+</span>
@@ -1734,7 +1726,7 @@ function closeTokenAppsSheet() {
 
             <div class="sheet-item" data-key="lentaa" data-category="other" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/lentaa.plist', 'Лента (Быстро Продукты)', 'lentaa')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://i.taplink.st/a/1/4/7/e/15bb4a.jpg?139" alt="Быстро Продукты"></div>
+                    <div class="app-icon"><img src="https://i.taplink.st/a/1/4/7/e/15bb4a.jpg?139" alt="Быстро Продукты"></div>
                     <div class="sheet-info-box"><span class="app-name">Лента (Быстро Продукты)</span></div>
                 </div>
                 <span class="ios-badge">iOS 16.0+</span>
@@ -1742,7 +1734,7 @@ function closeTokenAppsSheet() {
       
             <div class="sheet-item" data-key="avito-anero" data-category="other" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/avito-anero.plist', 'Авито (Anero)', 'avito-anero')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/7e/28/f6/7e28f600-04c2-5f88-51ea-5f0a866da9f6/AppIcon-0-0-1x_U007epad-0-1-85-220.png/1200x1200bb.png" alt="Anero"></div>
+                    <div class="app-icon"><img src="https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/7e/28/f6/7e28f600-04c2-5f88-51ea-5f0a866da9f6/AppIcon-0-0-1x_U007epad-0-1-85-220.png/1200x1200bb.png" alt="Anero"></div>
                     <div class="sheet-info-box"><span class="app-name">Авито (Anero)</span></div>
                 </div>
                 <span class="ios-badge">iOS 16.0+</span>
@@ -1750,7 +1742,7 @@ function closeTokenAppsSheet() {
 
             <div class="sheet-item" data-key="craftersy" data-category="banks" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/craftersy.plist', 'Т-Банк (Craftersy)', 'craftersy')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://static6.tgstat.ru/channels/_50/cc/ccbdee27cc3ba4234ebf990580c1e00f.jpg" alt="Т-Банк (Craftersy)"></div>
+                    <div class="app-icon"><img src="https://static6.tgstat.ru/channels/_50/cc/ccbdee27cc3ba4234ebf990580c1e00f.jpg" alt="Т-Банк (Craftersy)"></div>
                     <div class="sheet-info-box"><span class="app-name">Т-Банк (Craftersy)</span></div>
                 </div>
                 <span class="ios-badge">iOS 16.0+</span>
@@ -1758,7 +1750,7 @@ function closeTokenAppsSheet() {
       
             <div class="sheet-item" data-key="scbnotes" data-category="banks" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/scbnotes.plist', 'СовкомБанк (SCB Notes)', 'scbnotes')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://github.com/app-installer-ios/store/releases/download/Sovkom-SCBNotes/2026-10-10_22-44-26.png" alt="СовкомБанк"></div>
+                    <div class="app-icon"><img src="https://github.com/app-installer-ios/store/releases/download/Sovkom-SCBNotes/2026-10-10_22-44-26.png" alt="СовкомБанк"></div>
                     <div class="sheet-info-box"><span class="app-name">СовкомБанк (SCB Notes)</span></div>
                 </div>
                 <span class="ios-badge">iOS 17.0+</span>
@@ -1766,7 +1758,7 @@ function closeTokenAppsSheet() {
       
             <div class="sheet-item" data-key="ak-bars-bank" data-category="banks" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/ak-bars-bank.plist', 'АК Барс (Всё Учтено)', 'ak-bars-bank')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://static.tildacdn.com/tild6335-3234-4462-b262-303937366262/__.jpg" alt="АКБарс Банк"></div>
+                    <div class="app-icon"><img src="https://static.tildacdn.com/tild6335-3234-4462-b262-303937366262/__.jpg" alt="АКБарс Банк"></div>
                     <div class="sheet-info-box"><span class="app-name">АК Барс (Всё Учтено)</span></div>
                 </div>
                 <span class="ios-badge">iOS 16.0+</span>
@@ -1774,7 +1766,7 @@ function closeTokenAppsSheet() {
 
             <div class="sheet-item" data-key="blum" data-category="banks" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/blum.plist', 'РокетБанк (Блум)', 'blum')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://images.meme-arsenal.com/b4a2cd0fa9f128945deb4b6a2da30829.jpg" alt="РокетБанк"></div>
+                    <div class="app-icon"><img src="https://images.meme-arsenal.com/b4a2cd0fa9f128945deb4b6a2da30829.jpg" alt="РокетБанк"></div>
                     <div class="sheet-info-box"><span class="app-name">РокетБанк (Блум)</span></div>
                 </div>
                 <span class="ios-badge">iOS 15.0+</span>
@@ -1782,7 +1774,7 @@ function closeTokenAppsSheet() {
             
             <div class="sheet-item" data-key="happ_proxy" data-category="other" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/happ.plist', 'Happ Proxy', 'happ_proxy')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://www.anti-malware.ru/files/images/source/happisback-news.png" alt="Happ Proxy"></div>
+                    <div class="app-icon"><img src="https://www.anti-malware.ru/files/images/source/happisback-news.png" alt="Happ Proxy"></div>
                     <div class="sheet-info-box"><span class="app-name">Happ Proxy</span></div>
                 </div>
                 <span class="ios-badge">iOS 15.0+</span>
@@ -1790,7 +1782,7 @@ function closeTokenAppsSheet() {
 
             <div class="sheet-item" data-key="chatgpt" data-category="other" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/chatgpt.plist', 'ChatGPT', 'chatgpt')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://i.kod.ru/unsafe/rs:fill:1200:630:1/q:85/plain/https%3A%2F%2Fapi.kod.ru%2Fcontent%2Fimages%2F2026%2F03%2FIMG_3113-1.webp" alt="ChatGPT"></div>
+                    <div class="app-icon"><img src="https://i.kod.ru/unsafe/rs:fill:1200:630:1/q:85/plain/https%3A%2F%2Fapi.kod.ru%2Fcontent%2Fimages%2F2026%2F03%2FIMG_3113-1.webp" alt="ChatGPT"></div>
                     <div class="sheet-info-box"><span class="app-name">ChatGPT</span></div>
                 </div>
                 <span class="ios-badge">iOS 16.0+</span>
@@ -1798,7 +1790,7 @@ function closeTokenAppsSheet() {
 
              <div class="sheet-item" data-key="gemini" data-category="other" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/gemini.plist', 'Google Gemini', 'gemini')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://github.com/app-installer-ios/store/releases/download/gemini/geminilogo.png" alt="gemini"></div>
+                    <div class="app-icon"><img src="https://github.com/app-installer-ios/store/releases/download/gemini/geminilogo.png" alt="gemini"></div>
                     <div class="sheet-info-box"><span class="app-name">Google Gemini</span></div>
                 </div>
                 <span class="ios-badge">iOS 14.0+</span>
@@ -1806,7 +1798,7 @@ function closeTokenAppsSheet() {
             
              <div class="sheet-item" data-key="lenta_lesenta" data-category="other" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/lenta_lesenta.plist', 'Лента (Лесента)', 'lenta_lesenta')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://github.com/app-installer-ios/store/releases/download/lenta_lesenta/IconLesenta.png" alt="Лента (Лесента)"></div>
+                    <div class="app-icon"><img src="https://github.com/app-installer-ios/store/releases/download/lenta_lesenta/IconLesenta.png" alt="Лента (Лесента)"></div>
                     <div class="sheet-info-box"><span class="app-name">Лента (Лесента)</span></div>
                 </div>
                 <span class="ios-badge">iOS 15.0+</span>
@@ -1814,7 +1806,7 @@ function closeTokenAppsSheet() {
             
             <div class="sheet-item" data-key="sber_invest" data-category="investments" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sberinvest_siyanie.plist', 'СберИнвестиции', 'sber_invest')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://play-lh.googleusercontent.com/TKVuldWCwCwV4fawNUHEYp_ugy5e8tYw54Mogl3YbVBNcb6GPJ3eBLshXQ4tBv9zdA" alt="СберИнвестиции"></div>
+                    <div class="app-icon"><img src="https://play-lh.googleusercontent.com/TKVuldWCwCwV4fawNUHEYp_ugy5e8tYw54Mogl3YbVBNcb6GPJ3eBLshXQ4tBv9zdA" alt="СберИнвестиции"></div>
                     <div class="sheet-info-box"><span class="app-name">СберИнвестиции</span></div>
                 </div>
                 <span class="ios-badge">iOS 15.0+</span>
@@ -1822,7 +1814,7 @@ function closeTokenAppsSheet() {
 
             <div class="sheet-item" data-key="vtb_invest" data-category="investments" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/vtbinvest_kafario.plist', 'ВТБ Инвестиции', 'vtb_invest')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://avatars.mds.yandex.net/i?id=dad679c9a9151f179f35c091b379f63ddde52982-4575475-images-thumbs&n=13" alt="ВТБ Инвестиции"></div>
+                    <div class="app-icon"><img src="https://avatars.mds.yandex.net/i?id=dad679c9a9151f179f35c091b379f63ddde52982-4575475-images-thumbs&n=13" alt="ВТБ Инвестиции"></div>
                     <div class="sheet-info-box"><span class="app-name">ВТБ Инвестиции</span></div>
                 </div>
                 <span class="ios-badge">iOS 15.0+</span>
@@ -1830,7 +1822,7 @@ function closeTokenAppsSheet() {
 
             <div class="sheet-item" data-key="alfa_invest" data-category="investments" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/alfa_invest.plist', 'Альфа Инвестиции', 'alfa_invest')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://is1-ssl.mzstatic.com/image/thumb/Purple126/v4/b5/17/f5/b517f516-37e2-8193-f5e3-f32448070520/AppIcon-0-0-1x_U007emarketing-0-0-0-7-0-0-sRGB-0-0-0-GLES2_U002c0-512MB-85-220-0-0.png/1200x630wa.png" alt="Альфа Инвестиции"></div>
+                    <div class="app-icon"><img src="https://is1-ssl.mzstatic.com/image/thumb/Purple126/v4/b5/17/f5/b517f516-37e2-8193-f5e3-f32448070520/AppIcon-0-0-1x_U007emarketing-0-0-0-7-0-0-sRGB-0-0-0-GLES2_U002c0-512MB-85-220-0-0.png/1200x630wa.png" alt="Альфа Инвестиции"></div>
                     <div class="sheet-info-box"><span class="app-name">Альфа Инвестиции (Ход вверх)</span></div>
                 </div>
                 <span class="ios-badge">iOS 16.0+</span>
@@ -1838,7 +1830,7 @@ function closeTokenAppsSheet() {
             
             <div class="sheet-item" data-key="sbpay" data-category="other" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/sbpay.plist', 'СБПэй', 'sbpay')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://avatars.mds.yandex.net/i?id=7680b326d267d36c98347f09c4968699_l-5662910-images-thumbs&n=13" alt="СБПэй"></div>
+                    <div class="app-icon"><img src="https://avatars.mds.yandex.net/i?id=7680b326d267d36c98347f09c4968699_l-5662910-images-thumbs&n=13" alt="СБПэй"></div>
                     <div class="sheet-info-box"><span class="app-name">СБПэй</span></div>
                 </div>
                 <span class="ios-badge">iOS 13.0+</span>
@@ -1846,7 +1838,7 @@ function closeTokenAppsSheet() {
 
             <div class="sheet-item" data-key="yota_atoy" data-category="other" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/yota_atoy.plist', 'YOTA (Atoy)', 'yota_atoy')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://cdn1.ozonusercontent.com/s3/product-service-meta-media/c63bbaf2-9af4-47dd-a5c8-a6aba2540d43.jpg" alt="YOTA (Atoy)"></div>
+                    <div class="app-icon"><img src="https://cdn1.ozonusercontent.com/s3/product-service-meta-media/c63bbaf2-9af4-47dd-a5c8-a6aba2540d43.jpg" alt="YOTA (Atoy)"></div>
                     <div class="sheet-info-box"><span class="app-name">YOTA (Atoy)</span></div>
                 </div>
                 <span class="ios-badge">iOS 15.0+</span>
@@ -1854,7 +1846,7 @@ function closeTokenAppsSheet() {
             
             <div class="sheet-item" data-key="gazpromneft" data-category="other" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/gazpromneft.plist', 'Газпромнефть', 'gazpromneft')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://avatars.mds.yandex.net/i?id=f5b78015f371133a357d570c8857c46db5324c27-8343045-images-thumbs&n=13" alt="Газпромнефть"></div>
+                    <div class="app-icon"><img src="https://avatars.mds.yandex.net/i?id=f5b78015f371133a357d570c8857c46db5324c27-8343045-images-thumbs&n=13" alt="Газпромнефть"></div>
                     <div class="sheet-info-box"><span class="app-name">Газпромнефть</span></div>
                 </div>
                 <span class="ios-badge">iOS 15.0+</span>
@@ -1862,7 +1854,7 @@ function closeTokenAppsSheet() {
 
             <div class="sheet-item" data-key="novikombank" data-category="banks" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/novikombank.plist', 'Новикомбанк', 'novikombank')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://s.rbk.ru/v1_companies_s3/media/trademarks/e0275264-62c2-41fb-a7be-963c06ffc091.jpg" alt="Новикомбанк"></div>
+                    <div class="app-icon"><img src="https://s.rbk.ru/v1_companies_s3/media/trademarks/e0275264-62c2-41fb-a7be-963c06ffc091.jpg" alt="Новикомбанк"></div>
                     <div class="sheet-info-box"><span class="app-name">Новикомбанк</span></div>
                 </div>
                 <span class="ios-badge">iOS 12.0+</span>
@@ -1870,7 +1862,7 @@ function closeTokenAppsSheet() {
 
             <div class="sheet-item" data-key="rshb_gysi" data-category="banks" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/rshb_gysi.plist', 'РСХБ (Любовь и гуси)', 'rshb_gysi')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://static.rustore.ru/imgproxy/a-_4wihi7Ipu_Q1vKfwQL60cBsrs33Zb4WNSoTBVFmc/preset:vk_og_img/plain/https://static.rustore.ru/9462ebde-9163-4ec9-bfe6-556c23a9cbaf@webp" alt="РСХБ (Любоавь и гуси)"></div>
+                    <div class="app-icon"><img src="https://static.rustore.ru/imgproxy/a-_4wihi7Ipu_Q1vKfwQL60cBsrs33Zb4WNSoTBVFmc/preset:vk_og_img/plain/https://static.rustore.ru/9462ebde-9163-4ec9-bfe6-556c23a9cbaf@webp" alt="РСХБ (Любоавь и гуси)"></div>
                     <div class="sheet-info-box"><span class="app-name">РСХБ (Любовь и гуси)</span></div>
                 </div>
                 <span class="ios-badge">iOS 15.0+</span>
@@ -1878,7 +1870,7 @@ function closeTokenAppsSheet() {
             
             <div class="sheet-item" data-key="mtsdengi" data-category="banks" onclick="selectApp(this, 'itms-services://?action=download-manifest&url=https://app-installer-ios.github.io/store/mtsdengi.plist', 'МТС Банк', 'mtsdengi')">
                 <div class="sheet-item-main">
-                    <div class="app-icon"><img loading="lazy" src="https://yt3.googleusercontent.com/ni-yGWFO4YJzf02xm8UL9N_WReTfYAN6sIj0wtyoaLD16D8MUPaiuGp0So8ZYGw1ApRXw0wzW4w=s900-c-k-c0x00ffffff-no-rj" alt="МТС Банк"></div>
+                    <div class="app-icon"><img src="https://yt3.googleusercontent.com/ni-yGWFO4YJzf02xm8UL9N_WReTfYAN6sIj0wtyoaLD16D8MUPaiuGp0So8ZYGw1ApRXw0wzW4w=s900-c-k-c0x00ffffff-no-rj" alt="МТС Банк"></div>
                     <div class="sheet-info-box"><span class="app-name">МТС Банк</span></div>
                 </div>
                 <span class="ios-badge">iOS 15.0+</span>
