@@ -348,10 +348,16 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margi
 
 .btn-telegram {
     gap: 8px;
-    background: rgba(14, 116, 144, 0.12);
-    border: 1.8px solid rgba(56, 155, 185, 0.45);
-    color: #7dd3fc;
+    background: rgba(30, 41, 59, 0.45);
+    border: 1.8px solid rgba(148, 163, 184, 0.2);
+    color: #cbd5e1;
     box-shadow: none;
+}
+
+.btn-telegram:hover {
+    background: rgba(30, 41, 59, 0.75);
+    border-color: rgba(148, 163, 184, 0.4);
+    color: #f8fafc;
 }
 
 .telegram-icon { width: 17px; height: 17px; object-fit: contain; }
@@ -481,7 +487,7 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margi
     z-index: 3;
     color: #ffffff;
     background: rgba(51, 65, 85, 0.4);
-    border: 1px solid rgba(255,255,255,.28);
+    border: 1.0px solid rgba(255,255,255,.28);
     border-radius: 50%;
 }
 
@@ -660,7 +666,7 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margi
     justify-content: center;
     overflow: hidden;
     flex-shrink: 0;
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    border: 1.0px solid rgba(255, 255, 255, 0.18);
 }
 
 .app-icon img { width: 100%; height: 100%; object-fit: cover; }
@@ -708,7 +714,7 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margi
     min-width: 32px;
     min-height: 32px;
     border-radius: 50%;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1.0px solid rgba(255, 255, 255, 0.2);
     object-fit: cover;
     flex-shrink: 0;
 }
@@ -731,7 +737,7 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margi
     justify-content: center;
     border-radius: 12px;
     background: rgba(245, 158, 11, 0.2);
-    border: 1px solid rgba(245, 158, 11, 0.6);
+    border: 1.0px solid rgba(245, 158, 11, 0.6);
     color: #fde68a;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -778,7 +784,7 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margi
     gap: 14px;
     padding: 16px;
     background: linear-gradient(145deg, rgba(30, 41, 59, 0.4), rgba(17, 24, 39, 0.6));
-    border: 1px solid rgba(217, 160, 115, 0.22);
+    border: 1.0px solid rgba(217, 160, 115, 0.22);
     border-radius: 20px;
     flex-shrink: 0;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
@@ -814,7 +820,7 @@ label { font-size: 13px; color: #d9e0ea; font-weight: 600; display: block; margi
     font-weight: 750;
     border-radius: 50%;
     margin-top: 1px;
-    border: 1px solid rgba(245, 158, 11, 0.45);
+    border: 1.0px solid rgba(245, 158, 11, 0.45);
     box-shadow: 0 0 12px rgba(245, 158, 11, 0.15);
 }
 
