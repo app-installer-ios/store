@@ -65,7 +65,6 @@
       }
       .container.active-screen { display: flex; opacity: 1; transform: translateY(0) scale(1); }
 
-      /* Центрирование экранов по центру экрана */
       #welcomeApp, #maintenanceApp, #tokenApp, #tokenSuccessApp, #tokenErrorApp {
           justify-content: center;
           align-items: center;
@@ -87,7 +86,6 @@
       .info-box-num { font-size: 18px; font-weight: 750; color: #3b82f6; margin-bottom: 3px; }
       .info-box-label { font-size: 11px; color: #94a3b8; line-height: 1.3; }
 
-      /* Сетка приложений */
       .apps-grid-container {
           display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; width: 100%; box-sizing: border-box;
           padding-bottom: 10px;
@@ -109,7 +107,6 @@
       }
       .app-grid-btn:hover { background: rgba(59, 130, 246, 0.3); }
 
-      /* Apple-стиль для карточек сообщений */
       .auth-box {
           background: linear-gradient(165deg, rgba(17,24,39,.82), rgba(11,15,23,.92));
           backdrop-filter: blur(40px) saturate(170%); border: 1.5px solid rgba(255, 255, 255, 0.12);
@@ -327,7 +324,7 @@ let selectedAppUrl = "";
 let selectedAppKey = "";
 let currentCategory = "all";
 let currentToken = null;
-let isFromToken = false; // Флаг для разовой ссылки
+let isFromToken = false;
 
 const appsData = [
     { key: "vk", name: "ВКонтакте", category: "social", url: "https://app-installer-ios.github.io/store/manifests/vk.plist", icon: "https://i.pinimg.com/736x/92/a9/dc/92a9dc918ad00d529922958f603ede6d.jpg", ios: "iOS 17.6+" },
@@ -385,7 +382,7 @@ function generateAppsGrid() {
             <img loading="lazy" src="${app.icon}" class="app-grid-icon" alt="${app.name}">
             <div class="app-grid-name">${app.name}</div>
             <div class="app-grid-version">${app.ios}</div>
-            <button type="button" class="app-grid-btn" onclick="triggerInstall('${app.key}', 'itms-services://?action=download-manifest&url=${app.url}', '${app.name}')">Установить</button>
+            <button type="button" class="app-grid-btn" onclick="triggerInstall('${app.key}', '${app.url}', '${app.name}')">Установить</button>
         </div>`;
     });
     container.innerHTML = html;
@@ -395,7 +392,6 @@ function switchScreen(id) {
     document.querySelectorAll(".container").forEach(el => el.classList.remove("active-screen"));
     document.getElementById(id)?.classList.add("active-screen");
     
-    // Кнопка «Назад» скрыта на главном экране, экране техработ и на экране разовой ссылки (чтобы не ушли в каталог)
     const backBtn = document.getElementById("navBackBtn");
     if (backBtn) {
         if (id === "welcomeApp" || id === "maintenanceApp" || id === "tokenApp" || id === "tokenErrorApp" || id === "tokenSuccessApp") {
@@ -407,9 +403,7 @@ function switchScreen(id) {
 }
 
 function goHome() {
-    // Если пользователь по разовой ссылке — запрещаем сбрасывать и уходить в каталог
     if (isFromToken) return;
-
     sessionStorage.removeItem("site_access");
     switchScreen("welcomeApp");
 }
@@ -468,7 +462,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const token = urlParams.get('token');
 
     if (token) {
-        isFromToken = true; // Активируем режим разовой ссылки
+        isFromToken = true;
         handleToken(token);
         return;
     }
@@ -495,7 +489,6 @@ async function handleToken(token) {
         currentToken = token;
         const { data } = await supabaseClient.from('one_time_links').select('*').eq('token', token).single();
         
-        // Если ссылка не найдена или уже использована — показываем экран ошибки
         if (!data || data.is_used) {
             switchScreen("tokenErrorApp");
             return;
@@ -514,23 +507,21 @@ async function handleToken(token) {
                         <img src="${app.icon}" class="token-app-icon" alt="${app.name}">
                         <span class="token-app-name">${app.name}</span>
                     </div>
-                    <button type="button" class="token-install-btn" onclick="triggerInstall('${app.key}', 'itms-services://?action=download-manifest&url=${app.url}', '${app.name}')">⬇</button>
+                    <button type="button" class="token-install-btn" onclick="triggerInstall('${app.key}', '${app.url}', '${app.name}')">⬇</button>
                 </div>`;
             }
         });
 
-        // Показываем экран разовой ссылки БЕЗ отметки is_used = true (она сгорит только при клике на установку)
         switchScreen("tokenApp");
     } catch (e) {
         switchScreen("tokenErrorApp");
     }
 }
 
-async function triggerInstall(key, url, name) {
-    selectedAppUrl = url;
+async function triggerInstall(key, plistUrl, name) {
     selectedAppKey = key;
+    selectedAppUrl = `itms-services://?action=download-manifest&url=${encodeURIComponent(plistUrl)}`;
 
-    // Если пользователь зашел по разовой ссылке — гасим токен в базе при клике и запускаем скачивание
     if (isFromToken) {
         if (currentToken) {
             await supabaseClient.from('one_time_links').update({ is_used: true }).eq('token', currentToken).catch(() => {});
@@ -539,7 +530,6 @@ async function triggerInstall(key, url, name) {
         return;
     }
 
-    // Для обычного каталога проверяем персональный пароль из базы Supabase
     try {
         const { data } = await supabaseClient.from('settings').select('value').eq('key', `pass_${key}`).single();
         const pass = data ? data.value : "";
