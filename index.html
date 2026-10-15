@@ -72,6 +72,7 @@
           width: 100%; max-width: 430px; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; z-index: 10; box-sizing: border-box;
       }
       .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); cursor: pointer; }
+      .nav-brand.locked-brand { cursor: default; pointer-events: none; }
       .nav-logo { width: 36px; height: 36px; border-radius: 10px; object-fit: cover; border: 1.2px solid rgba(217, 180, 140, 0.45); }
       .nav-title { font-size: 16px; font-weight: 700; background: linear-gradient(135deg, var(--text) 15%, var(--muted) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
       
@@ -79,7 +80,7 @@
       .back-btn, .burger-btn { width: 40px; height: 40px; border-radius: 12px; background: rgba(30,41,59,0.5); border: 1px solid rgba(148,163,184,0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--muted); }
       [data-theme="light"] .back-btn, [data-theme="light"] .burger-btn { background: rgba(255,255,255,0.8); border-color: rgba(0,0,0,0.1); }
       
-      /* Единый стиль для кнопки назад в шапке (как бургер или другие кнопки) */
+      /* Единый стиль для кнопки назад в шапке и в бургер-меню */
       .back-btn { font-size: 20px; font-weight: 700; text-decoration: none; display: none; align-items: center; justify-content: center; line-height: 1; padding-bottom: 2px; }
       .back-btn.visible { display: flex; }
 
@@ -193,7 +194,8 @@
       .token-app-info { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
       .token-app-icon { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
       .token-app-name { font-size: 14px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-      .token-install-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 12px; background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.5); color: #3b82f6; cursor: pointer; flex-shrink: 0; }
+      .token-install-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 12px; background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.5); color: #3b82f6; cursor: pointer; flex-shrink: 0; transition: all 0.2s ease; }
+      .token-install-btn.installed { background: rgba(34, 197, 94, 0.2); border-color: rgba(34, 197, 94, 0.5); color: #4ade80; }
 
       /* Бургер меню */
       .menu-modal { position: fixed; inset: 0; background: rgba(5,7,12,0.8); backdrop-filter: blur(15px); z-index: 1000; display: none; align-items: flex-end; justify-content: center; }
@@ -201,7 +203,6 @@
       .menu-sheet { width: 100%; max-width: 430px; background: #111827; border-top: 1.5px solid rgba(255, 255, 255, 0.12); border-radius: 28px 28px 0 0; padding: 22px 18px max(24px, env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 10px; box-sizing: border-box; }
       [data-theme="light"] .menu-sheet { background: #ffffff; border-color: #e2e8f0; }
       .menu-header { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
-      .menu-back-circle { width: 36px; height: 36px; border-radius: 50%; background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3); color: #3b82f6; font-size: 20px; font-weight: 700; display: flex; align-items: center; justify-content: center; cursor: pointer; }
       .menu-item { padding: 13px 15px; border-radius: 14px; background: rgba(30,41,59,0.4); border: 1px solid rgba(148,163,184,0.15); color: var(--text); font-size: 14px; font-weight: 600; text-align: left; cursor: pointer; text-decoration: none; display: flex; align-items: center; justify-content: space-between; width: 100%; box-sizing: border-box; }
       [data-theme="light"] .menu-item { background: #f8fafc; border-color: #e2e8f0; }
       .menu-item:hover { background: rgba(51,65,85,0.5); }
@@ -214,12 +215,12 @@
 
 <!-- Шапка сайта -->
 <header class="top-navbar">
-    <a href="#" class="nav-brand" onclick="goHome()">
+    <a href="#" class="nav-brand" id="navBrandLink" onclick="handleBrandClick(event)">
         <img src="https://github.com/app-installer-ios/store/releases/download/logosite/logosite.jpg" alt="logo" class="nav-logo">
         <span class="nav-title">AppRestore IOS</span>
     </a>
     <div class="nav-right-actions">
-        <a href="#" class="back-btn" id="navBackBtn" onclick="goHome()" title="Назад">‹</a>
+        <a href="#" class="back-btn" id="navBackBtn" onclick="handleNavBack(event)" title="Назад">‹</a>
         <button class="burger-btn" onclick="toggleBurgerMenu()" aria-label="Меню" id="navBurgerBtn">
             <div class="burger-line"></div>
         </button>
@@ -230,7 +231,8 @@
 <div class="menu-modal" id="burgerMenuModal" onclick="toggleBurgerMenu()">
     <div class="menu-sheet" onclick="event.stopPropagation()">
         <div class="menu-header">
-            <button class="menu-back-circle" onclick="toggleBurgerMenu()" title="Назад">‹</button>
+            <!-- Кнопка назад теперь точно такая же, как и на остальных экранах -->
+            <button type="button" class="back-btn visible" onclick="toggleBurgerMenu()" title="Назад">‹</button>
             <span style="font-size: 15px; font-weight: 700; color: var(--text);">Навигация</span>
         </div>
         <button class="menu-item" onclick="toggleTheme()" id="themeToggleBtn">☀️ Изменить тему <span>›</span></button>
@@ -246,7 +248,7 @@
     <div class="auth-box">
         <div class="apple-icon-bubble">🛠</div>
         <div class="auth-title">Обслуживание системы</div>
-        <div class="auth-description">Каталог временно недоступен в связи с плановым обновлением серверов. Пожалуйста, зайдите позже.</div>
+        <div class="auth-description" style="text-align: center;">Каталог временно недоступен в связи с плановым обновлением серверов. Пожалуйста, зайдите позже.</div>
         <button type="button" class="btn btn-primary" id="checkStatusBtn" onclick="checkSiteStatusManual()" style="margin-top: 6px;">Проверить соединение</button>
     </div>
 </div>
@@ -286,7 +288,7 @@
 <div class="container" id="authApp">
     <div class="auth-box">
         <div class="auth-title">Доступ к каталогу</div>
-        <div class="auth-description">Введите пароль для просмотра списка доступных приложений</div>
+        <div class="auth-description" style="text-align: center;">Введите пароль для просмотра списка доступных приложений</div>
         <input type="tel" inputmode="numeric" pattern="[0-9]*" id="passInput" class="auth-input" placeholder="Введите пароль" autocomplete="off">
         <div id="authError" class="auth-error">Неверный пароль</div>
         <button type="button" class="btn btn-primary" onclick="submitPassword()">Войти</button>
@@ -299,7 +301,7 @@
     <div class="auth-box">
         <div class="apple-icon-bubble">🔒</div>
         <div class="auth-title">Защита установки</div>
-        <div class="auth-description">Для установки приложения <span style="font-weight: 700; color: var(--text);" id="appAuthAppName"></span> требуется ввести защитный пароль.</div>
+        <div class="auth-description" style="text-align: center;">Для установки приложения <span style="font-weight: 700; color: var(--text);" id="appAuthAppName"></span> требуется ввести защитный пароль.</div>
         <input type="tel" inputmode="numeric" pattern="[0-9]*" id="appPassInput" class="auth-input" placeholder="Введите пароль" autocomplete="off">
         <div id="appPassError" class="auth-error">Неверный пароль</div>
         <button type="button" class="btn btn-primary" onclick="submitAppPassword()">Подтвердить</button>
@@ -335,7 +337,7 @@
     <div class="auth-box">
         <div class="apple-icon-bubble">📦</div>
         <div class="auth-title">Ваши приложения</div>
-        <div class="auth-description">Персональная ссылка активирована. Установка доступна напрямую без ввода дополнительных паролей.</div>
+        <div class="auth-description" style="text-align: center;">Персональная ссылка активирована. Нажмите на кнопку напротив приложения для запуска установки.</div>
         <div id="singleTokenAppContainer" class="token-apps-list"></div>
     </div>
 </div>
@@ -345,7 +347,7 @@
     <div class="auth-box">
         <div class="apple-icon-bubble">✨</div>
         <div class="auth-title">Установка запущена</div>
-        <div class="auth-description">Система передала запрос в Safari. Закройте это окно — на домашнем экране появится иконка загрузки приложения.</div>
+        <div class="auth-description" style="text-align: center;">Система передала запрос в Safari. Сверните браузер — на домашнем экране появится иконка загрузки приложения.</div>
         <button type="button" class="btn btn-telegram" onclick="window.location.href='https://t.me/dizabled'" style="margin-top: 6px;">💬 Связаться с поддержкой</button>
     </div>
 </div>
@@ -355,7 +357,7 @@
     <div class="auth-box">
         <div class="apple-icon-bubble">🔒</div>
         <div class="auth-title">Установка недоступна</div>
-        <div class="auth-description">Срок действия данной персональной ссылки истёк или она уже была использована на другом устройстве в целях безопасности. Пожалуйста, обратитесь в поддержку для получения нового доступа.</div>
+        <div class="auth-description" style="text-align: center;">Срок действия данной персональной ссылки истёк или она уже была использована на другом устройстве в целях безопасности. Пожалуйста, обратитесь в поддержку для получения нового доступа.</div>
         <a href="https://t.me/dizabled" target="_blank" class="btn btn-telegram" style="margin-top: 6px;">💬 Запросить новую ссылку</a>
     </div>
 </div>
@@ -371,11 +373,11 @@
             <p>3. Выйдите на главный экран вашего iPhone — вы увидите, как загружается иконка приложения.</p>
             <p>4. Дождитесь окончания загрузки. При необходимости обратитесь к продавцу для активации.</p>
         </div>
-        <button type="button" class="btn btn-primary" onclick="goHome()" style="margin-top: 10px;">Понятно, на главную</button>
+        <button type="button" class="btn btn-primary" onclick="goBackFromInfo()" style="margin-top: 10px;">Понятно, вернуться назад</button>
     </div>
 </div>
 
-<!-- 10. Экран Полезные советы (включая совет про сгружение) -->
+<!-- 10. Экран Полезные советы -->
 <div class="container" id="tipsApp">
     <div class="auth-box" style="text-align: left;">
         <div class="apple-icon-bubble" style="margin: 0 auto 10px auto;">💡</div>
@@ -387,7 +389,7 @@
             <p>2. Перейдите в раздел <b>«App Store»</b>.</p>
             <p>3. Найдите пункт <b>«Сгружать неиспользуемые»</b> и выключите этот тумблер.</p>
         </div>
-        <button type="button" class="btn btn-primary" onclick="goHome()" style="margin-top: 10px;">Понятно, на главную</button>
+        <button type="button" class="btn btn-primary" onclick="goBackFromInfo()" style="margin-top: 10px;">Понятно, вернуться назад</button>
     </div>
 </div>
 
@@ -401,6 +403,13 @@ let selectedAppKey = "";
 let currentCategory = "all";
 let currentToken = null;
 let isFromToken = false;
+let previousScreen = "welcomeApp";
+let currentScreenId = "welcomeApp";
+let tokenTotalApps = [];
+let tokenDownloadedApps = new Set();
+
+// Экраны, с которых запрещено выходить через логотип, кнопку назад или бургер-меню
+const LOCKED_SCREENS = ["maintenanceApp", "tokenErrorApp", "tokenApp", "tokenSuccessApp"];
 
 const appsData = [
     { key: "vk", name: "ВКонтакте", category: "social", url: "https://app-installer-ios.github.io/store/manifests/vk.plist", icon: "https://i.pinimg.com/736x/92/a9/dc/92a9dc918ad00d529922958f603ede6d.jpg", ios: "iOS 17.6+" },
@@ -453,24 +462,50 @@ function generateAppsGrid() {
     
     let html = "";
     appsData.forEach(app => {
+        const safeName = app.name.replace(/'/g, "\\'");
         html += `
-        <div class="app-grid-card" data-key="${app.key}" data-category="${app.category}">
+        <div class="app-grid-card" data-key="${app.key}" data-category="${app.category}" onclick="prepareInstall('${app.key}', '${app.url}', '${safeName}')">
             <img loading="lazy" src="${app.icon}" class="app-grid-icon" alt="${app.name}">
             <div class="app-grid-name">${app.name}</div>
             <div class="app-grid-version">${app.ios}</div>
-            <button type="button" class="app-grid-btn" onclick="prepareInstall('${app.key}', '${app.url}', '${app.name}')">Установить</button>
+            <button type="button" class="app-grid-btn" onclick="event.stopPropagation(); prepareInstall('${app.key}', '${app.url}', '${safeName}')">Установить</button>
         </div>`;
     });
     container.innerHTML = html;
 }
 
+function isScreenLocked(screenId) {
+    return isFromToken || LOCKED_SCREENS.includes(screenId);
+}
+
 function switchScreen(id) {
+    // Запоминаем экран перед переходом в Инструкцию или Советы
+    if ((id === "guideApp" || id === "tipsApp") && currentScreenId !== "guideApp" && currentScreenId !== "tipsApp") {
+        previousScreen = currentScreenId;
+    }
+    currentScreenId = id;
+
     document.querySelectorAll(".container").forEach(el => el.classList.remove("active-screen"));
     document.getElementById(id)?.classList.add("active-screen");
     
     const backBtn = document.getElementById("navBackBtn");
+    const burgerBtn = document.getElementById("navBurgerBtn");
+    const brandLink = document.getElementById("navBrandLink");
+
+    // Если экран заблокирован (ошибка ссылки, разовая ссылка, техработы) — скрываем навигацию и блокируем логотип
+    if (isScreenLocked(id)) {
+        if (backBtn) backBtn.classList.remove("visible");
+        if (burgerBtn) burgerBtn.style.display = "none";
+        if (brandLink) brandLink.classList.add("locked-brand");
+        document.getElementById("burgerMenuModal")?.classList.remove("active");
+        return;
+    }
+
+    if (brandLink) brandLink.classList.remove("locked-brand");
+    if (burgerBtn) burgerBtn.style.display = "flex";
+
     if (backBtn) {
-        if (id === "welcomeApp" || id === "maintenanceApp" || id === "tokenApp" || id === "tokenErrorApp" || id === "tokenSuccessApp" || id === "guideApp" || id === "tipsApp") {
+        if (id === "welcomeApp") {
             backBtn.classList.remove("visible");
         } else {
             backBtn.classList.add("visible");
@@ -478,15 +513,40 @@ function switchScreen(id) {
     }
 }
 
+// Обработчик клика по логотипу AppRestore IOS
+function handleBrandClick(event) {
+    if (event) event.preventDefault();
+    if (isScreenLocked(currentScreenId)) return;
+    goHome();
+}
+
+// Обработчик клика по кнопке Назад в верхней шапке
+function handleNavBack(event) {
+    if (event) event.preventDefault();
+    if (isScreenLocked(currentScreenId)) return;
+
+    if (currentScreenId === "guideApp" || currentScreenId === "tipsApp") {
+        goBackFromInfo();
+    } else if (currentScreenId === "appAuthApp") {
+        cancelAppPassword();
+    } else {
+        goHome();
+    }
+}
+
+// Возврат из Инструкции и Полезных советов на предыдущий экран
+function goBackFromInfo() {
+    if (isScreenLocked(currentScreenId)) return;
+    const target = previousScreen || (sessionStorage.getItem("site_access") === "true" ? "mainApp" : "welcomeApp");
+    switchScreen(target);
+}
+
 function goHome() {
-    if (isFromToken) return;
+    if (isScreenLocked(currentScreenId)) return;
     
-    // Защита: если сайт выключен, сброс на главную заблокирован
     checkSiteStatus().then(enabled => {
         if (!enabled) {
             switchScreen("maintenanceApp");
-            const burgerBtn = document.getElementById("navBurgerBtn");
-            if (burgerBtn) burgerBtn.style.display = "none";
             return;
         }
         sessionStorage.removeItem("site_access");
@@ -498,8 +558,6 @@ function showAuthScreen() {
     checkSiteStatus().then(enabled => {
         if (!enabled) {
             switchScreen("maintenanceApp");
-            const burgerBtn = document.getElementById("navBurgerBtn");
-            if (burgerBtn) burgerBtn.style.display = "none";
             return;
         }
         if (sessionStorage.getItem("site_access") === "true") {
@@ -512,20 +570,20 @@ function showAuthScreen() {
 }
 
 function showGuideScreen() {
-    toggleBurgerMenu();
+    if (isScreenLocked(currentScreenId)) return;
+    document.getElementById("burgerMenuModal").classList.remove("active");
     switchScreen("guideApp");
 }
 
 function showTipsScreen() {
-    toggleBurgerMenu();
+    if (isScreenLocked(currentScreenId)) return;
+    document.getElementById("burgerMenuModal").classList.remove("active");
     switchScreen("tipsApp");
 }
 
 function toggleBurgerMenu() {
-    if (document.getElementById("maintenanceApp").classList.contains("active-screen") || 
-        document.getElementById("tokenErrorApp").classList.contains("active-screen") || 
-        document.getElementById("tokenSuccessApp").classList.contains("active-screen") ||
-        isFromToken) {
+    if (isScreenLocked(currentScreenId)) {
+        document.getElementById("burgerMenuModal").classList.remove("active");
         return;
     }
     document.getElementById("burgerMenuModal").classList.toggle("active");
@@ -563,7 +621,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function checkSiteStatus() {
     try {
-        const { data } = await supabaseClient.from('site_status').select('is_enabled').eq('id', 1).single();
+        const { data } = await supabaseClient.from('site_status').select('is_enabled').eq('id', 1).maybeSingle();
         return data ? data.is_enabled : true;
     } catch { return true; }
 }
@@ -575,19 +633,48 @@ async function checkSiteStatusManual() {
     else if (btn) { btn.textContent = "Проверить снова"; }
 }
 
+// Загрузка настроек (видимость и пароли приложений)
+async function fetchAllSettingsMap() {
+    const map = {};
+    try {
+        const { data, error } = await supabaseClient.from('settings').select('key, value');
+        if (!error && data) {
+            data.forEach(item => {
+                if (item.key) {
+                    map[item.key.trim()] = item.value !== null && item.value !== undefined ? String(item.value).trim() : "";
+                }
+            });
+        }
+    } catch (e) {
+        console.error("Ошибка загрузки настроек:", e);
+    }
+    return map;
+}
+
+// Получение пароля для конкретного приложения (поддерживает форматы pass_key, app_pass_key и просто key)
+async function getAppPasswordFromDB(appKey) {
+    const map = await fetchAllSettingsMap();
+    const candidates = [
+        `pass_${appKey}`,
+        `app_pass_${appKey}`,
+        `password_${appKey}`,
+        `pass_${appKey.replace(/-/g, '_')}`,
+        `pass_${appKey.replace(/_/g, '-')}`
+    ];
+    for (const k of candidates) {
+        if (map[k] && map[k] !== "" && map[k] !== "null" && map[k] !== "false" && map[k] !== "none") {
+            return map[k];
+        }
+    }
+    return "";
+}
+
 async function applyVisibility() {
     try {
-        const { data } = await supabaseClient.from('settings').select('*');
-        const visibility = {};
-        data?.forEach(item => {
-            if (item.key.startsWith('vis_')) {
-                visibility[item.key.replace('vis_', '')] = item.value === 'true';
-            }
-        });
-
+        const map = await fetchAllSettingsMap();
         document.querySelectorAll('.app-grid-card').forEach(card => {
             const key = card.getAttribute('data-key');
-            const isVisible = visibility[key] !== false;
+            const isVisible = map[`vis_${key}`] !== 'false';
             card.style.display = isVisible ? "flex" : "none";
         });
     } catch (e) {
@@ -603,16 +690,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (token) {
         isFromToken = true;
-        const burgerBtn = document.getElementById("navBurgerBtn");
-        if (burgerBtn) burgerBtn.style.display = "none";
         handleToken(token);
         return;
     }
 
     if (!await checkSiteStatus()) {
         switchScreen("maintenanceApp");
-        const burgerBtn = document.getElementById("navBurgerBtn");
-        if (burgerBtn) burgerBtn.style.display = "none";
         return;
     }
 
@@ -631,29 +714,61 @@ document.addEventListener("DOMContentLoaded", async () => {
 async function handleToken(token) {
     try {
         currentToken = token;
-        const { data } = await supabaseClient.from('one_time_links').select('*').eq('token', token).single();
+        const { data, error } = await supabaseClient
+            .from('one_time_links')
+            .select('*')
+            .eq('token', token)
+            .maybeSingle();
         
-        if (!data || data.is_used) {
+        if (error || !data) {
             switchScreen("tokenErrorApp");
-            const burgerBtn = document.getElementById("navBurgerBtn");
-            if (burgerBtn) burgerBtn.style.display = "none";
             return;
         }
 
-        const appKeys = data.app_keys ? data.app_keys.split(",").map(k => k.trim()) : [];
+        // Проверяем, не активировал ли это же устройство данную ссылку ранее в текущей сессии
+        const localClaimKey = `token_claimed_${token}`;
+        const localDoneKey = `token_done_${token}`;
+        const isClaimedByThisDevice = localStorage.getItem(localClaimKey) === "true";
+        const isFullyDoneOnThisDevice = localStorage.getItem(localDoneKey) === "true";
+
+        // Если ссылка уже помечена использованной чужим устройством ИЛИ полностью выкачана этим устройством
+        if ((data.is_used && !isClaimedByThisDevice) || isFullyDoneOnThisDevice) {
+            switchScreen("tokenErrorApp");
+            return;
+        }
+
+        // Закрепляем токен за текущим браузером пользователя и помечаем в БД как занятый,
+        // чтобы никто другой не мог открыть эту ссылку на втором устройстве,
+        // но текущий пользователь спокойно скачал свои выбранные приложения.
+        if (!data.is_used) {
+            localStorage.setItem(localClaimKey, "true");
+            await supabaseClient
+                .from('one_time_links')
+                .update({ is_used: true })
+                .eq('token', token);
+        }
+
+        const appKeys = data.app_keys ? data.app_keys.split(",").map(k => k.trim()).filter(Boolean) : [];
+        tokenTotalApps = appKeys;
         const container = document.getElementById('singleTokenAppContainer');
         container.innerHTML = '';
+
+        if (appKeys.length === 0) {
+            switchScreen("tokenErrorApp");
+            return;
+        }
 
         appKeys.forEach(key => {
             const app = appsData.find(a => a.key === key);
             if (app) {
+                const safeName = app.name.replace(/'/g, "\\'");
                 container.innerHTML += `
                 <div class="token-app-card">
                     <div class="token-app-info">
                         <img src="${app.icon}" class="token-app-icon" alt="${app.name}">
                         <span class="token-app-name">${app.name}</span>
                     </div>
-                    <button type="button" class="token-install-btn" onclick="prepareInstall('${app.key}', '${app.url}', '${app.name}')">⬇</button>
+                    <button type="button" class="token-install-btn" id="tokenBtn_${app.key}" onclick="installFromToken('${app.key}', '${app.url}', '${safeName}')">⬇</button>
                 </div>`;
             }
         });
@@ -661,30 +776,46 @@ async function handleToken(token) {
         switchScreen("tokenApp");
     } catch (e) {
         switchScreen("tokenErrorApp");
-        const burgerBtn = document.getElementById("navBurgerBtn");
-        if (burgerBtn) burgerBtn.style.display = "none";
     }
 }
 
-// 1. Предварительная подготовка установки (шаг проверки пароля)
+// Скачивание по разовой ссылке (позволяет скачать все выбранные приложения в рамках ссылки)
+async function installFromToken(key, plistUrl, name) {
+    const installUrl = `itms-services://?action=download-manifest&url=${encodeURIComponent(plistUrl)}`;
+    
+    const btn = document.getElementById(`tokenBtn_${key}`);
+    if (btn) {
+        btn.classList.add("installed");
+        btn.textContent = "✓";
+    }
+
+    tokenDownloadedApps.add(key);
+
+    // Если скачаны все приложения из ссылки — помечаем токен полностью завершенным
+    if (currentToken && tokenDownloadedApps.size >= tokenTotalApps.length) {
+        localStorage.setItem(`token_done_${currentToken}`, "true");
+        setTimeout(() => {
+            switchScreen("tokenSuccessApp");
+        }, 1200);
+    }
+
+    window.location.href = installUrl;
+}
+
+// 1. Предварительная подготовка установки из общего каталога (обязательная проверка пароля)
 async function prepareInstall(key, plistUrl, name) {
     selectedAppKey = key;
     selectedAppUrl = `itms-services://?action=download-manifest&url=${encodeURIComponent(plistUrl)}`;
 
     if (isFromToken) {
-        if (currentToken) {
-            await supabaseClient.from('one_time_links').update({ is_used: true }).eq('token', currentToken).catch(() => {});
-        }
-        window.location.href = selectedAppUrl;
+        installFromToken(key, plistUrl, name);
         return;
     }
 
-    // Запрос в Supabase: задан ли индивидуальный пароль для этого приложения?
     try {
-        const { data } = await supabaseClient.from('settings').select('value').eq('key', `pass_${key}`).single();
-        const pass = data ? data.value : "";
+        const pass = await getAppPasswordFromDB(key);
 
-        if (pass && pass.trim() !== "") {
+        if (pass !== "") {
             document.getElementById("appPassError").style.display = "none";
             document.getElementById("appPassInput").value = "";
             document.getElementById("appAuthAppName").textContent = name;
@@ -694,9 +825,12 @@ async function prepareInstall(key, plistUrl, name) {
         }
     } catch (e) {
         console.error("Ошибка проверки пароля приложения:", e);
+        // В случае ошибки сети не даем скачать в обход пароля
+        alert("Не удалось проверить доступ к приложению. Проверьте соединение с интернетом.");
+        return;
     }
 
-    // Если пароль не нужен — сразу запускаем скачивание манифеста
+    // Если пароль для этого приложения не задан в боте — запускаем скачивание
     window.location.href = selectedAppUrl;
 }
 
@@ -705,10 +839,14 @@ async function submitPassword() {
     const enteredPass = input.value.trim();
 
     try {
-        const { data } = await supabaseClient.from('settings').select('value').eq('key', 'site_password').single();
-        const correctPass = data ? data.value : "";
+        const map = await fetchAllSettingsMap();
+        const correctPass = map['site_password'] || "";
 
-        if (enteredPass === correctPass || !correctPass) {
+        if (enteredPass === correctPass && correctPass !== "") {
+            sessionStorage.setItem("site_access", "true");
+            switchScreen("mainApp");
+            return;
+        } else if (correctPass === "") {
             sessionStorage.setItem("site_access", "true");
             switchScreen("mainApp");
             return;
@@ -720,16 +858,21 @@ async function submitPassword() {
     input.focus();
 }
 
-// 2. Проверка введенного пароля конкретного приложения и запуск установки СТРОГО после успеха
+// 2. Проверка введенного пароля конкретного приложения
 async function submitAppPassword() {
     const input = document.getElementById("appPassInput");
     const enteredPass = input.value.trim();
 
-    try {
-        const { data } = await supabaseClient.from('settings').select('value').eq('key', `pass_${selectedAppKey}`).single();
-        const correctPass = data ? data.value : "";
+    if (!enteredPass) {
+        document.getElementById("appPassError").style.display = "block";
+        input.focus();
+        return;
+    }
 
-        if (enteredPass === correctPass) {
+    try {
+        const correctPass = await getAppPasswordFromDB(selectedAppKey);
+
+        if (correctPass !== "" && enteredPass === correctPass) {
             switchScreen("mainApp");
             window.location.href = selectedAppUrl;
             return;
@@ -742,6 +885,8 @@ async function submitAppPassword() {
 }
 
 function cancelAppPassword() {
+    selectedAppUrl = "";
+    selectedAppKey = "";
     switchScreen("mainApp");
 }
 
@@ -757,19 +902,11 @@ async function filterApps() {
     document.getElementById("searchClear").classList.toggle("visible", query.length > 0);
     let count = 0;
 
-    let visibility = {};
-    try {
-        const { data } = await supabaseClient.from('settings').select('*');
-        data?.forEach(item => {
-            if (item.key.startsWith('vis_')) {
-                visibility[item.key.replace('vis_', '')] = item.value === 'true';
-            }
-        });
-    } catch (e) {}
+    const map = await fetchAllSettingsMap();
 
     document.querySelectorAll(".app-grid-card").forEach(card => {
         const key = card.getAttribute("data-key");
-        if (visibility[key] === false) {
+        if (map[`vis_${key}`] === 'false') {
             card.style.display = "none";
             return;
         }
