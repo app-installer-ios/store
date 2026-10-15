@@ -65,7 +65,7 @@
       }
       .container.active-screen { display: flex; opacity: 1; transform: translateY(0) scale(1); }
 
-      /* Главный экран приветствия: центрирование и поднятый заголовок */
+      /* Главный экран приветствия */
       #welcomeApp {
           justify-content: center;
           align-items: center;
@@ -86,7 +86,7 @@
       .info-box-num { font-size: 18px; font-weight: 750; color: #3b82f6; margin-bottom: 3px; }
       .info-box-label { font-size: 11px; color: #94a3b8; line-height: 1.3; }
 
-      /* Сетка приложений без пустого пространства внизу */
+      /* Сетка приложений */
       .apps-grid-container {
           display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; width: 100%; box-sizing: border-box;
           padding-bottom: 10px;
@@ -314,7 +314,7 @@ const SUPABASE_URL = "https://gbuvpqcummyutycemaaj.supabase.co";
 const SUPABASE_KEY = "sb_publishable_oUDovfvWL6iioG6N5Xd_QQ_8KYezq8g";
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-let remoteConfig = { sitePassword: "", appPasswords: {}, appVisibility: {} };
+let remoteConfig = { appVisibility: {} };
 let selectedAppUrl = "";
 let selectedAppKey = "";
 let currentCategory = "all";
@@ -386,10 +386,10 @@ function switchScreen(id) {
     document.querySelectorAll(".container").forEach(el => el.classList.remove("active-screen"));
     document.getElementById(id)?.classList.add("active-screen");
     
-    // Управление видимостью кнопки «Назад»
+    // Кнопка «Назад» видна везде, КРОМЕ экрана приветствия и экрана техработ
     const backBtn = document.getElementById("navBackBtn");
     if (backBtn) {
-        if (id === "welcomeApp") {
+        if (id === "welcomeApp" || id === "maintenanceApp") {
             backBtn.classList.remove("visible");
         } else {
             backBtn.classList.add("visible");
@@ -429,25 +429,24 @@ async function checkSiteStatusManual() {
     else if (btn) { btn.textContent = "Проверить снова"; }
 }
 
-async function fetchSupabaseSettings() {
+async function applyVisibility() {
     try {
         const { data } = await supabaseClient.from('settings').select('*');
-        const config = { sitePassword: "", appPasswords: {}, appVisibility: {} };
+        const visibility = {};
         data?.forEach(item => {
-            if (item.key === 'site_password') config.sitePassword = item.value;
-            else if (item.key.startsWith('vis_')) config.appVisibility[item.key.replace('vis_', '')] = item.value === 'true';
-            else if (item.key.startsWith('pass_')) config.appPasswords[item.key.replace('pass_', '')] = item.value;
+            if (item.key.startsWith('vis_')) {
+                visibility[item.key.replace('vis_', '')] = item.value === 'true';
+            }
         });
-        return config;
-    } catch { return { sitePassword: "", appPasswords: {}, appVisibility: {} }; }
-}
 
-function applyVisibility() {
-    document.querySelectorAll('.app-grid-card').forEach(card => {
-        const key = card.getAttribute('data-key');
-        const isVisible = remoteConfig.appVisibility[key] !== false;
-        card.style.display = isVisible ? "flex" : "none";
-    });
+        document.querySelectorAll('.app-grid-card').forEach(card => {
+            const key = card.getAttribute('data-key');
+            const isVisible = visibility[key] !== false;
+            card.style.display = isVisible ? "flex" : "none";
+        });
+    } catch (e) {
+        console.error("Ошибка применения видимости", e);
+    }
 }
 
 generateAppsGrid();
@@ -466,10 +465,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
     }
 
-    remoteConfig = await fetchSupabaseSettings();
-    applyVisibility();
+    await applyVisibility();
 
-    // Мгновенный показ правильного экрана без мигания
     if (sessionStorage.getItem("site_access") === "true") {
         switchScreen("mainApp");
     } else {
@@ -514,44 +511,65 @@ async function handleToken(token) {
     }
 }
 
-function triggerInstall(key, url, name) {
+async function triggerInstall(key, url, name) {
     selectedAppUrl = url;
     selectedAppKey = key;
-    const pass = remoteConfig.appPasswords[key];
 
-    if (pass && pass.trim() !== "") {
-        document.getElementById("appPassError").style.display = "none";
-        document.getElementById("appPassInput").value = "";
-        document.getElementById("appAuthAppName").textContent = name;
-        switchScreen("appAuthApp");
-        document.getElementById("appPassInput").focus();
-        return;
-    }
+    try {
+        const { data } = await supabaseClient.from('settings').select('value').eq('key', `pass_${key}`).single();
+        const pass = data ? data.value : "";
+
+        if (pass && pass.trim() !== "") {
+            document.getElementById("appPassError").style.display = "none";
+            document.getElementById("appPassInput").value = "";
+            document.getElementById("appAuthAppName").textContent = name;
+            switchScreen("appAuthApp");
+            document.getElementById("appPassInput").focus();
+            return;
+        }
+    } catch (e) {}
+
     window.location.href = selectedAppUrl;
 }
 
-function submitPassword() {
+async function submitPassword() {
     const input = document.getElementById("passInput");
-    if (input.value.trim() === remoteConfig.sitePassword) {
-        sessionStorage.setItem("site_access", "true");
-        switchScreen("mainApp");
-    } else {
-        document.getElementById("authError").style.display = "block";
-        input.value = "";
-        input.focus();
-    }
+    const enteredPass = input.value.trim();
+
+    try {
+        const { data } = await supabaseClient.from('settings').select('value').eq('key', 'site_password').single();
+        const correctPass = data ? data.value : "";
+
+        if (enteredPass === correctPass || !correctPass) {
+            sessionStorage.setItem("site_access", "true");
+            switchScreen("mainApp");
+            return;
+        }
+    } catch (e) {}
+
+    document.getElementById("authError").style.display = "block";
+    input.value = "";
+    input.focus();
 }
 
-function submitAppPassword() {
+async function submitAppPassword() {
     const input = document.getElementById("appPassInput");
-    if (input.value.trim() === remoteConfig.appPasswords[selectedAppKey]) {
-        switchScreen("mainApp");
-        window.location.href = selectedAppUrl;
-    } else {
-        document.getElementById("appPassError").style.display = "block";
-        input.value = "";
-        input.focus();
-    }
+    const enteredPass = input.value.trim();
+
+    try {
+        const { data } = await supabaseClient.from('settings').select('value').eq('key', `pass_${selectedAppKey}`).single();
+        const correctPass = data ? data.value : "";
+
+        if (enteredPass === correctPass) {
+            switchScreen("mainApp");
+            window.location.href = selectedAppUrl;
+            return;
+        }
+    } catch (e) {}
+
+    document.getElementById("appPassError").style.display = "block";
+    input.value = "";
+    input.focus();
 }
 
 function cancelAppPassword() {
@@ -570,14 +588,24 @@ function setCategory(cat, btn) {
     filterApps();
 }
 
-function filterApps() {
+async function filterApps() {
     const query = document.getElementById("appSearchInput").value.trim().toLowerCase();
     document.getElementById("searchClear").classList.toggle("visible", query.length > 0);
     let count = 0;
 
+    let visibility = {};
+    try {
+        const { data } = await supabaseClient.from('settings').select('*');
+        data?.forEach(item => {
+            if (item.key.startsWith('vis_')) {
+                visibility[item.key.replace('vis_', '')] = item.value === 'true';
+            }
+        });
+    } catch (e) {}
+
     document.querySelectorAll(".app-grid-card").forEach(card => {
         const key = card.getAttribute("data-key");
-        if (remoteConfig.appVisibility[key] === false) {
+        if (visibility[key] === false) {
             card.style.display = "none";
             return;
         }
