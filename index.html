@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0b0f17">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>AppRestore IOS</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+      :root {
+          --bg: #0b0f17;
+          --text: #f8fafc;
+          --muted: #94a3b8;
+          --spring: cubic-bezier(.22,1,.36,1);
+      }
+      * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-weight: 500; }
+      button, input, .btn, .custom-select-btn, .sheet-close, .search-clear, .search-filter-btn, .filter-option { touch-action: manipulation; }
+      html, body { width: 100%; min-height: 100%; margin: 0; padding: 0; }
+      body {
+          min-height: 100dvh;
+          overflow-x: hidden;
+          font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+          color: var(--text);
+          background:
+              radial-gradient(circle at 18% 8%, rgba(30,58,138,.15), transparent 32%),
+              radial-gradient(circle at 88% 18%, rgba(217,119,6,.1), transparent 30%),
+              radial-gradient(circle at 75% 92%, rgba(51,65,85,.15), transparent 30%),
+              #0b0f17;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-start;
+          align-items: center;
+          padding: max(16px, env(safe-area-inset-top)) 0 max(30px, env(safe-area-inset-bottom));
+      }
+      .aurora-bg {
+          position: fixed; inset: -15%; z-index: -10;
+          background: radial-gradient(ellipse at 18% 18%, rgba(30,58,138,.18), transparent 35%),
+                      radial-gradient(ellipse at 85% 20%, rgba(217,119,6,.12), transparent 35%),
+                      radial-gradient(ellipse at 70% 85%, rgba(51,65,85,.12), transparent 34%),
+                      linear-gradient(135deg, #0b0f17 0%, #111827 48%, #0f172a 100%);
+          background-size: 160% 160%; background-position: 40% 50%; pointer-events: none;
+      }
+      .top-navbar {
+          width: 100%; max-width: 430px; padding: 0 18px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; z-index: 10;
+      }
+      .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: #fff; }
+      .nav-logo { width: 36px; height: 36px; border-radius: 10px; object-fit: cover; border: 1.2px solid rgba(217, 180, 140, 0.45); }
+      .nav-title { font-size: 16px; font-weight: 700; background: linear-gradient(135deg, #ffffff 15%, #cbd5e1 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+      .burger-btn { width: 40px; height: 40px; border-radius: 12px; background: rgba(30,41,59,0.5); border: 1px solid rgba(148,163,184,0.2); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; cursor: pointer; }
+      .burger-line { width: 18px; height: 2px; background: #cbd5e1; border-radius: 2px; }
+
+      .container {
+          width: 100%; max-width: 430px; padding: 0 18px max(10px, env(safe-area-inset-bottom));
+          z-index: 2; display: none; flex-direction: column; justify-content: center; flex: 1; margin: auto 0;
+          opacity: 0; transform: translateY(16px) scale(.97); transition: opacity 0.4s var(--spring), transform 0.4s var(--spring);
+      }
+      .container.active-screen { display: flex; opacity: 1; transform: translateY(0) scale(1); }
+
+      /* Главный экран приветствия */
+      .hero-section { text-align: center; margin-bottom: 20px; }
+      .hero-title { font-size: 26px; font-weight: 750; line-height: 1.25; margin-bottom: 12px; background: linear-gradient(135deg, #ffffff 20%, #cbd5e1 80%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+      .hero-title span { background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+      .hero-desc { font-size: 13px; color: #94a3b8; line-height: 1.55; padding: 0 10px; }
+
+      .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+      .info-box {
+          background: linear-gradient(145deg, rgba(17,24,39,.78), rgba(11,15,23,.88));
+          border: 1.5px solid rgba(217, 180, 140, 0.25); border-radius: 20px; padding: 16px; text-align: center;
+          backdrop-filter: blur(20px); box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      }
+      .info-box-num { font-size: 22px; font-weight: 750; color: #3b82f6; margin-bottom: 4px; }
+      .info-box-label { font-size: 11.5px; color: #94a3b8; line-height: 1.35; }
+
+      /* Экран сетки приложений (После входа) */
+      .apps-grid-container {
+          display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-height: 65dvh; overflow-y: auto; padding: 4px; scrollbar-width: none;
+      }
+      .apps-grid-container::-webkit-scrollbar { display: none; }
+      .app-grid-card {
+          background: linear-gradient(165deg, rgba(17,24,39,.82), rgba(11,15,23,.92));
+          border: 1.5px solid rgba(217, 180, 140, 0.3); border-radius: 22px; padding: 16px 12px;
+          display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.5); cursor: pointer; transition: transform 0.2s ease, border-color 0.2s ease;
+      }
+      .app-grid-card:hover { transform: translateY(-2px); border-color: rgba(245, 158, 11, 0.6); }
+      .app-grid-icon { width: 54px; height: 54px; border-radius: 14px; object-fit: cover; border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 6px 16px rgba(0,0,0,0.4); }
+      .app-grid-name { font-size: 13.5px; font-weight: 650; color: #f8fafc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
+      .app-grid-version { font-size: 11px; color: #94a3b8; margin-top: -4px; }
+      .app-grid-btn {
+          width: 100%; padding: 8px; border-radius: 12px; background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.5);
+          color: #93c5fd; font-size: 12px; font-weight: 650; margin-top: auto; cursor: pointer; transition: background 0.2s;
+      }
+      .app-grid-btn:hover { background: rgba(59, 130, 246, 0.3); }
+
+      /* Стандартные блоки */
+      .auth-box {
+          background: linear-gradient(165deg, rgba(17,24,39,.78), rgba(11,15,23,.88));
+          backdrop-filter: blur(40px) saturate(170%); border: 1.8px solid rgba(217, 180, 140, 0.45);
+          border-radius: 30px; padding: 30px 21px 22px; text-align: center;
+          box-shadow: 0 0 24px rgba(217, 180, 140, 0.08), 0 25px 70px rgba(0,0,0,.62); display: flex; flex-direction: column; gap: 15px;
+      }
+      .auth-title { font-size: 23px; font-weight: 650; background: linear-gradient(135deg, #ffffff 10%, #e2e8f0 55%, #94a3b8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+      .auth-description { font-size: 13px; color: #cbd5e1; line-height: 1.5; }
+      .auth-input {
+          width: 100%; height: 52px; border-radius: 17px; border: 1.8px solid rgba(217, 180, 140, 0.45); outline: none;
+          background: rgba(30,41,59,.3); color: #fff; padding: 0 15px; font-size: 15px; text-align: center;
+      }
+      .auth-input:focus { border-color: rgba(245, 158, 11, 0.75); }
+      .auth-error { display: none; margin-top: -5px; color: #fca5a5; font-size: 12px; font-weight: 600; }
+      
+      .btn {
+          width: 100%; min-height: 50px; display: flex; align-items: center; justify-content: center; padding: 12px;
+          border-radius: 16px; border: none; background: #334155; color: #fff; font-size: 14px; font-weight: 650; cursor: pointer; text-decoration: none;
+          box-shadow: 0 10px 25px rgba(51, 65, 85, 0.25); transition: transform .2s var(--spring);
+      }
+      .btn:active { transform: scale(.975); }
+      .btn-primary { background: linear-gradient(135deg, #2563eb, #1d4ed8); box-shadow: 0 10px 25px rgba(37,99,235,0.35); }
+      .btn-secondary { background: rgba(30,41,59,.4); border: 1.8px solid rgba(148, 163, 184, 0.25); color: #cbd5e1; }
+      .btn-telegram { background: rgba(30, 41, 59, 0.45); border: 1.8px solid rgba(148, 163, 184, 0.2); color: #cbd5e1; }
+
+      .app-search-wrap { position: relative; margin-bottom: 12px; width: 100%; }
+      .app-search { width: 100%; height: 44px; padding: 0 42px 0 38px; border-radius: 14px; border: 1.8px solid rgba(56, 189, 248, 0.6); outline: none; background: rgba(30,41,59,.35); color: #fff; font-size: 13.5px; }
+      .search-icon { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
+      .search-clear { position: absolute; right: 42px; top: 50%; transform: translateY(-50%); display: none; background: none; border: none; color: #cbd5e1; cursor: pointer; }
+      .search-clear.visible { display: block; }
+      .search-filter-btn { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); border: 1.8px solid rgba(56, 189, 248, 0.6); border-radius: 10px; background: rgba(56, 189, 248, 0.1); color: #bae6fd; cursor: pointer; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; }
+
+      .filter-dropdown { position: absolute; top: 100%; right: 0; width: 180px; background: #111827; border: 1.8px solid rgba(217, 180, 110, 0.55); border-radius: 14px; padding: 6px; display: none; z-index: 10; }
+      .filter-dropdown.active { display: flex; flex-direction: column; gap: 4px; }
+      .filter-option { background: transparent; border: none; color: #9ca3af; padding: 8px 12px; cursor: pointer; text-align: left; border-radius: 8px; font-size: 13px; }
+      .filter-option.active { background: rgba(217, 119, 6, 0.35); color: #fff; }
+
+      .token-apps-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; max-height: 250px; overflow-y: auto; }
+      .token-app-card { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-radius: 14px; background: linear-gradient(135deg, rgba(51, 65, 85, 0.35), rgba(217, 119, 6, 0.15)); border: 1.8px solid rgba(217, 180, 140, 0.45); gap: 10px; }
+      .token-app-info { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
+      .token-app-icon { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+      .token-app-name { font-size: 14px; font-weight: 600; color: #f1f5f9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .token-install-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 12px; background: rgba(245, 158, 11, 0.2); border: 1.0px solid rgba(245, 158, 11, 0.6); color: #fde68a; cursor: pointer; flex-shrink: 0; }
+
+      /* Менюшка вверху справа (бургер) */
+      .menu-modal { position: fixed; inset: 0; background: rgba(5,7,12,0.8); backdrop-filter: blur(15px); z-index: 1000; display: none; align-items: flex-end; justify-content: center; }
+      .menu-modal.active { display: flex; }
+      .menu-sheet { width: 100%; max-width: 430px; background: #111827; border-top: 1.8px solid rgba(217, 180, 140, 0.4); border-radius: 28px 28px 0 0; padding: 24px 20px max(30px, env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 12px; }
+      .menu-item { padding: 14px 16px; border-radius: 16px; background: rgba(30,41,59,0.4); border: 1px solid rgba(148,163,184,0.15); color: #f8fafc; font-size: 14px; font-weight: 600; text-align: left; cursor: pointer; text-decoration: none; display: flex; align-items: center; justify-content: space-between; }
+      .menu-item:hover { background: rgba(51,65,85,0.5); }
+    </style>
+</head>
+
+<body>
+
+<div class="aurora-bg"></div>
+
+<!-- Шапка сайта -->
+<header class="top-navbar">
+    <a href="#" class="nav-brand" onclick="goHome()">
+        <img src="https://github.com/app-installer-ios/store/releases/download/logosite/logosite.jpg" alt="logo" class="nav-logo">
+        <span class="nav-title">AppRestore IOS</span>
+    </a>
+    <button class="burger-btn" onclick="toggleBurgerMenu()" aria-label="Меню">
+        <div class="burger-line"></div>
+        <div class="burger-line"></div>
+        <div class="burger-line"></div>
+    </button>
+</header>
+
+<!-- Бургер меню (модальное окно) -->
+<div class="menu-modal" id="burgerMenuModal" onclick="toggleBurgerMenu()">
+    <div class="menu-sheet" onclick="event.stopPropagation()">
+        <div style="font-size: 16px; font-weight: 700; margin-bottom: 4px; color: #fde68a;">Навигация</div>
+        <a href="https://t.me/apprestore_ios" target="_blank" class="menu-item">📢 Наш Telegram канал <span>›</span></a>
+        <a href="https://t.me/dizabled" target="_blank" class="menu-item">💬 Поддержка / Связаться <span>›</span></a>
+        <button class="menu-item" style="background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.3); color: #fca5a5;" onclick="toggleBurgerMenu()">Закрыть меню</button>
+    </div>
+</div>
+
+<!-- 1. Экран техработ -->
+<div class="container" id="maintenanceApp">
+    <div class="auth-box" style="border-color: rgba(239, 68, 68, 0.55);">
+        <div class="auth-title" style="color: #fca5a5;">Технические работы</div>
+        <div class="auth-description" style="margin-top: 6px;">Каталог временно недоступен в связи с обновлением.</div>
+        <button type="button" class="btn" id="checkStatusBtn" onclick="checkSiteStatusManual()" style="margin-top: 10px; background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.5); color: #fca5a5;">Проверить снова</button>
+    </div>
+</div>
+
+<!-- 2. Главный экран (Приветствие как на скриншоте 2) -->
+<div class="container active-screen" id="welcomeApp">
+    <div class="hero-section">
+        <div class="hero-title">Приложения для <span>iPhone</span> быстро и понятно</div>
+        <div class="hero-desc">Выберите нужное приложение, введите пароль доступа и установите его прямо через Safari за пару минут.</div>
+    </div>
+    
+    <button type="button" class="btn btn-primary" onclick="showAuthScreen()" style="margin-bottom: 16px; min-height: 52px; font-size: 15px; border-radius: 18px;">
+        Выбрать приложение
+    </button>
+
+    <div class="info-grid">
+        <div class="info-box">
+            <div class="info-box-num">1000+</div>
+            <div class="info-box-label">клиентов воспользовались сервисом</div>
+        </div>
+        <div class="info-box">
+            <div class="info-box-num">5 мин</div>
+            <div class="info-box-label">обычно занимает установка</div>
+        </div>
+        <div class="info-box">
+            <div class="info-box-num">без ПК</div>
+            <div class="info-box-label">нужны только iPhone и Safari</div>
+        </div>
+        <div class="info-box">
+            <div class="info-box-num">на сайте</div>
+            <div class="info-box-label">быстрый выбор и установка</div>
+        </div>
+    </div>
+</div>
+
+<!-- 3. Экран ввода пароля к каталогу -->
+<div class="container" id="authApp">
+    <div class="auth-box">
+        <div class="auth-title">Доступ к каталогу</div>
+        <div class="auth-description">Введите пароль для просмотра списка доступных приложений</div>
+        <input type="tel" inputmode="numeric" pattern="[0-9]*" id="passInput" class="auth-input" placeholder="Введите пароль" autocomplete="off">
+        <div id="authError" class="auth-error">Неверный пароль</div>
+        <button type="button" class="btn btn-primary" onclick="submitPassword()">Войти</button>
+        <button type="button" class="btn btn-secondary" onclick="goHome()">Назад</button>
+    </div>
+</div>
+
+<!-- 4. Экран пароля к конкретному приложению -->
+<div class="container" id="appAuthApp">
+    <div class="auth-box">
+        <div class="auth-title">🔒 Защита установки</div>
+        <div class="auth-description">Вы выбрали приложение:
+            <div style="font-weight: 750; color: #fde68a; margin-top: 4px;" id="appAuthAppName">Не выбрано</div>
+        </div>
+        <input type="tel" inputmode="numeric" pattern="[0-9]*" id="appPassInput" class="auth-input" placeholder="Введите пароль" autocomplete="off">
+        <div id="appPassError" class="auth-error">Неверный пароль</div>
+        <button type="button" class="btn btn-primary" onclick="submitAppPassword()">Подтвердить</button>
+        <button type="button" class="btn btn-secondary" onclick="cancelAppPassword()">Назад</button>
+    </div>
+</div>
+
+<!-- 5. Основной экран каталога (Сетка как на скриншоте 3) -->
+<div class="container" id="mainApp">
+    <div class="app-search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="appSearchInput" class="app-search" placeholder="Найти приложение..." autocomplete="off" oninput="filterApps()">
+        <button type="button" id="searchClear" class="search-clear" onclick="clearAppSearch()">✕</button>
+        <button type="button" id="searchFilterBtn" class="search-filter-btn" onclick="toggleFilterMenu()">⚙</button>
+        
+        <div class="filter-dropdown" id="filterDropdown">
+            <button type="button" class="filter-option active" onclick="setCategory('all', this)">Все</button>
+            <button type="button" class="filter-option" onclick="setCategory('banks', this)">Банки</button>
+            <button type="button" class="filter-option" onclick="setCategory('social', this)">Соцсети</button>
+            <button type="button" class="filter-option" onclick="setCategory('investments', this)">Инвестиции</button>
+            <button type="button" class="filter-option" onclick="setCategory('other', this)">Другие</button>
+        </div>
+    </div>
+
+    <div id="searchEmpty" style="display:none; text-align:center; color:#94a3b8; font-size:13px; padding:30px;">🔎 Ничего не найдено</div>
+
+    <div class="apps-grid-container" id="appListContainer">
+        <!-- Сетка карточек генерируется автоматически из appsData -->
+    </div>
+</div>
+
+<!-- 6. Экран разовой ссылки -->
+<div class="container" id="tokenApp">
+    <div class="auth-box" style="border-color: rgba(239, 68, 68, 0.65);">
+        <div class="auth-title">Ваши приложения</div>
+        <div class="auth-description">Ссылка действует 5 минут и только на одном устройстве. Нажмите кнопку установки рядом с приложением.</div>
+        <div id="singleTokenAppContainer" class="token-apps-list"></div>
+    </div>
+</div>
+
+<!-- 7. Экран успеха -->
+<div class="container" id="tokenSuccessApp">
+    <div class="auth-box" style="border-color: rgba(59, 130, 246, 0.6);">
+        <div style="font-size: 32px;">📲</div>
+        <div class="auth-title" style="color: #f8fafc;">Установка началась!</div>
+        <div class="auth-description">Закройте это окно — на рабочем столе появится иконка загрузки. Дождитесь её завершения.</div>
+        <button type="button" class="btn btn-primary" onclick="window.location.href='https://t.me/dizabled'">💬 Написать продавцу</button>
+    </div>
+</div>
+
+<!-- 8. Экран ошибки разовой ссылки -->
+<div class="container" id="tokenErrorApp">
+    <div class="auth-box" style="border-color: rgba(239, 68, 68, 0.55);">
+        <div class="auth-title" style="color: #fca5a5;">Установка недоступна</div>
+        <div class="auth-description">Срок действия ссылки истёк или она уже была использована на другом устройстве.</div>
+        <a href="https://t.me/dizabled" target="_blank" class="btn btn-telegram">💬 Написать продавцу</a>
+    </div>
+</div>
+
+<script>
+// Конфигурация Supabase
+const SUPABASE_URL = "https://gbuvpqcummyutycemaaj.supabase.co";
+const SUPABASE_KEY = "sb_publishable_oUDovfvWL6iioG6N5Xd_QQ_8KYezq8g";
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let remoteConfig = { sitePassword: "", appPasswords: {}, appVisibility: {} };
+let selectedAppUrl = "";
+let selectedAppKey = "";
+let currentCategory = "all";
+let currentToken = null;
+
+const appsData = [
+    { key: "vk", name: "ВКонтакте", category: "social", url: "https://app-installer-ios.github.io/store/manifests/vk.plist", icon: "https://i.pinimg.com/736x/92/a9/dc/92a9dc918ad00d529922958f603ede6d.jpg", ios: "iOS 17.6+" },
+    { key: "max", name: "MAX", category: "social", url: "https://app-installer-ios.github.io/store/manifests/max.plist", icon: "https://mari-el.gov.ru/upload/iblock/ff2/wiu6p92d5b9r5t9cr4tvv8dwbt3iwiej.png", ios: "iOS 15.5+" },
+    { key: "vk-video", name: "VK Видео", category: "social", url: "https://app-installer-ios.github.io/store/manifests/vk-video.plist", icon: "https://cdn.shazoo.ru/c1240x645/866526_IsBrEl5_vk.jpg", ios: "iOS 17.6+" },
+    { key: "vk-clips", name: "VK Клипы", category: "social", url: "https://app-installer-ios.github.io/store/manifests/vk-clips.plist", icon: "https://freesoft.ru/storage/images/759/7588/758713/758713_normal.png", ios: "iOS 14.0+" },
+    { key: "vk_massanger", name: "VK Мессенджер", category: "social", url: "https://app-installer-ios.github.io/store/manifests/vk_massanger.plist", icon: "https://www.iguides.ru/upload/iblock/210/s94o3au4qff3sawwq34yksmr7ux2qi8i.jpeg", ios: "iOS 15.0+" },
+    { key: "vkmusic", name: "VK Музыка", category: "social", url: "https://app-installer-ios.github.io/store/manifests/vkmusic.plist", icon: "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/4f/e6/c2/4fe6c2fd-782e-6c4b-0ded-1f18e7a436a0/Placeholder.mill/1200x630wa.jpg", ios: "iOS 15.0+" },
+    { key: "sberfinansy", name: "СберБанк (Финансы Онлайн)", category: "banks", url: "https://app-installer-ios.github.io/store/manifests/sberfinansy.plist", icon: "https://avatars.mds.yandex.net/i?id=e136f957340f46f667209074aaded2ae_l-4079503-images-thumbs&n=13", ios: "iOS 15.0+" },
+    { key: "avito", name: "Авито", category: "other", url: "https://app-installer-ios.github.io/store/manifests/avito.plist", icon: "https://images.meme-arsenal.com/831d76849c248c4785c163219dda744b.jpg", ios: "iOS 16.0+" },
+    { key: "sovkombank-vsekarty", name: "Совкомбанк (Все карты MDS)", category: "banks", url: "https://app-installer-ios.github.io/store/manifests/sovkombank-vsekarty.plist", icon: "https://github.com/app-installer-ios/store/releases/download/Sovkom-SCBNotes/2026-10-10_22-44-26.png", ios: "iOS 17.0+" },
+    { key: "tbank", name: "Т-Банк (8PRO)", category: "banks", url: "https://app-installer-ios.github.io/store/manifests/tbank.plist", icon: "https://static6.tgstat.ru/channels/_50/cc/ccbdee27cc3ba4234ebf990580c1e00f.jpg", ios: "iOS 16.0+" },
+    { key: "sovkombank-sinoptik", name: "Совкомбанк (Синоптик+)", category: "banks", url: "https://app-installer-ios.github.io/store/manifests/sovkombank-sinoptik.plist", icon: "https://github.com/app-installer-ios/store/releases/download/Sovkom-SCBNotes/2026-10-10_22-44-26.png", ios: "iOS 17.0+" },
+    { key: "spotluma", name: "Т-Банк (Spotluma)", category: "banks", url: "https://app-installer-ios.github.io/store/manifests/spotluma.plist", icon: "https://static6.tgstat.ru/channels/_50/cc/ccbdee27cc3ba4234ebf990580c1e00f.jpg", ios: "iOS 16.0+" },
+    { key: "lenta", name: "Лента", category: "other", url: "https://app-installer-ios.github.io/store/manifests/lenta.plist", icon: "https://i.taplink.st/a/1/4/7/e/15bb4a.jpg?139", ios: "iOS 16.0+" },
+    { key: "yandex-pay", name: "Яндекс Пэй", category: "banks", url: "https://app-installer-ios.github.io/store/manifests/yandex-pay.plist", icon: "https://avatars.mds.yandex.net/get-altay/16329243/2a0000019bc0e7a55b0eaa0dcc6b77eca410/XL", ios: "iOS 16.0+" },
+    { key: "2gis", name: "2ГИС", category: "other", url: "https://app-installer-ios.github.io/store/manifests/2gis.plist", icon: "https://avatars.mds.yandex.net/i?id=55fe61e4c88acc4ce04bdd4b010fe649cecd5944-5233671-images-thumbs&n=13", ios: "iOS 16.0+" },
+    { key: "yla", name: "Юла", category: "other", url: "https://app-installer-ios.github.io/store/manifests/yla.plist", icon: "https://avatars.mds.yandex.net/i?id=de2c57353882125853f6d024be2789d7_l-5209452-images-thumbs&n=13", ios: "iOS 15.6+" },
+    { key: "psb", name: "ПСБ (Чайная Церемония)", category: "banks", url: "https://app-installer-ios.github.io/store/manifests/psb.plist", icon: "https://avatars.mds.yandex.net/i?id=8ee36645ffa71da6eb92a8fe9278eca3_l-5358567-images-thumbs&n=13", ios: "iOS 15.0+" },
+    { key: "kuper", name: "Купер", category: "other", url: "https://app-installer-ios.github.io/store/manifests/kuper.plist", icon: "https://60.img.avito.st/image/1/1.0dwn5ba1fTU9QtMzCbrPvnxEfzWZTtMzPUJ_Nw.j26nxCmZQ8VWkUMP7X-DLKRbPztCEmtRQ9pGUH_DqPY", ios: "iOS 15.0+" },
+    { key: "rutube", name: "Rutube", category: "social", url: "https://app-installer-ios.github.io/store/manifests/rutube.plist", icon: "https://azecsuwvwypwnkgobujn.supabase.co/storage/v1/object/public/avatars/company-logos/b341fde4-0bb0-4361-8104-81c7a384f66f.png", ios: "iOS 16.0+" },
+    { key: "mobio", name: "СберМобайл (Мобио)", category: "other", url: "https://app-installer-ios.github.io/store/manifests/mobio.plist", icon: "https://web.archive.org/web/20230220074655im_/https://sbermobile.ru/favicons/ICON_sbermobile-long.jpg?v=2", ios: "iOS 15.0+" },
+    { key: "tmobail", name: "Т-Мобайл", category: "other", url: "https://app-installer-ios.github.io/store/manifests/tinkoffmobail.plist", icon: "https://github.com/app-installer-ios/store/releases/download/tinkoffmobail/2026-10-10_22-42-15.png", ios: "iOS 16.0+" },
+    { key: "ubrir-rubli", name: "УБРиР (РУбли)", category: "banks", url: "https://app-installer-ios.github.io/store/manifests/ubrir_rubli.plist", icon: "https://banki.loans/storage/posts/June2021/2NH4l0w4DiKbR77CudHS.png", ios: "iOS 15.0+" },
+    { key: "sberkids", name: "СберKids (SpeakaBoo)", category: "banks", url: "https://app-installer-ios.github.io/store/manifests/sberkids.plist", icon: "https://avatars.mds.yandex.net/i?id=b6df7c45dd50f80955f038e2372136cf_l-5339410-images-thumbs&n=13", ios: "iOS 15.0+" },
+    { key: "lentaa", name: "Лента (Быстро Продукты)", category: "other", url: "https://app-installer-ios.github.io/store/manifests/lentaa.plist", icon: "https://i.taplink.st/a/1/4/7/e/15bb4a.jpg?139", ios: "iOS 16.0+" },
+    { key: "avito-anero", name: "Авито (Anero)", category: "other", url: "https://app-installer-ios.github.io/store/manifests/avito-anero.plist", icon: "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/7e/28/f6/7e28f600-04c2-5f88-51ea-5f0a866da9f6/AppIcon-0-0-1x_U007epad-0-1-85-220.png/1200x1200bb.png", ios: "iOS 16.0+" },
+    { key: "craftersy", name: "Т-Банк (Craftersy)", category: "banks", url: "https://app-installer-ios.github.io/store/manifests/craftersy.plist", icon: "https://static6.tgstat.ru/channels/_50/cc/ccbdee27cc3ba4234ebf990580c1e00f.jpg", ios: "iOS 16.0+" },
+    { key: "scbnotes", name: "СовкомБанк (SCB Notes)", category: "banks", url: "https://app-installer-ios.github.io/store/manifests/scbnotes.plist", icon: "https://github.com/app-installer-ios/store/releases/download/Sovkom-SCBNotes/2026-10-10_22-44-26.png", ios: "iOS 17.0+" },
+    { key: "ak-bars-bank", name: "АК Барс (Всё Учтено)", category: "banks", url: "https://app-installer-ios.github.io/store/manifests/ak-bars-bank.plist", icon: "https://static.tildacdn.com/tild6335-3234-4462-b262-303937366262/__.jpg", ios: "iOS 16.0+" },
+    { key: "blum", name: "РокетБанк (Блум)", category: "banks", url: "https://app-installer-ios.github.io/store/manifests/blum.plist", icon: "https://images.meme-arsenal.com/b4a2cd0fa9f128945deb4b6a2da30829.jpg", ios: "iOS 15.0+" },
+    { key: "happ_proxy", name: "Happ Proxy", category: "other", url: "https://app-installer-ios.github.io/store/manifests/happ.plist", icon: "https://www.anti-malware.ru/files/images/source/happisback-news.png", ios: "iOS 15.0+" },
+    { key: "chatgpt", name: "ChatGPT", category: "other", url: "https://app-installer-ios.github.io/store/manifests/chatgpt.plist", icon: "https://i.kod.ru/unsafe/rs:fill:1200:630:1/q:85/plain/https%3A%2F%2Fapi.kod.ru%2Fcontent%2Fimages%2F2026%2F03%2FIMG_3113-1.webp", ios: "iOS 16.0+" },
+    { key: "gemini", name: "Google Gemini", category: "other", url: "https://app-installer-ios.github.io/store/manifests/gemini.plist", icon: "https://github.com/app-installer-ios/store/releases/download/gemini/geminilogo.png", ios: "iOS 14.0+" },
+    { key: "lenta_lesenta", name: "Лента (Лесента)", category: "other", url: "https://app-installer-ios.github.io/store/manifests/lenta_lesenta.plist", icon: "https://github.com/app-installer-ios/store/releases/download/lenta_lesenta/IconLesenta.png", ios: "iOS 15.0+" },
+    { key: "sber_invest", name: "СберИнвестиции", category: "investments", url: "https://app-installer-ios.github.io/store/manifests/sberinvest_siyanie.plist", icon: "https://play-lh.googleusercontent.com/TKVuldWCwCwV4fawNUHEYp_ugy5e8tYw54Mogl3YbVBNcb6GPJ3eBLshXQ4tBv9zdA", ios: "iOS 15.0+" },
+    { key: "vtb_invest", name: "ВТБ Инвестиции", category: "investments", url: "https://app-installer-ios.github.io/store/manifests/vtbinvest_kafario.plist", icon: "https://avatars.mds.yandex.net/i?id=dad679c9a9151f179f35c091b379f63ddde52982-4575475-images-thumbs&n=13", ios: "iOS 15.0+" },
+    { key: "alfa_invest", name: "Альфа Инвестиции", category: "investments", url: "https://app-installer-ios.github.io/store/manifests/alfa_invest.plist", icon: "https://is1-ssl.mzstatic.com/image/thumb/Purple126/v4/b5/17/f5/b517f516-37e2-8193-f5e3-f32448070520/AppIcon-0-0-1x_U007emarketing-0-0-0-7-0-0-sRGB-0-0-0-GLES2_U002c0-512MB-85-220-0-0.png/1200x630wa.png", ios: "iOS 16.0+" },
+    { key: "sbpay", name: "СБПэй", category: "other", url: "https://app-installer-ios.github.io/store/manifests/sbpay.plist", icon: "https://avatars.mds.yandex.net/i?id=7680b326d267d36c98347f09c4968699_l-5662910-images-thumbs&n=13", ios: "iOS 13.0+" },
+    { key: "yota_atoy", name: "YOTA (Atoy)", category: "other", url: "https://app-installer-ios.github.io/store/manifests/yota_atoy.plist", icon: "https://cdn1.ozonusercontent.com/s3/product-service-meta-media/c63bbaf2-9af4-47dd-a5c8-a6aba2540d43.jpg", ios: "iOS 15.0+" },
+    { key: "gazpromneft", name: "Газпромнефть", category: "other", url: "https://app-installer-ios.github.io/store/manifests/gazpromneft.plist", icon: "https://avatars.mds.yandex.net/i?id=f5b78015f371133a357d570c8857c46db5324c27-8343045-images-thumbs&n=13", ios: "iOS 15.0+" },
+    { key: "novikombank", name: "Новикомбанк", category: "banks", url: "https://app-installer-ios.github.io/store/manifests/novikombank.plist", icon: "https://s.rbk.ru/v1_companies_s3/media/trademarks/e0275264-62c2-41fb-a7be-963c06ffc091.jpg", ios: "iOS 12.0+" },
+    { key: "rshb_gysi", name: "РСХБ (Любовь и гуси)", category: "banks", url: "https://app-installer-ios.github.io/store/manifests/rshb_gysi.plist", icon: "https://static.rustore.ru/imgproxy/a-_4wihi7Ipu_Q1vKfwQL60cBsrs33Zb4WNSoTBVFmc/preset:vk_og_img/plain/https://static.rustore.ru/9462ebde-9163-4ec9-bfe6-556c23a9cbaf@webp", ios: "iOS 15.0+" },
+    { key: "mtsdengi", name: "МТС Банк", category: "banks", url: "https://app-installer-ios.github.io/store/manifests/mtsdengi.plist", icon: "https://yt3.googleusercontent.com/ni-yGWFO4YJzf02xm8UL9N_WReTfYAN6sIj0wtyoaLD16D8MUPaiuGp0So8ZYGw1ApRXw0wzW4w=s900-c-k-c0x00ffffff-no-rj", ios: "iOS 15.0+" }
+];
+
+function generateAppsGrid() {
+    const container = document.getElementById("appListContainer");
+    if (!container) return;
+    
+    let html = "";
+    appsData.forEach(app => {
+        html += `
+        <div class="app-grid-card" data-key="${app.key}" data-category="${app.category}">
+            <img loading="lazy" src="${app.icon}" class="app-grid-icon" alt="${app.name}">
+            <div class="app-grid-name">${app.name}</div>
+            <div class="app-grid-version">${app.ios}</div>
+            <button type="button" class="app-grid-btn" onclick="triggerInstall('${app.key}', 'itms-services://?action=download-manifest&url=${app.url}', '${app.name}')">Установить</button>
+        </div>`;
+    });
+    container.innerHTML = html;
+}
+
+function switchScreen(id) {
+    document.querySelectorAll(".container").forEach(el => el.classList.remove("active-screen"));
+    document.getElementById(id)?.classList.add("active-screen");
+}
+
+function goHome() {
+    if (sessionStorage.getItem("site_access") === "true") {
+        switchScreen("mainApp");
+    } else {
+        switchScreen("welcomeApp");
+    }
+}
+
+function showAuthScreen() {
+    if (sessionStorage.getItem("site_access") === "true") {
+        switchScreen("mainApp");
+    } else {
+        switchScreen("authApp");
+        document.getElementById("passInput")?.focus();
+    }
+}
+
+function toggleBurgerMenu() {
+    document.getElementById("burgerMenuModal").classList.toggle("active");
+}
+
+async function checkSiteStatus() {
+    try {
+        const { data } = await supabaseClient.from('site_status').select('is_enabled').eq('id', 1).single();
+        return data ? data.is_enabled : true;
+    } catch { return true; }
+}
+
+async function checkSiteStatusManual() {
+    const btn = document.getElementById("checkStatusBtn");
+    if (btn) { btn.textContent = "Проверка..."; }
+    if (await checkSiteStatus()) location.reload();
+    else if (btn) { btn.textContent = "Проверить снова"; }
+}
+
+async function fetchSupabaseSettings() {
+    try {
+        const { data } = await supabaseClient.from('settings').select('*');
+        const config = { sitePassword: "", appPasswords: {}, appVisibility: {} };
+        data?.forEach(item => {
+            if (item.key === 'site_password') config.sitePassword = item.value;
+            else if (item.key.startsWith('vis_')) config.appVisibility[item.key.replace('vis_', '')] = item.value === 'true';
+            else if (item.key.startsWith('pass_')) config.appPasswords[item.key.replace('pass_', '')] = item.value;
+        });
+        return config;
+    } catch { return { sitePassword: "", appPasswords: {}, appVisibility: {} }; }
+}
+
+function applyVisibility() {
+    document.querySelectorAll('.app-grid-card').forEach(card => {
+        const key = card.getAttribute('data-key');
+        const isVisible = remoteConfig.appVisibility[key] !== false;
+        card.style.display = isVisible ? "flex" : "none";
+    });
+}
+
+generateAppsGrid();
+
+document.addEventListener("DOMContentLoaded", async () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+
+    if (token) {
+        handleToken(token);
+        return;
+    }
+
+    if (!await checkSiteStatus()) {
+        switchScreen("maintenanceApp");
+        return;
+    }
+
+    remoteConfig = await fetchSupabaseSettings();
+    applyVisibility();
+
+    if (sessionStorage.getItem("site_access") === "true") {
+        switchScreen("mainApp");
+    } else {
+        switchScreen("welcomeApp");
+    }
+
+    document.getElementById("passInput")?.addEventListener("keydown", e => { if (e.key === "Enter") submitPassword(); });
+    document.getElementById("appPassInput")?.addEventListener("keydown", e => { if (e.key === "Enter") submitAppPassword(); });
+});
+
+async function handleToken(token) {
+    try {
+        const { data } = await supabaseClient.from('one_time_links').select('*').eq('token', token).single();
+        if (!data || data.is_used) {
+            switchScreen("tokenErrorApp");
+            return;
+        }
+
+        const appKeys = data.app_keys ? data.app_keys.split(",").map(k => k.trim()) : [];
+        const container = document.getElementById('singleTokenAppContainer');
+        container.innerHTML = '';
+
+        appKeys.forEach(key => {
+            const app = appsData.find(a => a.key === key);
+            if (app) {
+                container.innerHTML += `
+                <div class="token-app-card">
+                    <div class="token-app-info">
+                        <img src="${app.icon}" class="token-app-icon" alt="${app.name}">
+                        <span class="token-app-name">${app.name}</span>
+                    </div>
+                    <button type="button" class="token-install-btn" onclick="triggerInstall('${app.key}', 'itms-services://?action=download-manifest&url=${app.url}', '${app.name}')">⬇</button>
+                </div>`;
+            }
+        });
+
+        switchScreen("tokenApp");
+
+        await supabaseClient.from('one_time_links').update({ is_used: true }).eq('token', token);
+    } catch {
+        switchScreen("tokenErrorApp");
+    }
+}
+
+function triggerInstall(key, url, name) {
+    selectedAppUrl = url;
+    selectedAppKey = key;
+    const pass = remoteConfig.appPasswords[key];
+
+    if (pass && pass.trim() !== "") {
+        document.getElementById("appPassError").style.display = "none";
+        document.getElementById("appPassInput").value = "";
+        document.getElementById("appAuthAppName").textContent = name;
+        switchScreen("appAuthApp");
+        document.getElementById("appPassInput").focus();
+        return;
+    }
+    window.location.href = selectedAppUrl;
+}
+
+function submitPassword() {
+    const input = document.getElementById("passInput");
+    if (input.value.trim() === remoteConfig.sitePassword) {
+        sessionStorage.setItem("site_access", "true");
+        switchScreen("mainApp");
+    } else {
+        document.getElementById("authError").style.display = "block";
+        input.value = "";
+        input.focus();
+    }
+}
+
+function submitAppPassword() {
+    const input = document.getElementById("appPassInput");
+    if (input.value.trim() === remoteConfig.appPasswords[selectedAppKey]) {
+        switchScreen("mainApp");
+        window.location.href = selectedAppUrl;
+    } else {
+        document.getElementById("appPassError").style.display = "block";
+        input.value = "";
+        input.focus();
+    }
+}
+
+function cancelAppPassword() {
+    switchScreen("mainApp");
+}
+
+function toggleFilterMenu() {
+    document.getElementById("filterDropdown").classList.toggle("active");
+}
+
+function setCategory(cat, btn) {
+    currentCategory = cat;
+    document.querySelectorAll(".filter-option").forEach(o => o.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById("filterDropdown").classList.remove("active");
+    filterApps();
+}
+
+function filterApps() {
+    const query = document.getElementById("appSearchInput").value.trim().toLowerCase();
+    document.getElementById("searchClear").classList.toggle("visible", query.length > 0);
+    let count = 0;
+
+    document.querySelectorAll(".app-grid-card").forEach(card => {
+        const key = card.getAttribute("data-key");
+        if (remoteConfig.appVisibility[key] === false) {
+            card.style.display = "none";
+            return;
+        }
+        const name = card.querySelector(".app-grid-name").textContent.toLowerCase();
+        const cat = card.getAttribute("data-category");
+        const match = name.includes(query) && (currentCategory === "all" || cat === currentCategory);
+        card.style.display = match ? "flex" : "none";
+        if (match) count++;
+    });
+
+    document.getElementById("searchEmpty").style.display = count === 0 ? "block" : "none";
+}
+
+function clearAppSearch() {
+    const input = document.getElementById("appSearchInput");
+    input.value = "";
+    filterApps();
+    input.focus();
+}
+</script>
+</body>
+</html>
