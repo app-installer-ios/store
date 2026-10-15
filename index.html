@@ -10,7 +10,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-      /* Светлая и темная темы (Apple Style) */
       :root {
           --bg: #0b0f17;
           --text: #f8fafc;
@@ -19,6 +18,9 @@
           --card-border: 1.5px solid rgba(255, 255, 255, 0.12);
           --box-shadow: 0 20px 50px rgba(0,0,0,0.6);
           --input-bg: rgba(30,41,59,.4);
+          --btn-install-bg: rgba(59, 130, 246, 0.15);
+          --btn-install-border: rgba(59, 130, 246, 0.5);
+          --btn-install-color: #93c5fd;
           --spring: cubic-bezier(.22,1,.36,1);
       }
 
@@ -30,6 +32,9 @@
           --card-border: 1.5px solid rgba(0, 0, 0, 0.08);
           --box-shadow: 0 20px 40px rgba(0,0,0,0.08);
           --input-bg: rgba(255,255,255,.8);
+          --btn-install-bg: #2563eb;
+          --btn-install-border: #1d4ed8;
+          --btn-install-color: #ffffff;
       }
 
       * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-weight: 500; }
@@ -124,16 +129,16 @@
       .app-grid-name { font-size: 12.5px; font-weight: 650; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
       .app-grid-version { font-size: 10.5px; color: var(--muted); margin-top: -3px; }
       .app-grid-btn {
-          width: 100%; padding: 7px 4px; border-radius: 10px; background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.5);
-          color: #93c5fd; font-size: 11.5px; font-weight: 650; margin-top: auto; cursor: pointer; transition: background 0.2s; box-sizing: border-box;
+          width: 100%; padding: 7px 4px; border-radius: 10px;
+          background: var(--btn-install-bg); border: 1px solid var(--btn-install-border);
+          color: var(--btn-install-color); font-size: 11.5px; font-weight: 650; margin-top: auto; cursor: pointer; transition: background 0.2s; box-sizing: border-box;
       }
-      .app-grid-btn:hover { background: rgba(59, 130, 246, 0.3); }
+      .app-grid-btn:hover { filter: brightness(1.1); }
 
-      /* Карточки в стиле Apple (для ошибок, техработ, успеха) */
       .auth-box {
           background: var(--card-bg);
           backdrop-filter: blur(40px) saturate(170%); border: var(--card-border);
-          border-radius: 28px; padding: 30px 22px 24px; text-align: center; width: 100%; box-sizing: border-box;
+          border-radius: 28px; padding: 28px 20px 22px; text-align: center; width: 100%; box-sizing: border-box;
           box-shadow: var(--box-shadow); display: flex; flex-direction: column; gap: 14px;
       }
       .apple-icon-bubble {
@@ -141,7 +146,7 @@
           display: flex; align-items: center; justify-content: center; font-size: 26px; margin: 0 auto 4px auto;
       }
       .auth-title { font-size: 21px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; }
-      .auth-description { font-size: 13.5px; color: var(--muted); line-height: 1.6; }
+      .auth-description { font-size: 13.5px; color: var(--muted); line-height: 1.55; }
       
       .auth-input {
           width: 100%; height: 48px; border-radius: 15px; border: 1.5px solid rgba(255, 255, 255, 0.15); outline: none;
@@ -181,11 +186,13 @@
       .token-app-name { font-size: 14px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
       .token-install-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 12px; background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.5); color: #3b82f6; cursor: pointer; flex-shrink: 0; }
 
-      /* Бургер меню */
+      /* Бургер меню со стрелочкой назад и без кнопки закрытия */
       .menu-modal { position: fixed; inset: 0; background: rgba(5,7,12,0.8); backdrop-filter: blur(15px); z-index: 1000; display: none; align-items: flex-end; justify-content: center; }
       .menu-modal.active { display: flex; }
       .menu-sheet { width: 100%; max-width: 430px; background: #111827; border-top: 1.5px solid rgba(255, 255, 255, 0.12); border-radius: 28px 28px 0 0; padding: 22px 18px max(24px, env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 10px; box-sizing: border-box; }
       [data-theme="light"] .menu-sheet { background: #ffffff; border-color: #e2e8f0; }
+      .menu-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+      .menu-back-btn { width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.08); border: none; color: var(--text); font-size: 18px; font-weight: 700; display: flex; align-items: center; justify-content: center; cursor: pointer; }
       .menu-item { padding: 13px 15px; border-radius: 14px; background: rgba(30,41,59,0.4); border: 1px solid rgba(148,163,184,0.15); color: var(--text); font-size: 14px; font-weight: 600; text-align: left; cursor: pointer; text-decoration: none; display: flex; align-items: center; justify-content: space-between; width: 100%; box-sizing: border-box; }
       [data-theme="light"] .menu-item { background: #f8fafc; border-color: #e2e8f0; }
       .menu-item:hover { background: rgba(51,65,85,0.5); }
@@ -210,24 +217,26 @@
     </div>
 </header>
 
-<!-- Бургер меню -->
+<!-- Бургер меню со стрелочкой назад -->
 <div class="menu-modal" id="burgerMenuModal" onclick="toggleBurgerMenu()">
     <div class="menu-sheet" onclick="event.stopPropagation()">
-        <div style="font-size: 14px; font-weight: 700; margin-bottom: 2px; color: #3b82f6;">Навигация</div>
+        <div class="menu-header">
+            <span style="font-size: 15px; font-weight: 700; color: #3b82f6;">Навигация</span>
+            <button class="menu-back-btn" onclick="toggleBurgerMenu()" title="Назад">‹</button>
+        </div>
         <button class="menu-item" onclick="toggleTheme()" id="themeToggleBtn">☀️ Светлая тема <span>›</span></button>
         <a href="#" class="menu-item">📖 Инструкция <span>›</span></a>
         <a href="https://t.me/apprestore_ios" target="_blank" class="menu-item">📢 Наш Telegram канал <span>›</span></a>
         <a href="https://t.me/dizabled" target="_blank" class="menu-item">💬 Поддержка / Связаться <span>›</span></a>
-        <button class="menu-item" style="background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.3); color: #fca5a5;" onclick="toggleBurgerMenu()">Закрыть меню</button>
     </div>
 </div>
 
-<!-- 1. Экран техработ (Каталог недоступен) -->
+<!-- 1. Экран техработ -->
 <div class="container" id="maintenanceApp">
     <div class="auth-box">
         <div class="apple-icon-bubble">🛠</div>
-        <div class="auth-title">Каталог временно недоступен</div>
-        <div class="auth-description">Мы проводим плановое техническое обслуживание серверов для повышения стабильности работы. Пожалуйста, повторите попытку позже.</div>
+        <div class="auth-title">Обслуживание системы</div>
+        <div class="auth-description">Каталог временно недоступен в связи с плановым обновлением серверов. Пожалуйста, зайдите позже.</div>
         <button type="button" class="btn btn-primary" id="checkStatusBtn" onclick="checkSiteStatusManual()" style="margin-top: 6px;">Проверить соединение</button>
     </div>
 </div>
@@ -449,7 +458,6 @@ function toggleBurgerMenu() {
     document.getElementById("burgerMenuModal").classList.toggle("active");
 }
 
-// Переключение темы (Светлая / Темная)
 function toggleTheme() {
     const body = document.body;
     const currentTheme = body.getAttribute("data-theme");
@@ -467,7 +475,6 @@ function toggleTheme() {
     }
 }
 
-// Восстановление темы при старте
 document.addEventListener("DOMContentLoaded", () => {
     const savedTheme = localStorage.getItem("app_theme") || "dark";
     document.body.setAttribute("data-theme", savedTheme);
@@ -567,7 +574,7 @@ async function handleToken(token) {
                         <img src="${app.icon}" class="token-app-icon" alt="${app.name}">
                         <span class="token-app-name">${app.name}</span>
                     </div>
-                    <button type="button" class="token-install-btn" onclick="triggerInstall('${app.key}', '${app.url}', '${app.name}')">⬇</button>
+                    <button type="button" class="token-install-btn" onclick="triggerInstall('${app.key}', 'itms-services://?action=download-manifest&url=${app.url}', '${app.name}')">⬇</button>
                 </div>`;
             }
         });
