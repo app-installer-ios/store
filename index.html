@@ -65,9 +65,15 @@
       }
       .container.active-screen { display: flex; opacity: 1; transform: translateY(0) scale(1); }
 
-      /* Главный экран приветствия */
-      .hero-section { text-align: center; margin-bottom: 16px; }
-      .hero-title { font-size: 22px; font-weight: 750; line-height: 1.25; margin-bottom: 10px; background: linear-gradient(135deg, #ffffff 20%, #cbd5e1 80%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+      /* Главный экран приветствия: центрирование и поднятый заголовок */
+      #welcomeApp {
+          justify-content: center;
+          align-items: center;
+          text-align: center;
+          padding-bottom: 30px;
+      }
+      .hero-section { text-align: center; margin-bottom: 22px; margin-top: -20px; width: 100%; }
+      .hero-title { font-size: 23px; font-weight: 750; line-height: 1.25; margin-bottom: 10px; background: linear-gradient(135deg, #ffffff 20%, #cbd5e1 80%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
       .hero-title span { background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
       .hero-desc { font-size: 12.5px; color: #94a3b8; line-height: 1.5; padding: 0 10px; }
 
@@ -380,7 +386,7 @@ function switchScreen(id) {
     document.querySelectorAll(".container").forEach(el => el.classList.remove("active-screen"));
     document.getElementById(id)?.classList.add("active-screen");
     
-    // Кнопка «Назад» активна везде, кроме главного экрана приветствия
+    // Управление видимостью кнопки «Назад»
     const backBtn = document.getElementById("navBackBtn");
     if (backBtn) {
         if (id === "welcomeApp") {
@@ -392,7 +398,6 @@ function switchScreen(id) {
 }
 
 function goHome() {
-    // При нажатии «Назад» или на логотип всегда сбрасываем сессию и возвращаем на главный экран приветствия
     sessionStorage.removeItem("site_access");
     switchScreen("welcomeApp");
 }
