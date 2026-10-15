@@ -3,19 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#0b0f17">
+    <meta name="theme-color" content="#0b0f17" id="metaThemeColor">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>AppRestore IOS</title>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
+      /* Светлая и темная темы (Apple Style) */
       :root {
           --bg: #0b0f17;
           --text: #f8fafc;
           --muted: #94a3b8;
+          --card-bg: linear-gradient(165deg, rgba(17,24,39,.82), rgba(11,15,23,.92));
+          --card-border: 1.5px solid rgba(255, 255, 255, 0.12);
+          --box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+          --input-bg: rgba(30,41,59,.4);
           --spring: cubic-bezier(.22,1,.36,1);
       }
+
+      [data-theme="light"] {
+          --bg: #f1f5f9;
+          --text: #0f172a;
+          --muted: #64748b;
+          --card-bg: linear-gradient(165deg, rgba(255,255,255,.95), rgba(241,245,249,.95));
+          --card-border: 1.5px solid rgba(0, 0, 0, 0.08);
+          --box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+          --input-bg: rgba(255,255,255,.8);
+      }
+
       * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-weight: 500; }
       button, input, .btn, .custom-select-btn, .sheet-close, .search-clear, .search-filter-btn, .filter-option { touch-action: manipulation; }
       html, body { width: 100%; height: 100%; margin: 0; padding: 0; overflow-x: hidden; }
@@ -23,11 +39,8 @@
           min-height: 100dvh;
           font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
           color: var(--text);
-          background:
-              radial-gradient(circle at 18% 8%, rgba(30,58,138,.15), transparent 32%),
-              radial-gradient(circle at 88% 18%, rgba(217,119,6,.1), transparent 30%),
-              radial-gradient(circle at 75% 92%, rgba(51,65,85,.15), transparent 30%),
-              #0b0f17;
+          background: var(--bg);
+          transition: background 0.3s ease, color 0.3s ease;
           display: flex;
           flex-direction: column;
           justify-content: flex-start;
@@ -41,20 +54,29 @@
                       radial-gradient(ellipse at 70% 85%, rgba(51,65,85,.12), transparent 34%),
                       linear-gradient(135deg, #0b0f17 0%, #111827 48%, #0f172a 100%);
           background-size: 160% 160%; background-position: 40% 50%; pointer-events: none;
+          transition: opacity 0.3s ease;
       }
+      [data-theme="light"] .aurora-bg {
+          opacity: 0.25;
+          background: radial-gradient(ellipse at 18% 18%, rgba(59,130,246,.15), transparent 35%),
+                      radial-gradient(ellipse at 85% 20%, rgba(217,119,6,.08), transparent 35%),
+                      linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+      }
+
       .top-navbar {
           width: 100%; max-width: 430px; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; z-index: 10; box-sizing: border-box;
       }
-      .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: #fff; cursor: pointer; }
+      .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); cursor: pointer; }
       .nav-logo { width: 36px; height: 36px; border-radius: 10px; object-fit: cover; border: 1.2px solid rgba(217, 180, 140, 0.45); }
-      .nav-title { font-size: 16px; font-weight: 700; background: linear-gradient(135deg, #ffffff 15%, #cbd5e1 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+      .nav-title { font-size: 16px; font-weight: 700; background: linear-gradient(135deg, var(--text) 15%, var(--muted) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
       
       .nav-right-actions { display: flex; align-items: center; gap: 8px; }
-      .back-btn, .burger-btn { width: 40px; height: 40px; border-radius: 12px; background: rgba(30,41,59,0.5); border: 1px solid rgba(148,163,184,0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; color: #cbd5e1; }
+      .back-btn, .burger-btn { width: 40px; height: 40px; border-radius: 12px; background: rgba(30,41,59,0.5); border: 1px solid rgba(148,163,184,0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--muted); }
+      [data-theme="light"] .back-btn, [data-theme="light"] .burger-btn { background: rgba(255,255,255,0.8); border-color: rgba(0,0,0,0.1); }
       .back-btn { font-size: 20px; font-weight: 700; text-decoration: none; display: none; }
       .back-btn.visible { display: flex; }
-      .burger-line { width: 18px; height: 2px; background: #cbd5e1; border-radius: 2px; position: relative; }
-      .burger-line::before, .burger-line::after { content: ''; position: absolute; left: 0; width: 18px; height: 2px; background: #cbd5e1; border-radius: 2px; }
+      .burger-line { width: 18px; height: 2px; background: var(--muted); border-radius: 2px; position: relative; }
+      .burger-line::before, .burger-line::after { content: ''; position: absolute; left: 0; width: 18px; height: 2px; background: var(--muted); border-radius: 2px; }
       .burger-line::before { top: -6px; }
       .burger-line::after { top: 6px; }
 
@@ -65,104 +87,112 @@
       }
       .container.active-screen { display: flex; opacity: 1; transform: translateY(0) scale(1); }
 
-      /* Главный экран приветствия */
-      #welcomeApp {
+      #welcomeApp, #maintenanceApp, #tokenApp, #tokenSuccessApp, #tokenErrorApp {
           justify-content: center;
           align-items: center;
           text-align: center;
-          padding-bottom: 30px;
+          padding-bottom: 20px;
       }
+
       .hero-section { text-align: center; margin-bottom: 22px; margin-top: -20px; width: 100%; }
-      .hero-title { font-size: 23px; font-weight: 750; line-height: 1.25; margin-bottom: 10px; background: linear-gradient(135deg, #ffffff 20%, #cbd5e1 80%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+      .hero-title { font-size: 23px; font-weight: 750; line-height: 1.25; margin-bottom: 10px; background: linear-gradient(135deg, var(--text) 20%, var(--muted) 80%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
       .hero-title span { background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-      .hero-desc { font-size: 12.5px; color: #94a3b8; line-height: 1.5; padding: 0 10px; }
+      .hero-desc { font-size: 12.5px; color: var(--muted); line-height: 1.5; padding: 0 10px; }
 
       .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; width: 100%; }
       .info-box {
-          background: linear-gradient(145deg, rgba(17,24,39,.78), rgba(11,15,23,.88));
-          border: 1.5px solid rgba(217, 180, 140, 0.25); border-radius: 16px; padding: 12px 10px; text-align: center;
-          backdrop-filter: blur(20px); box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+          background: var(--card-bg);
+          border: var(--card-border); border-radius: 16px; padding: 12px 10px; text-align: center;
+          backdrop-filter: blur(20px); box-shadow: var(--box-shadow);
       }
       .info-box-num { font-size: 18px; font-weight: 750; color: #3b82f6; margin-bottom: 3px; }
-      .info-box-label { font-size: 11px; color: #94a3b8; line-height: 1.3; }
+      .info-box-label { font-size: 11px; color: var(--muted); line-height: 1.3; }
 
-      /* Сетка приложений */
       .apps-grid-container {
           display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; width: 100%; box-sizing: border-box;
           padding-bottom: 10px;
       }
       .app-grid-card {
-          background: linear-gradient(165deg, rgba(17,24,39,.82), rgba(11,15,23,.92));
-          border: 1.5px solid rgba(217, 180, 140, 0.3); border-radius: 18px; padding: 12px 10px;
+          background: var(--card-bg);
+          border: var(--card-border); border-radius: 18px; padding: 12px 10px;
           display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px;
-          box-shadow: 0 8px 24px rgba(0,0,0,0.4); cursor: pointer; transition: transform 0.2s ease, border-color 0.2s ease;
+          box-shadow: var(--box-shadow); cursor: pointer; transition: transform 0.2s ease, border-color 0.2s ease;
           box-sizing: border-box; width: 100%; min-width: 0;
       }
       .app-grid-card:hover { transform: translateY(-2px); border-color: rgba(245, 158, 11, 0.6); }
       .app-grid-icon { width: 44px; height: 44px; border-radius: 12px; object-fit: cover; border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.4); flex-shrink: 0; }
-      .app-grid-name { font-size: 12.5px; font-weight: 650; color: #f8fafc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
-      .app-grid-version { font-size: 10.5px; color: #94a3b8; margin-top: -3px; }
+      .app-grid-name { font-size: 12.5px; font-weight: 650; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
+      .app-grid-version { font-size: 10.5px; color: var(--muted); margin-top: -3px; }
       .app-grid-btn {
           width: 100%; padding: 7px 4px; border-radius: 10px; background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.5);
           color: #93c5fd; font-size: 11.5px; font-weight: 650; margin-top: auto; cursor: pointer; transition: background 0.2s; box-sizing: border-box;
       }
       .app-grid-btn:hover { background: rgba(59, 130, 246, 0.3); }
 
-      /* Стандартные блоки */
+      /* Карточки в стиле Apple (для ошибок, техработ, успеха) */
       .auth-box {
-          background: linear-gradient(165deg, rgba(17,24,39,.78), rgba(11,15,23,.88));
-          backdrop-filter: blur(40px) saturate(170%); border: 1.8px solid rgba(217, 180, 140, 0.45);
-          border-radius: 26px; padding: 24px 18px 18px; text-align: center; width: 100%; box-sizing: border-box;
-          box-shadow: 0 0 24px rgba(217, 180, 140, 0.08), 0 25px 70px rgba(0,0,0,.62); display: flex; flex-direction: column; gap: 12px;
+          background: var(--card-bg);
+          backdrop-filter: blur(40px) saturate(170%); border: var(--card-border);
+          border-radius: 28px; padding: 30px 22px 24px; text-align: center; width: 100%; box-sizing: border-box;
+          box-shadow: var(--box-shadow); display: flex; flex-direction: column; gap: 14px;
       }
-      .auth-title { font-size: 20px; font-weight: 650; background: linear-gradient(135deg, #ffffff 10%, #e2e8f0 55%, #94a3b8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-      .auth-description { font-size: 13px; color: #cbd5e1; line-height: 1.5; }
+      .apple-icon-bubble {
+          width: 58px; height: 58px; border-radius: 50%; background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.2);
+          display: flex; align-items: center; justify-content: center; font-size: 26px; margin: 0 auto 4px auto;
+      }
+      .auth-title { font-size: 21px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; }
+      .auth-description { font-size: 13.5px; color: var(--muted); line-height: 1.6; }
+      
       .auth-input {
-          width: 100%; height: 48px; border-radius: 15px; border: 1.8px solid rgba(217, 180, 140, 0.45); outline: none;
-          background: rgba(30,41,59,.3); color: #fff; padding: 0 15px; font-size: 15px; text-align: center; box-sizing: border-box;
+          width: 100%; height: 48px; border-radius: 15px; border: 1.5px solid rgba(255, 255, 255, 0.15); outline: none;
+          background: var(--input-bg); color: var(--text); padding: 0 15px; font-size: 15px; text-align: center; box-sizing: border-box;
       }
-      .auth-input:focus { border-color: rgba(245, 158, 11, 0.75); }
+      .auth-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.2); }
       .auth-error { display: none; margin-top: -4px; color: #fca5a5; font-size: 12px; font-weight: 600; }
       
       .btn {
-          width: 100%; min-height: 46px; display: flex; align-items: center; justify-content: center; padding: 10px;
-          border-radius: 14px; border: none; background: #334155; color: #fff; font-size: 14px; font-weight: 650; cursor: pointer; text-decoration: none;
-          box-shadow: 0 8px 20px rgba(51, 65, 85, 0.25); transition: transform .2s var(--spring); box-sizing: border-box;
+          width: 100%; min-height: 48px; display: flex; align-items: center; justify-content: center; padding: 12px;
+          border-radius: 15px; border: none; background: #334155; color: #fff; font-size: 14px; font-weight: 650; cursor: pointer; text-decoration: none;
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); transition: transform .2s var(--spring); box-sizing: border-box;
       }
       .btn:active { transform: scale(.975); }
-      .btn-primary { background: linear-gradient(135deg, #2563eb, #1d4ed8); box-shadow: 0 8px 20px rgba(37,99,235,0.35); }
-      .btn-secondary { background: rgba(30,41,59,.4); border: 1.8px solid rgba(148, 163, 184, 0.25); color: #cbd5e1; box-shadow: none; }
-      .btn-telegram { background: rgba(30, 41, 59, 0.45); border: 1.8px solid rgba(148, 163, 184, 0.2); color: #cbd5e1; box-shadow: none; }
+      .btn-primary { background: linear-gradient(135deg, #2563eb, #1d4ed8); color: #fff; box-shadow: 0 8px 20px rgba(37,99,235,0.3); }
+      .btn-secondary { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: var(--text); box-shadow: none; }
+      .btn-telegram { background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3); color: #3b82f6; box-shadow: none; }
 
       .app-search-wrap { position: relative; margin-bottom: 12px; width: 100%; box-sizing: border-box; }
-      .app-search { width: 100%; height: 42px; padding: 0 42px 0 38px; border-radius: 14px; border: 1.8px solid rgba(56, 189, 248, 0.6); outline: none; background: rgba(30,41,59,.35); color: #fff; font-size: 13.5px; box-sizing: border-box; }
-      .search-icon { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
-      .search-clear { position: absolute; right: 42px; top: 50%; transform: translateY(-50%); display: none; background: none; border: none; color: #cbd5e1; cursor: pointer; }
+      .app-search { width: 100%; height: 42px; padding: 0 42px 0 38px; border-radius: 14px; border: 1.8px solid rgba(56, 189, 248, 0.6); outline: none; background: var(--input-bg); color: var(--text); font-size: 13.5px; box-sizing: border-box; }
+      .search-icon { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--muted); }
+      .search-clear { position: absolute; right: 42px; top: 50%; transform: translateY(-50%); display: none; background: none; border: none; color: var(--muted); cursor: pointer; }
       .search-clear.visible { display: block; }
       .search-filter-btn { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); border: 1.8px solid rgba(56, 189, 248, 0.6); border-radius: 10px; background: rgba(56, 189, 248, 0.1); color: #bae6fd; cursor: pointer; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; }
 
       .filter-dropdown { position: absolute; top: 100%; right: 0; width: 180px; background: #111827; border: 1.8px solid rgba(217, 180, 110, 0.55); border-radius: 14px; padding: 6px; display: none; z-index: 10; box-sizing: border-box; }
+      [data-theme="light"] .filter-dropdown { background: #ffffff; border-color: #cbd5e1; }
       .filter-dropdown.active { display: flex; flex-direction: column; gap: 4px; }
-      .filter-option { background: transparent; border: none; color: #9ca3af; padding: 8px 12px; cursor: pointer; text-align: left; border-radius: 8px; font-size: 13px; width: 100%; }
+      .filter-option { background: transparent; border: none; color: var(--muted); padding: 8px 12px; cursor: pointer; text-align: left; border-radius: 8px; font-size: 13px; width: 100%; }
       .filter-option.active { background: rgba(217, 119, 6, 0.35); color: #fff; }
 
       .token-apps-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; max-height: 250px; overflow-y: auto; width: 100%; box-sizing: border-box; }
-      .token-app-card { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-radius: 14px; background: linear-gradient(135deg, rgba(51, 65, 85, 0.35), rgba(217, 119, 6, 0.15)); border: 1.8px solid rgba(217, 180, 140, 0.45); gap: 10px; width: 100%; box-sizing: border-box; }
+      .token-app-card { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-radius: 14px; background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255, 255, 255, 0.1); gap: 10px; width: 100%; box-sizing: border-box; }
+      [data-theme="light"] .token-app-card { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.08); }
       .token-app-info { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
       .token-app-icon { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
-      .token-app-name { font-size: 14px; font-weight: 600; color: #f1f5f9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-      .token-install-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 12px; background: rgba(245, 158, 11, 0.2); border: 1.0px solid rgba(245, 158, 11, 0.6); color: #fde68a; cursor: pointer; flex-shrink: 0; }
+      .token-app-name { font-size: 14px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .token-install-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 12px; background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.5); color: #3b82f6; cursor: pointer; flex-shrink: 0; }
 
       /* Бургер меню */
       .menu-modal { position: fixed; inset: 0; background: rgba(5,7,12,0.8); backdrop-filter: blur(15px); z-index: 1000; display: none; align-items: flex-end; justify-content: center; }
       .menu-modal.active { display: flex; }
-      .menu-sheet { width: 100%; max-width: 430px; background: #111827; border-top: 1.8px solid rgba(217, 180, 140, 0.4); border-radius: 28px 28px 0 0; padding: 22px 18px max(24px, env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 10px; box-sizing: border-box; }
-      .menu-item { padding: 13px 15px; border-radius: 14px; background: rgba(30,41,59,0.4); border: 1px solid rgba(148,163,184,0.15); color: #f8fafc; font-size: 14px; font-weight: 600; text-align: left; cursor: pointer; text-decoration: none; display: flex; align-items: center; justify-content: space-between; width: 100%; box-sizing: border-box; }
+      .menu-sheet { width: 100%; max-width: 430px; background: #111827; border-top: 1.5px solid rgba(255, 255, 255, 0.12); border-radius: 28px 28px 0 0; padding: 22px 18px max(24px, env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 10px; box-sizing: border-box; }
+      [data-theme="light"] .menu-sheet { background: #ffffff; border-color: #e2e8f0; }
+      .menu-item { padding: 13px 15px; border-radius: 14px; background: rgba(30,41,59,0.4); border: 1px solid rgba(148,163,184,0.15); color: var(--text); font-size: 14px; font-weight: 600; text-align: left; cursor: pointer; text-decoration: none; display: flex; align-items: center; justify-content: space-between; width: 100%; box-sizing: border-box; }
+      [data-theme="light"] .menu-item { background: #f8fafc; border-color: #e2e8f0; }
       .menu-item:hover { background: rgba(51,65,85,0.5); }
     </style>
 </head>
 
-<body>
+<body data-theme="dark">
 
 <div class="aurora-bg"></div>
 
@@ -183,7 +213,8 @@
 <!-- Бургер меню -->
 <div class="menu-modal" id="burgerMenuModal" onclick="toggleBurgerMenu()">
     <div class="menu-sheet" onclick="event.stopPropagation()">
-        <div style="font-size: 14px; font-weight: 700; margin-bottom: 2px; color: #fde68a;">Навигация</div>
+        <div style="font-size: 14px; font-weight: 700; margin-bottom: 2px; color: #3b82f6;">Навигация</div>
+        <button class="menu-item" onclick="toggleTheme()" id="themeToggleBtn">☀️ Светлая тема <span>›</span></button>
         <a href="#" class="menu-item">📖 Инструкция <span>›</span></a>
         <a href="https://t.me/apprestore_ios" target="_blank" class="menu-item">📢 Наш Telegram канал <span>›</span></a>
         <a href="https://t.me/dizabled" target="_blank" class="menu-item">💬 Поддержка / Связаться <span>›</span></a>
@@ -191,12 +222,13 @@
     </div>
 </div>
 
-<!-- 1. Экран техработ -->
+<!-- 1. Экран техработ (Каталог недоступен) -->
 <div class="container" id="maintenanceApp">
-    <div class="auth-box" style="border-color: rgba(239, 68, 68, 0.55);">
-        <div class="auth-title" style="color: #fca5a5;">Технические работы</div>
-        <div class="auth-description" style="margin-top: 6px;">Каталог временно недоступен в связи с обновлением.</div>
-        <button type="button" class="btn" id="checkStatusBtn" onclick="checkSiteStatusManual()" style="margin-top: 10px; background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.5); color: #fca5a5;">Проверить снова</button>
+    <div class="auth-box">
+        <div class="apple-icon-bubble">🛠</div>
+        <div class="auth-title">Каталог временно недоступен</div>
+        <div class="auth-description">Мы проводим плановое техническое обслуживание серверов для повышения стабильности работы. Пожалуйста, повторите попытку позже.</div>
+        <button type="button" class="btn btn-primary" id="checkStatusBtn" onclick="checkSiteStatusManual()" style="margin-top: 6px;">Проверить соединение</button>
     </div>
 </div>
 
@@ -248,7 +280,7 @@
     <div class="auth-box">
         <div class="auth-title">🔒 Защита установки</div>
         <div class="auth-description">Вы выбрали приложение:
-            <div style="font-weight: 750; color: #fde68a; margin-top: 4px;" id="appAuthAppName">Не выбрано</div>
+            <div style="font-weight: 750; color: #3b82f6; margin-top: 4px;" id="appAuthAppName">Не выбрано</div>
         </div>
         <input type="tel" inputmode="numeric" pattern="[0-9]*" id="appPassInput" class="auth-input" placeholder="Введите пароль" autocomplete="off">
         <div id="appPassError" class="auth-error">Неверный пароль</div>
@@ -274,7 +306,7 @@
         </div>
     </div>
 
-    <div id="searchEmpty" style="display:none; text-align:center; color:#94a3b8; font-size:13px; padding:30px;">🔎 Ничего не найдено</div>
+    <div id="searchEmpty" style="display:none; text-align:center; color:var(--muted); font-size:13px; padding:30px;">🔎 Ничего не найдено</div>
 
     <div class="apps-grid-container" id="appListContainer">
         <!-- Сетка карточек генерируется автоматически из appsData -->
@@ -283,29 +315,31 @@
 
 <!-- 6. Экран разовой ссылки -->
 <div class="container" id="tokenApp">
-    <div class="auth-box" style="border-color: rgba(239, 68, 68, 0.65);">
+    <div class="auth-box">
+        <div class="apple-icon-bubble">📦</div>
         <div class="auth-title">Ваши приложения</div>
-        <div class="auth-description">Ссылка действует 5 минут и только на одном устройстве. Нажмите кнопку установки рядом с приложением.</div>
+        <div class="auth-description">Персональная ссылка активирована. Установка доступна напрямую без ввода дополнительных паролей.</div>
         <div id="singleTokenAppContainer" class="token-apps-list"></div>
     </div>
 </div>
 
 <!-- 7. Экран успеха -->
 <div class="container" id="tokenSuccessApp">
-    <div class="auth-box" style="border-color: rgba(59, 130, 246, 0.6);">
-        <div style="font-size: 32px;">📲</div>
-        <div class="auth-title" style="color: #f8fafc;">Установка началась!</div>
-        <div class="auth-description">Закройте это окно — на рабочем столе появится иконка загрузки. Дождитесь её завершения.</div>
-        <button type="button" class="btn btn-primary" onclick="window.location.href='https://t.me/dizabled'">💬 Написать продавцу</button>
+    <div class="auth-box">
+        <div class="apple-icon-bubble">✨</div>
+        <div class="auth-title">Установка запущена</div>
+        <div class="auth-description">Система передала запрос в Safari. Закройте это окно — на домашнем экране появится иконка загрузки приложения.</div>
+        <button type="button" class="btn btn-telegram" onclick="window.location.href='https://t.me/dizabled'" style="margin-top: 6px;">💬 Связаться с поддержкой</button>
     </div>
 </div>
 
-<!-- 8. Экран ошибки разовой ссылки -->
+<!-- 8. Экран ошибки разовой ссылки (Установка недоступна) -->
 <div class="container" id="tokenErrorApp">
-    <div class="auth-box" style="border-color: rgba(239, 68, 68, 0.55);">
-        <div class="auth-title" style="color: #fca5a5;">Установка недоступна</div>
-        <div class="auth-description">Срок действия ссылки истёк или она уже была использована на другом устройстве.</div>
-        <a href="https://t.me/dizabled" target="_blank" class="btn btn-telegram">💬 Написать продавцу</a>
+    <div class="auth-box">
+        <div class="apple-icon-bubble">🔒</div>
+        <div class="auth-title">Установка недоступна</div>
+        <div class="auth-description">Срок действия данной персональной ссылки истёк или она уже была использована на другом устройстве. В целях безопасности каждая ссылка уникальна. Пожалуйста, обратитесь в поддержку для получения нового доступа.</div>
+        <a href="https://t.me/dizabled" target="_blank" class="btn btn-telegram" style="margin-top: 6px;">💬 Запросить новую ссылку</a>
     </div>
 </div>
 
@@ -314,11 +348,11 @@ const SUPABASE_URL = "https://gbuvpqcummyutycemaaj.supabase.co";
 const SUPABASE_KEY = "sb_publishable_oUDovfvWL6iioG6N5Xd_QQ_8KYezq8g";
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-let remoteConfig = { appVisibility: {} };
 let selectedAppUrl = "";
 let selectedAppKey = "";
 let currentCategory = "all";
 let currentToken = null;
+let isFromToken = false;
 
 const appsData = [
     { key: "vk", name: "ВКонтакте", category: "social", url: "https://app-installer-ios.github.io/store/manifests/vk.plist", icon: "https://i.pinimg.com/736x/92/a9/dc/92a9dc918ad00d529922958f603ede6d.jpg", ios: "iOS 17.6+" },
@@ -386,10 +420,9 @@ function switchScreen(id) {
     document.querySelectorAll(".container").forEach(el => el.classList.remove("active-screen"));
     document.getElementById(id)?.classList.add("active-screen");
     
-    // Кнопка «Назад» видна везде, КРОМЕ экрана приветствия и экрана техработ
     const backBtn = document.getElementById("navBackBtn");
     if (backBtn) {
-        if (id === "welcomeApp" || id === "maintenanceApp") {
+        if (id === "welcomeApp" || id === "maintenanceApp" || id === "tokenApp" || id === "tokenErrorApp" || id === "tokenSuccessApp") {
             backBtn.classList.remove("visible");
         } else {
             backBtn.classList.add("visible");
@@ -398,6 +431,7 @@ function switchScreen(id) {
 }
 
 function goHome() {
+    if (isFromToken) return;
     sessionStorage.removeItem("site_access");
     switchScreen("welcomeApp");
 }
@@ -414,6 +448,38 @@ function showAuthScreen() {
 function toggleBurgerMenu() {
     document.getElementById("burgerMenuModal").classList.toggle("active");
 }
+
+// Переключение темы (Светлая / Темная)
+function toggleTheme() {
+    const body = document.body;
+    const currentTheme = body.getAttribute("data-theme");
+    const newTheme = currentTheme === "light" ? "dark" : "light";
+    body.setAttribute("data-theme", newTheme);
+    localStorage.setItem("app_theme", newTheme);
+
+    const btn = document.getElementById("themeToggleBtn");
+    if (btn) {
+        btn.innerHTML = newTheme === "light" ? "🌙 Темная тема <span>›</span>" : "☀️ Светлая тема <span>›</span>";
+    }
+    const metaColor = document.getElementById("metaThemeColor");
+    if (metaColor) {
+        metaColor.setAttribute("content", newTheme === "light" ? "#f1f5f9" : "#0b0f17");
+    }
+}
+
+// Восстановление темы при старте
+document.addEventListener("DOMContentLoaded", () => {
+    const savedTheme = localStorage.getItem("app_theme") || "dark";
+    document.body.setAttribute("data-theme", savedTheme);
+    const btn = document.getElementById("themeToggleBtn");
+    if (btn) {
+        btn.innerHTML = savedTheme === "light" ? "🌙 Темная тема <span>›</span>" : "☀️ Светлая тема <span>›</span>";
+    }
+    const metaColor = document.getElementById("metaThemeColor");
+    if (metaColor) {
+        metaColor.setAttribute("content", savedTheme === "light" ? "#f1f5f9" : "#0b0f17");
+    }
+});
 
 async function checkSiteStatus() {
     try {
@@ -456,6 +522,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const token = urlParams.get('token');
 
     if (token) {
+        isFromToken = true;
         handleToken(token);
         return;
     }
@@ -479,7 +546,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 async function handleToken(token) {
     try {
+        currentToken = token;
         const { data } = await supabaseClient.from('one_time_links').select('*').eq('token', token).single();
+        
         if (!data || data.is_used) {
             switchScreen("tokenErrorApp");
             return;
@@ -498,22 +567,28 @@ async function handleToken(token) {
                         <img src="${app.icon}" class="token-app-icon" alt="${app.name}">
                         <span class="token-app-name">${app.name}</span>
                     </div>
-                    <button type="button" class="token-install-btn" onclick="triggerInstall('${app.key}', 'itms-services://?action=download-manifest&url=${app.url}', '${app.name}')">⬇</button>
+                    <button type="button" class="token-install-btn" onclick="triggerInstall('${app.key}', '${app.url}', '${app.name}')">⬇</button>
                 </div>`;
             }
         });
 
         switchScreen("tokenApp");
-
-        await supabaseClient.from('one_time_links').update({ is_used: true }).eq('token', token);
-    } catch {
+    } catch (e) {
         switchScreen("tokenErrorApp");
     }
 }
 
 async function triggerInstall(key, url, name) {
-    selectedAppUrl = url;
     selectedAppKey = key;
+    selectedAppUrl = url;
+
+    if (isFromToken) {
+        if (currentToken) {
+            await supabaseClient.from('one_time_links').update({ is_used: true }).eq('token', currentToken).catch(() => {});
+        }
+        window.location.href = selectedAppUrl;
+        return;
+    }
 
     try {
         const { data } = await supabaseClient.from('settings').select('value').eq('key', `pass_${key}`).single();
