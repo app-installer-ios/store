@@ -51,7 +51,7 @@
       
       .nav-right-actions { display: flex; align-items: center; gap: 8px; }
       .back-btn, .burger-btn { width: 40px; height: 40px; border-radius: 12px; background: rgba(30,41,59,0.5); border: 1px solid rgba(148,163,184,0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; color: #cbd5e1; }
-      .back-btn { font-size: 18px; font-weight: 700; text-decoration: none; display: none; }
+      .back-btn { font-size: 20px; font-weight: 700; text-decoration: none; display: none; }
       .back-btn.visible { display: flex; }
       .burger-line { width: 18px; height: 2px; background: #cbd5e1; border-radius: 2px; position: relative; }
       .burger-line::before, .burger-line::after { content: ''; position: absolute; left: 0; width: 18px; height: 2px; background: #cbd5e1; border-radius: 2px; }
@@ -380,10 +380,10 @@ function switchScreen(id) {
     document.querySelectorAll(".container").forEach(el => el.classList.remove("active-screen"));
     document.getElementById(id)?.classList.add("active-screen");
     
-    // Управление видимостью кнопки «Назад» в шапке
+    // Кнопка «Назад» активна везде, кроме главного экрана приветствия
     const backBtn = document.getElementById("navBackBtn");
     if (backBtn) {
-        if (id === "welcomeApp" || (id === "mainApp" && sessionStorage.getItem("site_access") !== "true")) {
+        if (id === "welcomeApp") {
             backBtn.classList.remove("visible");
         } else {
             backBtn.classList.add("visible");
@@ -392,11 +392,9 @@ function switchScreen(id) {
 }
 
 function goHome() {
-    if (sessionStorage.getItem("site_access") === "true") {
-        switchScreen("mainApp");
-    } else {
-        switchScreen("welcomeApp");
-    }
+    // При нажатии «Назад» или на логотип всегда сбрасываем сессию и возвращаем на главный экран приветствия
+    sessionStorage.removeItem("site_access");
+    switchScreen("welcomeApp");
 }
 
 function showAuthScreen() {
@@ -466,7 +464,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     remoteConfig = await fetchSupabaseSettings();
     applyVisibility();
 
-    // Мгновенное определение нужного экрана без мигания
+    // Мгновенный показ правильного экрана без мигания
     if (sessionStorage.getItem("site_access") === "true") {
         switchScreen("mainApp");
     } else {
