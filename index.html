@@ -38,7 +38,7 @@
       }
 
       * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-weight: 500; }
-      button, input, .btn, .custom-select-btn, .sheet-close, .search-clear, .filter-chip { touch-action: manipulation; }
+      button, input, .btn, .filter-chip { touch-action: manipulation; }
       html, body { width: 100%; height: 100%; margin: 0; padding: 0; overflow-x: hidden; }
       body {
           min-height: 100dvh;
@@ -78,8 +78,11 @@
       .nav-right-actions { display: flex; align-items: center; gap: 8px; }
       .back-btn, .burger-btn { width: 40px; height: 40px; border-radius: 12px; background: rgba(30,41,59,0.5); border: 1px solid rgba(148,163,184,0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--muted); }
       [data-theme="light"] .back-btn, [data-theme="light"] .burger-btn { background: rgba(255,255,255,0.8); border-color: rgba(0,0,0,0.1); }
-      .back-btn { font-size: 20px; font-weight: 700; text-decoration: none; display: none; }
+      
+      /* Жирная стрелочка «Назад» строго по центру круга */
+      .back-btn { font-size: 22px; font-weight: 800; text-decoration: none; display: none; align-items: center; justify-content: center; line-height: 1; padding-bottom: 2px; }
       .back-btn.visible { display: flex; }
+
       .burger-line { width: 18px; height: 2px; background: var(--muted); border-radius: 2px; position: relative; }
       .burger-line::before, .burger-line::after { content: ''; position: absolute; left: 0; width: 18px; height: 2px; background: var(--muted); border-radius: 2px; }
       .burger-line::before { top: -6px; }
@@ -216,7 +219,7 @@
     </a>
     <div class="nav-right-actions">
         <a href="#" class="back-btn" id="navBackBtn" onclick="goHome()" title="Назад">‹</a>
-        <button class="burger-btn" onclick="toggleBurgerMenu()" aria-label="Меню">
+        <button class="burger-btn" onclick="toggleBurgerMenu()" aria-label="Меню" id="navBurgerBtn">
             <div class="burger-line"></div>
         </button>
     </div>
@@ -417,12 +420,14 @@ function generateAppsGrid() {
     
     let html = "";
     appsData.forEach(app => {
+        // Исправлено: корректный формат ссылки itms-services для установки из сетки каталога
+        const installUrl = `itms-services://?action=download-manifest&url=${encodeURIComponent(app.url)}`;
         html += `
         <div class="app-grid-card" data-key="${app.key}" data-category="${app.category}">
             <img loading="lazy" src="${app.icon}" class="app-grid-icon" alt="${app.name}">
             <div class="app-grid-name">${app.name}</div>
             <div class="app-grid-version">${app.ios}</div>
-            <button type="button" class="app-grid-btn" onclick="triggerInstall('${app.key}', 'itms-services://?action=download-manifest&url=${app.url}', '${app.name}')">Установить</button>
+            <button type="button" class="app-grid-btn" onclick="triggerInstall('${app.key}', '${installUrl}', '${app.name}')">Установить</button>
         </div>`;
     });
     container.innerHTML = html;
@@ -458,6 +463,12 @@ function showAuthScreen() {
 }
 
 function toggleBurgerMenu() {
+    // На экранах техработ, ошибок токена и входа по токену блокируем открытие бургер-меню для безопасности
+    if (document.getElementById("maintenanceApp").classList.contains("active-screen") || 
+        document.getElementById("tokenErrorApp").classList.contains("active-screen") || 
+        isFromToken) {
+        return;
+    }
     document.getElementById("burgerMenuModal").classList.toggle("active");
 }
 
@@ -533,12 +544,20 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (token) {
         isFromToken = true;
+        
+        // Скрываем бургер-мейн кнопку и кнопку назад для безопасности по разовой ссылке
+        const burgerBtn = document.getElementById("navBurgerBtn");
+        if (burgerBtn) burgerBtn.style.display = "none";
+
         handleToken(token);
         return;
     }
 
     if (!await checkSiteStatus()) {
         switchScreen("maintenanceApp");
+        // Блокируем бургер-меню на экране техработ
+        const burgerBtn = document.getElementById("navBurgerBtn");
+        if (burgerBtn) burgerBtn.style.display = "none";
         return;
     }
 
@@ -561,6 +580,8 @@ async function handleToken(token) {
         
         if (!data || data.is_used) {
             switchScreen("tokenErrorApp");
+            const burgerBtn = document.getElementById("navBurgerBtn");
+            if (burgerBtn) burgerBtn.style.display = "none";
             return;
         }
 
@@ -571,13 +592,14 @@ async function handleToken(token) {
         appKeys.forEach(key => {
             const app = appsData.find(a => a.key === key);
             if (app) {
+                const tokenInstallUrl = `itms-services://?action=download-manifest&url=${encodeURIComponent(app.url)}`;
                 container.innerHTML += `
                 <div class="token-app-card">
                     <div class="token-app-info">
                         <img src="${app.icon}" class="token-app-icon" alt="${app.name}">
                         <span class="token-app-name">${app.name}</span>
                     </div>
-                    <button type="button" class="token-install-btn" onclick="triggerInstall('${app.key}', 'itms-services://?action=download-manifest&url=${app.url}', '${app.name}')">⬇</button>
+                    <button type="button" class="token-install-btn" onclick="triggerInstall('${app.key}', '${tokenInstallUrl}', '${app.name}')">⬇</button>
                 </div>`;
             }
         });
@@ -585,6 +607,8 @@ async function handleToken(token) {
         switchScreen("tokenApp");
     } catch (e) {
         switchScreen("tokenErrorApp");
+        const burgerBtn = document.getElementById("navBurgerBtn");
+        if (burgerBtn) burgerBtn.style.display = "none";
     }
 }
 
@@ -600,7 +624,7 @@ async function triggerInstall(key, url, name) {
         return;
     }
 
-    // Запрос и проверка персонального пароля приложения из таблицы settings в Supabase
+    // Исправлено: корректный запрос пароля приложения из Supabase
     try {
         const { data } = await supabaseClient.from('settings').select('value').eq('key', `pass_${key}`).single();
         const pass = data ? data.value : "";
