@@ -165,7 +165,6 @@
       .btn-secondary { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: var(--text); box-shadow: none; }
       .btn-telegram { background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3); color: #3b82f6; box-shadow: none; }
 
-      /* Новый дизайн категорий-чипсов в виде горизонтального скролла */
       .categories-bar {
           display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 12px; scrollbar-width: none; width: 100%; box-sizing: border-box;
       }
@@ -192,7 +191,7 @@
       .token-app-name { font-size: 14px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
       .token-install-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 12px; background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.5); color: #3b82f6; cursor: pointer; flex-shrink: 0; }
 
-      /* Бургер меню с кнопкой назад в шапке меню */
+      /* Бургер меню */
       .menu-modal { position: fixed; inset: 0; background: rgba(5,7,12,0.8); backdrop-filter: blur(15px); z-index: 1000; display: none; align-items: flex-end; justify-content: center; }
       .menu-modal.active { display: flex; }
       .menu-sheet { width: 100%; max-width: 430px; background: #111827; border-top: 1.5px solid rgba(255, 255, 255, 0.12); border-radius: 28px 28px 0 0; padding: 22px 18px max(24px, env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 10px; box-sizing: border-box; }
@@ -230,7 +229,7 @@
             <button class="menu-back-circle" onclick="toggleBurgerMenu()" title="Назад">‹</button>
             <span style="font-size: 15px; font-weight: 700; color: var(--text);">Навигация</span>
         </div>
-        <button class="menu-item" onclick="toggleTheme()" id="themeToggleBtn">☀️ Светлая тема <span>›</span></button>
+        <button class="menu-item" onclick="toggleTheme()" id="themeToggleBtn">☀️ Изменить тему <span>›</span></button>
         <a href="#" class="menu-item">📖 Инструкция <span>›</span></a>
         <a href="https://t.me/apprestore_ios" target="_blank" class="menu-item">📢 Наш Telegram канал <span>›</span></a>
         <a href="https://t.me/dizabled" target="_blank" class="menu-item">💬 Поддержка / Связаться <span>›</span></a>
@@ -293,10 +292,9 @@
 <!-- 4. Экран пароля к конкретному приложению -->
 <div class="container" id="appAuthApp">
     <div class="auth-box">
-        <div class="auth-title">🔒 Защита установки</div>
-        <div class="auth-description">Вы выбрали приложение:
-            <div style="font-weight: 750; color: #3b82f6; margin-top: 4px;" id="appAuthAppName">Не выбрано</div>
-        </div>
+        <div class="apple-icon-bubble">🔒</div>
+        <div class="auth-title">Защита установки</div>
+        <div class="auth-description">Для установки приложения <span style="font-weight: 700; color: var(--text);" id="appAuthAppName"></span> требуется ввести защитный пароль.</div>
         <input type="tel" inputmode="numeric" pattern="[0-9]*" id="appPassInput" class="auth-input" placeholder="Введите пароль" autocomplete="off">
         <div id="appPassError" class="auth-error">Неверный пароль</div>
         <button type="button" class="btn btn-primary" onclick="submitAppPassword()">Подтвердить</button>
@@ -312,7 +310,6 @@
         <button type="button" id="searchClear" class="search-clear" onclick="clearAppSearch()">✕</button>
     </div>
 
-    <!-- Новый удобный дизайн категорий в виде горизонтальных чипсов -->
     <div class="categories-bar">
         <button type="button" class="filter-chip active" onclick="setCategory('all', this)">Все</button>
         <button type="button" class="filter-chip" onclick="setCategory('banks', this)">Банки</button>
@@ -473,7 +470,7 @@ function toggleTheme() {
 
     const btn = document.getElementById("themeToggleBtn");
     if (btn) {
-        btn.innerHTML = newTheme === "light" ? "🌙 Темная тема <span>›</span>" : "☀️ Светлая тема <span>›</span>";
+        btn.innerHTML = newTheme === "light" ? "🌙 Изменить тему <span>›</span>" : "☀️ Изменить тему <span>›</span>";
     }
     const metaColor = document.getElementById("metaThemeColor");
     if (metaColor) {
@@ -486,7 +483,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.setAttribute("data-theme", savedTheme);
     const btn = document.getElementById("themeToggleBtn");
     if (btn) {
-        btn.innerHTML = savedTheme === "light" ? "🌙 Темная тема <span>›</span>" : "☀️ Светлая тема <span>›</span>";
+        btn.innerHTML = savedTheme === "light" ? "🌙 Изменить тему <span>›</span>" : "☀️ Изменить тему <span>›</span>";
     }
     const metaColor = document.getElementById("metaThemeColor");
     if (metaColor) {
@@ -603,6 +600,7 @@ async function triggerInstall(key, url, name) {
         return;
     }
 
+    // Запрос и проверка персонального пароля приложения из таблицы settings в Supabase
     try {
         const { data } = await supabaseClient.from('settings').select('value').eq('key', `pass_${key}`).single();
         const pass = data ? data.value : "";
@@ -615,7 +613,9 @@ async function triggerInstall(key, url, name) {
             document.getElementById("appPassInput").focus();
             return;
         }
-    } catch (e) {}
+    } catch (e) {
+        console.error("Ошибка проверки пароля приложения:", e);
+    }
 
     window.location.href = selectedAppUrl;
 }
