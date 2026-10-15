@@ -65,7 +65,7 @@
       }
       .container.active-screen { display: flex; opacity: 1; transform: translateY(0) scale(1); }
 
-      /* Центрирование экранов по центру экрана (для приветствия, техработ, ошибок) */
+      /* Центрирование экранов по центру экрана */
       #welcomeApp, #maintenanceApp, #tokenApp, #tokenSuccessApp, #tokenErrorApp {
           justify-content: center;
           align-items: center;
@@ -109,7 +109,7 @@
       }
       .app-grid-btn:hover { background: rgba(59, 130, 246, 0.3); }
 
-      /* Apple-стиль для карточек сообщений (ошибки, техработы, успех) */
+      /* Apple-стиль для карточек сообщений */
       .auth-box {
           background: linear-gradient(165deg, rgba(17,24,39,.82), rgba(11,15,23,.92));
           backdrop-filter: blur(40px) saturate(170%); border: 1.5px solid rgba(255, 255, 255, 0.12);
@@ -312,8 +312,8 @@
 <div class="container" id="tokenErrorApp">
     <div class="auth-box">
         <div class="apple-icon-bubble">⚠️</div>
-        <div class="auth-title">Ссылка недействительна</div>
-        <div class="auth-description">Срок действия ссылки истёк (5 минут) либо она уже была использована на другом устройстве в целях безопасности.</div>
+        <div class="auth-title">Установка недоступна</div>
+        <div class="auth-description">Срок действия данной ссылки истёк, либо она уже была использована на другом устройстве в целях безопасности. Пожалуйста, обратитесь к продавцу для получения актуального доступа.</div>
         <a href="https://t.me/dizabled" target="_blank" class="btn btn-telegram" style="margin-top: 6px;">💬 Запросить новую ссылку</a>
     </div>
 </div>
@@ -327,7 +327,7 @@ let selectedAppUrl = "";
 let selectedAppKey = "";
 let currentCategory = "all";
 let currentToken = null;
-let isFromToken = false; // Флаг для разовой ссылки (отключает пароли)
+let isFromToken = false; // Флаг для разовой ссылки
 
 const appsData = [
     { key: "vk", name: "ВКонтакте", category: "social", url: "https://app-installer-ios.github.io/store/manifests/vk.plist", icon: "https://i.pinimg.com/736x/92/a9/dc/92a9dc918ad00d529922958f603ede6d.jpg", ios: "iOS 17.6+" },
@@ -395,10 +395,10 @@ function switchScreen(id) {
     document.querySelectorAll(".container").forEach(el => el.classList.remove("active-screen"));
     document.getElementById(id)?.classList.add("active-screen");
     
-    // Кнопка «Назад» скрыта на главном экране и экране техработ
+    // Кнопка «Назад» скрыта на главном экране, экране техработ и на экране разовой ссылки (чтобы не ушли в каталог)
     const backBtn = document.getElementById("navBackBtn");
     if (backBtn) {
-        if (id === "welcomeApp" || id === "maintenanceApp") {
+        if (id === "welcomeApp" || id === "maintenanceApp" || id === "tokenApp" || id === "tokenErrorApp" || id === "tokenSuccessApp") {
             backBtn.classList.remove("visible");
         } else {
             backBtn.classList.add("visible");
@@ -407,6 +407,9 @@ function switchScreen(id) {
 }
 
 function goHome() {
+    // Если пользователь по разовой ссылке — запрещаем сбрасывать и уходить в каталог
+    if (isFromToken) return;
+
     sessionStorage.removeItem("site_access");
     switchScreen("welcomeApp");
 }
@@ -465,7 +468,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const token = urlParams.get('token');
 
     if (token) {
-        isFromToken = true;
+        isFromToken = true; // Активируем режим разовой ссылки
         handleToken(token);
         return;
     }
@@ -489,7 +492,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 async function handleToken(token) {
     try {
+        currentToken = token;
         const { data } = await supabaseClient.from('one_time_links').select('*').eq('token', token).single();
+        
+        // Если ссылка не найдена или уже использована — показываем экран ошибки
         if (!data || data.is_used) {
             switchScreen("tokenErrorApp");
             return;
@@ -513,10 +519,9 @@ async function handleToken(token) {
             }
         });
 
+        // Показываем экран разовой ссылки БЕЗ отметки is_used = true (она сгорит только при клике на установку)
         switchScreen("tokenApp");
-
-        await supabaseClient.from('one_time_links').update({ is_used: true }).eq('token', token);
-    } catch {
+    } catch (e) {
         switchScreen("tokenErrorApp");
     }
 }
@@ -525,8 +530,11 @@ async function triggerInstall(key, url, name) {
     selectedAppUrl = url;
     selectedAppKey = key;
 
-    // Если пользователь зашел по разовой ссылке — пароли не проверяем вообще!
+    // Если пользователь зашел по разовой ссылке — гасим токен в базе при клике и запускаем скачивание
     if (isFromToken) {
+        if (currentToken) {
+            await supabaseClient.from('one_time_links').update({ is_used: true }).eq('token', currentToken).catch(() => {});
+        }
         window.location.href = selectedAppUrl;
         return;
     }
