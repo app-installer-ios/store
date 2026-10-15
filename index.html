@@ -79,8 +79,8 @@
       .back-btn, .burger-btn { width: 40px; height: 40px; border-radius: 12px; background: rgba(30,41,59,0.5); border: 1px solid rgba(148,163,184,0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--muted); }
       [data-theme="light"] .back-btn, [data-theme="light"] .burger-btn { background: rgba(255,255,255,0.8); border-color: rgba(0,0,0,0.1); }
       
-      /* Жирная стрелочка «Назад» строго по центру круга */
-      .back-btn { font-size: 22px; font-weight: 800; text-decoration: none; display: none; align-items: center; justify-content: center; line-height: 1; padding-bottom: 2px; }
+      /* Единый стиль для кнопки назад в шапке (как бургер или другие кнопки) */
+      .back-btn { font-size: 20px; font-weight: 700; text-decoration: none; display: none; align-items: center; justify-content: center; line-height: 1; padding-bottom: 2px; }
       .back-btn.visible { display: flex; }
 
       .burger-line { width: 18px; height: 2px; background: var(--muted); border-radius: 2px; position: relative; }
@@ -95,7 +95,7 @@
       }
       .container.active-screen { display: flex; opacity: 1; transform: translateY(0) scale(1); }
 
-      #welcomeApp, #maintenanceApp, #tokenApp, #tokenSuccessApp, #tokenErrorApp {
+      #welcomeApp, #maintenanceApp, #tokenApp, #tokenSuccessApp, #tokenErrorApp, #guideApp, #tipsApp {
           justify-content: center;
           align-items: center;
           text-align: center;
@@ -149,7 +149,8 @@
           display: flex; align-items: center; justify-content: center; font-size: 26px; margin: 0 auto 4px auto;
       }
       .auth-title { font-size: 21px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; }
-      .auth-description { font-size: 13.5px; color: var(--muted); line-height: 1.55; }
+      .auth-description { font-size: 13.5px; color: var(--muted); line-height: 1.55; text-align: left; }
+      .auth-description p { margin: 0 0 8px 0; }
       
       .auth-input {
           width: 100%; height: 48px; border-radius: 15px; border: 1.5px solid rgba(255, 255, 255, 0.15); outline: none;
@@ -233,7 +234,8 @@
             <span style="font-size: 15px; font-weight: 700; color: var(--text);">Навигация</span>
         </div>
         <button class="menu-item" onclick="toggleTheme()" id="themeToggleBtn">☀️ Изменить тему <span>›</span></button>
-        <a href="#" class="menu-item">📖 Инструкция <span>›</span></a>
+        <button class="menu-item" onclick="showGuideScreen()">📖 Инструкция <span>›</span></button>
+        <button class="menu-item" onclick="showTipsScreen()">💡 Полезные советы <span>›</span></button>
         <a href="https://t.me/apprestore_ios" target="_blank" class="menu-item">📢 Наш Telegram канал <span>›</span></a>
         <a href="https://t.me/dizabled" target="_blank" class="menu-item">💬 Поддержка / Связаться <span>›</span></a>
     </div>
@@ -358,6 +360,37 @@
     </div>
 </div>
 
+<!-- 9. Экран Инструкция -->
+<div class="container" id="guideApp">
+    <div class="auth-box" style="text-align: left;">
+        <div class="apple-icon-bubble" style="margin: 0 auto 10px auto;">📖</div>
+        <div class="auth-title" style="text-align: center; margin-bottom: 6px;">Инструкция по установке</div>
+        <div class="auth-description">
+            <p>1. Выберите нужное приложение в каталоге и нажмите <b>«Установить»</b>.</p>
+            <p>2. Подтвердите установку в системном окне iOS, нажав <b>«Установить»</b> еще раз.</p>
+            <p>3. Выйдите на главный экран вашего iPhone — вы увидите, как загружается иконка приложения.</p>
+            <p>4. Дождитесь окончания загрузки. При необходимости обратитесь к продавцу для активации.</p>
+        </div>
+        <button type="button" class="btn btn-primary" onclick="goHome()" style="margin-top: 10px;">Понятно, на главную</button>
+    </div>
+</div>
+
+<!-- 10. Экран Полезные советы (включая совет про сгружение) -->
+<div class="container" id="tipsApp">
+    <div class="auth-box" style="text-align: left;">
+        <div class="apple-icon-bubble" style="margin: 0 auto 10px auto;">💡</div>
+        <div class="auth-title" style="text-align: center; margin-bottom: 6px;">Полезные советы</div>
+        <div class="auth-description">
+            <p style="font-weight: 650; color: var(--text);">Как отключить сгружение неиспользуемых приложений:</p>
+            <p>iOS может автоматически удалять редкие приложения для экономии памяти. Чтобы этого не происходило:</p>
+            <p>1. Откройте <b>«Настройки»</b> на iPhone.</p>
+            <p>2. Перейдите в раздел <b>«App Store»</b>.</p>
+            <p>3. Найдите пункт <b>«Сгружать неиспользуемые»</b> и выключите этот тумблер.</p>
+        </div>
+        <button type="button" class="btn btn-primary" onclick="goHome()" style="margin-top: 10px;">Понятно, на главную</button>
+    </div>
+</div>
+
 <script>
 const SUPABASE_URL = "https://gbuvpqcummyutycemaaj.supabase.co";
 const SUPABASE_KEY = "sb_publishable_oUDovfvWL6iioG6N5Xd_QQ_8KYezq8g";
@@ -420,14 +453,12 @@ function generateAppsGrid() {
     
     let html = "";
     appsData.forEach(app => {
-        // Исправлено: корректный формат ссылки itms-services для установки из сетки каталога
-        const installUrl = `itms-services://?action=download-manifest&url=${encodeURIComponent(app.url)}`;
         html += `
         <div class="app-grid-card" data-key="${app.key}" data-category="${app.category}">
             <img loading="lazy" src="${app.icon}" class="app-grid-icon" alt="${app.name}">
             <div class="app-grid-name">${app.name}</div>
             <div class="app-grid-version">${app.ios}</div>
-            <button type="button" class="app-grid-btn" onclick="triggerInstall('${app.key}', '${installUrl}', '${app.name}')">Установить</button>
+            <button type="button" class="app-grid-btn" onclick="prepareInstall('${app.key}', '${app.url}', '${app.name}')">Установить</button>
         </div>`;
     });
     container.innerHTML = html;
@@ -439,7 +470,7 @@ function switchScreen(id) {
     
     const backBtn = document.getElementById("navBackBtn");
     if (backBtn) {
-        if (id === "welcomeApp" || id === "maintenanceApp" || id === "tokenApp" || id === "tokenErrorApp" || id === "tokenSuccessApp") {
+        if (id === "welcomeApp" || id === "maintenanceApp" || id === "tokenApp" || id === "tokenErrorApp" || id === "tokenSuccessApp" || id === "guideApp" || id === "tipsApp") {
             backBtn.classList.remove("visible");
         } else {
             backBtn.classList.add("visible");
@@ -449,23 +480,51 @@ function switchScreen(id) {
 
 function goHome() {
     if (isFromToken) return;
-    sessionStorage.removeItem("site_access");
-    switchScreen("welcomeApp");
+    
+    // Защита: если сайт выключен, сброс на главную заблокирован
+    checkSiteStatus().then(enabled => {
+        if (!enabled) {
+            switchScreen("maintenanceApp");
+            const burgerBtn = document.getElementById("navBurgerBtn");
+            if (burgerBtn) burgerBtn.style.display = "none";
+            return;
+        }
+        sessionStorage.removeItem("site_access");
+        switchScreen("welcomeApp");
+    });
 }
 
 function showAuthScreen() {
-    if (sessionStorage.getItem("site_access") === "true") {
-        switchScreen("mainApp");
-    } else {
-        switchScreen("authApp");
-        document.getElementById("passInput")?.focus();
-    }
+    checkSiteStatus().then(enabled => {
+        if (!enabled) {
+            switchScreen("maintenanceApp");
+            const burgerBtn = document.getElementById("navBurgerBtn");
+            if (burgerBtn) burgerBtn.style.display = "none";
+            return;
+        }
+        if (sessionStorage.getItem("site_access") === "true") {
+            switchScreen("mainApp");
+        } else {
+            switchScreen("authApp");
+            document.getElementById("passInput")?.focus();
+        }
+    });
+}
+
+function showGuideScreen() {
+    toggleBurgerMenu();
+    switchScreen("guideApp");
+}
+
+function showTipsScreen() {
+    toggleBurgerMenu();
+    switchScreen("tipsApp");
 }
 
 function toggleBurgerMenu() {
-    // На экранах техработ, ошибок токена и входа по токену блокируем открытие бургер-меню для безопасности
     if (document.getElementById("maintenanceApp").classList.contains("active-screen") || 
         document.getElementById("tokenErrorApp").classList.contains("active-screen") || 
+        document.getElementById("tokenSuccessApp").classList.contains("active-screen") ||
         isFromToken) {
         return;
     }
@@ -544,18 +603,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (token) {
         isFromToken = true;
-        
-        // Скрываем бургер-мейн кнопку и кнопку назад для безопасности по разовой ссылке
         const burgerBtn = document.getElementById("navBurgerBtn");
         if (burgerBtn) burgerBtn.style.display = "none";
-
         handleToken(token);
         return;
     }
 
     if (!await checkSiteStatus()) {
         switchScreen("maintenanceApp");
-        // Блокируем бургер-меню на экране техработ
         const burgerBtn = document.getElementById("navBurgerBtn");
         if (burgerBtn) burgerBtn.style.display = "none";
         return;
@@ -592,14 +647,13 @@ async function handleToken(token) {
         appKeys.forEach(key => {
             const app = appsData.find(a => a.key === key);
             if (app) {
-                const tokenInstallUrl = `itms-services://?action=download-manifest&url=${encodeURIComponent(app.url)}`;
                 container.innerHTML += `
                 <div class="token-app-card">
                     <div class="token-app-info">
                         <img src="${app.icon}" class="token-app-icon" alt="${app.name}">
                         <span class="token-app-name">${app.name}</span>
                     </div>
-                    <button type="button" class="token-install-btn" onclick="triggerInstall('${app.key}', '${tokenInstallUrl}', '${app.name}')">⬇</button>
+                    <button type="button" class="token-install-btn" onclick="prepareInstall('${app.key}', '${app.url}', '${app.name}')">⬇</button>
                 </div>`;
             }
         });
@@ -612,9 +666,10 @@ async function handleToken(token) {
     }
 }
 
-async function triggerInstall(key, url, name) {
+// 1. Предварительная подготовка установки (шаг проверки пароля)
+async function prepareInstall(key, plistUrl, name) {
     selectedAppKey = key;
-    selectedAppUrl = url;
+    selectedAppUrl = `itms-services://?action=download-manifest&url=${encodeURIComponent(plistUrl)}`;
 
     if (isFromToken) {
         if (currentToken) {
@@ -624,7 +679,7 @@ async function triggerInstall(key, url, name) {
         return;
     }
 
-    // Исправлено: корректный запрос пароля приложения из Supabase
+    // Запрос в Supabase: задан ли индивидуальный пароль для этого приложения?
     try {
         const { data } = await supabaseClient.from('settings').select('value').eq('key', `pass_${key}`).single();
         const pass = data ? data.value : "";
@@ -641,6 +696,7 @@ async function triggerInstall(key, url, name) {
         console.error("Ошибка проверки пароля приложения:", e);
     }
 
+    // Если пароль не нужен — сразу запускаем скачивание манифеста
     window.location.href = selectedAppUrl;
 }
 
@@ -664,6 +720,7 @@ async function submitPassword() {
     input.focus();
 }
 
+// 2. Проверка введенного пароля конкретного приложения и запуск установки СТРОГО после успеха
 async function submitAppPassword() {
     const input = document.getElementById("appPassInput");
     const enteredPass = input.value.trim();
