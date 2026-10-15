@@ -65,13 +65,14 @@
       }
       .container.active-screen { display: flex; opacity: 1; transform: translateY(0) scale(1); }
 
-      /* Главный экран приветствия */
-      #welcomeApp {
+      /* Центрирование экранов по центру экрана (для приветствия, техработ, ошибок) */
+      #welcomeApp, #maintenanceApp, #tokenApp, #tokenSuccessApp, #tokenErrorApp {
           justify-content: center;
           align-items: center;
           text-align: center;
-          padding-bottom: 30px;
+          padding-bottom: 20px;
       }
+
       .hero-section { text-align: center; margin-bottom: 22px; margin-top: -20px; width: 100%; }
       .hero-title { font-size: 23px; font-weight: 750; line-height: 1.25; margin-bottom: 10px; background: linear-gradient(135deg, #ffffff 20%, #cbd5e1 80%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
       .hero-title span { background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
@@ -108,31 +109,36 @@
       }
       .app-grid-btn:hover { background: rgba(59, 130, 246, 0.3); }
 
-      /* Стандартные блоки */
+      /* Apple-стиль для карточек сообщений (ошибки, техработы, успех) */
       .auth-box {
-          background: linear-gradient(165deg, rgba(17,24,39,.78), rgba(11,15,23,.88));
-          backdrop-filter: blur(40px) saturate(170%); border: 1.8px solid rgba(217, 180, 140, 0.45);
-          border-radius: 26px; padding: 24px 18px 18px; text-align: center; width: 100%; box-sizing: border-box;
-          box-shadow: 0 0 24px rgba(217, 180, 140, 0.08), 0 25px 70px rgba(0,0,0,.62); display: flex; flex-direction: column; gap: 12px;
+          background: linear-gradient(165deg, rgba(17,24,39,.82), rgba(11,15,23,.92));
+          backdrop-filter: blur(40px) saturate(170%); border: 1.5px solid rgba(255, 255, 255, 0.12);
+          border-radius: 28px; padding: 28px 20px 22px; text-align: center; width: 100%; box-sizing: border-box;
+          box-shadow: 0 20px 50px rgba(0,0,0,0.6); display: flex; flex-direction: column; gap: 14px;
       }
-      .auth-title { font-size: 20px; font-weight: 650; background: linear-gradient(135deg, #ffffff 10%, #e2e8f0 55%, #94a3b8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-      .auth-description { font-size: 13px; color: #cbd5e1; line-height: 1.5; }
+      .apple-icon-bubble {
+          width: 54px; height: 54px; border-radius: 50%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+          display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 2px auto;
+      }
+      .auth-title { font-size: 20px; font-weight: 700; color: #f8fafc; letter-spacing: -0.3px; }
+      .auth-description { font-size: 13px; color: #94a3b8; line-height: 1.55; }
+      
       .auth-input {
-          width: 100%; height: 48px; border-radius: 15px; border: 1.8px solid rgba(217, 180, 140, 0.45); outline: none;
-          background: rgba(30,41,59,.3); color: #fff; padding: 0 15px; font-size: 15px; text-align: center; box-sizing: border-box;
+          width: 100%; height: 48px; border-radius: 15px; border: 1.5px solid rgba(255, 255, 255, 0.15); outline: none;
+          background: rgba(30,41,59,.4); color: #fff; padding: 0 15px; font-size: 15px; text-align: center; box-sizing: border-box;
       }
-      .auth-input:focus { border-color: rgba(245, 158, 11, 0.75); }
+      .auth-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.2); }
       .auth-error { display: none; margin-top: -4px; color: #fca5a5; font-size: 12px; font-weight: 600; }
       
       .btn {
-          width: 100%; min-height: 46px; display: flex; align-items: center; justify-content: center; padding: 10px;
-          border-radius: 14px; border: none; background: #334155; color: #fff; font-size: 14px; font-weight: 650; cursor: pointer; text-decoration: none;
-          box-shadow: 0 8px 20px rgba(51, 65, 85, 0.25); transition: transform .2s var(--spring); box-sizing: border-box;
+          width: 100%; min-height: 48px; display: flex; align-items: center; justify-content: center; padding: 12px;
+          border-radius: 15px; border: none; background: #334155; color: #fff; font-size: 14px; font-weight: 650; cursor: pointer; text-decoration: none;
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); transition: transform .2s var(--spring); box-sizing: border-box;
       }
       .btn:active { transform: scale(.975); }
-      .btn-primary { background: linear-gradient(135deg, #2563eb, #1d4ed8); box-shadow: 0 8px 20px rgba(37,99,235,0.35); }
-      .btn-secondary { background: rgba(30,41,59,.4); border: 1.8px solid rgba(148, 163, 184, 0.25); color: #cbd5e1; box-shadow: none; }
-      .btn-telegram { background: rgba(30, 41, 59, 0.45); border: 1.8px solid rgba(148, 163, 184, 0.2); color: #cbd5e1; box-shadow: none; }
+      .btn-primary { background: linear-gradient(135deg, #2563eb, #1d4ed8); color: #fff; box-shadow: 0 8px 20px rgba(37,99,235,0.3); }
+      .btn-secondary { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #cbd5e1; box-shadow: none; }
+      .btn-telegram { background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3); color: #93c5fd; box-shadow: none; }
 
       .app-search-wrap { position: relative; margin-bottom: 12px; width: 100%; box-sizing: border-box; }
       .app-search { width: 100%; height: 42px; padding: 0 42px 0 38px; border-radius: 14px; border: 1.8px solid rgba(56, 189, 248, 0.6); outline: none; background: rgba(30,41,59,.35); color: #fff; font-size: 13.5px; box-sizing: border-box; }
@@ -147,16 +153,16 @@
       .filter-option.active { background: rgba(217, 119, 6, 0.35); color: #fff; }
 
       .token-apps-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; max-height: 250px; overflow-y: auto; width: 100%; box-sizing: border-box; }
-      .token-app-card { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-radius: 14px; background: linear-gradient(135deg, rgba(51, 65, 85, 0.35), rgba(217, 119, 6, 0.15)); border: 1.8px solid rgba(217, 180, 140, 0.45); gap: 10px; width: 100%; box-sizing: border-box; }
+      .token-app-card { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-radius: 14px; background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255, 255, 255, 0.1); gap: 10px; width: 100%; box-sizing: border-box; }
       .token-app-info { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
       .token-app-icon { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
       .token-app-name { font-size: 14px; font-weight: 600; color: #f1f5f9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-      .token-install-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 12px; background: rgba(245, 158, 11, 0.2); border: 1.0px solid rgba(245, 158, 11, 0.6); color: #fde68a; cursor: pointer; flex-shrink: 0; }
+      .token-install-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 12px; background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.5); color: #93c5fd; cursor: pointer; flex-shrink: 0; }
 
       /* Бургер меню */
       .menu-modal { position: fixed; inset: 0; background: rgba(5,7,12,0.8); backdrop-filter: blur(15px); z-index: 1000; display: none; align-items: flex-end; justify-content: center; }
       .menu-modal.active { display: flex; }
-      .menu-sheet { width: 100%; max-width: 430px; background: #111827; border-top: 1.8px solid rgba(217, 180, 140, 0.4); border-radius: 28px 28px 0 0; padding: 22px 18px max(24px, env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 10px; box-sizing: border-box; }
+      .menu-sheet { width: 100%; max-width: 430px; background: #111827; border-top: 1.5px solid rgba(255, 255, 255, 0.12); border-radius: 28px 28px 0 0; padding: 22px 18px max(24px, env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 10px; box-sizing: border-box; }
       .menu-item { padding: 13px 15px; border-radius: 14px; background: rgba(30,41,59,0.4); border: 1px solid rgba(148,163,184,0.15); color: #f8fafc; font-size: 14px; font-weight: 600; text-align: left; cursor: pointer; text-decoration: none; display: flex; align-items: center; justify-content: space-between; width: 100%; box-sizing: border-box; }
       .menu-item:hover { background: rgba(51,65,85,0.5); }
     </style>
@@ -193,10 +199,11 @@
 
 <!-- 1. Экран техработ -->
 <div class="container" id="maintenanceApp">
-    <div class="auth-box" style="border-color: rgba(239, 68, 68, 0.55);">
-        <div class="auth-title" style="color: #fca5a5;">Технические работы</div>
-        <div class="auth-description" style="margin-top: 6px;">Каталог временно недоступен в связи с обновлением.</div>
-        <button type="button" class="btn" id="checkStatusBtn" onclick="checkSiteStatusManual()" style="margin-top: 10px; background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.5); color: #fca5a5;">Проверить снова</button>
+    <div class="auth-box">
+        <div class="apple-icon-bubble">🛠</div>
+        <div class="auth-title">Обслуживание системы</div>
+        <div class="auth-description">Каталог временно недоступен в связи с плановым обновлением серверов. Пожалуйста, зайдите позже.</div>
+        <button type="button" class="btn btn-primary" id="checkStatusBtn" onclick="checkSiteStatusManual()" style="margin-top: 6px;">Проверить снова</button>
     </div>
 </div>
 
@@ -283,29 +290,31 @@
 
 <!-- 6. Экран разовой ссылки -->
 <div class="container" id="tokenApp">
-    <div class="auth-box" style="border-color: rgba(239, 68, 68, 0.65);">
+    <div class="auth-box">
+        <div class="apple-icon-bubble">📦</div>
         <div class="auth-title">Ваши приложения</div>
-        <div class="auth-description">Ссылка действует 5 минут и только на одном устройстве. Нажмите кнопку установки рядом с приложением.</div>
+        <div class="auth-description">Персональная ссылка активирована. Установка доступна напрямую без ввода дополнительных паролей.</div>
         <div id="singleTokenAppContainer" class="token-apps-list"></div>
     </div>
 </div>
 
 <!-- 7. Экран успеха -->
 <div class="container" id="tokenSuccessApp">
-    <div class="auth-box" style="border-color: rgba(59, 130, 246, 0.6);">
-        <div style="font-size: 32px;">📲</div>
-        <div class="auth-title" style="color: #f8fafc;">Установка началась!</div>
-        <div class="auth-description">Закройте это окно — на рабочем столе появится иконка загрузки. Дождитесь её завершения.</div>
-        <button type="button" class="btn btn-primary" onclick="window.location.href='https://t.me/dizabled'">💬 Написать продавцу</button>
+    <div class="auth-box">
+        <div class="apple-icon-bubble">✨</div>
+        <div class="auth-title">Установка запущена</div>
+        <div class="auth-description">Система передала запрос в Safari. Закройте это окно — на домашнем экране появится иконка загрузки приложения.</div>
+        <button type="button" class="btn btn-telegram" onclick="window.location.href='https://t.me/dizabled'" style="margin-top: 6px;">💬 Связаться с поддержкой</button>
     </div>
 </div>
 
 <!-- 8. Экран ошибки разовой ссылки -->
 <div class="container" id="tokenErrorApp">
-    <div class="auth-box" style="border-color: rgba(239, 68, 68, 0.55);">
-        <div class="auth-title" style="color: #fca5a5;">Установка недоступна</div>
-        <div class="auth-description">Срок действия ссылки истёк или она уже была использована на другом устройстве.</div>
-        <a href="https://t.me/dizabled" target="_blank" class="btn btn-telegram">💬 Написать продавцу</a>
+    <div class="auth-box">
+        <div class="apple-icon-bubble">⚠️</div>
+        <div class="auth-title">Ссылка недействительна</div>
+        <div class="auth-description">Срок действия ссылки истёк (5 минут) либо она уже была использована на другом устройстве в целях безопасности.</div>
+        <a href="https://t.me/dizabled" target="_blank" class="btn btn-telegram" style="margin-top: 6px;">💬 Запросить новую ссылку</a>
     </div>
 </div>
 
@@ -314,11 +323,11 @@ const SUPABASE_URL = "https://gbuvpqcummyutycemaaj.supabase.co";
 const SUPABASE_KEY = "sb_publishable_oUDovfvWL6iioG6N5Xd_QQ_8KYezq8g";
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-let remoteConfig = { appVisibility: {} };
 let selectedAppUrl = "";
 let selectedAppKey = "";
 let currentCategory = "all";
 let currentToken = null;
+let isFromToken = false; // Флаг для разовой ссылки (отключает пароли)
 
 const appsData = [
     { key: "vk", name: "ВКонтакте", category: "social", url: "https://app-installer-ios.github.io/store/manifests/vk.plist", icon: "https://i.pinimg.com/736x/92/a9/dc/92a9dc918ad00d529922958f603ede6d.jpg", ios: "iOS 17.6+" },
@@ -386,7 +395,7 @@ function switchScreen(id) {
     document.querySelectorAll(".container").forEach(el => el.classList.remove("active-screen"));
     document.getElementById(id)?.classList.add("active-screen");
     
-    // Кнопка «Назад» видна везде, КРОМЕ экрана приветствия и экрана техработ
+    // Кнопка «Назад» скрыта на главном экране и экране техработ
     const backBtn = document.getElementById("navBackBtn");
     if (backBtn) {
         if (id === "welcomeApp" || id === "maintenanceApp") {
@@ -456,6 +465,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const token = urlParams.get('token');
 
     if (token) {
+        isFromToken = true;
         handleToken(token);
         return;
     }
@@ -515,6 +525,13 @@ async function triggerInstall(key, url, name) {
     selectedAppUrl = url;
     selectedAppKey = key;
 
+    // Если пользователь зашел по разовой ссылке — пароли не проверяем вообще!
+    if (isFromToken) {
+        window.location.href = selectedAppUrl;
+        return;
+    }
+
+    // Для обычного каталога проверяем персональный пароль из базы Supabase
     try {
         const { data } = await supabaseClient.from('settings').select('value').eq('key', `pass_${key}`).single();
         const pass = data ? data.value : "";
